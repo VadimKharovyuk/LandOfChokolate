@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land of Chocolate - Премиальные кондитерские изделия</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --primary-light: #f8f8f8;
+            --accent-gold: #c9a96e;
+            --accent-warm: #e8ddd4;
+            --text-muted: #6b6b6b;
+            --white: #ffffff;
+            --shadow-light: 0 2px 20px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --border-radius: 8px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--primary-dark);
+            background-color: var(--primary-light);
+            font-weight: 400;
+        }
+
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Navigation Styles */
+        .navbar-luxury {
+            background: rgba(248, 248, 248, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+            padding: 20px 0;
+            transition: var(--transition);
+        }
+
+        .navbar-luxury.scrolled {
+            padding: 15px 0;
+            background: rgba(248, 248, 248, 0.98);
+            box-shadow: var(--shadow-light);
+        }
+
+        .navbar-brand-luxury {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-dark) !important;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: var(--transition);
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand-luxury:hover {
+            color: var(--accent-gold) !important;
+        }
+
+        .nav-luxury {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            list-style: none;
+        }
+
+        .nav-item-luxury {
+            position: relative;
+        }
+
+        .nav-link-luxury {
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+            padding: 8px 0;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link-luxury::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-gold), #d4af37);
+            transition: var(--transition);
+        }
+
+        .nav-link-luxury:hover {
+            color: var(--accent-gold);
+        }
+
+        .nav-link-luxury:hover::after {
+            width: 100%;
+        }
+
+        .nav-icon {
+            font-size: 14px;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .nav-link-luxury:hover .nav-icon {
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+
+        .cart-badge, .favorites-badge {
+            background: var(--accent-gold);
+            color: var(--white);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+
+        .favorites-badge {
+            background: #e74c3c;
+        }
+
+        .navbar-toggler-luxury {
+            border: none;
+            padding: 8px;
+            background: transparent;
+            color: var(--primary-dark);
+        }
+
+        /* Hero Section - Исправленный фон */
+        .hero-luxury {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1579954115545-a95591f28bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/contain no-repeat;
+            background-color: var(--accent-warm);
+            z-index: -2;
+        }
+
+        /* Альтернативный вариант для фона - если нужно полное покрытие без обрезки */
+        .hero-image-alt {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1579954115545-a95591f28bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+            background-size: 100% 100%;
+            background-color: var(--accent-warm);
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(248, 248, 248, 0.75) 0%, rgba(232, 221, 212, 0.65) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--accent-gold);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.2s forwards;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(48px, 6vw, 80px);
+            font-weight: 600;
+            color: var(--primary-dark);
+            line-height: 1.2;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.4s forwards;
+            letter-spacing: -1px;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .btn-luxury {
+            background: var(--primary-dark);
+            color: var(--white);
+            border: 2px solid var(--primary-dark);
+            padding: 16px 32px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.8s forwards;
+        }
+
+        .btn-luxury:hover {
+            background: transparent;
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-luxury-outline {
+            background: transparent;
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-dark);
+            margin-left: 16px;
+        }
+
+        .btn-luxury-outline:hover {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .scroll-indicator i {
+            animation: bounce 2s infinite;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Product Preview Section */
+        .preview-section {
+            padding: 120px 0;
+            background: var(--white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--accent-gold);
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(36px, 4vw, 48px);
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-description {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Product Cards */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            background: var(--accent-warm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-content {
+            padding: 32px;
+        }
+
+        .product-category {
+            font-size: 12px;
+            color: var(--accent-gold);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .product-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .product-description {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-luxury {
+                display: none;
+            }
+
+            .hero-luxury {
+                flex-direction: column;
+                text-align: center;
+                padding: 60px 20px;
+                height: auto;
+                margin-top: 80px;
+            }
+
+            .hero-content {
+                width: 100%;
+                padding: 0 20px;
+                margin-bottom: 40px;
+            }
+
+            .hero-image {
+                background-size: contain;
+                background-position: center;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-description {
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .nav-luxury.mobile-menu {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                padding: 24px;
+                box-shadow: var(--shadow-medium);
+                gap: 24px;
+            }
+
+            .scroll-indicator {
+                display: none;
+            }
+        }
+
+        /* Дополнительные стили для оптимизации фона */
+        @media (min-width: 1200px) {
+            .hero-image {
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .hero-image {
+                background-size: contain;
+                background-position: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar-luxury fixed-top" id="mainNav">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <a href="#" class="navbar-brand-luxury">
+                <img src="/images/IMG_1721.JPG" alt="Land of Chocolate" class="brand-logo">
+                Land of Chocolate
+            </a>
+
+            <ul class="nav-luxury d-none d-lg-flex">
+                <li class="nav-item-luxury">
+                    <a href="/" class="nav-link-luxury">
+                        <i class="fas fa-home nav-icon"></i>
+                        Главная
+                    </a>
+                </li>
+                <li class="nav-item-luxury">
+                    <a href="#catalog" class="nav-link-luxury">
+                        <i class="fas fa-th-large nav-icon"></i>
+                        Каталог
+                    </a>
+                </li>
+                <li class="nav-item-luxury">
+                    <a href="#about" class="nav-link-luxury">
+                        <i class="fas fa-heart nav-icon"></i>
+                        О нас
+                    </a>
+                </li>
+                <li class="nav-item-luxury">
+                    <a href="#contact" class="nav-link-luxury">
+                        <i class="fas fa-envelope nav-icon"></i>
+                        Контакты
+                    </a>
+                </li>
+                <li class="nav-item-luxury">
+                    <a href="#favorites" class="nav-link-luxury position-relative">
+                        <i class="fas fa-heart nav-icon"></i>
+                        Избранное
+                        <span class="favorites-badge">3</span>
+                    </a>
+                </li>
+                <li class="nav-item-luxury">
+                    <a href="#cart" class="nav-link-luxury position-relative">
+                        <i class="fas fa-shopping-bag nav-icon"></i>
+                        Корзина
+                        <span class="cart-badge">0</span>
+                    </a>
+                </li>
+            </ul>
+
+            <button class="navbar-toggler-luxury d-lg-none" type="button" id="navToggler">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero-luxury">
+    <div class="hero-image-alt"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="container">
+        <div class="hero-content">
+            <p class="hero-subtitle">Премиальная кондитерская</p>
+
+            <h1 class="hero-title">
+                Изысканные кондитерские изделия для особых моментов
+            </h1>
+
+            <p class="hero-description">
+                Создаем неповторимые десерты и шоколадные композиции с доставкой в день заказа.
+                Свежие изделия, креативный дизайн, безупречный сервис.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#catalog" class="btn-luxury">
+                    <i class="fas fa-shopping-bag"></i>
+                    Выбрать десерт
+                </a>
+                <a href="#about" class="btn-luxury btn-luxury-outline">
+                    <i class="fas fa-info-circle"></i>
+                    О нас
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-indicator">
+        <div>Скролльте вниз</div>
+        <i class="fas fa-chevron-down mt-2"></i>
+    </div>
+</section>
+
+<!-- Preview Section -->
+<section class="preview-section" id="catalog">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-subtitle">Наши изделия</p>
+            <h2 class="section-title">Избранные творения</h2>
+            <p class="section-description">
+                Каждое изделие — это результат многолетнего мастерства и страсти к созданию
+                незабываемых вкусовых впечатлений.
+            </p>
+        </div>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-content">
+                    <p class="product-category">Торты</p>
+                    <h3 class="product-title">Шоколадный велюр</h3>
+                    <p class="product-description">
+                        Нежный бисквит с шоколадным муссом и зеркальной глазурью
+                    </p>
+                    <div class="product-price">от 2,500 ₽</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1486427944299-d1955d23e34d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-content">
+                    <p class="product-category">Десерты</p>
+                    <h3 class="product-title">Эклеры премиум</h3>
+                    <p class="product-description">
+                        Воздушные эклеры с кремом из бельгийского шоколада
+                    </p>
+                    <div class="product-price">от 180 ₽/шт</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-content">
+                    <p class="product-category">Конфеты</p>
+                    <h3 class="product-title">Трюфели ручной работы</h3>
+                    <p class="product-description">
+                        Изысканные трюфели с уникальными начинками и декором
+                    </p>
+                    <div class="product-price">от 120 ₽/шт</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('mainNav');
+        if (window.scrollY > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const offsetTop = target.offsetTop - 100;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Mobile menu toggle
+    const navToggler = document.getElementById('navToggler');
+    const navMenu = document.querySelector('.nav-luxury');
+
+    navToggler.addEventListener('click', function() {
+        navMenu.classList.toggle('mobile-menu');
+        navMenu.classList.toggle('d-none');
+    });
+
+    // Product card animations on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
+</script>
+</body>
+</html>
