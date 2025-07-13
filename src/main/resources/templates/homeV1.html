@@ -375,7 +375,7 @@
             overflow: hidden;
             box-shadow: var(--shadow-light);
             transition: var(--transition);
-            cursor: pointer;
+            position: relative;
         }
 
         .product-card:hover {
@@ -391,8 +391,69 @@
             overflow: hidden;
         }
 
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 2;
+        }
+
+        .favorite-btn:hover {
+            background: var(--white);
+            transform: scale(1.1);
+        }
+
+        .favorite-btn i {
+            color: var(--text-muted);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .favorite-btn.active i {
+            color: #e74c3c;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #28a745;
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stock-badge.out-of-stock {
+            background: #dc3545;
+        }
+
         .product-content {
-            padding: 32px;
+            padding: 24px 24px 32px;
         }
 
         .product-category {
@@ -401,15 +462,15 @@
             font-weight: 500;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .product-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
             color: var(--primary-dark);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             line-height: 1.3;
         }
 
@@ -417,6 +478,13 @@
             font-size: 14px;
             color: var(--text-muted);
             line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 24px;
         }
 
@@ -424,6 +492,69 @@
             font-size: 20px;
             font-weight: 600;
             color: var(--primary-dark);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Кнопка добавления в корзину */
+        .add-to-cart {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: transparent;
+            border: 1px solid #1a1a1a;
+            color: #1a1a1a;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a;
+            transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+            z-index: -1;
+        }
+
+        .add-to-cart:hover {
+            color: #fff;
+        }
+
+        .add-to-cart:hover::before {
+            left: 0;
+        }
+
+        .add-to-cart::after {
+            content: '→';
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .add-to-cart:hover::after {
+            transform: translateX(5px);
+        }
+
+        .add-to-cart:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .add-to-cart:disabled::before {
+            display: none;
         }
 
         /* Responsive Design */
@@ -514,7 +645,7 @@
 
             <ul class="nav-luxury d-none d-lg-flex">
                 <li class="nav-item-luxury">
-                    <a href="/" class="nav-link-luxury">
+                    <a href="#home" class="nav-link-luxury">
                         <i class="fas fa-home nav-icon"></i>
                         Главная
                     </a>
@@ -562,7 +693,7 @@
 
 <!-- Hero Section -->
 <section id="home" class="hero-luxury">
-    <div class="hero-image-alt"></div>
+    <div class="hero-image"></div>
     <div class="hero-overlay"></div>
 
     <div class="container">
@@ -601,6 +732,58 @@
 <section class="preview-section" id="catalog">
     <div class="container">
         <div class="section-header">
+            <p class="section-subtitle">Наши категории</p>
+            <h2 class="section-title">Выберите свой десерт</h2>
+            <p class="section-description">
+                Широкий ассортимент премиальных кондитерских изделий для любого повода.
+                От классических тортов до авторских конфет ручной работы.
+            </p>
+        </div>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-content">
+                    <p class="product-category">Категория</p>
+                    <h3 class="product-title">Торты</h3>
+                    <p class="product-description">
+                        Праздничные и повседневные торты с изысканным дизайном
+                    </p>
+                    <div class="product-price">от 2,500 ₽</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1486427944299-d1955d23e34d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-content">
+                    <p class="product-category">Категория</p>
+                    <h3 class="product-title">Пирожные</h3>
+                    <p class="product-description">
+                        Элегантные порционные десерты для особых моментов
+                    </p>
+                    <div class="product-price">от 180 ₽/шт</div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1549920014-8eeab5d1c8c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-content">
+                    <p class="product-category">Категория</p>
+                    <h3 class="product-title">Конфеты</h3>
+                    <p class="product-description">
+                        Авторские конфеты и трюфели ручной работы
+                    </p>
+                    <div class="product-price">от 120 ₽/шт</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section class="preview-section" style="background: var(--primary-light); padding: 80px 0;">
+    <div class="container">
+        <div class="section-header">
             <p class="section-subtitle">Наши изделия</p>
             <h2 class="section-title">Избранные творения</h2>
             <p class="section-description">
@@ -611,38 +794,65 @@
 
         <div class="product-grid">
             <div class="product-card">
-                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Шоколадный велюр">
+                    <button class="favorite-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="stock-badge">В наличии</div>
+                </div>
                 <div class="product-content">
                     <p class="product-category">Торты</p>
                     <h3 class="product-title">Шоколадный велюр</h3>
                     <p class="product-description">
                         Нежный бисквит с шоколадным муссом и зеркальной глазурью
                     </p>
-                    <div class="product-price">от 2,500 ₽</div>
+                    <div class="product-footer">
+                        <div class="product-price">от 2,500 ₽</div>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(this)">В корзину</button>
                 </div>
             </div>
 
             <div class="product-card">
-                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1486427944299-d1955d23e34d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Эклеры премиум">
+                    <button class="favorite-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="stock-badge">В наличии</div>
+                </div>
                 <div class="product-content">
                     <p class="product-category">Десерты</p>
                     <h3 class="product-title">Эклеры премиум</h3>
                     <p class="product-description">
                         Воздушные эклеры с кремом из бельгийского шоколада
                     </p>
-                    <div class="product-price">от 180 ₽/шт</div>
+                    <div class="product-footer">
+                        <div class="product-price">от 180 ₽/шт</div>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(this)">В корзину</button>
                 </div>
             </div>
 
             <div class="product-card">
-                <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1549920014-8eeab5d1c8c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Трюфели ручной работы">
+                    <button class="favorite-btn active" onclick="toggleFavorite(this)">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <div class="stock-badge out-of-stock">Под заказ</div>
+                </div>
                 <div class="product-content">
                     <p class="product-category">Конфеты</p>
                     <h3 class="product-title">Трюфели ручной работы</h3>
                     <p class="product-description">
                         Изысканные трюфели с уникальными начинками и декором
                     </p>
-                    <div class="product-price">от 120 ₽/шт</div>
+                    <div class="product-footer">
+                        <div class="product-price">от 120 ₽/шт</div>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(this)">В корзину</button>
                 </div>
             </div>
         </div>
@@ -707,6 +917,55 @@
         card.style.transition = 'all 0.6s ease';
         observer.observe(card);
     });
+
+    // Функция добавления в избранное
+    function toggleFavorite(button) {
+        const icon = button.querySelector('i');
+        button.classList.toggle('active');
+
+        if (button.classList.contains('active')) {
+            icon.className = 'fas fa-heart';
+            // Анимация добавления
+            button.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+        } else {
+            icon.className = 'far fa-heart';
+        }
+    }
+
+    // Функция добавления в корзину
+    function addToCart(button) {
+        const productCard = button.closest('.product-card');
+        const productTitle = productCard.querySelector('.product-title').textContent;
+
+        // Анимация кнопки
+        const originalText = button.innerHTML;
+        button.innerHTML = 'Добавлено!';
+        button.style.background = '#28a745';
+        button.style.color = '#fff';
+
+        // Обновляем счетчик корзины
+        const cartBadge = document.querySelector('.cart-badge');
+        let currentCount = parseInt(cartBadge.textContent);
+        cartBadge.textContent = currentCount + 1;
+
+        // Анимация значка корзины
+        cartBadge.style.transform = 'scale(1.5)';
+        setTimeout(() => {
+            cartBadge.style.transform = 'scale(1)';
+        }, 300);
+
+        // Возвращаем кнопку в исходное состояние
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = '';
+            button.style.color = '';
+        }, 2000);
+
+        console.log(`Товар "${productTitle}" добавлен в корзину`);
+    }
 </script>
 </body>
 </html>
