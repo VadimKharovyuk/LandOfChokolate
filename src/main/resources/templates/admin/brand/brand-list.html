@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список брендов</title>
+</head>
+<body>
+<h1>Список брендов</h1>
+
+<!-- Flash сообщения -->
+<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
+    <span th:text="${successMessage}"></span>
+</div>
+
+<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+    <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Кнопка создания нового бренда -->
+<div style="margin: 20px 0;">
+    <a th:href="@{/admin/brand}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
+        + Создать новый бренд
+    </a>
+</div>
+
+<!-- Таблица брендов -->
+<div th:if="${brands != null and !brands.isEmpty()}">
+    <h2>Всего брендов: <span th:text="${brands.size()}"></span></h2>
+
+    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+        <thead style="background-color: #f8f9fa;">
+        <tr>
+            <th style="padding: 10px; text-align: left;">ID</th>
+            <th style="padding: 10px; text-align: left;">Название</th>
+            <th style="padding: 10px; text-align: left;">Дата создания</th>
+            <th style="padding: 10px; text-align: left;">Дата обновления</th>
+            <th style="padding: 10px; text-align: center;">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="brand : ${brands}">
+            <td style="padding: 10px;" th:text="${brand.id}"></td>
+            <td style="padding: 10px;" th:text="${brand.name}"></td>
+            <td style="padding: 10px;" th:text="${#temporals.format(brand.createdAt, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="padding: 10px;" th:text="${#temporals.format(brand.updatedAt, 'dd.MM.yyyy HH:mm')}"></td>
+            <td style="padding: 10px; text-align: center;">
+                <a th:href="@{'/admin/brand/edit/' + ${brand.id}}" style="color: #007bff; text-decoration: none; margin-right: 10px;">
+                    Редактировать
+                </a>
+                <a th:href="@{'/admin/brand/delete/' + ${brand.id}}"
+                   style="color: #dc3545; text-decoration: none;"
+                   onclick="return confirm('Вы уверены, что хотите удалить этот бренд?')">
+                    Удалить
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Сообщение когда список пуст -->
+<div th:if="${brands == null or brands.isEmpty()}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
+    <h3>Бренды не найдены</h3>
+    <p>Пока что ни одного бренда не создано.</p>
+    <a th:href="@{/admin/brand}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
+        Создать первый бренд
+    </a>
+</div>
+
+<!-- Навигация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+    <h3>Навигация:</h3>
+    <ul>
+        <li><a th:href="@{/admin/brand}">Создать новый бренд</a></li>
+        <li><a th:href="@{/admin/brand/list}">Обновить список</a></li>
+    </ul>
+</div>
+
+<!-- Отладочная информация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">
+    <h4>Отладочная информация:</h4>
+    <p>Количество брендов в модели: <span th:text="${brands != null ? brands.size() : 'null'}"></span></p>
+    <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>
+</div>
+</body>
+</html>
