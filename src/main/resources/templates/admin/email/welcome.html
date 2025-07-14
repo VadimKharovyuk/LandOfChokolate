@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ласкаво просимо до Land of Chocolate!</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    /* Reset styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Email client compatibility */
+    body, table, td, p, a, li, blockquote {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table, td {
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+
+    /* Main styles */
+    body {
+      background-color: #f8f8f8;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-family: 'Arial', 'Helvetica', sans-serif;
+      line-height: 1.6;
+      color: #1a1a1a;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+      padding: 30px 40px;
+      text-align: center;
+    }
+
+    .logo {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(201, 169, 110, 0.3);
+    }
+
+    .brand-name {
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: bold;
+      margin: 15px 0 0 0;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      color: #c9a96e;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    /* Main content */
+    .main-content {
+      padding: 50px 40px;
+    }
+
+    .welcome-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #1a1a1a;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .welcome-subtitle {
+      font-size: 18px;
+      color: #6b6b6b;
+      text-align: center;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .content-text {
+      font-size: 16px;
+      color: #1a1a1a;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    /* Welcome card */
+    .welcome-card {
+      background: linear-gradient(135deg, #f8f8f8 0%, #e8ddd4 100%);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px 0;
+      border: 1px solid rgba(201, 169, 110, 0.2);
+    }
+
+    .welcome-card-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .welcome-card-text {
+      font-size: 16px;
+      color: #6b6b6b;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* Benefits section */
+    .benefits {
+      margin: 40px 0;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding: 15px 0;
+    }
+
+    .benefit-icon {
+      width: 24px;
+      height: 24px;
+      background-color: #c9a96e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .benefit-icon::after {
+      content: "✓";
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .benefit-text {
+      font-size: 16px;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .benefit-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    /* CTA Button */
+    .cta-section {
+      text-align: center;
+      margin: 50px 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: #1a1a1a;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 18px 36px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(26, 26, 26, 0.2);
+    }
+
+    .cta-button:hover {
+      background-color: #2c2c2c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
+    }
+
+    /* Social section */
+    .social-section {
+      background-color: #f8f8f8;
+      padding: 40px;
+      text-align: center;
+      border-radius: 12px;
+      margin: 40px 0;
+    }
+
+    .social-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+    }
+
+    .social-links {
+      margin: 20px 0;
+    }
+
+    .social-link {
+      display: inline-block;
+      margin: 0 10px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      text-decoration: none;
+      line-height: 45px;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .social-instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    .social-telegram {
+      background-color: #0088cc;
+    }
+
+    .social-tiktok {
+      background: linear-gradient(45deg, #ff0050, #000000);
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      margin: 20px 0;
+    }
+
+    .footer-link {
+      color: #c9a96e;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 14px;
+    }
+
+    .footer-link:hover {
+      color: #ffffff;
+    }
+
+    .unsubscribe {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 20px;
+    }
+
+    .unsubscribe a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+      }
+
+      .header,
+      .main-content,
+      .social-section,
+      .footer {
+        padding: 30px 20px !important;
+      }
+
+      .welcome-title {
+        font-size: 28px !important;
+      }
+
+      .welcome-card {
+        padding: 20px !important;
+        margin: 30px 0 !important;
+      }
+
+      .benefit-item {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .benefit-icon {
+        margin: 0 auto 10px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <img src="/images/IMG_1721.JPG" alt="Land of Chocolate" />
+    </div>
+    <h1 class="brand-name">Land of Chocolate</h1>
+    <p class="header-subtitle">Преміальна кондитерська</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h2 class="welcome-title">Ласкаво просимо! 🍫</h2>
+    <p class="welcome-subtitle">Дякуємо, що приєдналися до нашої солодкої родини</p>
+
+    <div class="welcome-card">
+      <h3 class="welcome-card-title">Вітаємо в світі вишуканих десертів!</h3>
+      <p class="welcome-card-text">
+        Ви тепер частина ексклюзивної спільноти поціновувачів справжньої кондитерської майстерності.
+        Готуйтеся до незабутніх смакових вражень!
+      </p>
+    </div>
+
+    <p class="content-text">
+      Дорогий <strong th:text="${email}">шанувальник десертів</strong>,
+    </p>
+
+    <p class="content-text">
+      Ми раді, що ви обрали <strong>Land of Chocolate</strong> для своїх солодких моментів!
+      Наша команда майстрів щодня створює неповторні десерти, які стануть окрасою будь-якої події.
+    </p>
+
+    <!-- Benefits -->
+    <div class="benefits">
+      <div class="benefit-item">
+        <div class="benefit-icon"></div>
+        <div class="benefit-text">
+          <div class="benefit-title">Ексклюзивні новинки</div>
+          Першими дізнавайтеся про нові десерти та унікальні рецепти
+        </div>
+      </div>
+
+      <div class="benefit-item">
+        <div class="benefit-icon"></div>
+        <div class="benefit-text">
+          <div class="benefit-title">Спеціальні пропозиції</div>
+          Отримуйте персональні знижки та промокоди тільки для підписників
+        </div>
+      </div>
+
+      <div class="benefit-item">
+        <div class="benefit-icon"></div>
+        <div class="benefit-text">
+          <div class="benefit-title">Кондитерські секрети</div>
+          Дізнавайтеся цікаві факти та поради від наших шеф-кондитерів
+        </div>
+      </div>
+
+      <div class="benefit-item">
+        <div class="benefit-icon"></div>
+        <div class="benefit-text">
+          <div class="benefit-title">Пріоритетне обслуговування</div>
+          Перші в черзі на нові колекції та святкові замовлення
+        </div>
+      </div>
+    </div>
+
+    <p class="content-text">
+      Готові розпочати солодку подорож? Ознайомтеся з нашими найпопулярнішими десертами
+      та оберіть щось особливе для себе!
+    </p>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <a href="#" th:href="${catalogUrl}" class="cta-button">
+        Переглянути каталог 🍰
+      </a>
+    </div>
+
+    <!-- Social Section -->
+    <div class="social-section">
+      <h3 class="social-title">Слідкуйте за нами</h3>
+      <p style="color: #6b6b6b; margin-bottom: 20px;">
+        Щоденні фото наших творінь, закулісні моменти та солодкі історії
+      </p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/landofchocolate" class="social-link social-instagram">📷</a>
+        <a href="https://t.me/landofchocolate" class="social-link social-telegram">📱</a>
+        <a href="https://www.tiktok.com/@landofchocolate" class="social-link social-tiktok">🎵</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p class="footer-text">
+      <strong>Land of Chocolate</strong><br>
+      вул. Шоколадна, 25, м. Київ, 01001<br>
+      +38 (067) 123-45-67 • info@landofchocolate.com
+    </p>
+
+    <div class="footer-links">
+      <a href="#" th:href="${websiteUrl}" class="footer-link">Наш сайт</a>
+      <a href="#" th:href="${catalogUrl}" class="footer-link">Каталог</a>
+      <a href="tel:+380671234567" class="footer-link">Контакти</a>
+    </div>
+
+    <p class="footer-text">
+      © <span th:text="${currentYear}">2024</span> <span th:text="${companyName}">Land of Chocolate</span>. Всі права захищені.
+    </p>
+
+<!--    <p class="unsubscribe">-->
+<!--      Не хочете більше отримувати наші листи?-->
+<!--      <a href="#" th:href="${unsubscribeUrl}">Відписатися</a>-->
+<!--    </p>-->
+  </div>
+</div>
+</body>
+</html>

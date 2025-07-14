@@ -7,9 +7,12 @@ import com.example.landofchokolate.exception.SubscriptionNotFoundException;
 import com.example.landofchokolate.mapper.SubscriptionMapper;
 import com.example.landofchokolate.model.Subscription;
 import com.example.landofchokolate.repository.SubscriptionRepository;
+import com.example.landofchokolate.service.NewsletterService;
 import com.example.landofchokolate.service.SubscriptionService;
+import com.example.landofchokolate.util.SubscriptionCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionMapper subscriptionMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public SubscriptionResponse createSubscription(CreateSubscriptionRequest request) {
@@ -32,12 +36,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new SubscriptionAlreadyExistsException("Подписка с таким email уже существует");
         }
 
+
         Subscription subscription = Subscription.builder()
                 .email(normalizedEmail)
                 .active(true)
                 .build();
 
         Subscription savedSubscription = subscriptionRepository.save(subscription);
+
+        // ✅ Публикуем событие вместо прямого вызова
+        eventPublisher.publishEvent(new SubscriptionCreatedEvent(this, savedSubscription.getEmail()));
 
         log.info("Успешно создана подписка с id: {} для email: {}",
                 savedSubscription.getId(), savedSubscription.getEmail());
