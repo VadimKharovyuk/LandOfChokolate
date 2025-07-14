@@ -259,7 +259,7 @@ public class NewsletterService {
         context.put("email", email);
         context.put("currentYear", LocalDateTime.now().getYear());
         context.put("companyName", "Land of Chocolate");
-        context.put("websiteUrl", "https://landofchocolate.com");
+        context.put("websiteUrl", "https://landofchocolate.com"); // ✅ Полный URL
         context.put("catalogUrl", "https://landofchocolate.com/catalog");
         context.put("unsubscribeUrl", "https://landofchocolate.com/unsubscribe");
         return context;
