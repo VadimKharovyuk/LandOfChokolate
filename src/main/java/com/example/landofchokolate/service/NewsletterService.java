@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 /**
  * Сервис для рассылки новостей подписчикам
  */
@@ -26,6 +27,7 @@ public class NewsletterService {
 
     private final EmailService emailService;
     private final SubscriptionService subscriptionService;
+    private final SpringTemplateEngine templateEngine;
 
 
 
@@ -34,6 +36,73 @@ public class NewsletterService {
     public void handleSubscriptionCreated(SubscriptionCreatedEvent event) {
         sendWelcomeEmail(event.getEmail());
     }
+
+
+    /**
+     * Генерация HTML для предпросмотра (добавьте в NewsletterService)
+     */
+    public String generateNewsletterHtml(NewsletterData newsletterData) {
+        try {
+            Map<String, Object> context = createNewsletterContext(newsletterData);
+            Context thymeleafContext = new Context();
+            context.forEach(thymeleafContext::setVariable);
+
+            // Используем SpringTemplateEngine для генерации HTML
+            return templateEngine.process("admin/email/newsletter", thymeleafContext);
+
+        } catch (Exception e) {
+            log.error("Ошибка при генерации HTML: {}", e.getMessage());
+            throw new RuntimeException("Ошибка генерации HTML", e);
+        }
+    }
+
+    /**
+     * Отправка кастомной рассылки с дополнительными параметрами
+     */
+    @Async
+    public void sendCustomNewsletter(String subject, String title, String content,
+                                     String imageUrl, String ctaText, String ctaUrl,
+                                     String promoCode, String promoDescription) {
+
+        NewsletterData newsletterData = NewsletterData.builder()
+                .subject(subject)
+                .title(title)
+                .content(content)
+                .imageUrl(imageUrl)
+                .ctaText(ctaText)
+                .ctaUrl(ctaUrl)
+                .build();
+
+        // Добавляем промокод в контекст, если есть
+        try {
+            List<SubscriptionResponse> activeSubscribers = subscriptionService.getAllActiveSubscriptions();
+
+            if (activeSubscribers.isEmpty()) {
+                log.warn("Нет активных подписчиков для кастомной рассылки");
+                return;
+            }
+
+            List<String> emailList = activeSubscribers.stream()
+                    .map(SubscriptionResponse::getEmail)
+                    .collect(Collectors.toList());
+
+            Map<String, Object> context = createNewsletterContext(newsletterData);
+
+            // Добавляем дополнительные данные
+            if (promoCode != null && !promoCode.trim().isEmpty()) {
+                context.put("promoCode", promoCode);
+                context.put("promoDescription", promoDescription);
+            }
+
+            emailService.sendBulkEmail(emailList, subject, "newsletter", context);
+
+            log.info("Кастомная рассылка '{}' отправлена {} подписчикам", subject, emailList.size());
+
+        } catch (Exception e) {
+            log.error("Ошибка при отправке кастомной рассылки: {}", e.getMessage(), e);
+        }
+    }
+
 
     /**
      * DTO для данных рассылки
