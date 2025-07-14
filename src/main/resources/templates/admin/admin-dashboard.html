@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>🏠 Админ-панель - Land of Chocolate</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6f4e37, #8b4513);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .card-stats {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .card-products { border-left: 5px solid #007bff; }
+        .card-categories { border-left: 5px solid #28a745; }
+        .card-brands { border-left: 5px solid #ffc107; }
+        .card-statistics { border-left: 5px solid #17a2b8; }
+
+        .quick-actions {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .quick-actions h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-info { background-color: #17a2b8; color: white; }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .stats-overview {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 40px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Заголовок -->
+<div class="header">
+    <h1>🍫 Land of Chocolate</h1>
+    <p>Админ-панель управления интернет-магазином</p>
+</div>
+
+<!-- Flash сообщения -->
+<div th:if="${successMessage}" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+    ✅ <span th:text="${successMessage}"></span>
+</div>
+
+<div th:if="${errorMessage}" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+    ❌ <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Основные карточки управления -->
+<div class="dashboard-grid">
+
+    <!-- Продукты -->
+    <a href="/admin/product/list" class="card card-products">
+        <span class="card-icon">🛍️</span>
+        <div class="card-title">Управление продуктами</div>
+        <div class="card-description">
+            Добавляйте, редактируйте и управляйте товарами в каталоге.
+            Контролируйте остатки на складе и цены.
+        </div>
+        <div class="card-stats">
+            📊 Всего продуктов: <strong th:text="${totalProducts ?: '0'}">0</strong><br>
+            ✅ В наличии: <strong th:text="${inStockProducts ?: '0'}">0</strong><br>
+            ⚠️ Заканчивается: <strong th:text="${lowStockProducts ?: '0'}">0</strong>
+        </div>
+    </a>
+
+    <!-- Категории -->
+    <a href="/admin/category/list" class="card card-categories">
+        <span class="card-icon">📁</span>
+        <div class="card-title">Управление категориями</div>
+        <div class="card-description">
+            Создавайте и организуйте категории товаров для удобной навигации
+            и структурирования каталога.
+        </div>
+        <div class="card-stats">
+            📂 Всего категорий: <strong th:text="${totalCategories ?: '0'}">0</strong><br>
+            🔗 Последняя добавленная: <span th:text="${lastCategory ?: 'Нет'}">Нет</span>
+        </div>
+    </a>
+
+    <!-- Бренды -->
+    <a href="/admin/brand/list" class="card card-brands">
+        <span class="card-icon">🏷️</span>
+        <div class="card-title">Управление брендами</div>
+        <div class="card-description">
+            Добавляйте бренды с логотипами и описаниями.
+            Управляйте производителями ваших товаров.
+        </div>
+        <div class="card-stats">
+            🏪 Всего брендов: <strong th:text="${totalBrands ?: '0'}">0</strong><br>
+            🖼️ С логотипами: <strong th:text="${brandsWithLogos ?: '0'}">0</strong>
+        </div>
+    </a>
+
+    <!-- Статистика -->
+    <a href="/admin/product/statistics" class="card card-statistics">
+        <span class="card-icon">📊</span>
+        <div class="card-title">Статистика и аналитика</div>
+        <div class="card-description">
+            Просматривайте детальную статистику по товарам, продажам
+            и общему состоянию склада.
+        </div>
+        <div class="card-stats">
+            💰 Стоимость склада: <strong th:text="${totalInventoryValue != null ? #numbers.formatDecimal(totalInventoryValue, 0, 2) + ' грн.' : '0 грн.'}">0 грн.</strong><br>
+            📈 Средняя цена: <strong th:text="${averagePrice != null ? #numbers.formatDecimal(averagePrice, 0, 2) + ' грн.' : '0 грн.'}">0 грн.</strong>
+        </div>
+    </a>
+</div>
+
+<!-- Быстрые действия -->
+<div class="quick-actions">
+    <h3>⚡ Быстрые действия</h3>
+    <div class="action-buttons">
+        <a href="/admin/product" class="btn btn-primary">➕ Добавить продукт</a>
+        <a href="/admin/category" class="btn btn-success">📁 Создать категорию</a>
+        <a href="/admin/brand" class="btn btn-warning">🏷️ Добавить бренд</a>
+        <a href="/admin/product/list?status=low-stock" class="btn btn-info">⚠️ Товары на исходе</a>
+    </div>
+</div>
+
+<!-- Обзор статистики -->
+<div class="stats-overview">
+    <h3>📈 Обзор магазина</h3>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-number" th:text="${totalProducts ?: '0'}">0</span>
+            <div class="stat-label">Всего товаров</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" th:text="${totalCategories ?: '0'}">0</span>
+            <div class="stat-label">Категорий</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" th:text="${totalBrands ?: '0'}">0</span>
+            <div class="stat-label">Брендов</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" th:text="${inStockProducts ?: '0'}">0</span>
+            <div class="stat-label">В наличии</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" th:text="${outOfStockProducts ?: '0'}">0</span>
+            <div class="stat-label">Нет в наличии</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" th:text="${lowStockProducts ?: '0'}">0</span>
+            <div class="stat-label">Заканчивается</div>
+        </div>
+    </div>
+</div>
+
+<!-- Навигационное меню -->
+<div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+    <h3>🧭 Полное меню навигации</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div>
+            <h4 style="color: #007bff;">🛍️ Продукты</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="/admin/product" style="text-decoration: none; color: #666;">➕ Добавить продукт</a></li>
+                <li><a href="/admin/product/list" style="text-decoration: none; color: #666;">📋 Список продуктов</a></li>
+                <li><a href="/admin/product/statistics" style="text-decoration: none; color: #666;">📊 Статистика</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color: #28a745;">📁 Категории</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="/admin/category" style="text-decoration: none; color: #666;">➕ Создать категорию</a></li>
+                <li><a href="/admin/category/list" style="text-decoration: none; color: #666;">📂 Список категорий</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color: #ffc107;">🏷️ Бренды</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="/admin/brand" style="text-decoration: none; color: #666;">➕ Добавить бренд</a></li>
+                <li><a href="/admin/brand/list" style="text-decoration: none; color: #666;">🏪 Список брендов</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color: #17a2b8;">📊 Отчеты</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="/admin/product/list?status=in-stock" style="text-decoration: none; color: #666;">✅ Товары в наличии</a></li>
+                <li><a href="/admin/product/list?status=low-stock" style="text-decoration: none; color: #666;">⚠️ Заканчивающиеся</a></li>
+                <li><a href="/admin/product/list?status=out-of-stock" style="text-decoration: none; color: #666;">❌ Отсутствующие</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Футер -->
+<div class="footer">
+    <p>🍫 Land of Chocolate Admin Panel | Время последнего обновления: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm')}"></span></p>
+    <p style="font-size: 0.8em; margin-top: 10px;">
+        💡 Совет: Используйте быстрые действия выше для частых операций
+    </p>
+</div>
+
+</body>
+</html>
