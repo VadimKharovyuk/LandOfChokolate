@@ -105,6 +105,50 @@ public class AdminNewsletterController {
     }
 
     /**
+     * Быстрые шаблоны рассылок
+     */
+    @PostMapping("/quick-send/{type}")
+    public String sendQuickNewsletter(
+            @PathVariable String type,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            switch (type) {
+                case "new-product":
+                    newsletterService.sendNewProductNotification(
+                            "Новий шоколадний торт",
+                            "Ексклюзивний десерт з бельгійським шоколадом",
+                            "/images/new-cake.jpg",
+                            "https://landofchocolate.com/new-cake"
+                    );
+                    break;
+
+                case "discount":
+                    newsletterService.sendSpecialOffer(
+                            "Знижка 15% на всі торти",
+                            "Святкуйте з нами! Отримайте знижку на найкращі торти.",
+                            "CAKE15",
+                            java.time.LocalDateTime.now().plusDays(7)
+                    );
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Неизвестный тип рассылки: " + type);
+            }
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Быстрая рассылка успешно отправлена!");
+
+        } catch (Exception e) {
+            log.error("Ошибка при отправке быстрой рассылки: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Ошибка при отправке: " + e.getMessage());
+        }
+
+        return "redirect:/admin/newsletter";
+    }
+
+    /**
      * Статистика рассылок
      */
     @GetMapping("/stats")
