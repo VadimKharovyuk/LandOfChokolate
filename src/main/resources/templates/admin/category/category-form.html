@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Управление категориями</title>
+</head>
+<body>
+<!-- Динамический заголовок -->
+<h1 th:text="${isEdit != null and isEdit} ? 'Редактирование категории' : 'Создание новой категории'"></h1>
+
+<!-- Flash сообщения -->
+<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
+  <span th:text="${successMessage}"></span>
+</div>
+
+<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+  <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Форма создания/редактирования категории -->
+<form th:action="${isEdit != null and isEdit} ? @{'/admin/category/edit/' + ${categoryId}} : @{/admin/category}"
+      th:object="${category}" method="post">
+
+  <!-- Поле для названия категории -->
+  <div style="margin: 10px 0;">
+    <label for="name">Название категории:</label><br>
+    <input type="text" id="name" th:field="*{name}"
+           style="width: 300px; padding: 5px;"
+           placeholder="Введите название категории">
+
+    <!-- Отображение ошибок валидации для name -->
+    <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">
+      <ul>
+        <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin: 20px 0;">
+    <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+      <span th:text="${isEdit != null and isEdit} ? 'Обновить категорию' : 'Создать категорию'"></span>
+    </button>
+    <a th:href="@{/admin/category/list}" style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
+      Отмена
+    </a>
+  </div>
+</form>
+
+<!-- Навигация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+  <h3>Навигация:</h3>
+  <ul>
+    <li><a th:href="@{/admin/category}">Создать новую категорию</a></li>
+    <li><a th:href="@{/admin/category/list}">Список всех категорий</a></li>
+    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
+  </ul>
+</div>
+</body>
+</html>

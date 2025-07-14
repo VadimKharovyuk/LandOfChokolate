@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Список категорий</title>
+</head>
+<body>
+<!-- Заголовок с учетом поиска -->
+<h1 th:if="${isSearch == null or !isSearch}">Список категорий</h1>
+<h1 th:if="${isSearch != null and isSearch}">
+  Результаты поиска по запросу: "<span th:text="${searchQuery}"></span>"
+</h1>
+
+<!-- Flash сообщения -->
+<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
+  <span th:text="${successMessage}"></span>
+</div>
+
+<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+  <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Панель управления -->
+<div style="margin: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+  <!-- Кнопка создания новой категории -->
+  <div>
+    <a th:href="@{/admin/category}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
+      + Создать новую категорию
+    </a>
+  </div>
+
+  <!-- Форма поиска -->
+  <div>
+    <form th:action="@{/admin/category/search}" method="get" style="display: inline-flex; align-items: center;">
+      <input type="text" name="name" th:value="${searchQuery}"
+             placeholder="Поиск по названию..."
+             style="padding: 8px; margin-right: 10px; width: 200px;">
+      <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+        Поиск
+      </button>
+      <a th:href="@{/admin/category/list}" style="margin-left: 10px; padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none;">
+        Сбросить
+      </a>
+    </form>
+  </div>
+</div>
+
+<!-- Таблица категорий -->
+<div th:if="${categories != null and !categories.isEmpty()}">
+  <!-- Информация о количестве -->
+  <h2 th:if="${isSearch == null or !isSearch}">
+    Всего категорий: <span th:text="${categories.size()}"></span>
+  </h2>
+  <h2 th:if="${isSearch != null and isSearch}">
+    Найдено категорий: <span th:text="${categories.size()}"></span>
+  </h2>
+
+  <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+    <thead style="background-color: #f8f9fa;">
+    <tr>
+      <th style="padding: 10px; text-align: left;">ID</th>
+      <th style="padding: 10px; text-align: left;">Название</th>
+      <th style="padding: 10px; text-align: center;">Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="category : ${categories}">
+      <td style="padding: 10px;" th:text="${category.id}"></td>
+      <td style="padding: 10px;" th:text="${category.name}"></td>
+      <td style="padding: 10px; text-align: center;">
+        <a th:href="@{'/admin/category/edit/' + ${category.id}}"
+           style="color: #007bff; text-decoration: none; margin-right: 10px;">
+          Редактировать
+        </a>
+        <a th:href="@{'/admin/category/delete/' + ${category.id}}"
+           style="color: #dc3545; text-decoration: none;"
+           onclick="return confirm('Вы уверены, что хотите удалить эту категорию?')">
+          Удалить
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Сообщение когда список пуст -->
+<div th:if="${categories == null or categories.isEmpty()}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
+  <h3 th:if="${isSearch == null or !isSearch}">Категории не найдены</h3>
+  <h3 th:if="${isSearch != null and isSearch}">По вашему запросу ничего не найдено</h3>
+
+  <p th:if="${isSearch == null or !isSearch}">Пока что ни одной категории не создано.</p>
+  <p th:if="${isSearch != null and isSearch}">
+    Попробуйте изменить поисковый запрос или
+    <a th:href="@{/admin/category/list}">посмотреть все категории</a>
+  </p>
+
+  <a th:href="@{/admin/category}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
+    <span th:if="${isSearch == null or !isSearch}">Создать первую категорию</span>
+    <span th:if="${isSearch != null and isSearch}">Создать новую категорию</span>
+  </a>
+</div>
+
+<!-- Навигация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+  <h3>Навигация:</h3>
+  <ul>
+    <li><a th:href="@{/admin/category}">Создать новую категорию</a></li>
+    <li><a th:href="@{/admin/category/list}">Обновить список</a></li>
+    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
+  </ul>
+</div>
+
+<!-- Отладочная информация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">
+  <h4>Отладочная информация:</h4>
+  <p>Количество категорий в модели: <span th:text="${categories != null ? categories.size() : 'null'}"></span></p>
+  <p>Поисковый запрос: <span th:text="${searchQuery != null ? searchQuery : 'отсутствует'}"></span></p>
+  <p>Режим поиска: <span th:text="${isSearch != null and isSearch ? 'да' : 'нет'}"></span></p>
+  <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>
+</div>
+</body>
+</html>
