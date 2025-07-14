@@ -21,6 +21,8 @@ public class Brand {
     private Long id;
     private String name;
 
+    private String description;
+
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

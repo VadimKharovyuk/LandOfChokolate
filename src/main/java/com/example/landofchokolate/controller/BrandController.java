@@ -67,6 +67,7 @@ public class BrandController {
             BrandResponseDto brand = brandService.getBrandById(id);
             CreateBrandDto editDto = new CreateBrandDto();
             editDto.setName(brand.getName());
+            editDto.setDescription(brand.getDescription());
 
             model.addAttribute("brand", editDto);
             model.addAttribute("brandId", id);

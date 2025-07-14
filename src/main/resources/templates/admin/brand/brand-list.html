@@ -32,6 +32,7 @@
         <tr>
             <th style="padding: 10px; text-align: left;">ID</th>
             <th style="padding: 10px; text-align: left;">Название</th>
+            <th style="padding: 10px; text-align: left;">Описание</th>
             <th style="padding: 10px; text-align: left;">Дата создания</th>
             <th style="padding: 10px; text-align: left;">Дата обновления</th>
             <th style="padding: 10px; text-align: center;">Действия</th>
@@ -41,6 +42,16 @@
         <tr th:each="brand : ${brands}">
             <td style="padding: 10px;" th:text="${brand.id}"></td>
             <td style="padding: 10px;" th:text="${brand.name}"></td>
+            <td style="padding: 10px; max-width: 300px; word-wrap: break-word;">
+                <div th:if="${brand.description != null and !brand.description.isEmpty()}"
+                     th:text="${#strings.length(brand.description) > 100 ? #strings.substring(brand.description, 0, 100) + '...' : brand.description}"
+                     th:title="${brand.description}">
+                </div>
+                <div th:if="${brand.description == null or brand.description.isEmpty()}"
+                     style="color: #6c757d; font-style: italic;">
+                    Нет описания
+                </div>
+            </td>
             <td style="padding: 10px;" th:text="${#temporals.format(brand.createdAt, 'dd.MM.yyyy HH:mm')}"></td>
             <td style="padding: 10px;" th:text="${#temporals.format(brand.updatedAt, 'dd.MM.yyyy HH:mm')}"></td>
             <td style="padding: 10px; text-align: center;">

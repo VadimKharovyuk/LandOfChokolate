@@ -20,14 +20,31 @@
 <!-- Форма создания/редактирования бренда -->
 <form th:action="${isEdit != null and isEdit} ? @{'/admin/brand/edit/' + ${brandId}} : @{/admin/brand}"
       th:object="${brand}" method="post">
+
+    <!-- Поле для названия бренда -->
     <div style="margin: 10px 0;">
         <label for="name">Название бренда:</label><br>
         <input type="text" id="name" th:field="*{name}" style="width: 300px; padding: 5px;">
 
-        <!-- Отображение ошибок валидации -->
+        <!-- Отображение ошибок валидации для name -->
         <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">
             <ul>
                 <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Поле для описания бренда -->
+    <div style="margin: 10px 0;">
+        <label for="description">Описание бренда:</label><br>
+        <textarea id="description" th:field="*{description}"
+                  style="width: 300px; height: 100px; padding: 5px; resize: vertical;"
+                  placeholder="Введите описание бренда (от 10 до 1000 символов)"></textarea>
+
+        <!-- Отображение ошибок валидации для description -->
+        <div th:if="${#fields.hasErrors('description')}" style="color: red; font-size: 12px;">
+            <ul>
+                <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>
             </ul>
         </div>
     </div>
