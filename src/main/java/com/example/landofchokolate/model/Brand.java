@@ -23,6 +23,9 @@ public class Brand {
 
     private String description;
 
+    private String imageUrl;
+    private String imageId;
+
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

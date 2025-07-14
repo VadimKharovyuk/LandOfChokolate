@@ -21,17 +21,10 @@ public class CloudinaryStorageService implements StorageService {
     @Override
     public StorageResult uploadImage(MultipartFile file) throws IOException {
         try {
-            // Параметры загрузки
+            // Минимальные параметры загрузки
             Map<String, Object> uploadParams = ObjectUtils.asMap(
-                    "folder", "land-of-chocolate/products",
-                    "resource_type", "image",
-                    "transformation", ObjectUtils.asMap(
-                            "width", 800,
-                            "height", 600,
-                            "crop", "limit",
-                            "quality", "auto",
-                            "format", "auto"
-                    )
+                    "folder", "land-of-chocolate/brands",
+                    "resource_type", "image"
             );
 
             // Загрузка файла
@@ -41,13 +34,16 @@ public class CloudinaryStorageService implements StorageService {
             String imageUrl = (String) uploadResult.get("secure_url");
             String publicId = (String) uploadResult.get("public_id");
 
-            log.info("Image uploaded successfully: {}", publicId);
+            log.info("Image uploaded successfully: {} with URL: {}", publicId, imageUrl);
 
             return new StorageResult(imageUrl, publicId);
 
         } catch (IOException e) {
-            log.error("Error uploading image to Cloudinary", e);
+            log.error("Error uploading image to Cloudinary: {}", e.getMessage(), e);
             throw new IOException("Failed to upload image: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error during image upload: {}", e.getMessage(), e);
+            throw new IOException("Unexpected error during image upload: " + e.getMessage(), e);
         }
     }
 

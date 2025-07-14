@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -60,7 +61,6 @@ public class BrandController {
         return "admin/brand/brand-list";
     }
 
-
     @GetMapping("/edit/{id}")
     public String brandEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
@@ -68,9 +68,11 @@ public class BrandController {
             CreateBrandDto editDto = new CreateBrandDto();
             editDto.setName(brand.getName());
             editDto.setDescription(brand.getDescription());
+            // image остается null, так как это MultipartFile для нового файла
 
             model.addAttribute("brand", editDto);
             model.addAttribute("brandId", id);
+            model.addAttribute("currentImageUrl", brand.getImageUrl()); // Для отображения текущего изображения
             model.addAttribute("isEdit", true);
 
             return "admin/brand/brand-form";
@@ -92,6 +94,15 @@ public class BrandController {
 
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors occurred while updating brand with id: {}", id);
+
+            // Получаем текущее изображение для отображения при ошибке валидации
+            try {
+                BrandResponseDto currentBrand = brandService.getBrandById(id);
+                model.addAttribute("currentImageUrl", currentBrand.getImageUrl());
+            } catch (Exception e) {
+                log.warn("Could not load current image for brand {}", id);
+            }
+
             model.addAttribute("brandId", id);
             model.addAttribute("isEdit", true);
             return "admin/brand/brand-form";

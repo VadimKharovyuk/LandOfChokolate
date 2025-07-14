@@ -31,6 +31,7 @@
         <thead style="background-color: #f8f9fa;">
         <tr>
             <th style="padding: 10px; text-align: left;">ID</th>
+            <th style="padding: 10px; text-align: left;">Изображение</th>
             <th style="padding: 10px; text-align: left;">Название</th>
             <th style="padding: 10px; text-align: left;">Описание</th>
             <th style="padding: 10px; text-align: left;">Дата создания</th>
@@ -41,6 +42,16 @@
         <tbody>
         <tr th:each="brand : ${brands}">
             <td style="padding: 10px;" th:text="${brand.id}"></td>
+            <td style="padding: 10px; text-align: center;">
+                <div th:if="${brand.imageUrl != null and !brand.imageUrl.isEmpty()}">
+                    <img th:src="${brand.imageUrl}" alt="Изображение бренда"
+                         style="max-width: 60px; max-height: 60px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"
+                     style="color: #6c757d; font-style: italic; font-size: 12px;">
+                    Нет изображения
+                </div>
+            </td>
             <td style="padding: 10px;" th:text="${brand.name}"></td>
             <td style="padding: 10px; max-width: 300px; word-wrap: break-word;">
                 <div th:if="${brand.description != null and !brand.description.isEmpty()}"
