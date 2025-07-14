@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика продуктов</title>
+</head>
+<body>
+<h1>📊 Статистика продуктов</h1>
+
+<!-- Flash сообщения -->
+<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+    <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Общая статистика -->
+<div th:if="${statistics != null}" style="margin: 20px 0;">
+
+    <!-- Карточки с основными показателями -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+
+        <!-- Общее количество продуктов -->
+        <div style="background-color: #007bff; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="margin: 0; font-size: 2em;" th:text="${statistics.totalProducts}"></h3>
+            <p style="margin: 5px 0 0 0;">Всего продуктов</p>
+        </div>
+
+        <!-- В наличии -->
+        <div style="background-color: #28a745; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="margin: 0; font-size: 2em;" th:text="${statistics.inStockProducts}"></h3>
+            <p style="margin: 5px 0 0 0;">В наличии</p>
+        </div>
+
+        <!-- Заканчивается -->
+        <div style="background-color: #ffc107; color: black; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="margin: 0; font-size: 2em;" th:text="${statistics.lowStockProducts}"></h3>
+            <p style="margin: 5px 0 0 0;">Заканчивается</p>
+        </div>
+
+        <!-- Нет в наличии -->
+        <div style="background-color: #dc3545; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="margin: 0; font-size: 2em;" th:text="${statistics.outOfStockProducts}"></h3>
+            <p style="margin: 5px 0 0 0;">Нет в наличии</p>
+        </div>
+
+        <!-- Общая стоимость инвентаря -->
+        <div style="background-color: #17a2b8; color: white; padding: 20px; border-radius: 8px; text-align: center; grid-column: span 2;">
+            <h3 style="margin: 0; font-size: 1.5em;" th:text="${#numbers.formatDecimal(statistics.totalInventoryValue, 0, 2)} + ' руб.'"></h3>
+            <p style="margin: 5px 0 0 0;">Общая стоимость инвентаря</p>
+        </div>
+    </div>
+
+    <!-- Процентное соотношение -->
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3>Распределение товаров по наличию:</h3>
+        <div style="display: flex; gap: 20px; align-items: center;">
+
+            <!-- Простая диаграмма -->
+            <div style="flex: 0 0 300px;">
+                <div style="display: flex; height: 30px; border-radius: 15px; overflow: hidden; border: 1px solid #ccc;">
+                    <!-- В наличии -->
+                    <div th:if="${statistics.totalProducts > 0}"
+                         th:style="'background-color: #28a745; width: ' + ${statistics.inStockProducts * 100 / statistics.totalProducts} + '%;'"></div>
+                    <!-- Заканчивается -->
+                    <div th:if="${statistics.totalProducts > 0}"
+                         th:style="'background-color: #ffc107; width: ' + ${statistics.lowStockProducts * 100 / statistics.totalProducts} + '%;'"></div>
+                    <!-- Нет в наличии -->
+                    <div th:if="${statistics.totalProducts > 0}"
+                         th:style="'background-color: #dc3545; width: ' + ${statistics.outOfStockProducts * 100 / statistics.totalProducts} + '%;'"></div>
+                </div>
+            </div>
+
+            <!-- Легенда -->
+            <div style="flex: 1;">
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 20px; height: 20px; background-color: #28a745; border-radius: 3px;"></div>
+                        <span>В наличии: <strong th:text="${statistics.inStockProducts}"></strong>
+                              (<span th:if="${statistics.totalProducts > 0}" th:text="${#numbers.formatDecimal(statistics.inStockProducts * 100 / statistics.totalProducts, 0, 1)} + '%'"></span>)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 20px; height: 20px; background-color: #ffc107; border-radius: 3px;"></div>
+                        <span>Заканчивается: <strong th:text="${statistics.lowStockProducts}"></strong>
+                              (<span th:if="${statistics.totalProducts > 0}" th:text="${#numbers.formatDecimal(statistics.lowStockProducts * 100 / statistics.totalProducts, 0, 1)} + '%'"></span>)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 20px; height: 20px; background-color: #dc3545; border-radius: 3px;"></div>
+                        <span>Нет в наличии: <strong th:text="${statistics.outOfStockProducts}"></strong>
+                              (<span th:if="${statistics.totalProducts > 0}" th:text="${#numbers.formatDecimal(statistics.outOfStockProducts * 100 / statistics.totalProducts, 0, 1)} + '%'"></span>)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Товары с низким остатком -->
+<div th:if="${lowStockProducts != null and !lowStockProducts.isEmpty()}" style="margin: 30px 0;">
+    <h2 style="color: #ffc107;">⚠️ Товары заканчиваются (менее 10 штук)</h2>
+    <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px;">
+        <table border="1" style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #ffc107;">
+            <tr>
+                <th style="padding: 8px; text-align: left;">Название</th>
+                <th style="padding: 8px; text-align: left;">Категория</th>
+                <th style="padding: 8px; text-align: left;">Бренд</th>
+                <th style="padding: 8px; text-align: center;">Остаток</th>
+                <th style="padding: 8px; text-align: right;">Цена</th>
+                <th style="padding: 8px; text-align: center;">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${lowStockProducts}">
+                <td style="padding: 8px;" th:text="${product.name}"></td>
+                <td style="padding: 8px;" th:text="${product.categoryName}"></td>
+                <td style="padding: 8px;" th:text="${product.brandName}"></td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: orange;" th:text="${product.stockQuantity}"></td>
+                <td style="padding: 8px; text-align: right;" th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' руб.'"></td>
+                <td style="padding: 8px; text-align: center;">
+                    <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                       style="color: #007bff; text-decoration: none; font-size: 12px;">
+                        Просмотр
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Товары отсутствующие на складе -->
+<div th:if="${outOfStockProducts != null and !outOfStockProducts.isEmpty()}" style="margin: 30px 0;">
+    <h2 style="color: #dc3545;">❌ Товары отсутствуют на складе</h2>
+    <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 8px;">
+        <table border="1" style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #dc3545; color: white;">
+            <tr>
+                <th style="padding: 8px; text-align: left;">Название</th>
+                <th style="padding: 8px; text-align: left;">Категория</th>
+                <th style="padding: 8px; text-align: left;">Бренд</th>
+                <th style="padding: 8px; text-align: right;">Цена</th>
+                <th style="padding: 8px; text-align: center;">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${outOfStockProducts}">
+                <td style="padding: 8px;" th:text="${product.name}"></td>
+                <td style="padding: 8px;" th:text="${product.categoryName}"></td>
+                <td style="padding: 8px;" th:text="${product.brandName}"></td>
+                <td style="padding: 8px; text-align: right;" th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' руб.'"></td>
+                <td style="padding: 8px; text-align: center;">
+                    <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                       style="color: #007bff; text-decoration: none; font-size: 12px;">
+                        Просмотр
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Быстрые действия -->
+<div style="margin: 30px 0; padding: 20px; background-color: #e9ecef; border-radius: 8px;">
+    <h3>Быстрые действия:</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a th:href="@{/admin/product}"
+           style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+            ➕ Добавить новый продукт
+        </a>
+        <a th:href="@{/admin/product/list}"
+           style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+            📋 Все продукты
+        </a>
+        <a th:href="@{/admin/product/list(status='low-stock')}"
+           style="padding: 10px 20px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 5px;">
+            ⚠️ Заканчивающиеся товары
+        </a>
+        <a th:href="@{/admin/product/list(status='out-of-stock')}"
+           style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px;">
+            ❌ Отсутствующие товары
+        </a>
+        <a th:href="@{/admin/category/list}"
+           style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">
+            📁 Управление категориями
+        </a>
+        <a th:href="@{/admin/brand/list}"
+           style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">
+            🏷️ Управление брендами
+        </a>
+    </div>
+</div>
+
+<!-- Рекомендации -->
+<div style="margin: 30px 0; padding: 20px; background-color: #cff4fc; border: 1px solid #b6effb; border-radius: 8px;">
+    <h3 style="color: #055160;">💡 Рекомендации:</h3>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li th:if="${statistics != null and statistics.lowStockProducts > 0}" style="margin: 5px 0;">
+            У вас <strong th:text="${statistics.lowStockProducts}"></strong> товаров заканчивается. Рекомендуем пополнить остатки.
+        </li>
+        <li th:if="${statistics != null and statistics.outOfStockProducts > 0}" style="margin: 5px 0;">
+            <strong th:text="${statistics.outOfStockProducts}"></strong> товаров отсутствуют на складе. Необходимо срочное пополнение.
+        </li>
+        <li th:if="${statistics != null and statistics.totalProducts == 0}" style="margin: 5px 0;">
+            У вас пока нет продуктов в каталоге. Начните с добавления первого продукта.
+        </li>
+        <li th:if="${statistics != null and statistics.totalProducts > 0 and statistics.inStockProducts == statistics.totalProducts}" style="margin: 5px 0; color: green;">
+            Отлично! Все товары в наличии.
+        </li>
+    </ul>
+</div>
+
+<!-- Техническая информация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
+    <h4>Техническая информация:</h4>
+    <div style="font-size: 12px; color: #666;">
+        <p><strong>Время генерации отчета:</strong> <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>
+        <p th:if="${statistics != null}"><strong>Всего продуктов в базе:</strong> <span th:text="${statistics.totalProducts}"></span></p>
+        <p th:if="${statistics != null}"><strong>Общая стоимость склада:</strong> <span th:text="${#numbers.formatDecimal(statistics.totalInventoryValue, 0, 2)} + ' руб.'"></span></p>
+        <p th:if="${statistics != null}"><strong>Средняя стоимость товара:</strong>
+            <span th:if="${statistics.totalProducts > 0}" th:text="${#numbers.formatDecimal(statistics.totalInventoryValue / statistics.totalProducts, 0, 2)} + ' руб.'"></span>
+            <span th:if="${statistics.totalProducts == 0}">0 руб.</span>
+        </p>
+    </div>
+</div>
+
+<!-- Сообщение об отсутствии данных -->
+<div th:if="${statistics == null}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0; text-align: center;">
+    <h3>Статистика недоступна</h3>
+    <p>Возможно, произошла ошибка при загрузке данных или в системе еще нет продуктов.</p>
+    <a th:href="@{/admin/product}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
+        Добавить первый продукт
+    </a>
+</div>
+
+<!-- Навигация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+    <h3>Навигация:</h3>
+    <ul>
+        <li><a th:href="@{/admin/product/list}">Список всех продуктов</a></li>
+        <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>
+        <li><a th:href="@{/admin/product/statistics}">Обновить статистику</a></li>
+        <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>
+        <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
+    </ul>
+</div>
+</body>
+</html>

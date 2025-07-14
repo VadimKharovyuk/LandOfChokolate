@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список продуктов</title>
+</head>
+<body>
+<h1>Список продуктов</h1>
+<p style="font-size: 14px; color: #666;" th:text="${filterDescription}"></p>
+
+<!-- Flash сообщения -->
+<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
+    <span th:text="${successMessage}"></span>
+</div>
+
+<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+    <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Панель управления и фильтров -->
+<div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
+
+    <!-- Кнопка создания нового продукта -->
+    <div style="margin-bottom: 15px;">
+        <a th:href="@{/admin/product}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
+            + Создать новый продукт
+        </a>
+        <a th:href="@{/admin/product/statistics}" style="margin-left: 10px; padding: 10px 20px; background-color: #17a2b8; color: white; text-decoration: none; display: inline-block;">
+            📊 Статистика
+        </a>
+    </div>
+
+    <!-- Фильтры -->
+    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: end;">
+
+        <!-- Поиск по названию -->
+        <div>
+            <label for="search">Поиск:</label><br>
+            <form th:action="@{/admin/product/list}" method="get" style="display: inline-flex;">
+                <input type="text" id="search" name="search" th:value="${searchTerm}"
+                       placeholder="Название продукта..."
+                       style="padding: 8px; width: 200px;">
+                <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+                    Найти
+                </button>
+            </form>
+        </div>
+
+        <!-- Фильтр по категории -->
+        <div>
+            <label for="categoryFilter">Категория:</label><br>
+            <form th:action="@{/admin/product/list}" method="get" style="display: inline;">
+                <select id="categoryFilter" name="category" onchange="this.form.submit()" style="padding: 8px;">
+                    <option value="">Все категории</option>
+                    <option th:each="category : ${filterCategories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"
+                            th:selected="${category.id == selectedCategory}"></option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Фильтр по бренду -->
+        <div>
+            <label for="brandFilter">Бренд:</label><br>
+            <form th:action="@{/admin/product/list}" method="get" style="display: inline;">
+                <select id="brandFilter" name="brand" onchange="this.form.submit()" style="padding: 8px;">
+                    <option value="">Все бренды</option>
+                    <option th:each="brand : ${filterBrands}"
+                            th:value="${brand.id}"
+                            th:text="${brand.name}"
+                            th:selected="${brand.id == selectedBrand}"></option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Фильтр по статусу наличия -->
+        <div>
+            <label for="statusFilter">Наличие:</label><br>
+            <form th:action="@{/admin/product/list}" method="get" style="display: inline;">
+                <select id="statusFilter" name="status" onchange="this.form.submit()" style="padding: 8px;">
+                    <option value="">Все товары</option>
+                    <option value="in-stock" th:selected="${selectedStatus == 'in-stock'}">В наличии</option>
+                    <option value="low-stock" th:selected="${selectedStatus == 'low-stock'}">Заканчивается</option>
+                    <option value="out-of-stock" th:selected="${selectedStatus == 'out-of-stock'}">Нет в наличии</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Сброс фильтров -->
+        <div>
+            <a th:href="@{/admin/product/list}" style="padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
+                Сбросить
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Таблица продуктов -->
+<div th:if="${products != null and !products.isEmpty()}">
+    <h2>Найдено продуктов: <span th:text="${products.size()}"></span></h2>
+
+    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+        <thead style="background-color: #f8f9fa;">
+        <tr>
+            <th style="padding: 10px; text-align: left;">ID</th>
+            <th style="padding: 10px; text-align: left;">Изображение</th>
+            <th style="padding: 10px; text-align: left;">Название</th>
+            <th style="padding: 10px; text-align: left;">Цена</th>
+            <th style="padding: 10px; text-align: left;">Остаток</th>
+            <th style="padding: 10px; text-align: left;">Категория</th>
+            <th style="padding: 10px; text-align: left;">Бренд</th>
+            <th style="padding: 10px; text-align: left;">Статус</th>
+            <th style="padding: 10px; text-align: center;">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td style="padding: 10px;" th:text="${product.id}"></td>
+
+            <!-- Изображение -->
+            <td style="padding: 10px; text-align: center;">
+                <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">
+                    <img th:src="${product.imageUrl}" alt="Изображение продукта"
+                         style="max-width: 50px; max-height: 50px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
+                     style="color: #6c757d; font-style: italic; font-size: 12px;">
+                    Нет фото
+                </div>
+            </td>
+
+            <!-- Название (с ссылкой на просмотр) -->
+            <td style="padding: 10px;">
+                <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                   style="text-decoration: none; color: #007bff; font-weight: bold;"
+                   th:text="${product.name}"></a>
+            </td>
+
+            <!-- Цена -->
+            <td style="padding: 10px; text-align: right;">
+                <span th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' руб.'"></span>
+            </td>
+
+            <!-- Остаток на складе -->
+            <td style="padding: 10px; text-align: center;">
+                <span th:text="${product.stockQuantity}"
+                      th:class="${product.stockQuantity == 0 ? 'out-of-stock' : (product.lowStock ? 'low-stock' : 'in-stock')}"
+                      th:style="${product.stockQuantity == 0 ? 'color: red; font-weight: bold;' : (product.lowStock ? 'color: orange; font-weight: bold;' : 'color: green;')}"></span>
+            </td>
+
+            <!-- Категория -->
+            <td style="padding: 10px;" th:text="${product.categoryName}"></td>
+
+            <!-- Бренд -->
+            <td style="padding: 10px;" th:text="${product.brandName}"></td>
+
+            <!-- Статус -->
+            <td style="padding: 10px; text-align: center;">
+                <span th:if="${!product.inStock}"
+                      style="padding: 3px 8px; background-color: #dc3545; color: white; border-radius: 3px; font-size: 11px;">
+                    Нет в наличии
+                </span>
+                <span th:if="${product.inStock and product.lowStock}"
+                      style="padding: 3px 8px; background-color: #ffc107; color: black; border-radius: 3px; font-size: 11px;">
+                    Заканчивается
+                </span>
+                <span th:if="${product.inStock and !product.lowStock}"
+                      style="padding: 3px 8px; background-color: #28a745; color: white; border-radius: 3px; font-size: 11px;">
+                    В наличии
+                </span>
+            </td>
+
+            <!-- Действия -->
+            <td style="padding: 10px; text-align: center;">
+                <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                   style="color: #17a2b8; text-decoration: none; margin-right: 5px; font-size: 12px;">
+                    Просмотр
+                </a>
+                <a th:href="@{'/admin/product/edit/' + ${product.id}}"
+                   style="color: #007bff; text-decoration: none; margin-right: 5px; font-size: 12px;">
+                    Редактировать
+                </a>
+                <a th:href="@{'/admin/product/delete/' + ${product.id}}"
+                   style="color: #dc3545; text-decoration: none; font-size: 12px;"
+                   onclick="return confirm('Вы уверены, что хотите удалить этот продукт?')">
+                    Удалить
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Сообщение когда список пуст -->
+<div th:if="${products == null or products.isEmpty()}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
+    <h3>Продукты не найдены</h3>
+    <p th:if="${searchTerm != null and !searchTerm.isEmpty()}">
+        По запросу "<span th:text="${searchTerm}"></span>" ничего не найдено.
+        <a th:href="@{/admin/product/list}">Показать все продукты</a>
+    </p>
+    <p th:if="${searchTerm == null or searchTerm.isEmpty()}">
+        Пока что ни одного продукта не создано.
+    </p>
+
+    <a th:href="@{/admin/product}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
+        Создать первый продукт
+    </a>
+</div>
+
+<!-- Быстрые фильтры (кнопки) -->
+<div style="margin: 20px 0; padding: 15px; background-color: #e9ecef; border-radius: 5px;">
+    <h4>Быстрые фильтры:</h4>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a th:href="@{/admin/product/list}"
+           style="padding: 8px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 3px; font-size: 12px;">
+            Все продукты
+        </a>
+        <a th:href="@{/admin/product/list(status='in-stock')}"
+           style="padding: 8px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 3px; font-size: 12px;">
+            В наличии
+        </a>
+        <a th:href="@{/admin/product/list(status='low-stock')}"
+           style="padding: 8px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 3px; font-size: 12px;">
+            Заканчивается
+        </a>
+        <a th:href="@{/admin/product/list(status='out-of-stock')}"
+           style="padding: 8px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 3px; font-size: 12px;">
+            Нет в наличии
+        </a>
+    </div>
+</div>
+
+<!-- Навигация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+    <h3>Навигация:</h3>
+    <ul>
+        <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>
+        <li><a th:href="@{/admin/product/list}">Обновить список</a></li>
+        <li><a th:href="@{/admin/product/statistics}">Статистика продуктов</a></li>
+        <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>
+        <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
+    </ul>
+</div>
+
+<!-- Отладочная информация -->
+<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">
+    <h4>Отладочная информация:</h4>
+    <p>Количество продуктов: <span th:text="${products != null ? products.size() : 'null'}"></span></p>
+    <p>Поисковый запрос: <span th:text="${searchTerm != null ? searchTerm : 'отсутствует'}"></span></p>
+    <p>Выбранная категория: <span th:text="${selectedCategory != null ? selectedCategory : 'все'}"></span></p>
+    <p>Выбранный бренд: <span th:text="${selectedBrand != null ? selectedBrand : 'все'}"></span></p>
+    <p>Статус фильтр: <span th:text="${selectedStatus != null ? selectedStatus : 'все'}"></span></p>
+    <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>
+</div>
+</body>
+</html>
