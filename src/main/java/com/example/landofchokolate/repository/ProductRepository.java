@@ -1,6 +1,9 @@
 package com.example.landofchokolate.repository;
 
+import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,25 +41,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     List<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 
-    /**
-     * Получить продукты дороже указанной цены
-     */
-    List<Product> findByPriceGreaterThan(BigDecimal price);
-
-    /**
-     * Получить продукты дешевле указанной цены
-     */
-    List<Product> findByPriceLessThan(BigDecimal price);
 
     /**
      * Получить продукты с количеством больше указанного
      */
     List<Product> findByStockQuantityGreaterThan(Integer quantity);
 
-    /**
-     * Получить продукты с количеством меньше указанного
-     */
-    List<Product> findByStockQuantityLessThan(Integer quantity);
 
     /**
      * Получить продукты с количеством в диапазоне
@@ -68,15 +58,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     List<Product> findByStockQuantity(Integer quantity);
 
-    /**
-     * Подсчет продуктов по категории
-     */
-    long countByCategoryId(Long categoryId);
-
-    /**
-     * Подсчет продуктов по бренду
-     */
-    long countByBrandId(Long brandId);
 
     /**
      * Подсчет продуктов в наличии
@@ -93,54 +74,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     long countByStockQuantity(Integer quantity);
 
-    /**
-     * Проверка существования продукта с таким названием
-     */
-    boolean existsByName(String name);
 
-    /**
-     * Проверка существования продукта с таким названием (исключая текущий продукт)
-     */
-    boolean existsByNameAndIdNot(String name, Long id);
-
-    /**
-     * Получить самые дорогие продукты
-     */
-    @Query("SELECT p FROM Product p ORDER BY p.price DESC")
-    List<Product> findTopByOrderByPriceDesc();
-
-    /**
-     * Получить самые дешевые продукты
-     */
-    @Query("SELECT p FROM Product p ORDER BY p.price ASC")
-    List<Product> findTopByOrderByPriceAsc();
-
-    /**
-     * Получить продукты с наибольшим остатком
-     */
-    @Query("SELECT p FROM Product p ORDER BY p.stockQuantity DESC")
-    List<Product> findTopByOrderByStockQuantityDesc();
-
-    /**
-     * Поиск продуктов по названию категории
-     */
-    @Query("SELECT p FROM Product p WHERE p.category.name LIKE %:categoryName%")
-    List<Product> findByCategoryNameContaining(@Param("categoryName") String categoryName);
-
-    /**
-     * Поиск продуктов по названию бренда
-     */
-    @Query("SELECT p FROM Product p WHERE p.brand.name LIKE %:brandName%")
-    List<Product> findByBrandNameContaining(@Param("brandName") String brandName);
-
-    /**
-     * Комплексный поиск по названию продукта, категории или бренда
-     */
-    @Query("SELECT p FROM Product p WHERE " +
-            "LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(p.category.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(p.brand.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
-    List<Product> findBySearchTerm(@Param("searchTerm") String searchTerm);
 
     /**
      * Получить продукты по фильтрам
@@ -163,40 +97,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT SUM(p.price * p.stockQuantity) FROM Product p")
     BigDecimal calculateTotalInventoryValue();
 
-    /**
-     * Рассчитать общую стоимость инвентаря по категории
-     */
-    @Query("SELECT SUM(p.price * p.stockQuantity) FROM Product p WHERE p.category.id = :categoryId")
-    BigDecimal calculateInventoryValueByCategory(@Param("categoryId") Long categoryId);
-
-    /**
-     * Рассчитать общую стоимость инвентаря по бренду
-     */
-    @Query("SELECT SUM(p.price * p.stockQuantity) FROM Product p WHERE p.brand.id = :brandId")
-    BigDecimal calculateInventoryValueByBrand(@Param("brandId") Long brandId);
-
-    /**
-     * Получить продукты с изображениями
-     */
-    @Query("SELECT p FROM Product p WHERE p.imageUrl IS NOT NULL")
-    List<Product> findProductsWithImages();
-
-    /**
-     * Получить продукты без изображений
-     */
-    @Query("SELECT p FROM Product p WHERE p.imageUrl IS NULL")
-    List<Product> findProductsWithoutImages();
-
-    /**
-     * Получить популярные продукты (можно расширить логику в будущем)
-     */
-    @Query("SELECT p FROM Product p WHERE p.stockQuantity > 0 ORDER BY p.stockQuantity ASC")
-    List<Product> findPopularProducts();
-
-    /**
-     * Получить рекомендуемые продукты по категории
-     */
-    @Query("SELECT p FROM Product p WHERE p.category.id = :categoryId AND p.stockQuantity > 0 AND p.id != :excludeProductId ORDER BY p.price ASC")
-    List<Product> findRecommendedProductsByCategory(@Param("categoryId") Long categoryId,
-                                                    @Param("excludeProductId") Long excludeProductId);
+    @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, " +
+            "c.name, b.name, " +
+            "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
+            "CASE WHEN p.stockQuantity < 10 THEN true ELSE false END) " +
+            "FROM Product p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.brand b")
+    Page<ProductListDto> findAllProductListDto(Pageable pageable);
 }
