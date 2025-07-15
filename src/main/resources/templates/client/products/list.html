@@ -1,40 +1,171 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Products</title>
+  <title>Каталог товарів - Land of Chocolate</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       background-color: #f5f5f5;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+    .main-container {
+      margin-top: 100px; /* Отступ для навигации */
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px;
+    }
+
+    .page-header {
       background-color: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
 
-    h1 {
+    .page-header h1 {
       color: #333;
       text-align: center;
-      margin-bottom: 30px;
+      margin: 0;
+      font-size: 32px;
+      font-weight: 600;
     }
 
-    .filters {
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      align-items: start;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* Sidebar Filters */
+    .filters-sidebar {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 300px;
+      min-width: 300px;
+      flex-shrink: 0;
+      align-self: start; /* Выравнивание по верху */
+    }
+
+    .filters-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f8f9fa;
+    }
+
+    .filter-section {
+      margin-bottom: 25px;
+    }
+
+    .filter-label {
+      display: block;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .filter-input {
+      width: 100%;
+      max-width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    .price-range {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .price-input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      min-width: 0; /* Важно для flex */
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+
+    /* Main Content Area */
+    .products-content {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+      min-width: 0; /* Важно для grid */
+      width: 100%;
+    }
+
+    .products-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      padding: 15px;
+      padding: 20px;
       background-color: #f8f9fa;
-      border-radius: 5px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .products-info {
+      color: #666;
+      font-size: 14px;
     }
 
     .sort-controls {
@@ -44,21 +175,17 @@
     }
 
     .sort-controls select {
-      padding: 8px;
+      padding: 8px 12px;
       border: 1px solid #ddd;
       border-radius: 4px;
-    }
-
-    .info {
-      color: #666;
       font-size: 14px;
     }
 
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
-      margin-bottom: 30px;
+      padding: 20px;
     }
 
     .product-card {
@@ -66,13 +193,12 @@
       border-radius: 8px;
       padding: 15px;
       background-color: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .product-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
 
     .product-image {
@@ -80,26 +206,28 @@
       height: 200px;
       object-fit: cover;
       border-radius: 5px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .product-name {
       font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 5px;
+      font-weight: 600;
+      margin-bottom: 8px;
       color: #333;
+      line-height: 1.3;
     }
 
     .product-price {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
       color: #e74c3c;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     .product-stock {
       font-size: 14px;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
 
     .in-stock {
@@ -114,23 +242,27 @@
       color: #e74c3c;
     }
 
-    .product-category {
+    .product-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .product-category, .product-brand {
       font-size: 12px;
       color: #666;
-      background-color: #f8f9fa;
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 3px;
-      display: inline-block;
-      margin-right: 5px;
+      font-weight: 500;
+    }
+
+    .product-category {
+      background-color: #f8f9fa;
     }
 
     .product-brand {
-      font-size: 12px;
-      color: #666;
       background-color: #e9ecef;
-      padding: 3px 8px;
-      border-radius: 3px;
-      display: inline-block;
     }
 
     .pagination {
@@ -138,20 +270,24 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-      margin-top: 30px;
+      padding: 20px;
+      border-top: 1px solid #ddd;
+      background-color: #f8f9fa;
     }
 
-    .pagination a {
-      padding: 8px 16px;
+    .pagination a, .pagination span {
+      padding: 10px 16px;
       text-decoration: none;
       color: #333;
       border: 1px solid #ddd;
       border-radius: 4px;
-      transition: background-color 0.2s;
+      transition: all 0.2s;
     }
 
     .pagination a:hover {
-      background-color: #f8f9fa;
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
     }
 
     .pagination .current {
@@ -163,90 +299,260 @@
     .pagination .disabled {
       color: #999;
       cursor: not-allowed;
+      opacity: 0.5;
     }
 
     .pagination .disabled:hover {
       background-color: white;
+      color: #999;
+      border-color: #ddd;
     }
 
     .no-products {
       text-align: center;
       color: #666;
       font-size: 18px;
-      margin: 50px 0;
+      padding: 60px 20px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .content-wrapper {
+        grid-template-columns: 250px 1fr;
+      }
+
+      .filters-sidebar {
+        width: 250px;
+        min-width: 250px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .filters-sidebar {
+        width: 100%;
+        min-width: auto;
+        margin-bottom: 15px;
+      }
+
+      .main-container {
+        margin-top: 80px;
+        padding: 10px;
+      }
+
+      .products-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+      }
+
+      .sort-controls {
+        justify-content: center;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .price-range {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .filter-buttons {
+        flex-direction: column;
+      }
     }
   </style>
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
 </head>
 <body>
-<div class="container">
-  <h1>Land of Chocolate - Products</h1>
 
-  <div class="filters">
-    <div class="info">
-      <span>Total: <strong th:text="${totalCount}">0</strong> products</span>
-      <span>Page: <strong th:text="${currentPage}">1</strong></span>
-      <span>Items per page: <strong th:text="${pageSize}">20</strong></span>
-    </div>
+<!-- Подключение навигации -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
 
-    <div class="sort-controls">
-      <label>Sort by:</label>
-      <select id="sortBy" th:value="${sortBy}">
-        <option value="name" th:selected="${sortBy == 'name'}">Name</option>
-        <option value="price" th:selected="${sortBy == 'price'}">Price</option>
-        <option value="stockQuantity" th:selected="${sortBy == 'stockQuantity'}">Stock</option>
-        <option value="categoryName" th:selected="${sortBy == 'categoryName'}">Category</option>
-        <option value="brandName" th:selected="${sortBy == 'brandName'}">Brand</option>
-      </select>
-
-      <select id="sortDirection" th:value="${sortDirection}">
-        <option value="asc" th:selected="${sortDirection == 'asc'}">Ascending</option>
-        <option value="desc" th:selected="${sortDirection == 'desc'}">Descending</option>
-      </select>
-    </div>
+<div class="main-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>Каталог товарів</h1>
   </div>
 
-  <div class="products-grid" th:if="${products != null and !products.isEmpty()}">
-    <div class="product-card" th:each="product : ${products}">
-      <img th:src="${product.imageUrl}"
-           th:alt="${product.name}"
-           class="product-image"
-           onerror="this.src='https://via.placeholder.com/250x200?text=No+Image'">
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar">
+      <h3 class="filters-title">Фільтри</h3>
 
-      <div class="product-name" th:text="${product.name}">Product Name</div>
-      <div class="product-price" th:text="'$' + ${product.price}">$0.00</div>
+      <form id="filtersForm">
+        <!-- Search by Name -->
+        <div class="filter-section">
+          <label class="filter-label" for="searchName">Пошук за назвою</label>
+          <input type="text"
+                 id="searchName"
+                 name="searchName"
+                 class="filter-input"
+                 placeholder="Введіть назву товару..."
+                 th:value="${searchName ?: ''}">
+        </div>
 
-      <div class="product-stock"
-           th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">
-        <span th:if="${product.inStock and product.lowStock}" th:text="'Low Stock: ' + ${product.stockQuantity}">Low Stock</span>
-        <span th:if="${product.inStock and !product.lowStock}" th:text="'In Stock: ' + ${product.stockQuantity}">In Stock</span>
-        <span th:if="${!product.inStock}">Out of Stock</span>
+        <!-- Price Range -->
+        <div class="filter-section">
+          <label class="filter-label">Діапазон цін (₴)</label>
+          <div class="price-range">
+            <input type="number"
+                   id="minPrice"
+                   name="minPrice"
+                   class="price-input"
+                   placeholder="Від"
+                   th:value="${minPrice ?: ''}">
+            <span>—</span>
+            <input type="number"
+                   id="maxPrice"
+                   name="maxPrice"
+                   class="price-input"
+                   placeholder="До"
+                   th:value="${maxPrice ?: ''}">
+          </div>
+        </div>
+
+        <!-- Category Filter (Future) -->
+        <div class="filter-section">
+          <label class="filter-label" for="categoryFilter">Категорія</label>
+          <select id="categoryFilter" name="category" class="filter-input">
+            <option value="">Всі категорії</option>
+            <!-- Динамически заполняется категориями -->
+            <!-- <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}"
+                    th:selected="${category == cat.id}"></option> -->
+          </select>
+        </div>
+
+        <!-- Brand Filter (Future) -->
+        <div class="filter-section">
+          <label class="filter-label" for="brandFilter">Бренд</label>
+          <select id="brandFilter" name="brand" class="filter-input">
+            <option value="">Всі бренди</option>
+            <!-- Динамически заполняется брендами -->
+            <!-- <option th:each="brand : ${brands}"
+                    th:value="${brand.id}"
+                    th:text="${brand.name}"
+                    th:selected="${brandId == brand.id}"></option> -->
+          </select>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="filter-section">
+          <label class="filter-label" for="stockStatus">Наявність</label>
+          <select id="stockStatus" name="stockStatus" class="filter-input">
+            <option value="">Всі товари</option>
+            <option value="in-stock" th:selected="${stockStatus == 'in-stock'}">В наявності</option>
+            <option value="low-stock" th:selected="${stockStatus == 'low-stock'}">Мало на складі</option>
+            <option value="out-of-stock" th:selected="${stockStatus == 'out-of-stock'}">Немає в наявності</option>
+          </select>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+          <button type="submit" class="btn btn-primary">Застосувати</button>
+          <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистити</button>
+        </div>
+      </form>
+    </aside>
+
+    <!-- Main Products Content -->
+    <main class="products-content">
+      <!-- Products Header -->
+      <div class="products-header">
+        <div class="products-info">
+          <span>Знайдено: <strong th:text="${totalCount}">0</strong> товарів</span>
+          <span>Сторінка: <strong th:text="${currentPage}">1</strong></span>
+          <span>На сторінці: <strong th:text="${pageSize}">50</strong></span>
+        </div>
+
+        <div class="sort-controls">
+          <label>Сортування:</label>
+          <select id="sortBy" th:value="${sortBy}">
+            <option value="name" th:selected="${sortBy == 'name'}">За назвою</option>
+            <option value="price" th:selected="${sortBy == 'price'}">За ціною</option>
+            <option value="stockQuantity" th:selected="${sortBy == 'stockQuantity'}">За кількістю</option>
+            <option value="categoryName" th:selected="${sortBy == 'categoryName'}">За категорією</option>
+            <option value="brandName" th:selected="${sortBy == 'brandName'}">За брендом</option>
+          </select>
+
+          <select id="sortDirection" th:value="${sortDirection}">
+            <option value="asc" th:selected="${sortDirection == 'asc'}">За зростанням</option>
+            <option value="desc" th:selected="${sortDirection == 'desc'}">За спаданням</option>
+          </select>
+        </div>
       </div>
 
-      <div style="margin-top: 10px;">
-        <span class="product-category" th:text="${product.categoryName}">Category</span>
-        <span class="product-brand" th:text="${product.brandName}">Brand</span>
+      <!-- Products Grid -->
+      <div class="products-grid" th:if="${products != null and !products.isEmpty()}">
+        <div class="product-card" th:each="product : ${products}">
+          <img th:src="${product.imageUrl}"
+               th:alt="${product.name}"
+               class="product-image"
+               onerror="this.src='https://via.placeholder.com/280x200?text=Зображення+відсутнє'">
+
+          <div class="product-name" th:text="${product.name}">Назва товару</div>
+          <div class="product-price" th:text="${product.price} + ' ₴'">0 ₴</div>
+
+          <div class="product-stock"
+               th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">
+                        <span th:if="${product.inStock and product.lowStock}"
+                              th:text="'Мало на складі: ' + ${product.stockQuantity} + ' шт.'">Мало на складі</span>
+            <span th:if="${product.inStock and !product.lowStock}"
+                  th:text="'В наявності: ' + ${product.stockQuantity} + ' шт.'">В наявності</span>
+            <span th:if="${!product.inStock}">Немає в наявності</span>
+          </div>
+
+          <div class="product-meta">
+            <span class="product-category" th:text="${product.categoryName}">Категорія</span>
+            <span class="product-brand" th:text="${product.brandName}">Бренд</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="no-products" th:if="${products == null or products.isEmpty()}">
-    <p>No products found.</p>
-  </div>
+      <!-- No Products Message -->
+      <div class="no-products" th:if="${products == null or products.isEmpty()}">
+        <p>За вашим запитом товари не знайдені.</p>
+        <p>Спробуйте змінити фільтри пошуку.</p>
+      </div>
 
-  <div class="pagination" th:if="${products != null and !products.isEmpty()}">
-    <a th:href="@{/product/all(page=${currentPage - 2}, sortBy=${sortBy}, sortDirection=${sortDirection})}"
-       th:class="${!hasPrevious ? 'disabled' : ''}"
-       th:if="${hasPrevious}">Previous</a>
+      <!-- Pagination -->
+      <div class="pagination" th:if="${products != null and !products.isEmpty()}">
+        <a th:href="@{/product/all(page=${currentPage - 2}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
+           th:class="${!hasPrevious ? 'disabled' : ''}"
+           th:if="${hasPrevious}">← Попередня</a>
 
-    <span class="current" th:text="${currentPage}">1</span>
+        <span class="current" th:text="${currentPage}">1</span>
 
-    <a th:href="@{/product/all(page=${currentPage}, sortBy=${sortBy}, sortDirection=${sortDirection})}"
-       th:class="${!hasNext ? 'disabled' : ''}"
-       th:if="${hasNext}">Next</a>
+        <a th:href="@{/product/all(page=${currentPage}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
+           th:class="${!hasNext ? 'disabled' : ''}"
+           th:if="${hasNext}">Наступна →</a>
+      </div>
+    </main>
   </div>
 </div>
 
+<!-- Подключение JavaScript для навигации -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+
 <script>
+  // Sorting functionality
   document.getElementById('sortBy').addEventListener('change', function() {
     updateSort();
   });
@@ -264,6 +570,69 @@
     currentUrl.searchParams.set('page', '0'); // Reset to first page
     window.location.href = currentUrl.toString();
   }
+
+  // Filters functionality
+  document.getElementById('filtersForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    applyFilters();
+  });
+
+  function applyFilters() {
+    const formData = new FormData(document.getElementById('filtersForm'));
+    const currentUrl = new URL(window.location.href);
+
+    // Preserve sorting
+    const sortBy = document.getElementById('sortBy').value;
+    const sortDirection = document.getElementById('sortDirection').value;
+
+    // Clear existing filter params
+    currentUrl.searchParams.delete('searchName');
+    currentUrl.searchParams.delete('minPrice');
+    currentUrl.searchParams.delete('maxPrice');
+    currentUrl.searchParams.delete('category');
+    currentUrl.searchParams.delete('brand');
+    currentUrl.searchParams.delete('stockStatus');
+
+    // Add new filter params
+    for (let [key, value] of formData.entries()) {
+      if (value.trim() !== '') {
+        currentUrl.searchParams.set(key, value);
+      }
+    }
+
+    // Set sorting and reset page
+    currentUrl.searchParams.set('sortBy', sortBy);
+    currentUrl.searchParams.set('sortDirection', sortDirection);
+    currentUrl.searchParams.set('page', '0');
+
+    window.location.href = currentUrl.toString();
+  }
+
+  function clearFilters() {
+    document.getElementById('filtersForm').reset();
+    const currentUrl = new URL(window.location.href);
+
+    // Keep only sorting params
+    const sortBy = document.getElementById('sortBy').value;
+    const sortDirection = document.getElementById('sortDirection').value;
+
+    // Clear all params and add only sorting
+    const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
+    newUrl.searchParams.set('sortBy', sortBy);
+    newUrl.searchParams.set('sortDirection', sortDirection);
+    newUrl.searchParams.set('page', '0');
+
+    window.location.href = newUrl.toString();
+  }
+
+  // Auto-submit on Enter key for search input
+  document.getElementById('searchName').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      applyFilters();
+    }
+  });
 </script>
+
 </body>
 </html>

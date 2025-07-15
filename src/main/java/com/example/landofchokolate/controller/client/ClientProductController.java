@@ -35,7 +35,7 @@ public class ClientProductController {
                 : Sort.by(sortBy).ascending();
 
         // Создаем объект Pageable (размер страницы уже установлен в сервисе)
-        Pageable pageable = PageRequest.of(page, 20, sort); // размер не важен, т.к. в сервисе переопределяется
+        Pageable pageable = PageRequest.of(page, 20, sort);
 
         // Получаем данные через сервис
         ProductListResponseDto response = clientProductService.getAllProducts(pageable);
@@ -49,6 +49,9 @@ public class ClientProductController {
         model.addAttribute("pageSize", response.getPageSize());
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDirection", sortDirection);
+
+        model.addAttribute("cartCount", 0);
+        model.addAttribute("favoritesCount", 0);
 
         return "client/products/list";
     }
