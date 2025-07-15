@@ -22,6 +22,7 @@ public class AdminSubscriptionController {
     private final SubscriptionService subscriptionService;
 
 
+
     @GetMapping
     public String adminSubscriptions(Model model) {
         log.info("Admin subscriptions");

@@ -21,15 +21,14 @@ public class AdminNewsletterController {
     private final NewsletterService newsletterService;
     private final SubscriptionService subscriptionService;
 
-    /**
-     * Показать форму создания рассылки
-     */
+
     @GetMapping
     public String showNewsletterForm(Model model) {
         List<SubscriptionResponse> subscribers = subscriptionService.getAllActiveSubscriptions();
         model.addAttribute("subscribersCount", subscribers.size());
         return "admin/newsletter/create";
     }
+
 
     /**
      * Отправить кастомную рассылку
