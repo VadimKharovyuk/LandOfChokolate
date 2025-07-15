@@ -299,10 +299,18 @@
       border-color: var(--secondary-color);
     }
 
-    /* Products Grid */
+
+    /*!* Вариант 2: Еще больше - до 400px (для гарантии 2 карточек) *!*/
+    /*.products-grid {*/
+    /*  display: grid;*/
+    /*  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));*/
+    /*  gap: 24px;*/
+    /*  padding: 32px;*/
+    /*}*/
+    /* Вариант 1: По 3 карточки в ряд */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 24px;
       padding: 32px;
     }
@@ -698,7 +706,7 @@
                  th:value="${searchName ?: ''}">
         </div>
 
-        <!-- Price Range -->
+
         <!-- Price Range -->
         <div class="filter-section">
           <label class="filter-label">Діапазон цін (₴)</label>
