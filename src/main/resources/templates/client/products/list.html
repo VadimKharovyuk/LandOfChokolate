@@ -137,6 +137,50 @@
       align-items: center;
     }
 
+    .price-range {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .price-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: var(--background-light);
+      transition: var(--transition);
+    }
+
+    .price-input:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+    }
+
+    .price-separator {
+      display: none; /* Убираем тире, так как поля теперь расположены вертикально */
+    }
+
+    /* Дополнительные стили для лучшего отображения */
+    .price-input::placeholder {
+      color: var(--text-light);
+      font-weight: 400;
+    }
+
+    .price-input:hover {
+      border-color: var(--secondary-color);
+    }
+
+    /* Responsive для мобильных устройств остается прежним */
+    @media (max-width: 480px) {
+      .price-range {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+
     .price-input {
       flex: 1;
       padding: 12px 16px;
@@ -655,6 +699,7 @@
         </div>
 
         <!-- Price Range -->
+        <!-- Price Range -->
         <div class="filter-section">
           <label class="filter-label">Діапазон цін (₴)</label>
           <div class="price-range">
@@ -664,7 +709,6 @@
                    class="price-input"
                    placeholder="Від"
                    th:value="${minPrice ?: ''}">
-            <span>—</span>
             <input type="number"
                    id="maxPrice"
                    name="maxPrice"
