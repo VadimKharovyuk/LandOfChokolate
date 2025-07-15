@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/store-location-section.css}">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -931,6 +932,273 @@
 </section>
 
 
+
+
+
+<!-- Store Location Section -->
+<section class="store-location-section" id="contact">
+    <div class="container">
+        <!-- Section Header -->
+        <div class="section-header">
+            <p class="section-subtitle">Завітайте до нас</p>
+            <h2 class="section-title">Наш магазин у Києві</h2>
+            <p class="section-description">
+                Відвідайте наш затишний магазин у центрі Києва, де кожен десерт створюється з любов'ю та майстерністю.
+                Тут ви зможете не тільки придбати готові вироби, але й спостерігати за процесом створення кондитерських шедеврів.
+            </p>
+        </div>
+
+        <div class="location-content">
+            <div class="row align-items-center">
+                <!-- Store Info -->
+                <div class="col-lg-5 col-md-6 mb-5 mb-md-0">
+                    <div class="store-info">
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <h3 class="store-title">Land of Chocolate</h3>
+                            <p class="store-description">
+                                Наш флагманський магазин розташований у самому серці Києва. Тут ви знайдете повний асортимент
+                                наших кондитерських виробів та зможете замовити торти на будь-який смак.
+                            </p>
+
+                            <!-- Contact Details -->
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-content">
+                                        <h4>Адреса</h4>
+                                        <p>вул. Шоколадна, 25<br>м. Київ, 01001</p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-content">
+                                        <h4>Телефон</h4>
+                                        <p><a href="tel:+380671234567">+38 (067) 123-45-67</a></p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="contact-content">
+                                        <h4>Години роботи</h4>
+                                        <p>
+                                            Пн-Пт: 08:00 - 21:00<br>
+                                            Сб-Нд: 09:00 - 22:00
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-content">
+                                        <h4>Email</h4>
+                                        <p><a href="mailto:info@landofchocolate.com">info@landofchocolate.com</a></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="store-actions">
+                                <a href="tel:+380671234567" class="btn-store btn-store-primary">
+                                    <i class="fas fa-phone"></i>
+                                    Зателефонувати
+                                </a>
+                                <a href="https://maps.google.com/directions" target="_blank" class="btn-store btn-store-outline">
+                                    <i class="fas fa-directions"></i>
+                                    Маршрут
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="col-lg-7 col-md-6">
+                    <div class="map-container">
+<!--                        <div class="map-overlay">-->
+<!--                            <div class="map-pin">-->
+<!--                                <i class="fas fa-map-marker-alt"></i>-->
+<!--                            </div>-->
+<!--                            <div class="map-info">-->
+<!--                                <h4>Land of Chocolate</h4>-->
+<!--                                <p>вул. Шоколадна, 25</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                        <!-- Interactive Map -->
+                        <div class="interactive-map" id="storeMap">
+                            <!-- Google Maps будет загружена здесь -->
+                            <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.1879261643327!2d30.5166361!3d50.4504441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce5325e2ba01%3A0x5c927ac6313b1bc!2z0JrRgNC10YnQsNGC0LjQuiwg0JrQuNGX0LIsINCj0LrRgNCw0ZfQvdCwLCAwMjAwMA!5e0!3m2!1suk!2sua!4v1642000000000!5m2!1suk!2sua"
+                                    width="100%"
+                                    height="100%"
+                                    style="border:0;"
+                                    allowfullscreen=""
+                                    loading="lazy">
+                            </iframe>
+                        </div>
+
+                        <!-- Map Features -->
+                        <div class="map-features">
+                            <div class="map-feature">
+                                <div class="feature-icon">
+                                    <i class="fas fa-subway"></i>
+                                </div>
+                                <span>5 хв від м. Хрещатик</span>
+                            </div>
+                            <div class="map-feature">
+                                <div class="feature-icon">
+                                    <i class="fas fa-parking"></i>
+                                </div>
+                                <span>Безкоштовна парковка</span>
+                            </div>
+                            <div class="map-feature">
+                                <div class="feature-icon">
+                                    <i class="fas fa-wheelchair"></i>
+                                </div>
+                                <span>Доступно для всіх</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="additional-info">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h4>Виробництво на очах</h4>
+                        <p>Спостерігайте за процесом створення наших десертів через великі вікна у виробничій зоні</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <h4>Дегустаційна зона</h4>
+                        <p>Куштуйте наші новинки та насолоджуйтеся ароматною кавою у затишній атмосфері</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h4>Подарункові набори</h4>
+                        <p>Оформлюємо красиві подарункові набори та упаковки прямо у магазині</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    // Map animation on scroll
+    const observerOptions = {
+        threshold: 0.3,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const mapObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+
+                // Animate contact items
+                const contactItems = entry.target.querySelectorAll('.contact-item');
+                contactItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                    }, index * 100);
+                });
+
+                // Animate info cards
+                const infoCards = entry.target.querySelectorAll('.info-card');
+                infoCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 500 + index * 150);
+                });
+            }
+        });
+    }, observerOptions);
+
+    // Initialize animations
+    document.addEventListener('DOMContentLoaded', function() {
+        const storeSection = document.querySelector('.store-location-section');
+        if (storeSection) {
+            mapObserver.observe(storeSection);
+
+            // Set initial states
+            const contactItems = storeSection.querySelectorAll('.contact-item');
+            contactItems.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-30px)';
+                item.style.transition = 'all 0.6s ease';
+            });
+
+            const infoCards = storeSection.querySelectorAll('.info-card');
+            infoCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+            });
+        }
+    });
+
+    // Phone number formatting and click tracking
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+        phoneLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                // Analytics tracking
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'phone_call', {
+                        'event_category': 'contact',
+                        'event_label': 'store_section'
+                    });
+                }
+                console.log('Phone call initiated from store section');
+            });
+        });
+
+        // Direction link tracking
+        const directionLinks = document.querySelectorAll('a[href*="maps.google.com"]');
+        directionLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'get_directions', {
+                        'event_category': 'contact',
+                        'event_label': 'store_section'
+                    });
+                }
+                console.log('Directions requested from store section');
+            });
+        });
+    });
+</script>
 
 
 
