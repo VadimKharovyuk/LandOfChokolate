@@ -17,4 +17,10 @@ public class ProductListResponseDto {
     private Boolean hasPrevious;
     private Integer currentPage;
     private Integer pageSize;
+
+    // Добавить для полной навигации:
+    private Integer totalPages;        // Общее количество страниц
+    private Integer nextPage;          // Номер следующей страницы (если есть)
+    private Integer previousPage;      // Номер предыдущей страницы (если есть)
+    private List<Integer> pageNumbers; // Список номеров страниц для отображения
 }

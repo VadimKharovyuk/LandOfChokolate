@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/product")
 public class ClientProductController {
     private final ClientProductService clientProductService;
-
     @GetMapping("/all")
     public String allProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -47,6 +46,13 @@ public class ClientProductController {
         model.addAttribute("hasPrevious", response.getHasPrevious());
         model.addAttribute("currentPage", response.getCurrentPage());
         model.addAttribute("pageSize", response.getPageSize());
+
+        // Добавляем новые атрибуты для навигации:
+        model.addAttribute("totalPages", response.getTotalPages());
+        model.addAttribute("nextPage", response.getNextPage());
+        model.addAttribute("previousPage", response.getPreviousPage());
+        model.addAttribute("pageNumbers", response.getPageNumbers());
+
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDirection", sortDirection);
 

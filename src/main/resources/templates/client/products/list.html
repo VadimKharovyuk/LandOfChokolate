@@ -800,15 +800,26 @@
 
       <!-- Pagination -->
       <div class="pagination" th:if="${products != null and !products.isEmpty()}">
-        <a th:href="@{/product/all(page=${currentPage - 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
-           th:class="${!hasPrevious ? 'disabled' : ''}"
-           th:if="${hasPrevious}">← Попередня</a>
+        <!-- Кнопка "Предыдущая" -->
+        <a th:if="${hasPrevious}"
+           th:href="@{/product/all(page=${previousPage - 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}">
+          ← Попередня
+        </a>
 
-        <span class="current" th:text="${currentPage + 1}">1</span>
+        <!-- Номера страниц -->
+        <span th:each="pageNum : ${pageNumbers}">
+            <span th:if="${pageNum == -1}" class="pagination-dots">...</span>
+            <a th:if="${pageNum != -1 && pageNum != currentPage}"
+               th:href="@{/product/all(page=${pageNum - 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
+               th:text="${pageNum}"></a>
+            <span th:if="${pageNum == currentPage}" class="current" th:text="${pageNum}"></span>
+        </span>
 
-        <a th:href="@{/product/all(page=${currentPage + 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
-           th:class="${!hasNext ? 'disabled' : ''}"
-           th:if="${hasNext}">Наступна →</a>
+        <!-- Кнопка "Следующая" -->
+        <a th:if="${hasNext}"
+           th:href="@{/product/all(page=${nextPage - 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}">
+          Наступна →
+        </a>
       </div>
     </main>
   </div>
@@ -998,5 +1009,6 @@
     observer.observe(card);
   });
 </script>
+
 </body>
 </html>
