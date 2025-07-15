@@ -4,350 +4,593 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Каталог товарів - Land of Chocolate</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root {
+      --primary-color: #2c1810;
+      --secondary-color: #8b6f47;
+      --accent-color: #d4af37;
+      --background-light: #fefefe;
+      --background-warm: #faf9f7;
+      --text-primary: #2c1810;
+      --text-secondary: #6b5b4f;
+      --text-light: #9a8a7a;
+      --border-light: #e8e2db;
+      --shadow-subtle: 0 2px 12px rgba(44, 24, 16, 0.06);
+      --shadow-card: 0 4px 20px rgba(44, 24, 16, 0.08);
+      --shadow-hover: 0 8px 30px rgba(44, 24, 16, 0.12);
+      --gradient-warm: linear-gradient(135deg, #faf9f7 0%, #f5f3f0 100%);
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f5f5f5;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gradient-warm);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
     }
 
     .main-container {
-      margin-top: 100px; /* Отступ для навигации */
       max-width: 1400px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 20px;
+      margin: 120px auto 0;
+      padding: 0 24px;
     }
 
     .page-header {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px 48px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-subtle);
+      margin-bottom: 32px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .page-header h1 {
-      color: #333;
-      text-align: center;
-      margin: 0;
-      font-size: 32px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 600;
+      color: var(--primary-color);
+      margin: 0;
+      letter-spacing: -0.02em;
     }
 
     .content-wrapper {
       display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 20px;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
       align-items: start;
-      width: 100%;
-      max-width: 100%;
     }
 
-    /* Sidebar Filters */
+    /* Sidebar */
     .filters-sidebar {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      width: 300px;
-      min-width: 300px;
-      flex-shrink: 0;
-      align-self: start; /* Выравнивание по верху */
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 32px 28px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: sticky;
+      top: 140px;
     }
 
     .filters-title {
-      font-size: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
       font-weight: 600;
-      color: #333;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #f8f9fa;
+      color: var(--primary-color);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
     }
 
     .filter-section {
-      margin-bottom: 25px;
+      margin-bottom: 28px;
     }
 
     .filter-label {
       display: block;
       font-weight: 500;
-      color: #555;
+      color: var(--text-secondary);
       margin-bottom: 8px;
-      font-size: 14px;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
     }
 
     .filter-input {
       width: 100%;
-      max-width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-      transition: border-color 0.3s;
-      box-sizing: border-box;
+      padding: 12px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      background: var(--background-light);
+      color: var(--text-primary);
     }
 
     .filter-input:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
     }
 
     .price-range {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
     }
 
     .price-input {
       flex: 1;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-      min-width: 0; /* Важно для flex */
+      padding: 12px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: var(--background-light);
+      transition: var(--transition);
+    }
+
+    .price-input:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
     }
 
     .filter-buttons {
       display: flex;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 12px;
+      margin-top: 24px;
     }
 
     .btn {
-      padding: 10px 16px;
+      padding: 12px 20px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: all 0.3s;
+      transition: var(--transition);
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-primary {
-      background-color: #007bff;
+      background: var(--primary-color);
       color: white;
+      flex: 1;
     }
 
     .btn-primary:hover {
-      background-color: #0056b3;
+      background: var(--secondary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
     }
 
     .btn-secondary {
-      background-color: #6c757d;
-      color: white;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+      flex: 1;
     }
 
     .btn-secondary:hover {
-      background-color: #545b62;
+      background: var(--background-warm);
+      color: var(--text-primary);
     }
 
-    /* Main Content Area */
+    /* Products Content */
     .products-content {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-card);
       overflow: hidden;
-      min-width: 0; /* Важно для grid */
-      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .products-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px;
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #ddd;
+      padding: 24px 32px;
+      background: var(--background-warm);
+      border-bottom: 1px solid var(--border-light);
     }
 
     .products-info {
-      color: #666;
-      font-size: 14px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .products-info strong {
+      color: var(--primary-color);
     }
 
     .sort-controls {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
+    }
+
+    .sort-controls label {
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
     }
 
     .sort-controls select {
       padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: var(--background-light);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: var(--transition);
     }
 
+    .sort-controls select:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+    }
+
+    /* Products Grid */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      padding: 32px;
     }
 
     .product-card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      background-color: white;
-      transition: transform 0.2s, box-shadow 0.2s;
+      background: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      position: relative;
     }
 
     .product-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .product-image-container {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--background-warm);
     }
 
     .product-image {
       width: 100%;
-      height: 200px;
+      height: 100%;
       object-fit: cover;
-      border-radius: 5px;
-      margin-bottom: 12px;
+      transition: var(--transition);
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+
+    .product-actions {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: var(--transition);
+    }
+
+    .product-card:hover .product-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .action-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .action-btn:hover {
+      background: white;
+      color: var(--primary-color);
+      transform: scale(1.1);
+    }
+
+    .action-btn.favorited {
+      color: #e74c3c;
+      background: white;
+    }
+
+    .product-info {
+      padding: 20px;
     }
 
     .product-name {
-      font-size: 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 8px;
-      color: #333;
+      color: var(--primary-color);
       line-height: 1.3;
+      letter-spacing: -0.01em;
     }
 
     .product-price {
-      font-size: 20px;
-      font-weight: bold;
-      color: #e74c3c;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-color);
       margin-bottom: 8px;
     }
 
     .product-stock {
-      font-size: 14px;
-      margin-bottom: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stock-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
     .in-stock {
       color: #27ae60;
     }
 
+    .in-stock .stock-indicator {
+      background: #27ae60;
+    }
+
     .low-stock {
       color: #f39c12;
+    }
+
+    .low-stock .stock-indicator {
+      background: #f39c12;
     }
 
     .out-of-stock {
       color: #e74c3c;
     }
 
+    .out-of-stock .stock-indicator {
+      background: #e74c3c;
+    }
+
     .product-meta {
       display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 10px;
     }
 
     .product-category, .product-brand {
-      font-size: 12px;
-      color: #666;
-      padding: 4px 8px;
-      border-radius: 3px;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      padding: 4px 12px;
+      border-radius: 20px;
       font-weight: 500;
+      letter-spacing: 0.02em;
     }
 
     .product-category {
-      background-color: #f8f9fa;
+      background: rgba(139, 111, 71, 0.1);
+      color: var(--secondary-color);
     }
 
     .product-brand {
-      background-color: #e9ecef;
+      background: rgba(44, 24, 16, 0.05);
+      color: var(--text-secondary);
     }
 
+    .add-to-cart-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .add-to-cart-btn:hover:not(:disabled) {
+      background: var(--secondary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .add-to-cart-btn:disabled {
+      background: var(--text-light);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .add-to-cart-btn .btn-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Pagination */
     .pagination {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      padding: 20px;
-      border-top: 1px solid #ddd;
-      background-color: #f8f9fa;
+      gap: 12px;
+      padding: 32px;
+      border-top: 1px solid var(--border-light);
+      background: var(--background-warm);
     }
 
     .pagination a, .pagination span {
-      padding: 10px 16px;
+      padding: 12px 20px;
       text-decoration: none;
-      color: #333;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      transition: all 0.2s;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      transition: var(--transition);
+      font-weight: 500;
+      background: white;
     }
 
     .pagination a:hover {
-      background-color: #007bff;
+      background: var(--primary-color);
       color: white;
-      border-color: #007bff;
+      border-color: var(--primary-color);
+      transform: translateY(-1px);
     }
 
     .pagination .current {
-      background-color: #007bff;
+      background: var(--primary-color);
       color: white;
-      border-color: #007bff;
+      border-color: var(--primary-color);
     }
 
     .pagination .disabled {
-      color: #999;
+      color: var(--text-light);
       cursor: not-allowed;
       opacity: 0.5;
     }
 
     .pagination .disabled:hover {
-      background-color: white;
-      color: #999;
-      border-color: #ddd;
+      background: white;
+      color: var(--text-light);
+      border-color: var(--border-light);
+      transform: none;
     }
 
     .no-products {
       text-align: center;
-      color: #666;
-      font-size: 18px;
-      padding: 60px 20px;
+      padding: 80px 32px;
+      color: var(--text-secondary);
     }
 
-    /* Mobile Responsive */
+    .no-products h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      color: var(--primary-color);
+    }
+
+    .no-products p {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-hover);
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: var(--transition);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      background: #27ae60;
+    }
+
+    .toast.error {
+      background: #e74c3c;
+    }
+
+    /* Responsive Design */
     @media (max-width: 1024px) {
       .content-wrapper {
-        grid-template-columns: 250px 1fr;
+        grid-template-columns: 280px 1fr;
+        gap: 24px;
       }
 
-      .filters-sidebar {
-        width: 250px;
-        min-width: 250px;
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       }
     }
 
     @media (max-width: 768px) {
+      .main-container {
+        margin-top: 100px;
+        padding: 0 16px;
+      }
+
       .content-wrapper {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 20px;
       }
 
       .filters-sidebar {
-        width: 100%;
-        min-width: auto;
-        margin-bottom: 15px;
-      }
-
-      .main-container {
-        margin-top: 80px;
-        padding: 10px;
+        position: static;
+        padding: 24px 20px;
       }
 
       .products-header {
         flex-direction: column;
-        gap: 15px;
+        gap: 16px;
         align-items: stretch;
+        padding: 20px 24px;
+      }
+
+      .products-info {
+        flex-direction: column;
+        gap: 8px;
       }
 
       .sort-controls {
@@ -355,9 +598,9 @@
       }
 
       .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 15px;
-        padding: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+        padding: 24px;
       }
     }
 
@@ -373,6 +616,10 @@
 
       .filter-buttons {
         flex-direction: column;
+      }
+
+      .page-header {
+        padding: 32px 24px;
       }
     }
   </style>
@@ -427,7 +674,7 @@
           </div>
         </div>
 
-        <!-- Category Filter (Future) -->
+        <!-- Category Filter -->
         <div class="filter-section">
           <label class="filter-label" for="categoryFilter">Категорія</label>
           <select id="categoryFilter" name="category" class="filter-input">
@@ -440,7 +687,7 @@
           </select>
         </div>
 
-        <!-- Brand Filter (Future) -->
+        <!-- Brand Filter -->
         <div class="filter-section">
           <label class="filter-label" for="brandFilter">Бренд</label>
           <select id="brandFilter" name="brand" class="filter-input">
@@ -478,8 +725,8 @@
       <div class="products-header">
         <div class="products-info">
           <span>Знайдено: <strong th:text="${totalCount}">0</strong> товарів</span>
-          <span>Сторінка: <strong th:text="${currentPage}">1</strong></span>
-          <span>На сторінці: <strong th:text="${pageSize}">50</strong></span>
+          <span>Сторінка: <strong th:text="${currentPage + 1}">1</strong></span>
+          <span>На сторінці: <strong th:text="${pageSize}">20</strong></span>
         </div>
 
         <div class="sort-controls">
@@ -502,45 +749,64 @@
       <!-- Products Grid -->
       <div class="products-grid" th:if="${products != null and !products.isEmpty()}">
         <div class="product-card" th:each="product : ${products}">
-          <img th:src="${product.imageUrl}"
-               th:alt="${product.name}"
-               class="product-image"
-               onerror="this.src='https://via.placeholder.com/280x200?text=Зображення+відсутнє'">
-
-          <div class="product-name" th:text="${product.name}">Назва товару</div>
-          <div class="product-price" th:text="${product.price} + ' ₴'">0 ₴</div>
-
-          <div class="product-stock"
-               th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">
-                        <span th:if="${product.inStock and product.lowStock}"
-                              th:text="'Мало на складі: ' + ${product.stockQuantity} + ' шт.'">Мало на складі</span>
-            <span th:if="${product.inStock and !product.lowStock}"
-                  th:text="'В наявності: ' + ${product.stockQuantity} + ' шт.'">В наявності</span>
-            <span th:if="${!product.inStock}">Немає в наявності</span>
+          <div class="product-image-container">
+            <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/400x300?text=Зображення+відсутнє'}"
+                 th:alt="${product.name}"
+                 class="product-image"
+                 onerror="this.src='https://via.placeholder.com/400x300?text=Зображення+відсутнє'">
+            <div class="product-actions">
+              <button class="action-btn favorite-btn" th:onclick="'toggleFavorite(this, ' + ${product.id} + ')'">
+                <i class="far fa-heart"></i>
+              </button>
+            </div>
           </div>
+          <div class="product-info">
+            <div class="product-name" th:text="${product.name}">Назва товару</div>
+            <div class="product-price" th:text="${product.price} + ' ₴'">0 ₴</div>
 
-          <div class="product-meta">
-            <span class="product-category" th:text="${product.categoryName}">Категорія</span>
-            <span class="product-brand" th:text="${product.brandName}">Бренд</span>
+            <div class="product-stock"
+                 th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">
+              <span class="stock-indicator"></span>
+              <span th:if="${product.inStock and product.lowStock}"
+                    th:text="'Мало на складі: ' + ${product.stockQuantity} + ' шт.'">Мало на складі</span>
+              <span th:if="${product.inStock and !product.lowStock}"
+                    th:text="'В наявності: ' + ${product.stockQuantity} + ' шт.'">В наявності</span>
+              <span th:if="${!product.inStock}">Немає в наявності</span>
+            </div>
+
+            <div class="product-meta">
+              <span class="product-category" th:text="${product.categoryName ?: 'Без категорії'}">Категорія</span>
+              <span class="product-brand" th:text="${product.brandName ?: 'Без бренду'}">Бренд</span>
+            </div>
+
+            <button class="add-to-cart-btn"
+                    th:onclick="'addToCart(' + ${product.id} + ')'"
+                    th:disabled="${!product.inStock}">
+                            <span class="btn-text">
+                                <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
+                                <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
+                            </span>
+            </button>
           </div>
         </div>
       </div>
 
       <!-- No Products Message -->
       <div class="no-products" th:if="${products == null or products.isEmpty()}">
+        <h3>Товари не знайдені</h3>
         <p>За вашим запитом товари не знайдені.</p>
         <p>Спробуйте змінити фільтри пошуку.</p>
       </div>
 
       <!-- Pagination -->
       <div class="pagination" th:if="${products != null and !products.isEmpty()}">
-        <a th:href="@{/product/all(page=${currentPage - 2}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
+        <a th:href="@{/product/all(page=${currentPage - 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
            th:class="${!hasPrevious ? 'disabled' : ''}"
            th:if="${hasPrevious}">← Попередня</a>
 
-        <span class="current" th:text="${currentPage}">1</span>
+        <span class="current" th:text="${currentPage + 1}">1</span>
 
-        <a th:href="@{/product/all(page=${currentPage}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
+        <a th:href="@{/product/all(page=${currentPage + 1}, sortBy=${sortBy}, sortDirection=${sortDirection}, searchName=${searchName}, minPrice=${minPrice}, maxPrice=${maxPrice}, stockStatus=${stockStatus})}"
            th:class="${!hasNext ? 'disabled' : ''}"
            th:if="${hasNext}">Наступна →</a>
       </div>
@@ -548,10 +814,81 @@
   </div>
 </div>
 
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
 <!-- Подключение JavaScript для навигации -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 
 <script>
+  // Cart and favorites functionality (using in-memory storage for demo)
+  let cart = [];
+  let favorites = [];
+
+  function addToCart(productId) {
+    const existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({ id: productId, quantity: 1 });
+    }
+
+    showToast('Товар додано в кошик!', 'success');
+
+    // Add animation to button
+    const button = event.target.closest('.add-to-cart-btn');
+    button.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      button.style.transform = 'scale(1)';
+    }, 150);
+  }
+
+  function toggleFavorite(button, productId) {
+    const icon = button.querySelector('i');
+    const isCurrentlyFavorited = favorites.includes(productId);
+
+    if (isCurrentlyFavorited) {
+      favorites = favorites.filter(id => id !== productId);
+      icon.className = 'far fa-heart';
+      button.classList.remove('favorited');
+      showToast('Видалено з обраного', 'error');
+    } else {
+      favorites.push(productId);
+      icon.className = 'fas fa-heart';
+      button.classList.add('favorited');
+      showToast('Додано в обране!', 'success');
+    }
+
+    // Add animation
+    button.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+      button.style.transform = 'scale(1)';
+    }, 200);
+  }
+
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  // Initialize favorites on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    favorites.forEach(productId => {
+      const favoriteBtn = document.querySelector(`[onclick*="toggleFavorite(this, ${productId})"]`);
+      if (favoriteBtn) {
+        favoriteBtn.classList.add('favorited');
+        favoriteBtn.querySelector('i').className = 'fas fa-heart';
+      }
+    });
+  });
+
   // Sorting functionality
   document.getElementById('sortBy').addEventListener('change', function() {
     updateSort();
@@ -632,7 +969,34 @@
       applyFilters();
     }
   });
-</script>
 
+  // Add smooth scrolling for pagination
+  document.querySelectorAll('.pagination a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      if (!this.classList.contains('disabled')) {
+        document.querySelector('.products-content').scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Add loading animation for product cards
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  });
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(card);
+  });
+</script>
 </body>
 </html>

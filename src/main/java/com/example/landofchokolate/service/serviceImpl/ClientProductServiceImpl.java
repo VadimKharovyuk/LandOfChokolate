@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientProductServiceImpl implements ClientProductService {
 
     private final ProductRepository productRepository;
-    private static final int PAGE_SIZE_LARGE = 50;
+    private static final int PAGE_SIZE_LARGE = 6;
 
     @Override
     @Transactional(readOnly = true)
@@ -41,7 +41,7 @@ public class ClientProductServiceImpl implements ClientProductService {
                 .totalCount((int) productDtoPage.getTotalElements())
                 .hasNext(productDtoPage.hasNext())
                 .hasPrevious(productDtoPage.hasPrevious())
-                .currentPage(productDtoPage.getNumber() + 1)  // currentPage (1-based)
+                .currentPage(productDtoPage.getNumber() + 1)
                 .pageSize(productDtoPage.getSize())
                 .build();
     }

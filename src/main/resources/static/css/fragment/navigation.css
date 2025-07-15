@@ -1,5 +1,93 @@
 
 /* Navigation Styles */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+/* CSS Variables */
+:root {
+    --primary-dark: #2c3e50;
+    --accent-gold: #c9a96e;
+    --white: #ffffff;
+    --transition: all 0.3s ease;
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Styles */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+
+/* Flexbox utilities */
+.d-flex {
+    display: flex !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+/* Display utilities */
+.d-none {
+    display: none !important;
+}
+
+.d-lg-none {
+    display: none !important;
+}
+
+@media (min-width: 992px) {
+    .d-lg-flex {
+        display: flex !important;
+    }
+    .d-lg-none {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .d-lg-flex {
+        display: none !important;
+    }
+    .d-lg-none {
+        display: block !important;
+    }
+}
+
+/* Position utilities */
+.position-relative {
+    position: relative !important;
+}
+
+.fixed-top {
+    position: fixed !important;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+
+/* Navigation Styles - ваши существующие стили остаются без изменений */
+.navbar-luxury {
+    background: rgba(248, 248, 248, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+    padding: 20px 0;
+    transition: var(--transition);
+    width: 100%; /* Добавьте эту строку */
+}
 .navbar-luxury {
     background: rgba(248, 248, 248, 0.95);
     backdrop-filter: blur(20px);
