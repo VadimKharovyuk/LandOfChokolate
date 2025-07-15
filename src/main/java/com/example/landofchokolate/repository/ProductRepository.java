@@ -1,6 +1,9 @@
 package com.example.landofchokolate.repository;
 
+import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -199,4 +202,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.category.id = :categoryId AND p.stockQuantity > 0 AND p.id != :excludeProductId ORDER BY p.price ASC")
     List<Product> findRecommendedProductsByCategory(@Param("categoryId") Long categoryId,
                                                     @Param("excludeProductId") Long excludeProductId);
+
+    @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, " +
+            "c.name, b.name, " +
+            "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
+            "CASE WHEN p.stockQuantity < 10 THEN true ELSE false END) " +
+            "FROM Product p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.brand b")
+    Page<ProductListDto> findAllProductListDto(Pageable pageable);
 }
