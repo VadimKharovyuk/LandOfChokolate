@@ -1,5 +1,6 @@
 package com.example.landofchokolate.service.serviceImpl;
 
+import com.example.landofchokolate.dto.category.CategoryEditData;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
 import com.example.landofchokolate.dto.category.CreateCategoryDto;
 import com.example.landofchokolate.mapper.CategoryMapper;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.util.List;
 
@@ -231,4 +233,23 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Generated slugs for {} categories", categoriesWithoutSlug.size());
     }
+
+    /**
+     * Подготавливает данные для редактирования категории
+     */
+    @Override
+    public CategoryEditData prepareEditData(Long id) {
+        log.info("Preparing edit data for category with id: {}", id);
+
+        // Получаем категорию
+        CategoryResponseDto category = getCategoryById(id);
+
+        // Преобразуем через mapper
+        CategoryEditData editData = categoryMapper.toCategoryEditData(category);
+
+        log.debug("Prepared edit data for category id={}, name={}", id, category.getName());
+        return editData;
+    }
+
+
 }

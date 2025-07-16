@@ -1,5 +1,6 @@
 package com.example.landofchokolate.mapper;
 
+import com.example.landofchokolate.dto.category.CategoryEditData;
 import com.example.landofchokolate.dto.category.CategoryPublicDto;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
 import com.example.landofchokolate.dto.category.CreateCategoryDto;
@@ -147,5 +148,35 @@ public class CategoryMapper {
             log.debug("Mapped {} active categories to PublicDto list", publicDtos.size());
             return publicDtos;
         }
+
+
+
+    /**
+     * Преобразует CategoryResponseDto в CategoryEditData для редактирования
+     */
+    public CategoryEditData toCategoryEditData(CategoryResponseDto category) {
+        if (category == null) {
+            log.warn("CategoryResponseDto is null, returning null");
+            return null;
+        }
+
+        //Данные для редактирования (поля формы)
+        CreateCategoryDto editDto = new CreateCategoryDto();
+        editDto.setName(category.getName());
+        editDto.setShortDescription(category.getShortDescription());
+        editDto.setIsActive(category.getIsActive());
+        editDto.setMetaDescription(category.getMetaDescription());
+        editDto.setMetaTitle(category.getMetaTitle());
+
+     //Данные для отображения (только показать)
+        CategoryEditData editData = new CategoryEditData();
+        editData.setCategoryDto(editDto);
+        editData.setCurrentImageUrl(category.getImageUrl());
+
+        log.debug("Mapped CategoryResponseDto to CategoryEditData: id={}, name={}, hasImage={}",
+                category.getId(), category.getName(), category.getImageUrl() != null);
+
+        return editData;
     }
+}
 

@@ -1,5 +1,6 @@
 package com.example.landofchokolate.controller;
 
+import com.example.landofchokolate.dto.category.CategoryEditData;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
 import com.example.landofchokolate.dto.category.CreateCategoryDto;
 import com.example.landofchokolate.service.CategoryService;
@@ -68,22 +69,14 @@ public class CategoryController {
     @GetMapping("/edit/{id}")
     public String categoryEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            CategoryResponseDto category = categoryService.getCategoryById(id);
-            CreateCategoryDto editDto = new CreateCategoryDto();
+            CategoryEditData editData = categoryService.prepareEditData(id);
 
-            editDto.setName(category.getName());
-            editDto.setShortDescription(category.getShortDescription());
-            editDto.setIsActive(category.getIsActive());
-            editDto.setMetaDescription(category.getMetaDescription());
-            editDto.setMetaTitle(category.getMetaTitle());
-
-            model.addAttribute("category", editDto);
+            model.addAttribute("category", editData.getCategoryDto());
             model.addAttribute("categoryId", id);
             model.addAttribute("isEdit", true);
 
-            // 🆕 Добавляем данные об изображении для отображения в форме
-            if (category.getImageUrl() != null) {
-                model.addAttribute("currentImageUrl", category.getImageUrl());
+            if (editData.getCurrentImageUrl() != null) {
+                model.addAttribute("currentImageUrl", editData.getCurrentImageUrl());
             }
 
             return "admin/category/category-form";
