@@ -889,272 +889,357 @@
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 
 <script>
-    // Cart and favorites functionality (using in-memory storage for demo)
-    let cart = [];
-    let favorites = [];
+    // ============================================================================
+    // МОДУЛЬ: Утилиты и общие функции
+    // ============================================================================
+    const Utils = {
+        showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
 
-    function addToCart(productId) {
-        const existingItem = cart.find(item => item.id === productId);
-
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({id: productId, quantity: 1});
-        }
-
-        showToast('Товар додано в кошик!', 'success');
-
-        // Add animation to button
-        const button = event.target.closest('.add-to-cart-btn');
-        button.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            button.style.transform = 'scale(1)';
-        }, 150);
-    }
-
-    function toggleFavorite(button, productId) {
-        const icon = button.querySelector('i');
-        const isCurrentlyFavorited = favorites.includes(productId);
-
-        if (isCurrentlyFavorited) {
-            favorites = favorites.filter(id => id !== productId);
-            icon.className = 'far fa-heart';
-            button.classList.remove('favorited');
-            showToast('Видалено з обраного', 'error');
-        } else {
-            favorites.push(productId);
-            icon.className = 'fas fa-heart';
-            button.classList.add('favorited');
-            showToast('Додано в обране!', 'success');
-        }
-
-        // Add animation
-        button.style.transform = 'scale(1.2)';
-        setTimeout(() => {
-            button.style.transform = 'scale(1)';
-        }, 200);
-    }
-
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = `toast ${type}`;
-        toast.classList.add('show');
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // Sorting functionality
-    function updateSort() {
-        const sortBy = document.getElementById('sortBy').value;
-        const sortDirection = document.getElementById('sortDirection').value;
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('sortBy', sortBy);
-        currentUrl.searchParams.set('sortDirection', sortDirection);
-        currentUrl.searchParams.set('page', '0'); // Reset to first page
-        window.location.href = currentUrl.toString();
-    }
-
-    function applyFilters() {
-        const formData = new FormData(document.getElementById('filtersForm'));
-        const currentUrl = new URL(window.location.href);
-
-        // Preserve sorting
-        const sortBy = document.getElementById('sortBy').value;
-        const sortDirection = document.getElementById('sortDirection').value;
-
-        // Clear existing filter params
-        currentUrl.searchParams.delete('searchName');
-        currentUrl.searchParams.delete('minPrice');
-        currentUrl.searchParams.delete('maxPrice');
-        currentUrl.searchParams.delete('category');
-        currentUrl.searchParams.delete('brand');
-        currentUrl.searchParams.delete('stockStatus');
-
-        // Add new filter params
-        for (let [key, value] of formData.entries()) {
-            if (value.trim() !== '') {
-                currentUrl.searchParams.set(key, value);
-            }
-        }
-
-        // Set sorting and reset page
-        currentUrl.searchParams.set('sortBy', sortBy);
-        currentUrl.searchParams.set('sortDirection', sortDirection);
-        currentUrl.searchParams.set('page', '0');
-
-        window.location.href = currentUrl.toString();
-    }
-
-    function clearFilters() {
-        document.getElementById('filtersForm').reset();
-        const currentUrl = new URL(window.location.href);
-
-        // Keep only sorting params
-        const sortBy = document.getElementById('sortBy').value;
-        const sortDirection = document.getElementById('sortDirection').value;
-
-        // Clear all params and add only sorting
-        const newUrl = new URL(currentUrl.origin + currentUrl.pathname);
-        newUrl.searchParams.set('sortBy', sortBy);
-        newUrl.searchParams.set('sortDirection', sortDirection);
-        newUrl.searchParams.set('page', '0');
-
-        window.location.href = newUrl.toString();
-    }
-
-    // Функция для показа индикатора загрузки
-    function showLoadingIndicator() {
-        const button = document.querySelector('.btn-primary');
-        if (button) {
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Завантаження...';
-            button.disabled = true;
-
-            // Возвращаем кнопку в исходное состояние через 2 секунды на случай ошибки
             setTimeout(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-            }, 2000);
-        }
-    }
+                toast.classList.remove('show');
+            }, 3000);
+        },
 
-    // Initialize everything on page load
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initialize favorites
-        favorites.forEach(productId => {
-            const favoriteBtn = document.querySelector(`[onclick*="toggleFavorite(this, ${productId})"]`);
-            if (favoriteBtn) {
-                favoriteBtn.classList.add('favorited');
-                favoriteBtn.querySelector('i').className = 'fas fa-heart';
+        showLoadingIndicator() {
+            const button = document.querySelector('.btn-primary');
+            if (button) {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Завантаження...';
+                button.disabled = true;
+
+                // Возвращаем кнопку в исходное состояние через 2 секунды на случай ошибки
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 2000);
             }
-        });
+        },
 
-        // Sorting functionality
-        const sortByElement = document.getElementById('sortBy');
-        const sortDirectionElement = document.getElementById('sortDirection');
-
-        if (sortByElement) {
-            sortByElement.addEventListener('change', updateSort);
+        updateUrl(params) {
+            const currentUrl = new URL(window.location.href);
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== null && value !== undefined && value !== '') {
+                    currentUrl.searchParams.set(key, value);
+                } else {
+                    currentUrl.searchParams.delete(key);
+                }
+            });
+            window.location.href = currentUrl.toString();
         }
+    };
 
-        if (sortDirectionElement) {
-            sortDirectionElement.addEventListener('change', updateSort);
-        }
+    // ============================================================================
+    // МОДУЛЬ: Корзина и избранное
+    // ============================================================================
+    const CartAndFavorites = {
+        cart: [],
+        favorites: [],
 
-        // Filters form submission
-        const filtersForm = document.getElementById('filtersForm');
-        if (filtersForm) {
-            filtersForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                showLoadingIndicator();
-                applyFilters();
+        addToCart(productId) {
+            const existingItem = this.cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                this.cart.push({id: productId, quantity: 1});
+            }
+
+            Utils.showToast('Товар додано в кошик!', 'success');
+
+            // Add animation to button
+            const button = event.target.closest('.add-to-cart-btn');
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 150);
+        },
+
+        toggleFavorite(button, productId) {
+            const icon = button.querySelector('i');
+            const isCurrentlyFavorited = this.favorites.includes(productId);
+
+            if (isCurrentlyFavorited) {
+                this.favorites = this.favorites.filter(id => id !== productId);
+                icon.className = 'far fa-heart';
+                button.classList.remove('favorited');
+                Utils.showToast('Видалено з обраного', 'error');
+            } else {
+                this.favorites.push(productId);
+                icon.className = 'fas fa-heart';
+                button.classList.add('favorited');
+                Utils.showToast('Додано в обране!', 'success');
+            }
+
+            // Add animation
+            button.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+        },
+
+        initializeFavorites() {
+            this.favorites.forEach(productId => {
+                const favoriteBtn = document.querySelector(`[onclick*="toggleFavorite(this, ${productId})"]`);
+                if (favoriteBtn) {
+                    favoriteBtn.classList.add('favorited');
+                    favoriteBtn.querySelector('i').className = 'fas fa-heart';
+                }
             });
         }
+    };
 
-        // Автоматическое применение фильтров при изменении селектов
-        const autoApplySelects = ['categoryFilter', 'brandFilter', 'stockStatus'];
+    // ============================================================================
+    // МОДУЛЬ: Сортировка
+    // ============================================================================
+    const Sorting = {
+        updateSort() {
+            const sortBy = document.getElementById('sortBy').value;
+            const sortDirection = document.getElementById('sortDirection').value;
 
-        autoApplySelects.forEach(selectId => {
-            const selectElement = document.getElementById(selectId);
-            if (selectElement) {
-                selectElement.addEventListener('change', function() {
-                    showLoadingIndicator();
-                    // Небольшая задержка для лучшего UX
-                    setTimeout(() => {
-                        applyFilters();
-                    }, 100);
+            Utils.updateUrl({
+                sortBy,
+                sortDirection,
+                page: '0' // Reset to first page
+            });
+        },
+
+        initializeSorting() {
+            const sortByElement = document.getElementById('sortBy');
+            const sortDirectionElement = document.getElementById('sortDirection');
+
+            if (sortByElement) {
+                sortByElement.addEventListener('change', this.updateSort);
+            }
+
+            if (sortDirectionElement) {
+                sortDirectionElement.addEventListener('change', this.updateSort);
+            }
+        }
+    };
+
+    // ============================================================================
+    // МОДУЛЬ: Фильтрация
+    // ============================================================================
+    const Filters = {
+        applyFilters() {
+            const formData = new FormData(document.getElementById('filtersForm'));
+            const currentUrl = new URL(window.location.href);
+
+            // Preserve sorting
+            const sortBy = document.getElementById('sortBy').value;
+            const sortDirection = document.getElementById('sortDirection').value;
+
+            // Clear existing filter params
+            const filterParams = ['searchName', 'minPrice', 'maxPrice', 'category', 'brand', 'stockStatus'];
+            filterParams.forEach(param => currentUrl.searchParams.delete(param));
+
+            // Add new filter params
+            for (let [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    currentUrl.searchParams.set(key, value);
+                }
+            }
+
+            // Set sorting and reset page
+            currentUrl.searchParams.set('sortBy', sortBy);
+            currentUrl.searchParams.set('sortDirection', sortDirection);
+            currentUrl.searchParams.set('page', '0');
+
+            window.location.href = currentUrl.toString();
+        },
+
+        clearFilters() {
+            document.getElementById('filtersForm').reset();
+            const sortBy = document.getElementById('sortBy').value;
+            const sortDirection = document.getElementById('sortDirection').value;
+
+            Utils.updateUrl({
+                sortBy,
+                sortDirection,
+                page: '0',
+                // Очищаем все фильтры
+                searchName: null,
+                minPrice: null,
+                maxPrice: null,
+                category: null,
+                brand: null,
+                stockStatus: null
+            });
+        },
+
+        initializeFilters() {
+            // Форма фильтров
+            const filtersForm = document.getElementById('filtersForm');
+            if (filtersForm) {
+                filtersForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    Utils.showLoadingIndicator();
+                    this.applyFilters();
                 });
             }
-        });
 
-        // Debounce для поля поиска по названию
-        const searchInput = document.getElementById('searchName');
-        if (searchInput) {
+            // Автоматическое применение селектов
+            this.initializeAutoApplySelects();
+
+            // Поиск с debounce
+            this.initializeSearchInput();
+
+            // Поля цены
+            this.initializePriceInputs();
+        },
+
+        initializeAutoApplySelects() {
+            const autoApplySelects = ['categoryFilter', 'brandFilter', 'stockStatus'];
+
+            autoApplySelects.forEach(selectId => {
+                const selectElement = document.getElementById(selectId);
+                if (selectElement) {
+                    selectElement.addEventListener('change', () => {
+                        Utils.showLoadingIndicator();
+                        setTimeout(() => {
+                            this.applyFilters();
+                        }, 100);
+                    });
+                }
+            });
+        },
+
+        initializeSearchInput() {
+            const searchInput = document.getElementById('searchName');
+            if (!searchInput) return;
+
             let searchTimeout;
 
             // Enter key handler
-            searchInput.addEventListener('keypress', function (e) {
+            searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     clearTimeout(searchTimeout);
-                    showLoadingIndicator();
-                    applyFilters();
+                    Utils.showLoadingIndicator();
+                    this.applyFilters();
                 }
             });
 
             // Auto-search with debounce
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', () => {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
-                    if (this.value.length >= 2 || this.value.length === 0) {
-                        showLoadingIndicator();
-                        applyFilters();
+                    if (searchInput.value.length >= 2 || searchInput.value.length === 0) {
+                        Utils.showLoadingIndicator();
+                        this.applyFilters();
                     }
-                }, 800); // Применяем фильтр через 800мс после окончания ввода
+                }, 800);
             });
-        }
+        },
 
-        // Обработка полей цены
-        const priceInputs = ['minPrice', 'maxPrice'];
-        priceInputs.forEach(inputId => {
-            const input = document.getElementById(inputId);
-            if (input) {
-                // Enter key handler
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        showLoadingIndicator();
-                        applyFilters();
-                    }
-                });
+        initializePriceInputs() {
+            const priceInputs = ['minPrice', 'maxPrice'];
 
-                // Применяем фильтр при потере фокуса, если значение изменилось
+            priceInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (!input) return;
+
                 let originalValue = input.value;
 
-                input.addEventListener('focus', function() {
-                    originalValue = this.value;
-                });
-
-                input.addEventListener('blur', function() {
-                    if (this.value !== originalValue) {
-                        showLoadingIndicator();
-                        applyFilters();
+                // Enter key handler
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        Utils.showLoadingIndicator();
+                        this.applyFilters();
                     }
                 });
-            }
-        });
 
-        // Add smooth scrolling for pagination
-        document.querySelectorAll('.pagination a').forEach(link => {
-            link.addEventListener('click', function (e) {
-                if (!this.classList.contains('disabled')) {
-                    document.querySelector('.products-content').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
+                // Focus handler
+                input.addEventListener('focus', () => {
+                    originalValue = input.value;
+                });
+
+                // Blur handler
+                input.addEventListener('blur', () => {
+                    if (input.value !== originalValue) {
+                        Utils.showLoadingIndicator();
+                        this.applyFilters();
+                    }
+                });
             });
-        });
+        }
+    };
 
-        // Add loading animation for product cards
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
+    // ============================================================================
+    // МОДУЛЬ: UI эффекты и анимации
+    // ============================================================================
+    const UIEffects = {
+        initializePagination() {
+            document.querySelectorAll('.pagination a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (!link.classList.contains('disabled')) {
+                        document.querySelector('.products-content').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
             });
-        });
+        },
 
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(card);
-        });
-    });
+        initializeProductCards() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        }
+    };
+
+    // ============================================================================
+    // ГЛАВНЫЙ ИНИЦИАЛИЗАТОР
+    // ============================================================================
+    const App = {
+        init() {
+            document.addEventListener('DOMContentLoaded', () => {
+                // Инициализируем все модули
+                CartAndFavorites.initializeFavorites();
+                Sorting.initializeSorting();
+                Filters.initializeFilters();
+                UIEffects.initializePagination();
+                UIEffects.initializeProductCards();
+            });
+        }
+    };
+
+    // ============================================================================
+    // ГЛОБАЛЬНЫЕ ФУНКЦИИ (для совместимости с HTML)
+    // ============================================================================
+    function addToCart(productId) {
+        CartAndFavorites.addToCart(productId);
+    }
+
+    function toggleFavorite(button, productId) {
+        CartAndFavorites.toggleFavorite(button, productId);
+    }
+
+    function clearFilters() {
+        Filters.clearFilters();
+    }
+
+    // ============================================================================
+    // ЗАПУСК ПРИЛОЖЕНИЯ
+    // ============================================================================
+    App.init();
 </script>
 
 </body>
