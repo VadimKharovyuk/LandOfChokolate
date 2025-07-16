@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Управление категориями</title>
+    <meta charset="UTF-8">
+    <title>Управление категориями</title>
 </head>
 <body>
 <!-- Динамический заголовок -->
@@ -10,11 +10,11 @@
 
 <!-- Flash сообщения -->
 <div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
-  <span th:text="${successMessage}"></span>
+    <span th:text="${successMessage}"></span>
 </div>
 
 <div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-  <span th:text="${errorMessage}"></span>
+    <span th:text="${errorMessage}"></span>
 </div>
 
 <!-- Форма создания/редактирования категории -->
@@ -36,11 +36,28 @@
     </div>
   </div>
 
+  <!-- Поле для краткого описания категории -->
+  <div style="margin: 10px 0;">
+    <label for="shortDescription">Краткое описание:</label><br>
+    <textarea id="shortDescription" th:field="*{shortDescription}"
+              style="width: 300px; padding: 5px; height: 60px; resize: vertical;"
+              placeholder="Введите краткое описание категории"></textarea>
+
+    <!-- Отображение ошибок валидации для shortDescription -->
+    <div th:if="${#fields.hasErrors('shortDescription')}" style="color: red; font-size: 12px;">
+      <ul>
+        <li th:each="error : ${#fields.errors('shortDescription')}" th:text="${error}"></li>
+      </ul>
+    </div>
+  </div>
+
   <div style="margin: 20px 0;">
-    <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+    <button type="submit"
+            style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
       <span th:text="${isEdit != null and isEdit} ? 'Обновить категорию' : 'Создать категорию'"></span>
     </button>
-    <a th:href="@{/admin/category/list}" style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
+    <a th:href="@{/admin/category/list}"
+       style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
       Отмена
     </a>
   </div>
@@ -48,12 +65,12 @@
 
 <!-- Навигация -->
 <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-  <h3>Навигация:</h3>
-  <ul>
-    <li><a th:href="@{/admin/category}">Создать новую категорию</a></li>
-    <li><a th:href="@{/admin/category/list}">Список всех категорий</a></li>
-    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
-  </ul>
+    <h3>Навигация:</h3>
+    <ul>
+        <li><a th:href="@{/admin/category}">Создать новую категорию</a></li>
+        <li><a th:href="@{/admin/category/list}">Список всех категорий</a></li>
+        <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
+    </ul>
 </div>
 </body>
 </html>

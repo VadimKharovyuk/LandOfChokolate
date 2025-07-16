@@ -25,6 +25,7 @@ public class CategoryMapper {
 
         Category category = new Category();
         category.setName(createCategoryDto.getName());
+        category.setShortDescription(createCategoryDto.getShortDescription());
 
         log.debug("Mapped CreateCategoryDto to Category: {}", createCategoryDto.getName());
         return category;
@@ -40,6 +41,7 @@ public class CategoryMapper {
         }
 
         existingCategory.setName(dto.getName());
+        existingCategory.setShortDescription(dto.getShortDescription());
 
         log.debug("Updated category entity with name: {}", dto.getName());
     }
@@ -56,6 +58,7 @@ public class CategoryMapper {
         CategoryResponseDto dto = new CategoryResponseDto();
         dto.setId(category.getId());
         dto.setName(category.getName());
+        dto.setShortDescription(category.getShortDescription());
 
         log.debug("Mapped Category entity to ResponseDto: id={}, name={}",
                 category.getId(), category.getName());
