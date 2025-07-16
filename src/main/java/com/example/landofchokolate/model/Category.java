@@ -33,7 +33,7 @@ public class Category {
 
     // URL-friendly название для SEO
     @Column(unique = true)
-    private String slug; // например: "shokolad-i-konfety"
+    private String slug;
 
     // Для SEO
     private String metaTitle;

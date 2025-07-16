@@ -62,6 +62,7 @@
     <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
         <thead style="background-color: #f8f9fa;">
         <tr>
+            <th style="padding: 10px; text-align: center;">Фото</th>
             <th style="padding: 10px; text-align: left;">ID</th>
             <th style="padding: 10px; text-align: left;">Название</th>
             <th style="padding: 10px; text-align: left;">Slug</th>
@@ -75,6 +76,19 @@
         </thead>
         <tbody>
         <tr th:each="category : ${categories}">
+            <!-- 🆕 Столбец с изображением -->
+            <td style="padding: 10px; text-align: center; width: 80px;">
+                <div th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}">
+                    <img th:src="${category.imageUrl}"
+                         th:alt="${category.name}"
+                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+                <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
+                     style="width: 60px; height: 60px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">
+                    Нет фото
+                </div>
+            </td>
+
             <td style="padding: 10px;" th:text="${category.id}"></td>
             <td style="padding: 10px; font-weight: bold;" th:text="${category.name}"></td>
             <td style="padding: 10px; font-family: monospace; color: #6c757d; max-width: 120px; word-wrap: break-word;"

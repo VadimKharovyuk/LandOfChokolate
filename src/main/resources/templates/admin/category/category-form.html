@@ -16,10 +16,9 @@
 <div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
     <span th:text="${errorMessage}"></span>
 </div>
-
 <!-- Форма создания/редактирования категории -->
 <form th:action="${isEdit != null and isEdit} ? @{'/admin/category/edit/' + ${categoryId}} : @{/admin/category}"
-      th:object="${category}" method="post">
+      th:object="${category}" method="post" enctype="multipart/form-data">
 
     <!-- Поле для названия категории -->
     <div style="margin: 10px 0;">
@@ -49,6 +48,36 @@
                 <li th:each="error : ${#fields.errors('shortDescription')}" th:text="${error}"></li>
             </ul>
         </div>
+    </div>
+
+    <!-- 🆕 Поле для загрузки изображения -->
+    <div style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7;">
+        <h3 style="margin-top: 0; color: #856404;">Изображение категории</h3>
+
+        <!-- Показ текущего изображения при редактировании -->
+        <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" style="margin-bottom: 15px;">
+            <label style="font-weight: bold;">Текущее изображение:</label><br>
+            <img th:src="${currentImageUrl}" alt="Current category image"
+                 style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; margin-top: 5px;">
+        </div>
+
+        <div style="margin: 10px 0;">
+            <label for="image">Выберите изображение:</label><br>
+            <input type="file" id="image" th:field="*{image}" accept="image/*"
+                   style="padding: 5px; width: 300px;">
+            <small style="color: #6c757d; display: block; margin-top: 5px;">
+                📸 Поддерживаемые форматы: JPG, JPEG, PNG, GIF. Максимальный размер: 5MB.<br>
+                💡 При редактировании: если выберете новое изображение, старое будет заменено.
+            </small>
+        </div>
+    </div>
+
+    <!-- 🆕 Поле для статуса активности -->
+    <div style="margin: 10px 0;">
+        <label for="isActive">Статус категории:</label><br>
+        <input type="checkbox" id="isActive" th:field="*{isActive}"
+               style="margin-right: 5px;">
+        <label for="isActive" style="font-weight: normal;">Активна (отображается на сайте)</label>
     </div>
 
     <!-- SEO раздел -->
@@ -90,14 +119,6 @@
                 </ul>
             </div>
         </div>
-
-        <!-- 🆕 Поле для статуса активности -->
-        <div style="margin: 10px 0;">
-            <label for="isActive">Статус категории:</label><br>
-            <input type="checkbox" id="isActive" th:field="*{isActive}"
-                   style="margin-right: 5px;">
-            <label for="isActive" style="font-weight: normal;">Активна (отображается на сайте)</label>
-        </div>
     </div>
 
     <div style="margin: 20px 0;">
@@ -111,6 +132,7 @@
         </a>
     </div>
 </form>
+
 
 <!-- Навигация -->
 <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">

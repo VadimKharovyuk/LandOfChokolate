@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class CategoryController {
     @GetMapping
     public String categoryCreateForm(Model model) {
         model.addAttribute("category", new CreateCategoryDto());
+        model.addAttribute("isEdit", false);
         return "admin/category/category-form";
     }
 
@@ -35,12 +37,14 @@ public class CategoryController {
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors occurred while creating category: {}", bindingResult.getAllErrors());
+            model.addAttribute("isEdit", false);
             return "admin/category/category-form";
         }
 
         try {
             CategoryResponseDto createdCategory = categoryService.createCategory(createCategoryDto);
             log.info("Category created successfully with id: {}", createdCategory.getId());
+
 
             redirectAttributes.addFlashAttribute("successMessage",
                     "Категория '" + createdCategory.getName() + "' успешно создана!");
@@ -73,10 +77,14 @@ public class CategoryController {
             editDto.setMetaDescription(category.getMetaDescription());
             editDto.setMetaTitle(category.getMetaTitle());
 
-
             model.addAttribute("category", editDto);
             model.addAttribute("categoryId", id);
             model.addAttribute("isEdit", true);
+
+            // 🆕 Добавляем данные об изображении для отображения в форме
+            if (category.getImageUrl() != null) {
+                model.addAttribute("currentImageUrl", category.getImageUrl());
+            }
 
             return "admin/category/category-form";
 

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +27,8 @@ public class CreateCategoryDto {
     @Size(max = 160, message = "Meta description не должно превышать 160 символов")
     private String metaDescription;
 
-    // 🆕 Добавляем поле статуса
-    private Boolean isActive = true; // по умолчанию активна
+
+    private Boolean isActive = true;
+
+    private MultipartFile image;
 }

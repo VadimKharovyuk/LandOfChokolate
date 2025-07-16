@@ -8,6 +8,7 @@ import com.example.landofchokolate.repository.CategoryRepository;
 import com.example.landofchokolate.repository.ProductRepository;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.SlugService;
+import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
     private final SlugService slugService;
     private final ProductRepository productRepository;
+    private final StorageService storageService;
 
     @Override
     public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto) {
@@ -39,6 +41,8 @@ public class CategoryServiceImpl implements CategoryService {
         // 🆕 Генерируем slug через сервис
         category.setSlug(slugService.generateUniqueSlugForCategory(createCategoryDto.getName()));
 
+        // 🆕 Обрабатываем изображение если оно есть
+        handleImageUpload(createCategoryDto, category);
         // Сохраняем в базе данных
         Category savedCategory = categoryRepository.save(category);
 
@@ -60,9 +64,13 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryRepository.existsByName(updateCategoryDto.getName())) {
             throw new RuntimeException("Category with name '" + updateCategoryDto.getName() + "' already exists");
         }
+        // 🆕 Обрабатываем изображение если оно есть
+        handleImageUpdate(updateCategoryDto, existingCategory);
 
         // Обновляем существующую entity
         categoryMapper.updateEntityFromDto(updateCategoryDto, existingCategory);
+
+
 
         // Сохраняем изменения
         Category savedCategory = categoryRepository.save(existingCategory);
@@ -89,7 +97,8 @@ public class CategoryServiceImpl implements CategoryService {
                             category.getName(), productCount)
             );
         }
-
+        // 🆕 Удаляем изображение перед удалением категории
+        deleteImageIfExists(category);
         categoryRepository.deleteById(id);
         log.info("Category '{}' deleted successfully with id: {}", category.getName(), id);
     }
@@ -123,6 +132,85 @@ public class CategoryServiceImpl implements CategoryService {
 
         return categoryMapper.toResponseDtoList(categories);
     }
+
+    /**
+     * Обрабатывает загрузку изображения при создании категории
+     */
+    private void handleImageUpload(CreateCategoryDto dto, Category category) {
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            try {
+                log.info("Uploading image for category: {}", dto.getName());
+
+                // Загружаем изображение через StorageService
+                StorageService.StorageResult result = storageService.uploadImage(dto.getImage());
+
+                category.setImageUrl(result.getUrl());
+                category.setImageId(result.getImageId());
+
+                log.info("Image uploaded successfully. URL: {}, ID: {}", result.getUrl(), result.getImageId());
+            } catch (Exception e) {
+                log.error("Error uploading image for category: {}", dto.getName(), e);
+                throw new RuntimeException("Помилка завантаження зображення: " + e.getMessage());
+            }
+        } else {
+            log.debug("No image provided for category: {}", dto.getName());
+        }
+    }
+
+
+
+    /**
+     * Обрабатывает обновление изображения при редактировании категории
+     */
+    private void handleImageUpdate(CreateCategoryDto dto, Category existingCategory) {
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            try {
+                log.info("Updating image for category id: {}", existingCategory.getId());
+
+                // Удаляем старое изображение если оно есть
+                deleteImageIfExists(existingCategory);
+
+                // Загружаем новое изображение через StorageService
+                StorageService.StorageResult result = storageService.uploadImage(dto.getImage());
+
+                existingCategory.setImageUrl(result.getUrl());
+                existingCategory.setImageId(result.getImageId());
+
+                log.info("Image updated successfully. New URL: {}, ID: {}", result.getUrl(), result.getImageId());
+            } catch (Exception e) {
+                log.error("Error updating image for category id: {}", existingCategory.getId(), e);
+                throw new RuntimeException("Помилка оновлення зображення: " + e.getMessage());
+            }
+        } else {
+            log.debug("No new image provided for category id: {}", existingCategory.getId());
+        }
+    }
+
+    /**
+     * Удаляет изображение если оно существует
+     */
+    private void deleteImageIfExists(Category category) {
+        if (category.getImageId() != null && !category.getImageId().isEmpty()) {
+            try {
+                log.info("Deleting image for category id: {}, imageId: {}",
+                        category.getId(), category.getImageId());
+
+                boolean deleted = storageService.deleteImage(category.getImageId());
+
+                if (deleted) {
+                    log.info("Image deleted successfully for category id: {}", category.getId());
+                } else {
+                    log.warn("Image deletion returned false for category id: {}, imageId: {}",
+                            category.getId(), category.getImageId());
+                }
+            } catch (Exception e) {
+                log.warn("Error deleting image for category id: {}, imageId: {}. Error: {}",
+                        category.getId(), category.getImageId(), e.getMessage());
+                // Не бросаем исключение, так как это не критично для основной операции
+            }
+        }
+    }
+
 
 
     /**
