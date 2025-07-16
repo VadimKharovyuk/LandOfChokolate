@@ -11,5 +11,5 @@ public class LandOfChokolateApplication {
     public static void main(String[] args) {
         SpringApplication.run(LandOfChokolateApplication.class, args);
     }
-
+///как удалить каегории в котрых есть продукты  ( каскад или деактироватьвать)
 }

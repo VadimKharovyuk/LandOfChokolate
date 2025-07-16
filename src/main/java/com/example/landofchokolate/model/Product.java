@@ -27,6 +27,9 @@ public class Product {
     private String imageUrl;
     private String imageId;
 
+    @Column(unique = true)
+    private String slug;
+
 
 
     @ManyToOne(fetch = FetchType.LAZY)

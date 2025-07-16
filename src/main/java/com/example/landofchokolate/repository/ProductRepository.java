@@ -232,4 +232,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "     (:#{#filters.stockStatus} = 'low-stock' AND p.stockQuantity > 0 AND p.stockQuantity <= 10) OR " +
             "     (:#{#filters.stockStatus} = 'out-of-stock' AND p.stockQuantity = 0))")
     Page<ProductListDto> findAllProductListDtoWithFilters(Pageable pageable, @Param("filters") ProductFilterDto filters);
+
+
+    boolean existsBySlug(String slug);
+
+
+    boolean existsByCategoryId(Long id);
 }

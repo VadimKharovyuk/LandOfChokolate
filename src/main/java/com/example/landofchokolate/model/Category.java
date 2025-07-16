@@ -1,13 +1,14 @@
 package com.example.landofchokolate.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,5 +23,27 @@ public class Category {
     private String name;
 
     private String  shortDescription;
+
+
+    private String imageUrl;
+    private String imageId;
+
+    // Статус активности
+    private Boolean isActive = true;
+
+    // URL-friendly название для SEO
+    @Column(unique = true)
+    private String slug; // например: "shokolad-i-konfety"
+
+    // Для SEO
+    private String metaTitle;
+    private String metaDescription;
+
+    // Временные метки
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 }

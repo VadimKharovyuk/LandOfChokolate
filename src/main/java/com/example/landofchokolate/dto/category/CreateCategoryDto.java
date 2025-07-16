@@ -19,4 +19,13 @@ public class CreateCategoryDto {
     @Size(min = 2, max = 90, message = "Описание должно содержать от 2 до 90 символов")
     private String  shortDescription;
 
+
+    @Size(max = 60, message = "Meta title не должен превышать 60 символов")
+    private String metaTitle;
+
+    @Size(max = 160, message = "Meta description не должно превышать 160 символов")
+    private String metaDescription;
+
+    // 🆕 Добавляем поле статуса
+    private Boolean isActive = true; // по умолчанию активна
 }

@@ -3,6 +3,7 @@ package com.example.landofchokolate.controller;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
 import com.example.landofchokolate.dto.category.CreateCategoryDto;
 import com.example.landofchokolate.service.CategoryService;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,13 @@ public class CategoryController {
         try {
             CategoryResponseDto category = categoryService.getCategoryById(id);
             CreateCategoryDto editDto = new CreateCategoryDto();
+
             editDto.setName(category.getName());
+            editDto.setShortDescription(category.getShortDescription());
+            editDto.setIsActive(category.getIsActive());
+            editDto.setMetaDescription(category.getMetaDescription());
+            editDto.setMetaTitle(category.getMetaTitle());
+
 
             model.addAttribute("category", editDto);
             model.addAttribute("categoryId", id);
@@ -151,5 +158,12 @@ public class CategoryController {
             model.addAttribute("errorMessage", "Ошибка при поиске категорий: " + e.getMessage());
             return "admin/category/category-list";
         }
+    }
+
+
+    // Добавить в контроллер кнопку или вызвать один раз:
+    @PostConstruct
+    public void init() {
+        categoryService.generateMissingSlugForAllCategories();
     }
 }

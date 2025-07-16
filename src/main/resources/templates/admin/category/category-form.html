@@ -21,46 +21,95 @@
 <form th:action="${isEdit != null and isEdit} ? @{'/admin/category/edit/' + ${categoryId}} : @{/admin/category}"
       th:object="${category}" method="post">
 
-  <!-- Поле для названия категории -->
-  <div style="margin: 10px 0;">
-    <label for="name">Название категории:</label><br>
-    <input type="text" id="name" th:field="*{name}"
-           style="width: 300px; padding: 5px;"
-           placeholder="Введите название категории">
+    <!-- Поле для названия категории -->
+    <div style="margin: 10px 0;">
+        <label for="name">Название категории:</label><br>
+        <input type="text" id="name" th:field="*{name}"
+               style="width: 300px; padding: 5px;"
+               placeholder="Введите название категории">
 
-    <!-- Отображение ошибок валидации для name -->
-    <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">
-      <ul>
-        <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
-      </ul>
+        <!-- Отображение ошибок валидации для name -->
+        <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">
+            <ul>
+                <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
+            </ul>
+        </div>
     </div>
-  </div>
 
-  <!-- Поле для краткого описания категории -->
-  <div style="margin: 10px 0;">
-    <label for="shortDescription">Краткое описание:</label><br>
-    <textarea id="shortDescription" th:field="*{shortDescription}"
-              style="width: 300px; padding: 5px; height: 60px; resize: vertical;"
-              placeholder="Введите краткое описание категории"></textarea>
+    <!-- Поле для краткого описания категории -->
+    <div style="margin: 10px 0;">
+        <label for="shortDescription">Краткое описание:</label><br>
+        <textarea id="shortDescription" th:field="*{shortDescription}"
+                  style="width: 300px; padding: 5px; height: 60px; resize: vertical;"
+                  placeholder="Введите краткое описание категории"></textarea>
 
-    <!-- Отображение ошибок валидации для shortDescription -->
-    <div th:if="${#fields.hasErrors('shortDescription')}" style="color: red; font-size: 12px;">
-      <ul>
-        <li th:each="error : ${#fields.errors('shortDescription')}" th:text="${error}"></li>
-      </ul>
+        <!-- Отображение ошибок валидации для shortDescription -->
+        <div th:if="${#fields.hasErrors('shortDescription')}" style="color: red; font-size: 12px;">
+            <ul>
+                <li th:each="error : ${#fields.errors('shortDescription')}" th:text="${error}"></li>
+            </ul>
+        </div>
     </div>
-  </div>
 
-  <div style="margin: 20px 0;">
-    <button type="submit"
-            style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
-      <span th:text="${isEdit != null and isEdit} ? 'Обновить категорию' : 'Создать категорию'"></span>
-    </button>
-    <a th:href="@{/admin/category/list}"
-       style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
-      Отмена
-    </a>
-  </div>
+    <!-- SEO раздел -->
+    <div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border: 1px solid #e9ecef;">
+        <h3 style="margin-top: 0; color: #495057;">SEO настройки (опционально)</h3>
+
+        <!-- Поле для Meta Title -->
+        <div style="margin: 10px 0;">
+            <label for="metaTitle">Meta Title (заголовок для поисковых систем):</label><br>
+            <input type="text" id="metaTitle" th:field="*{metaTitle}"
+                   style="width: 300px; padding: 5px;"
+                   placeholder="Например: Шоколад и конфеты - купить в Land of Chocolate">
+            <small style="color: #6c757d; display: block; margin-top: 5px;">
+                Рекомендуется до 60 символов. Если не заполнено, будет использоваться название категории.
+            </small>
+
+            <!-- Отображение ошибок валидации для metaTitle -->
+            <div th:if="${#fields.hasErrors('metaTitle')}" style="color: red; font-size: 12px;">
+                <ul>
+                    <li th:each="error : ${#fields.errors('metaTitle')}" th:text="${error}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Поле для Meta Description -->
+        <div style="margin: 10px 0;">
+            <label for="metaDescription">Meta Description (описание для поисковых систем):</label><br>
+            <textarea id="metaDescription" th:field="*{metaDescription}"
+                      style="width: 300px; padding: 5px; height: 60px; resize: vertical;"
+                      placeholder="Например: Широкий выбор премиального шоколада, конфет ручной работы и сладких подарков. Доставка по городу."></textarea>
+            <small style="color: #6c757d; display: block; margin-top: 5px;">
+                Рекомендуется до 160 символов. Если не заполнено, будет использоваться краткое описание.
+            </small>
+
+            <!-- Отображение ошибок валидации для metaDescription -->
+            <div th:if="${#fields.hasErrors('metaDescription')}" style="color: red; font-size: 12px;">
+                <ul>
+                    <li th:each="error : ${#fields.errors('metaDescription')}" th:text="${error}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 🆕 Поле для статуса активности -->
+        <div style="margin: 10px 0;">
+            <label for="isActive">Статус категории:</label><br>
+            <input type="checkbox" id="isActive" th:field="*{isActive}"
+                   style="margin-right: 5px;">
+            <label for="isActive" style="font-weight: normal;">Активна (отображается на сайте)</label>
+        </div>
+    </div>
+
+    <div style="margin: 20px 0;">
+        <button type="submit"
+                style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+            <span th:text="${isEdit != null and isEdit} ? 'Обновить категорию' : 'Создать категорию'"></span>
+        </button>
+        <a th:href="@{/admin/category/list}"
+           style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
+            Отмена
+        </a>
+    </div>
 </form>
 
 <!-- Навигация -->

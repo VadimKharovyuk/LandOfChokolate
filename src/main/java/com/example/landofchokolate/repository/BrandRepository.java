@@ -9,9 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     List<BrandProjection> findAllByOrderByNameAsc();
+
+    boolean existsBySlug(String slug);
+
 }

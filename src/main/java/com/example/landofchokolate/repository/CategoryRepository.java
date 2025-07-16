@@ -29,4 +29,14 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      * Поиск категорий по имени, игнорируя регистр
      */
     List<Category> findByNameIgnoreCase(String name);
+
+
+    // 🆕 Добавить этот метод:
+    boolean existsBySlug(String slug);
+
+    // 🆕 И этот для поиска по slug:
+    Optional<Category> findBySlug(String slug);
+
+
+    List<Category> findBySlugIsNull();
 }

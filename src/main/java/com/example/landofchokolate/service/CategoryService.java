@@ -36,4 +36,7 @@ public interface CategoryService {
      * Поиск категорий по имени (содержит подстроку, игнорируя регистр)
      */
     List<CategoryResponseDto> getCategoriesByName(String name);
+
+
+     void generateMissingSlugForAllCategories() ;
 }
