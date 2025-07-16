@@ -1,5 +1,7 @@
 package com.example.landofchokolate.service;
 
+import com.example.landofchokolate.dto.brend.BrandFilterDto;
+import com.example.landofchokolate.dto.brend.BrandProjection;
 import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.brend.CreateBrandDto;
 
@@ -15,6 +17,6 @@ public interface BrandService {
 
     BrandResponseDto updateBrand(Long id, CreateBrandDto updateBrandDto);
 
-
+    List<BrandProjection> getBrandsForFilters();
     void deleteBrand(Long id);
 }

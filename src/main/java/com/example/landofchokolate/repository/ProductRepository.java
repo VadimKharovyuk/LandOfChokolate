@@ -1,5 +1,6 @@
 package com.example.landofchokolate.repository;
 
+import com.example.landofchokolate.dto.product.ProductFilterDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.model.Product;
 import org.springframework.data.domain.Page;
@@ -212,4 +213,23 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.brand b")
     Page<ProductListDto> findAllProductListDto(Pageable pageable);
+
+    @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, " +
+            "c.name, b.name, " +
+            "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
+            "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " +
+            "FROM Product p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.brand b " +
+            "WHERE (:#{#filters.searchName} IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :#{#filters.searchName}, '%'))) " +
+            "AND (:#{#filters.minPrice} IS NULL OR p.price >= :#{#filters.minPrice}) " +
+            "AND (:#{#filters.maxPrice} IS NULL OR p.price <= :#{#filters.maxPrice}) " +
+            "AND (:#{#filters.categoryId} IS NULL OR c.id = :#{#filters.categoryId}) " +
+            "AND (:#{#filters.brandId} IS NULL OR b.id = :#{#filters.brandId}) " +
+            "AND (:#{#filters.stockStatus} IS NULL OR " +
+            "     (:#{#filters.stockStatus} = 'in-stock' AND p.stockQuantity > 10) OR " +
+            "     (:#{#filters.stockStatus} = 'low-stock' AND p.stockQuantity > 0 AND p.stockQuantity <= 10) OR " +
+            "     (:#{#filters.stockStatus} = 'out-of-stock' AND p.stockQuantity = 0))")
+    Page<ProductListDto> findAllProductListDtoWithFilters(Pageable pageable, @Param("filters") ProductFilterDto filters);
 }

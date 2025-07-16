@@ -1,5 +1,7 @@
 package com.example.landofchokolate.service.serviceImpl;
 
+import com.example.landofchokolate.dto.brend.BrandFilterDto;
+import com.example.landofchokolate.dto.brend.BrandProjection;
 import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.brend.CreateBrandDto;
 import com.example.landofchokolate.mapper.BrandMapper;
@@ -10,6 +12,7 @@ import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -66,6 +69,13 @@ public class BrandServiceImpl implements BrandService {
 
         log.info("Brand updated successfully with id: {}", savedBrand.getId());
         return brandMapper.toResponseDto(savedBrand);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BrandProjection> getBrandsForFilters() {
+        log.info("Getting brands for filter");
+        return brandRepository.findAllByOrderByNameAsc();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.landofchokolate.service.serviceImpl;
 
+import com.example.landofchokolate.dto.product.ProductFilterDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.dto.product.ProductListResponseDto;
 import com.example.landofchokolate.repository.ProductRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +25,38 @@ public class ClientProductServiceImpl implements ClientProductService {
     private final ProductRepository productRepository;
     private static final int PAGE_SIZE_LARGE = 6;
 
-
-
     @Override
     @Transactional(readOnly = true)
     public ProductListResponseDto getAllProducts(Pageable pageable) {
-        log.info("Getting products page {} with size {}", pageable.getPageNumber(), pageable.getPageSize());
+        return getAllProductsWithFilters(pageable, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductListResponseDto getAllProductsWithFilters(Pageable pageable,
+                                                            String searchName,
+                                                            BigDecimal minPrice,
+                                                            BigDecimal maxPrice,
+                                                            Long categoryId,
+                                                            Long brandId,
+                                                            String stockStatus) {
+
+        // Создаем объект фильтров
+        ProductFilterDto filters = ProductFilterDto.builder()
+                .searchName(searchName)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .categoryId(categoryId)
+                .brandId(brandId)
+                .stockStatus(stockStatus)
+                .build();
+
+        return getAllProductsWithFilters(pageable, filters);
+    }
+
+    // Приватный метод для обработки фильтрации
+    private ProductListResponseDto getAllProductsWithFilters(Pageable pageable, ProductFilterDto filters) {
+        log.info("Getting products page {} with filters: {}", pageable.getPageNumber(), filters);
 
         // Создаем новый Pageable с фиксированным размером
         Pageable fixedPageable = PageRequest.of(
@@ -37,8 +65,8 @@ public class ClientProductServiceImpl implements ClientProductService {
                 pageable.getSort()
         );
 
-        // Получаем DTO напрямую из репозитория - один запрос!
-        Page<ProductListDto> productDtoPage = productRepository.findAllProductListDto(fixedPageable);
+        // Получаем данные с учетом фильтров
+        Page<ProductListDto> productDtoPage = getFilteredProducts(fixedPageable, filters);
 
         // Вычисляем данные для навигации
         int currentPageNumber = productDtoPage.getNumber() + 1; // +1 для отображения (1-based)
@@ -51,12 +79,34 @@ public class ClientProductServiceImpl implements ClientProductService {
                 .hasPrevious(productDtoPage.hasPrevious())
                 .currentPage(currentPageNumber)
                 .pageSize(productDtoPage.getSize())
-                // Новые поля для полной навигации:
                 .totalPages(totalPages)
                 .nextPage(productDtoPage.hasNext() ? currentPageNumber + 1 : null)
                 .previousPage(productDtoPage.hasPrevious() ? currentPageNumber - 1 : null)
                 .pageNumbers(generatePageNumbers(currentPageNumber, totalPages))
                 .build();
+    }
+
+    // Приватный метод для выбора правильного метода репозитория
+    private Page<ProductListDto> getFilteredProducts(Pageable pageable, ProductFilterDto filters) {
+        if (filters == null || !hasAnyFilters(filters)) {
+            // Без фильтров - используем обычный метод
+            log.debug("No filters applied, using standard query");
+            return productRepository.findAllProductListDto(pageable);
+        } else {
+            // С фильтрами - используем фильтрованный запрос
+            log.debug("Applying filters: {}", filters);
+            return productRepository.findAllProductListDtoWithFilters(pageable, filters);
+        }
+    }
+
+    // Приватный метод для проверки наличия фильтров
+    private boolean hasAnyFilters(ProductFilterDto filters) {
+        return (filters.getSearchName() != null && !filters.getSearchName().trim().isEmpty()) ||
+                filters.getMinPrice() != null ||
+                filters.getMaxPrice() != null ||
+                filters.getCategoryId() != null ||
+                filters.getBrandId() != null ||
+                (filters.getStockStatus() != null && !filters.getStockStatus().trim().isEmpty());
     }
 
     // Вспомогательный метод для генерации списка номеров страниц
