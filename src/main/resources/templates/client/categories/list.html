@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Категории - Land of Chocolate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .categories-info {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .category-image {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover .category-image img {
+            transform: scale(1.05);
+        }
+
+        .category-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 2.5rem;
+        }
+
+        .category-content {
+            padding: 25px;
+        }
+
+        .category-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #8B4513;
+        }
+
+        .category-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .category-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .products-count {
+            background: #8B4513;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #8B4513;
+            background: white;
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .pagination a:hover {
+            background: #8B4513;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .pagination .active {
+            background: #8B4513;
+            color: white;
+            font-weight: bold;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f5f5f5;
+            color: #999;
+            border-color: #ddd;
+        }
+
+        .pagination-info {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .back-to-home {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-to-home a {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-home a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .pagination {
+                gap: 5px;
+            }
+
+            .pagination a,
+            .pagination span {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Заголовок -->
+    <header class="header">
+        <h1>🍫 Наши категории</h1>
+        <p>Откройте мир вкуснейших сладостей Land of Chocolate</p>
+    </header>
+
+    <!-- Информация о количестве -->
+    <div class="categories-info" th:if="${!categoryList.isEmpty()}">
+        <p>
+            Показано: <strong th:text="${categoryList.categories.size()}">12</strong> из
+            <strong th:text="${categoryList.totalCount}">48</strong> категорий
+            <span th:if="${categoryList.totalPages > 1}">
+                    (страница <span th:text="${categoryList.displayCurrentPage}">1</span>
+                    из <span th:text="${categoryList.totalPages}">4</span>)
+                </span>
+        </p>
+    </div>
+
+    <!-- Сетка категорий -->
+    <div th:if="${!categoryList.isEmpty()}" class="categories-grid">
+        <a th:each="category : ${categoryList.categories}"
+           th:href="@{'/category/' + ${category.slug}}"
+           class="category-card">
+
+            <!-- Изображение категории -->
+            <div class="category-image">
+                <img th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}"
+                     th:src="${category.imageUrl}"
+                     th:alt="${category.name}">
+                <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
+                     class="category-placeholder">
+                    🍰
+                </div>
+            </div>
+
+            <!-- Контент категории -->
+            <div class="category-content">
+                <h3 class="category-name" th:text="${category.name}">Десерти</h3>
+                <p class="category-description" th:text="${category.shortDescription}">
+                    Ніжні та повітряні еклери, наповнені ароматним кремом із бельгійського шоколаду
+                </p>
+
+                <div class="category-meta">
+                        <span class="category-created"
+                              th:text="${category.createdAt != null} ?
+                                       'Додано: ' + ${#temporals.format(category.createdAt, 'dd.MM.yyyy')} :
+                                       'Нова категорія'">
+                            Додано: 15.12.2024
+                        </span>
+
+                    <span th:if="${category.productsCount != null and category.productsCount > 0}"
+                          class="products-count"
+                          th:text="${category.productsCount} + ' товарів'">
+                            12 товарів
+                        </span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Пустое состояние -->
+    <div th:if="${categoryList.isEmpty()}" class="empty-state">
+        <h3>🔍 Категории не найдены</h3>
+        <p>В данный момент нет доступных категорий для отображения.</p>
+    </div>
+
+    <!-- Пагинация -->
+    <nav th:if="${!categoryList.isEmpty() and categoryList.totalPages > 1}" class="pagination">
+        <!-- Кнопка "Назад" -->
+        <a th:if="${categoryList.hasPrevious}"
+           th:href="@{/categories(page=${categoryList.previousPage}, size=${categoryList.pageSize})}">
+            ← Назад
+        </a>
+        <span th:if="${!categoryList.hasPrevious}" class="disabled">← Назад</span>
+
+        <!-- Номера страниц -->
+        <span th:each="pageNum : ${categoryList.pageNumbers}">
+                <a th:if="${pageNum != categoryList.currentPage}"
+                   th:href="@{/categories(page=${pageNum}, size=${categoryList.pageSize})}"
+                   th:text="${pageNum + 1}">1</a>
+                <span th:if="${pageNum == categoryList.currentPage}"
+                      class="active"
+                      th:text="${pageNum + 1}">1</span>
+            </span>
+
+        <!-- Кнопка "Далее" -->
+        <a th:if="${categoryList.hasNext}"
+           th:href="@{/categories(page=${categoryList.nextPage}, size=${categoryList.pageSize})}">
+            Далее →
+        </a>
+        <span th:if="${!categoryList.hasNext}" class="disabled">Далее →</span>
+    </nav>
+
+    <!-- Дополнительная информация о пагинации -->
+    <div th:if="${categoryList.totalPages > 1}" class="pagination-info">
+        <p>
+            Отображение страницы <strong th:text="${categoryList.displayCurrentPage}">1</strong>
+            из <strong th:text="${categoryList.totalPages}">4</strong>
+            • Всего категорий: <strong th:text="${categoryList.totalCount}">48</strong>
+        </p>
+    </div>
+
+    <!-- Кнопка возврата на главную -->
+    <div class="back-to-home">
+        <a href="/">🏠 Вернуться на главную</a>
+    </div>
+</div>
+</body>
+</html>

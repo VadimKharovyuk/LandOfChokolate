@@ -1,6 +1,7 @@
 package com.example.landofchokolate.service;
 
 import com.example.landofchokolate.dto.category.CategoryEditData;
+import com.example.landofchokolate.dto.category.CategoryListPublicDto;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
 import com.example.landofchokolate.dto.category.CreateCategoryDto;
 import org.springframework.ui.Model;
@@ -44,4 +45,7 @@ public interface CategoryService {
 
 
     CategoryEditData prepareEditData(Long id);
+
+
+    CategoryListPublicDto getPublicCategories(int page, int size);
 }

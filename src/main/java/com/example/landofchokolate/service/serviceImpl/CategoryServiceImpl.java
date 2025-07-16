@@ -1,8 +1,6 @@
 package com.example.landofchokolate.service.serviceImpl;
 
-import com.example.landofchokolate.dto.category.CategoryEditData;
-import com.example.landofchokolate.dto.category.CategoryResponseDto;
-import com.example.landofchokolate.dto.category.CreateCategoryDto;
+import com.example.landofchokolate.dto.category.*;
 import com.example.landofchokolate.mapper.CategoryMapper;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.repository.CategoryRepository;
@@ -12,10 +10,15 @@ import com.example.landofchokolate.service.SlugService;
 import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -249,6 +252,70 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.debug("Prepared edit data for category id={}, name={}", id, category.getName());
         return editData;
+    }
+
+    @Override
+    public CategoryListPublicDto getPublicCategories(int page, int size) {
+        log.info("Getting public categories for page: {}, size: {}", page, size);
+
+        // Создаем Pageable с сортировкой по названию
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+
+        // Получаем только активные категории
+        Page<Category> categoryPage = categoryRepository.findByIsActiveTrue(pageable);
+
+        // Преобразуем в PublicDto
+        List<CategoryPublicDto> publicDtos = categoryMapper.toPublicDtoList(categoryPage.getContent());
+
+        // Генерируем номера страниц для навигации
+        List<Integer> pageNumbers = generatePageNumbers(page, categoryPage.getTotalPages());
+
+        // Создаем результирующий DTO
+        CategoryListPublicDto result = CategoryListPublicDto.builder()
+                .categories(publicDtos)
+                .totalCount((int) categoryPage.getTotalElements())
+                .currentPage(page)
+                .pageSize(size)
+                .totalPages(categoryPage.getTotalPages())
+                .hasNext(categoryPage.hasNext())
+                .hasPrevious(categoryPage.hasPrevious())
+                .nextPage(categoryPage.hasNext() ? page + 1 : null)
+                .previousPage(categoryPage.hasPrevious() ? page - 1 : null)
+                .pageNumbers(pageNumbers)
+                .build();
+
+        log.info("Found {} active categories, total pages: {}",
+                publicDtos.size(), categoryPage.getTotalPages());
+
+        return result;
+    }
+
+    /**
+     * Генерирует список номеров страниц для пагинации
+     */
+    private List<Integer> generatePageNumbers(int currentPage, int totalPages) {
+        List<Integer> pageNumbers = new ArrayList<>();
+
+        if (totalPages <= 0) {
+            return pageNumbers;
+        }
+
+        // Определяем диапазон страниц для отображения (например, показываем 5 страниц)
+        int maxPagesToShow = 5;
+        int startPage = Math.max(0, currentPage - maxPagesToShow / 2);
+        int endPage = Math.min(totalPages - 1, startPage + maxPagesToShow - 1);
+
+        // Корректируем startPage если endPage достиг максимума
+        if (endPage - startPage < maxPagesToShow - 1) {
+            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+        }
+
+        // Добавляем номера страниц
+        for (int i = startPage; i <= endPage; i++) {
+            pageNumbers.add(i);
+        }
+
+        return pageNumbers;
     }
 
 

@@ -1,6 +1,8 @@
 package com.example.landofchokolate.repository;
 
 import com.example.landofchokolate.model.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -39,4 +41,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 
     List<Category> findBySlugIsNull();
+
+
+    /**
+     * Находит активные категории с пагинацией
+     */
+    Page<Category> findByIsActiveTrue(Pageable pageable);
+
+    /**
+     * Находит активные категории по имени с пагинацией
+     */
+    Page<Category> findByIsActiveTrueAndNameContainingIgnoreCase(String name, Pageable pageable);
 }
