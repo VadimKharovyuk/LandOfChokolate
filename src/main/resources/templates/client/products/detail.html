@@ -900,52 +900,95 @@
             </div>
         </section>
 
+
         <!-- Похожие товары -->
-<!--        <section class="related-products" th:if="${relatedProducts != null and !#lists.isEmpty(relatedProducts)}">-->
-<!--            <div class="section-header">-->
-<!--                <h2 class="section-title">Похожие товары</h2>-->
-<!--                <p class="section-subtitle">Вам также может понравиться</p>-->
-<!--            </div>-->
+        <section class="related-products" th:if="${relatedProducts != null and !#lists.isEmpty(relatedProducts)}">
+            <div class="section-header">
+                <h2 class="section-title">Похожие товары</h2>
+                <p class="section-subtitle">Вам также может понравиться</p>
+            </div>
 
-<!--            <div class="related-grid">-->
-<!--                <div class="related-card" th:each="relatedProduct : ${relatedProducts}">-->
-<!--                    <div class="related-image-container">-->
-<!--                        <img th:if="${relatedProduct.imageUrl != null and !relatedProduct.imageUrl.isEmpty()}"-->
-<!--                             th:src="${relatedProduct.imageUrl}"-->
-<!--                             th:alt="${relatedProduct.name}"-->
-<!--                             class="related-image">-->
-<!--                        <div th:if="${relatedProduct.imageUrl == null or relatedProduct.imageUrl.isEmpty()}"-->
-<!--                             class="related-placeholder">-->
-<!--                            <i class="fas fa-image"></i>-->
-<!--                        </div>-->
-<!--                    </div>-->
+            <div class="related-grid">
+                <div class="related-card" th:each="relatedProduct : ${relatedProducts}">
+                    <!-- Обернем всю карточку в ссылку -->
+                    <a th:href="@{/product/{slug}(slug=${relatedProduct.slug})}" class="related-product-link">
+                        <div class="related-image-container">
+                            <img th:if="${relatedProduct.imageUrl != null and !relatedProduct.imageUrl.isEmpty()}"
+                                 th:src="${relatedProduct.imageUrl}"
+                                 th:alt="${relatedProduct.name}"
+                                 class="related-image">
+                            <div th:if="${relatedProduct.imageUrl == null or relatedProduct.imageUrl.isEmpty()}"
+                                 class="related-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        </div>
 
-<!--                    <div class="related-content">-->
-<!--                        <h3 class="related-title" th:text="${relatedProduct.name}">Название товара</h3>-->
-<!--                        <div class="related-price" th:text="${relatedProduct.price} + ' грн'">150 грн</div>-->
+                        <div class="related-content">
+                            <h3 class="related-title" th:text="${relatedProduct.name}">Название товара</h3>
+                            <div class="related-price" th:text="${relatedProduct.price} + ' грн'">150 грн</div>
+                        </div>
+                    </a>
 
-<!--                        <div class="related-actions">-->
-<!--                            <button class="btn-related-cart"-->
-<!--                                    th:disabled="${!relatedProduct.inStock}"-->
-<!--                                    th:onclick="'addToCart(' + ${relatedProduct.id} + ')'">-->
-<!--                                <i class="fas fa-shopping-cart"></i>-->
-<!--                                <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Нет в наличии'">В корзину</span>-->
-<!--                            </button>-->
-<!--                            <button class="btn-related-favorite" th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'" title="В избранное">-->
-<!--                                <i class="far fa-heart"></i>-->
-<!--                            </button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+                    <!-- Кнопки действий вынесем отдельно, чтобы они не конфликтовали со ссылкой -->
+                    <div class="related-actions">
+                        <button class="btn-related-cart"
+                                th:disabled="${!relatedProduct.inStock}"
+                                th:onclick="'addToCart(' + ${relatedProduct.id} + ')'">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Нет в наличии'">В корзину</span>
+                        </button>
+                        <button class="btn-related-favorite"
+                                th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'"
+                                title="В избранное">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-<!--            <div class="view-all-container" th:if="${product.category != null}">-->
-<!--                <a th:href="@{/categories/{slug}(slug=${product.category.slug})}" class="btn-view-all">-->
-<!--                    <span>Смотреть все товары категории</span>-->
-<!--                    <i class="fas fa-arrow-right"></i>-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </section>-->
+
+            <style>
+                /* Стили для ссылки на похожий товар */
+                .related-product-link {
+                    display: block;
+                    text-decoration: none;
+                    color: inherit;
+                    transition: all 0.2s ease;
+                }
+
+                .related-product-link:hover {
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .related-product-link:hover .related-title {
+                    color: var(--text-primary);
+                }
+
+                .related-product-link:hover .related-image {
+                    transform: scale(1.03);
+                }
+
+                /* Обновим related-actions чтобы они были снаружи ссылки */
+                .related-actions {
+                    padding: 0 1.25rem 1.25rem;
+                    display: flex;
+                    gap: 0.5rem;
+                }
+
+                /* Убираем лишний padding из related-content если actions вынесены */
+                .related-content {
+                    padding: 1.25rem 1.25rem 1rem;
+                }
+            </style>
+
+            <div class="view-all-container" th:if="${product.category != null}">
+                <a th:href="@{/categories/{slug}(slug=${product.category.slug})}" class="btn-view-all">
+                    <span>Смотреть все товары категории</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
     </div>
 </div>
 

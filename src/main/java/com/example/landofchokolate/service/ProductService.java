@@ -100,6 +100,8 @@ public interface ProductService {
 
     void generateMissingSlugForAllProducts();
 
+    List<RelatedProductDto> getRelatedProducts(String slug, int limit);
+
     /**
      * Внутренний класс для статистики
      */

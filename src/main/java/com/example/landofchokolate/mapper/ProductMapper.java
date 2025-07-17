@@ -1,9 +1,6 @@
 package com.example.landofchokolate.mapper;
 
-import com.example.landofchokolate.dto.product.CreateProductDto;
-import com.example.landofchokolate.dto.product.ProductDetailDto;
-import com.example.landofchokolate.dto.product.ProductListDto;
-import com.example.landofchokolate.dto.product.ProductResponseDto;
+import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.model.Product;
@@ -217,4 +214,34 @@ public class ProductMapper {
         return dto;
     }
 
+
+    ///похожие товары для дейтайлс
+    public List<RelatedProductDto> toRelatedDtoList(List<Product> relatedProducts) {
+        if (relatedProducts == null || relatedProducts.isEmpty()) {
+            return List.of();
+        }
+
+        return relatedProducts.stream()
+                .map(this::toRelatedDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Конвертация Product в RelatedProductDto
+     */
+    public RelatedProductDto toRelatedDto(Product product) {
+        if (product == null) {
+            return null;
+        }
+
+        RelatedProductDto dto = new RelatedProductDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setSlug(product.getSlug());
+        dto.setPrice(product.getPrice());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setImageUrl(product.getImageUrl());
+
+        return dto;
+    }
 }

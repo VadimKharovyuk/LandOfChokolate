@@ -4,10 +4,7 @@ import com.example.landofchokolate.dto.brend.BrandFilterDto;
 import com.example.landofchokolate.dto.brend.BrandProjection;
 import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
-import com.example.landofchokolate.dto.product.ProductDetailDto;
-import com.example.landofchokolate.dto.product.ProductFilterDto;
-import com.example.landofchokolate.dto.product.ProductListResponseDto;
-import com.example.landofchokolate.dto.product.ProductResponseDto;
+import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.ClientProductService;
@@ -42,7 +39,13 @@ public class ClientProductController {
     @GetMapping("/{slug}")
     public String getProductDetail(@PathVariable String slug, Model model) {
         ProductDetailDto product = productService.getProductBySlug(slug);
+
+        ///похожие товары
+        List<RelatedProductDto> relatedProducts = productService.getRelatedProducts(slug, 8);
+
         model.addAttribute("product", product);
+        model.addAttribute("relatedProducts", relatedProducts);
+
         return "client/products/detail";
     }
 

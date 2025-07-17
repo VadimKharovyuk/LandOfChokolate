@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -354,6 +355,43 @@ public class ProductServiceImpl implements ProductService {
         }
 
         log.info("Generated slugs for {} products", productsWithoutSlug.size());
+    }
+
+    @Override
+    public List<RelatedProductDto> getRelatedProducts(String slug, int limit) {
+        log.info("Getting related products for product slug: {} with limit: {}", slug, limit);
+
+        try {
+            // Находим текущий товар
+            Product currentProduct = productRepository.findBySlug(slug)
+                    .orElseThrow(() -> new RuntimeException("Product not found with slug: " + slug));
+
+            // Проверяем есть ли категория у товара
+            if (currentProduct.getCategory() == null) {
+                log.warn("Product {} has no category, returning empty related products list", slug);
+                return List.of();
+            }
+
+            // Находим похожие товары из той же категории (исключая текущий товар)
+            // Используем простой подход через findAll с фильтрацией
+            List<Product> allCategoryProducts = productRepository.findByCategoryAndIsActiveTrueOrderByIdDesc(
+                    currentProduct.getCategory()
+            );
+
+            List<Product> relatedProducts = allCategoryProducts.stream()
+                    .filter(p -> !p.getId().equals(currentProduct.getId())) // Исключаем текущий товар
+                    .filter(Product::getIsActive) // Только активные товары
+                    .limit(limit) // Ограничиваем количество
+                    .collect(Collectors.toList());
+
+            log.info("Found {} related products for product: {}", relatedProducts.size(), currentProduct.getName());
+
+            return productMapper.toRelatedDtoList(relatedProducts);
+
+        } catch (Exception e) {
+            log.error("Error getting related products for slug: {}", slug, e);
+            return List.of(); // Возвращаем пустой список в случае ошибки
+        }
     }
 
     /**

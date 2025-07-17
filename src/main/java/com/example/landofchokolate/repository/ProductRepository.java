@@ -3,6 +3,7 @@ package com.example.landofchokolate.repository;
 import com.example.landofchokolate.dto.product.ProductDetailDto;
 import com.example.landofchokolate.dto.product.ProductFilterDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
+import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -279,4 +280,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * Находит все продукты без slug
      */
     List<Product> findBySlugIsNull();
+
+    /**
+     * Находит все активные товары категории, отсортированные по ID (новые первыми)
+     */
+    List<Product> findByCategoryAndIsActiveTrueOrderByIdDesc(Category category);
+
+    /**
+     * Альтернативный вариант с Pageable (если хотите использовать пагинацию)
+     */
+    Page<Product> findByCategoryAndIsActiveTrueOrderByIdDesc(Category category, Pageable pageable);
 }
