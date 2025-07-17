@@ -266,4 +266,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         WHERE p.category.id = :categoryId AND p.price > 0
         """)
     Map<String, Object> findPriceStatsByCategoryId(Long categoryId);
+
+
+
+    Page<Product> findByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
 }

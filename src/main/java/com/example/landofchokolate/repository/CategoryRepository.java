@@ -58,4 +58,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      * Получить топовые категории с лимитом
      */
     List<Category> findByIsActiveTrueAndIsFeaturedTrueOrderByNameAsc(Pageable pageable);
+
+
+
+    Optional<Category> findBySlugAndIsActiveTrue(String slug);
+
+
 }

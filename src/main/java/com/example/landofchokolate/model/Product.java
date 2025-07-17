@@ -31,6 +31,9 @@ public class Product {
     private String slug;
 
 
+    private Boolean isActive = true;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

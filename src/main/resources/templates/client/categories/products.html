@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${category.metaTitle != null ? category.metaTitle : category.name + ' - Land of Chocolate'}">Категория - Land of Chocolate</title>
+  <meta th:if="${category.metaDescription != null}" th:content="${category.metaDescription}" name="description">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
+  <style>
+    :root {
+      --primary-dark: #2C2C2C;
+      --primary-medium: #5A5A5A;
+      --primary-light: #FAFAFA;
+      --accent-gold: #D4AF37;
+      --accent-warm: #F5F5F0;
+      --text-primary: #1A1A1A;
+      --text-secondary: #757575;
+      --border-subtle: #E8E8E8;
+      --shadow-soft: rgba(0, 0, 0, 0.04);
+      --shadow-medium: rgba(0, 0, 0, 0.08);
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background-color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    .serif-font {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Основной контент с отступом от навигации */
+    .main-content {
+      margin-top: 80px; /* Настройте под высоту вашей навигации */
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb-container {
+      padding: 2rem 0 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .breadcrumb {
+      background: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb-item {
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-item.active {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Category Header */
+    .category-header {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+
+    .category-image-header {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 2rem;
+      display: block;
+      border: 3px solid var(--border-subtle);
+    }
+
+    .category-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .category-description {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    /* Products Grid */
+    .products-section {
+      padding: 3rem 0;
+    }
+
+    .section-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .products-count {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .count-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .sort-options {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .sort-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 2px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .sort-btn:hover {
+      background: var(--primary-light);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .sort-btn.active {
+      background: var(--text-primary);
+      color: #FFFFFF;
+      border-color: var(--text-primary);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .product-card {
+      background: #FFFFFF;
+      border-radius: 2px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .product-card:hover {
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 20px 40px var(--shadow-medium);
+      transform: translateY(-2px);
+    }
+
+    .product-image-container {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+      background-color: var(--accent-warm);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.02);
+    }
+
+    .product-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #F8F8F8 0%, #F0F0F0 100%);
+      color: var(--text-secondary);
+      font-size: 2rem;
+    }
+
+    .stock-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .badge-in-stock {
+      background: rgba(40, 167, 69, 0.9);
+      color: #FFFFFF;
+    }
+
+    .badge-out-of-stock {
+      background: rgba(220, 53, 69, 0.9);
+      color: #FFFFFF;
+    }
+
+    .badge-low-stock {
+      background: rgba(255, 193, 7, 0.9);
+      color: #000000;
+    }
+
+    .product-content {
+      padding: 2rem;
+    }
+
+    .product-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+
+    .product-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .product-stock {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-view {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 2px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 400;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-view:hover {
+      background: var(--primary-light);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .btn-add-to-cart {
+      flex: 2;
+      padding: 0.75rem 1rem;
+      background: var(--text-primary);
+      border: 1px solid var(--text-primary);
+      border-radius: 2px;
+      color: #FFFFFF;
+      font-size: 0.9rem;
+      font-weight: 400;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .btn-add-to-cart:hover:not(:disabled) {
+      background: var(--primary-medium);
+      border-color: var(--primary-medium);
+    }
+
+    .btn-add-to-cart:disabled {
+      background: var(--border-subtle);
+      border-color: var(--border-subtle);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    .out-of-stock-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-card.out-of-stock .out-of-stock-overlay {
+      opacity: 1;
+    }
+
+    .out-of-stock-text {
+      background: var(--danger-color);
+      color: #FFFFFF;
+      padding: 1rem 2rem;
+      border-radius: 2px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    /* Pagination */
+    .pagination-container {
+      margin: 4rem 0;
+    }
+
+    .pagination {
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .page-item {
+      margin: 0;
+    }
+
+    .page-link {
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      font-weight: 400;
+      padding: 0.75rem 1.25rem;
+      border-radius: 2px;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .page-link:hover {
+      background-color: var(--primary-light);
+      border-color: var(--primary-medium);
+      color: var(--text-primary);
+    }
+
+    .page-item.active .page-link {
+      background-color: var(--text-primary);
+      border-color: var(--text-primary);
+      color: #FFFFFF;
+    }
+
+    .page-item.disabled .page-link {
+      background-color: #FFFFFF;
+      border-color: var(--border-subtle);
+      color: var(--text-secondary);
+      opacity: 0.5;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 6rem 2rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .empty-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .empty-description {
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--text-primary);
+      color: #FFFFFF;
+      padding: 1rem 2rem;
+      border-radius: 2px;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: var(--primary-medium);
+      color: #FFFFFF;
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    /* Notifications */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      max-width: 400px;
+      padding: 1rem 1.5rem;
+      border-radius: 2px;
+      color: #FFFFFF;
+      font-weight: 500;
+      animation: slideIn 0.3s ease;
+    }
+
+    .notification.success {
+      background: var(--success-color);
+    }
+
+    .notification.error {
+      background: var(--danger-color);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0 1.5rem;
+      }
+
+      .breadcrumb-container {
+        padding: 1.5rem 0 1rem;
+      }
+
+      .category-header {
+        padding: 3rem 0 2rem;
+      }
+
+      .category-title {
+        font-size: 2.2rem;
+      }
+
+      .section-meta {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .sort-options {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .product-actions {
+        flex-direction: column;
+      }
+
+      .btn-view,
+      .btn-add-to-cart {
+        flex: 1;
+      }
+
+      .pagination-container {
+        margin: 3rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент с отступом -->
+<div class="main-content">
+  <div class="main-container">
+    <!-- Хлебные крошки -->
+    <nav class="breadcrumb-container" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item"><a href="/categories">Категории</a></li>
+        <li class="breadcrumb-item active" aria-current="page" th:text="${category.name}">Категория</li>
+      </ol>
+    </nav>
+
+    <!-- Заголовок категории -->
+    <header class="category-header">
+      <img th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}"
+           th:src="${category.imageUrl}"
+           th:alt="${category.name}"
+           class="category-image-header">
+
+      <h1 class="category-title" th:text="${category.name}">Название категории</h1>
+
+      <p class="category-description" th:if="${category.shortDescription != null and !category.shortDescription.isEmpty()}"
+         th:text="${category.shortDescription}">
+        Описание категории
+      </p>
+    </header>
+
+    <!-- Секция продуктов -->
+    <section class="products-section" th:if="${!#lists.isEmpty(products)}">
+      <!-- Мета-информация -->
+      <div class="section-meta">
+        <div class="products-count">
+          Показано <span class="count-value" th:text="${#lists.size(products)}">12</span>
+          из <span class="count-value" th:text="${totalProducts ?: #lists.size(products)}">24</span> товаров
+        </div>
+
+        <div class="sort-options">
+          <a href="#" class="sort-btn active">
+            <i class="fas fa-sort-alpha-down"></i>
+            По названию
+          </a>
+          <a href="#" class="sort-btn">
+            <i class="fas fa-sort-numeric-down"></i>
+            По цене
+          </a>
+        </div>
+      </div>
+
+      <!-- Сетка продуктов -->
+      <div class="products-grid">
+        <div class="product-card" th:each="product : ${products}"
+             th:classappend="${product.stockQuantity == 0} ? 'out-of-stock' : ''">
+
+          <!-- Изображение продукта -->
+          <div class="product-image-container">
+            <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
+                 th:src="${product.imageUrl}"
+                 th:alt="${product.name}"
+                 class="product-image">
+            <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
+                 class="product-placeholder">
+              <i class="fas fa-image"></i>
+            </div>
+
+            <!-- Бейдж наличия -->
+            <div class="stock-badge"
+                 th:classappend="${product.stockQuantity == 0} ? 'badge-out-of-stock' : (${product.stockQuantity <= 5} ? 'badge-low-stock' : 'badge-in-stock')">
+              <span th:if="${product.stockQuantity > 0}" th:text="'В наличии: ' + ${product.stockQuantity}">В наличии: 12</span>
+              <span th:if="${product.stockQuantity == 0}">Нет в наличии</span>
+            </div>
+
+            <!-- Оверлей для товаров не в наличии -->
+            <div class="out-of-stock-overlay">
+              <div class="out-of-stock-text">Нет в наличии</div>
+            </div>
+          </div>
+
+          <!-- Контент продукта -->
+          <div class="product-content">
+            <h3 class="product-title" th:text="${product.name}">Название продукта</h3>
+
+            <div class="product-price" th:text="${product.price} + ' грн'">150 грн</div>
+
+            <div class="product-stock" th:if="${product.stockQuantity > 0}">
+                            <span th:if="${product.stockQuantity > 5}" class="text-success">
+                                <i class="fas fa-check-circle"></i> В наличии
+                            </span>
+              <span th:if="${product.stockQuantity <= 5 and product.stockQuantity > 0}" class="text-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Осталось мало
+                            </span>
+            </div>
+
+            <div class="product-actions">
+              <a th:href="@{/products/{slug}(slug=${product.slug})}" class="btn-view">
+                <i class="fas fa-eye"></i>
+                Подробнее
+              </a>
+
+              <button class="btn-add-to-cart"
+                      th:disabled="${product.stockQuantity == 0}"
+                      th:onclick="'addToCart(' + ${product.id} + ')'">
+                <i class="fas fa-shopping-cart"></i>
+                <span th:text="${product.stockQuantity > 0} ? 'В корзину' : 'Нет в наличии'">
+                                    В корзину
+                                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Пустое состояние -->
+    <section class="empty-state" th:if="${#lists.isEmpty(products)}">
+      <div class="empty-icon">
+        <i class="fas fa-box-open"></i>
+      </div>
+      <h2 class="empty-title">В этой категории пока нет товаров</h2>
+      <p class="empty-description">
+        Мы работаем над пополнением ассортимента.
+        Попробуйте посмотреть другие категории или вернитесь позже.
+      </p>
+      <a href="/categories" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Все категории
+      </a>
+    </section>
+
+    <!-- Пагинация -->
+    <nav th:if="${!#lists.isEmpty(products) and totalPages > 1}"
+         class="pagination-container"
+         aria-label="Product pagination">
+      <ul class="pagination">
+        <!-- Предыдущая страница -->
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+          <a class="page-link"
+             th:href="@{/categories/{slug}(slug=${category.slug}, page=${currentPage - 1})}">
+            <i class="fas fa-chevron-left"></i>
+            Предыдущая
+          </a>
+        </li>
+
+        <!-- Номера страниц -->
+        <li class="page-item"
+            th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${pageNum == currentPage} ? 'active' : ''">
+          <a class="page-link"
+             th:href="@{/categories/{slug}(slug=${category.slug}, page=${pageNum})}"
+             th:text="${pageNum + 1}">1</a>
+        </li>
+
+        <!-- Следующая страница -->
+        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
+          <a class="page-link"
+             th:href="@{/categories/{slug}(slug=${category.slug}, page=${currentPage + 1})}">
+            Следующая
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Функция добавления товара в корзину
+  function addToCart(productId) {
+    // Показываем индикатор загрузки
+    const button = event.target.closest('.btn-add-to-cart');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Добавляем...';
+    button.disabled = true;
+
+    fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: 1
+      })
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                showNotification('Товар добавлен в корзину!', 'success');
+              } else {
+                showNotification('Ошибка при добавлении товара', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showNotification('Ошибка при добавлении товара', 'error');
+            })
+            .finally(() => {
+              // Восстанавливаем кнопку
+              button.innerHTML = originalText;
+              button.disabled = false;
+            });
+  }
+
+  // Функция показа уведомлений
+  function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+            `;
+
+    document.body.appendChild(notification);
+
+    // Автоматически скрыть через 3 секунды
+    setTimeout(() => {
+      notification.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }, 3000);
+  }
+
+  // Добавляем анимацию для скрытия уведомлений
+  const style = document.createElement('style');
+  style.textContent = `
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>

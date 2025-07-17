@@ -1,6 +1,7 @@
 package com.example.landofchokolate.service;
 
 import com.example.landofchokolate.dto.category.*;
+import com.example.landofchokolate.model.Category;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -50,4 +51,7 @@ public interface CategoryService {
      * Получает топ категории для главной страницы
      */
     List<CategoryPublicDto> getTopCategories(int limit);
+
+
+    Category findBySlug(String categorySlug);
 }

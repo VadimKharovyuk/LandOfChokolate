@@ -1,6 +1,7 @@
 package com.example.landofchokolate.service.serviceImpl;
 
 import com.example.landofchokolate.dto.category.*;
+import com.example.landofchokolate.exception.CategoryNotFoundException;
 import com.example.landofchokolate.mapper.CategoryMapper;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.repository.CategoryRepository;
@@ -310,6 +311,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Found {} featured categories", result.size());
         return result;
+    }
+
+    @Override
+    public Category findBySlug(String slug) {
+        return categoryRepository.findBySlugAndIsActiveTrue(slug)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found: " + slug));
     }
 
     /**

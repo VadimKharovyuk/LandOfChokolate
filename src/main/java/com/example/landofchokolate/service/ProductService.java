@@ -4,7 +4,9 @@ import com.example.landofchokolate.dto.product.CreateProductDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.dto.product.ProductResponseDto;
 import com.example.landofchokolate.dto.product.UpdateProductDto;
+import com.example.landofchokolate.model.Product;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -100,6 +102,9 @@ public interface ProductService {
      * Получает статистику по товарам
      */
     ProductStatistics getProductStatistics();
+
+
+    Page<Product> getProductsByCategoryPage(Long id, int page, int size);
 
     /**
      * Внутренний класс для статистики

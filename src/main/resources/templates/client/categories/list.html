@@ -415,7 +415,7 @@
     <section th:if="${!categoryList.isEmpty()}">
         <div class="categories-grid">
             <a th:each="category : ${categoryList.categories}"
-               th:href="@{'/category/' + ${category.slug}}"
+               th:href="@{'/categories/' + ${category.slug}}"
                class="category-card">
 
                 <!-- Image Container -->
@@ -513,13 +513,6 @@
         </ul>
     </nav>
 
-<!--    &lt;!&ndash; Back to Home &ndash;&gt;-->
-<!--    <div class="text-center">-->
-<!--        <a href="/" class="back-button">-->
-<!--            <i class="fas fa-arrow-left"></i>-->
-<!--            Вернуться на главную-->
-<!--        </a>-->
-<!--    </div>-->
 </div>
 <div th:insert="~{admin/fragments/footer :: footer}"></div>
 <!-- Подключение JavaScript для навигации -->

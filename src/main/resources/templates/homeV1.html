@@ -802,7 +802,7 @@
         <!-- Dynamic Product Grid -->
         <div class="product-grid" th:if="${topCategories != null and !topCategories.isEmpty()}">
             <a th:each="category : ${topCategories}"
-               th:href="@{'/category/' + ${category.slug}}"
+               th:href="@{'/categories/' + ${category.slug}}"
                class="product-card">
 
                 <!-- Category Image -->
