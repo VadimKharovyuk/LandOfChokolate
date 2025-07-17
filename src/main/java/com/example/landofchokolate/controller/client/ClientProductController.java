@@ -4,12 +4,14 @@ import com.example.landofchokolate.dto.brend.BrandFilterDto;
 import com.example.landofchokolate.dto.brend.BrandProjection;
 import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
+import com.example.landofchokolate.dto.product.ProductDetailDto;
 import com.example.landofchokolate.dto.product.ProductFilterDto;
 import com.example.landofchokolate.dto.product.ProductListResponseDto;
 import com.example.landofchokolate.dto.product.ProductResponseDto;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.ClientProductService;
+import com.example.landofchokolate.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,6 +35,16 @@ public class ClientProductController {
     private final ClientProductService clientProductService;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final ProductService productService;
+
+
+
+    @GetMapping("/{slug}")
+    public String getProductDetail(@PathVariable String slug, Model model) {
+        ProductDetailDto product = productService.getProductBySlug(slug);
+        model.addAttribute("product", product);
+        return "client/products/detail";
+    }
 
 
 
@@ -102,4 +115,5 @@ public class ClientProductController {
 
         return "client/products/list";
     }
+
 }

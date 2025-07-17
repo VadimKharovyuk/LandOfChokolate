@@ -1,6 +1,7 @@
 package com.example.landofchokolate.mapper;
 
 import com.example.landofchokolate.dto.product.CreateProductDto;
+import com.example.landofchokolate.dto.product.ProductDetailDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.dto.product.ProductResponseDto;
 import com.example.landofchokolate.model.Brand;
@@ -38,22 +39,6 @@ public class ProductMapper {
         return product;
     }
 
-    /**
-     * Обновляет существующую Entity из DTO
-     */
-    public void updateEntityFromDto(CreateProductDto dto, Product existingProduct) {
-        if (dto == null || existingProduct == null) {
-            log.warn("DTO or existing product is null, skipping update");
-            return;
-        }
-
-        existingProduct.setName(dto.getName());
-        existingProduct.setPrice(dto.getPrice());
-        existingProduct.setStockQuantity(dto.getStockQuantity());
-        // category, brand, imageUrl обновляются отдельно в сервисе
-
-        log.debug("Updated product entity with name: {}", dto.getName());
-    }
 
     /**
      * Преобразует Entity в полный ResponseDto
@@ -89,8 +74,8 @@ public class ProductMapper {
         }
 
         // Если у Product есть поля createdAt/updatedAt, добавьте их
-        // dto.setCreatedAt(product.getCreatedAt());
-        // dto.setUpdatedAt(product.getUpdatedAt());
+//         dto.setCreatedAt(product.getCreatedAt());
+//         dto.setUpdatedAt(product.getUpdatedAt());
 
         log.debug("Mapped Product entity to ResponseDto: id={}, name={}",
                 product.getId(), product.getName());
@@ -181,24 +166,55 @@ public class ProductMapper {
     }
 
     /**
-     * Создает краткую информацию о продукте (для отображения в других местах)
+     * Конвертация Product в ProductDetailDto для детальной страницы
      */
-    public String getProductSummary(Product product) {
+    public ProductDetailDto toDetailDto(Product product) {
         if (product == null) {
-            return "Продукт не найден";
+            return null;
         }
 
-        return String.format("%s (%s) - %s руб. (в наличии: %d шт.)",
-                product.getName(),
-                product.getBrand() != null ? product.getBrand().getName() : "Без бренда",
-                product.getPrice(),
-                product.getStockQuantity());
+        ProductDetailDto dto = new ProductDetailDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setSlug(product.getSlug());
+        dto.setPrice(product.getPrice());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setImageUrl(product.getImageUrl());
+        dto.setImageId(product.getImageId());
+        dto.setIsActive(product.getIsActive());
+
+        // Маппинг категории
+        if (product.getCategory() != null) {
+            ProductDetailDto.CategoryInfo categoryInfo = new ProductDetailDto.CategoryInfo();
+            categoryInfo.setId(product.getCategory().getId());
+            categoryInfo.setName(product.getCategory().getName());
+            categoryInfo.setSlug(product.getCategory().getSlug());
+            // Добавьте другие поля категории при необходимости
+            if (product.getCategory().getImageUrl() != null) {
+                categoryInfo.setImageUrl(product.getCategory().getImageUrl());
+            }
+            if (product.getCategory().getShortDescription() != null) {
+                categoryInfo.setDescription(product.getCategory().getShortDescription());
+            }
+            dto.setCategory(categoryInfo);
+        }
+
+        // Маппинг бренда
+        if (product.getBrand() != null) {
+            ProductDetailDto.BrandInfo brandInfo = new ProductDetailDto.BrandInfo();
+            brandInfo.setId(product.getBrand().getId());
+            brandInfo.setName(product.getBrand().getName());
+            // Добавьте другие поля бренда при необходимости
+            if (product.getBrand().getImageUrl() != null) {
+                brandInfo.setImageUrl(product.getBrand().getImageUrl());
+            }
+            if (product.getBrand().getDescription() != null) {
+                brandInfo.setDescription(product.getBrand().getDescription());
+            }
+            dto.setBrand(brandInfo);
+        }
+
+        return dto;
     }
 
-    /**
-     * Вспомогательный метод для проверки доступности товара
-     */
-    public boolean isProductAvailable(Product product) {
-        return product != null && product.getStockQuantity() > 0;
-    }
 }

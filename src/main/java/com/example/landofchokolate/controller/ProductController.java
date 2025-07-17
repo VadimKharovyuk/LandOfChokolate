@@ -9,6 +9,7 @@ import com.example.landofchokolate.dto.product.UpdateProductDto;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.ProductService;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -294,4 +295,11 @@ public class ProductController {
             model.addAttribute("filterBrands", List.of());
         }
     }
+
+
+//    // Добавить в контроллер кнопку или вызвать один раз:
+//    @PostConstruct
+//    public void init() {
+//        productService.generateMissingSlugForAllProducts();
+//    }
 }

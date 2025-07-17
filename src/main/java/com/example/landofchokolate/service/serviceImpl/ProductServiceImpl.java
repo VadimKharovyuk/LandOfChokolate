@@ -1,9 +1,7 @@
 package com.example.landofchokolate.service.serviceImpl;
 
-import com.example.landofchokolate.dto.product.CreateProductDto;
-import com.example.landofchokolate.dto.product.ProductListDto;
-import com.example.landofchokolate.dto.product.ProductResponseDto;
-import com.example.landofchokolate.dto.product.UpdateProductDto;
+import com.example.landofchokolate.dto.product.*;
+import com.example.landofchokolate.exception.ProductNotFoundException;
 import com.example.landofchokolate.mapper.ProductMapper;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.model.Category;
@@ -12,6 +10,7 @@ import com.example.landofchokolate.repository.BrandRepository;
 import com.example.landofchokolate.repository.CategoryRepository;
 import com.example.landofchokolate.repository.ProductRepository;
 import com.example.landofchokolate.service.ProductService;
+import com.example.landofchokolate.service.SlugService;
 import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final ProductMapper productMapper;
     private final StorageService storageService;
+    private final SlugService slugService;
 
     @Override
     public ProductResponseDto createProduct(CreateProductDto createProductDto) {
@@ -56,13 +56,17 @@ public class ProductServiceImpl implements ProductService {
         // Устанавливаем связи
         productMapper.setRelations(product, category, brand);
 
+        // Генерируем и устанавливаем уникальный slug
+        String slug = slugService.generateUniqueSlugForProduct(product.getName());
+        product.setSlug(slug);
+
         // Обработка изображения
         handleImageUpload(createProductDto.getImage(), product);
 
         // Сохраняем продукт
         Product savedProduct = productRepository.save(product);
 
-        log.info("Product created successfully with id: {}", savedProduct.getId());
+        log.info("Product created successfully with id: {} and slug: {}", savedProduct.getId(), savedProduct.getSlug());
         return productMapper.toResponseDto(savedProduct);
     }
 
@@ -84,9 +88,17 @@ public class ProductServiceImpl implements ProductService {
         String oldImageId = existingProduct.getImageId();
 
         // Обновляем основные поля
+        String oldName = existingProduct.getName();
         existingProduct.setName(updateProductDto.getName());
         existingProduct.setPrice(updateProductDto.getPrice());
         existingProduct.setStockQuantity(updateProductDto.getStockQuantity());
+
+        // Обновляем slug если название изменилось
+        if (!oldName.equals(updateProductDto.getName())) {
+            String newSlug = slugService.generateUniqueSlugForProduct(updateProductDto.getName());
+            existingProduct.setSlug(newSlug);
+            log.info("Updated product slug from '{}' to '{}' due to name change", existingProduct.getSlug(), newSlug);
+        }
 
         // Устанавливаем новые связи
         productMapper.setRelations(existingProduct, category, brand);
@@ -109,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(existingProduct);
 
-        log.info("Product updated successfully with id: {}", savedProduct.getId());
+        log.info("Product updated successfully with id: {} and slug: {}", savedProduct.getId(), savedProduct.getSlug());
         return productMapper.toResponseDto(savedProduct);
     }
 
@@ -149,17 +161,6 @@ public class ProductServiceImpl implements ProductService {
         log.info("Found {} products", products.size());
 
         return productMapper.toListDtoList(products);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProductResponseDto> getAllProductsDetailed() {
-        log.info("Getting all products (detailed view)");
-
-        List<Product> products = productRepository.findAll();
-        log.info("Found {} products", products.size());
-
-        return productMapper.toResponseDtoList(products);
     }
 
     @Override
@@ -298,16 +299,6 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponseDto(savedProduct);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isProductAvailable(Long productId, Integer requiredQuantity) {
-        log.debug("Checking availability for product {} with quantity {}", productId, requiredQuantity);
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
-
-        return product.getStockQuantity() >= requiredQuantity;
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -335,6 +326,34 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> getProductsByCategoryPage(Long id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return productRepository.findByCategoryIdAndIsActiveTrue(id, pageable);
+    }
+
+    @Override
+    public ProductDetailDto getProductBySlug(String slug) {
+        Product product = productRepository.findBySlug(slug)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with slug: " + slug));
+
+        return productMapper.toDetailDto(product);
+    }
+
+
+    /**
+     * Генерирует slug для всех продуктов где он null
+     */
+    @Override
+    @Transactional
+    public void generateMissingSlugForAllProducts() {
+        List<Product> productsWithoutSlug = productRepository.findBySlugIsNull();
+
+        for (Product product : productsWithoutSlug) {
+            String slug = slugService.generateUniqueSlugForProduct(product.getName());
+            product.setSlug(slug);
+            productRepository.save(product);
+            log.info("Generated slug '{}' for product id={} name='{}'",
+                    slug, product.getId(), product.getName());
+        }
+
+        log.info("Generated slugs for {} products", productsWithoutSlug.size());
     }
 
     /**

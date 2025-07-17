@@ -1,9 +1,6 @@
 package com.example.landofchokolate.service;
 
-import com.example.landofchokolate.dto.product.CreateProductDto;
-import com.example.landofchokolate.dto.product.ProductListDto;
-import com.example.landofchokolate.dto.product.ProductResponseDto;
-import com.example.landofchokolate.dto.product.UpdateProductDto;
+import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.model.Product;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -38,10 +35,6 @@ public interface ProductService {
      */
     List<ProductListDto> getAllProducts();
 
-    /**
-     * Получает все продукты (полная информация)
-     */
-    List<ProductResponseDto> getAllProductsDetailed();
 
     /**
      * Поиск продуктов по названию
@@ -93,10 +86,6 @@ public interface ProductService {
      */
     ProductResponseDto decreaseStock(Long productId, Integer quantity);
 
-    /**
-     * Проверяет доступность товара в нужном количестве
-     */
-    boolean isProductAvailable(Long productId, Integer requiredQuantity);
 
     /**
      * Получает статистику по товарам
@@ -105,6 +94,11 @@ public interface ProductService {
 
 
     Page<Product> getProductsByCategoryPage(Long id, int page, int size);
+
+    ProductDetailDto getProductBySlug(String slug);
+
+
+    void generateMissingSlugForAllProducts();
 
     /**
      * Внутренний класс для статистики

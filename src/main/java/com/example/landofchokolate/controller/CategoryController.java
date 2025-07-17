@@ -162,9 +162,9 @@ public class CategoryController {
     }
 
 
-    // Добавить в контроллер кнопку или вызвать один раз:
-    @PostConstruct
-    public void init() {
-        categoryService.generateMissingSlugForAllCategories();
-    }
+//    // Добавить в контроллер кнопку или вызвать один раз:
+//    @PostConstruct
+//    public void init() {
+//        categoryService.generateMissingSlugForAllCategories();
+//    }
 }

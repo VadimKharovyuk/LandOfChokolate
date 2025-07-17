@@ -1,5 +1,6 @@
 package com.example.landofchokolate.repository;
 
+import com.example.landofchokolate.dto.product.ProductDetailDto;
 import com.example.landofchokolate.dto.product.ProductFilterDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
 import com.example.landofchokolate.model.Product;
@@ -270,4 +271,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     Page<Product> findByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
+
+    Optional<Product> findBySlug(String slug);
+
+
+    /**
+     * Находит все продукты без slug
+     */
+    List<Product> findBySlugIsNull();
 }
