@@ -18,8 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -256,7 +259,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryListPublicDto getPublicCategories(int page, int size) {
-        log.info("Getting public categories for page: {}, size: {}", page, size);
+        log.info("Getting public categories with price info for page: {}, size: {}", page, size);
 
         // Создаем Pageable с сортировкой по названию
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
@@ -264,8 +267,10 @@ public class CategoryServiceImpl implements CategoryService {
         // Получаем только активные категории
         Page<Category> categoryPage = categoryRepository.findByIsActiveTrue(pageable);
 
-        // Преобразуем в PublicDto
-        List<CategoryPublicDto> publicDtos = categoryMapper.toPublicDtoList(categoryPage.getContent());
+        // Преобразуем в PublicDto с ценовой информацией
+        List<CategoryPublicDto> publicDtos = categoryPage.getContent().stream()
+                .map(this::enrichCategoryWithPriceInfo)
+                .collect(Collectors.toList());
 
         // Генерируем номера страниц для навигации
         List<Integer> pageNumbers = generatePageNumbers(page, categoryPage.getTotalPages());
@@ -284,10 +289,31 @@ public class CategoryServiceImpl implements CategoryService {
                 .pageNumbers(pageNumbers)
                 .build();
 
-        log.info("Found {} active categories, total pages: {}",
+        log.info("Found {} active categories with price info, total pages: {}",
                 publicDtos.size(), categoryPage.getTotalPages());
 
         return result;
+    }
+
+    /**
+     * Обогащает категорию ценовой информацией
+     */
+    private CategoryPublicDto enrichCategoryWithPriceInfo(Category category) {
+        try {
+            // Получаем статистику цен для категории
+            Map<String, Object> priceStats = productRepository.findPriceStatsByCategoryId(category.getId());
+
+            BigDecimal minPrice = (BigDecimal) priceStats.get("minPrice");
+            BigDecimal maxPrice = (BigDecimal) priceStats.get("maxPrice");
+            Integer productCount = ((Number) priceStats.get("productCount")).intValue();
+
+            return categoryMapper.toPublicDto(category, minPrice, maxPrice, productCount);
+
+        } catch (Exception e) {
+            log.warn("Error getting price info for category id={}: {}", category.getId(), e.getMessage());
+            // Возвращаем категорию без ценовой информации
+            return categoryMapper.toPublicDto(category, null, null, 0);
+        }
     }
 
     /**

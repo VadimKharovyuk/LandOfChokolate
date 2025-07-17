@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * DTO для публичного отображения категории (для пользователей сайта)
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +31,10 @@ public class CategoryPublicDto {
 
     // Статистика (опционально)
     private Integer productsCount;
+
+
+    // 🆕 Ценовая информация
+    private BigDecimal minPrice;        // минимальная цена товара в категории
+    private BigDecimal maxPrice;        // максимальная цена товара в категории (опционально)
+    private String priceRange;
 }

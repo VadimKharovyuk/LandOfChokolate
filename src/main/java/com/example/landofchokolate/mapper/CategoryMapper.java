@@ -8,6 +8,7 @@ import com.example.landofchokolate.model.Category;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -107,7 +108,10 @@ public class CategoryMapper {
     /**
      * Преобразует Entity в PublicDto (для публичного API)
      */
-    public CategoryPublicDto toPublicDto(Category category) {
+    /**
+     * Преобразует Entity в PublicDto (для публичного API) с ценовой информацией
+     */
+    public CategoryPublicDto toPublicDto(Category category, BigDecimal minPrice, BigDecimal maxPrice, Integer productCount) {
         if (category == null) {
             log.warn("Category entity is null, returning null");
             return null;
@@ -126,29 +130,32 @@ public class CategoryMapper {
         dto.setMetaTitle(category.getMetaTitle());
         dto.setMetaDescription(category.getMetaDescription());
 
-        log.debug("Mapped Category entity to PublicDto: id={}, slug={}",
-                category.getId(), category.getSlug());
+        // 🆕 Ценовая информация
+        dto.setMinPrice(minPrice);
+        dto.setMaxPrice(maxPrice);
+        dto.setProductsCount(productCount);
+
+        // Генерируем строку с диапазоном цен
+        dto.setPriceRange(generatePriceRange(minPrice, maxPrice));
+
+        log.debug("Mapped Category entity to PublicDto: id={}, slug={}, minPrice={}, productCount={}",
+                category.getId(), category.getSlug(), minPrice, productCount);
         return dto;
     }
-
-        /**
-         * Преобразует список Entity в список PublicDto
-         */
-        public List<CategoryPublicDto> toPublicDtoList(List<Category> categories) {
-            if (categories == null || categories.isEmpty()) {
-                log.debug("Categories list is null or empty, returning empty list");
-                return new ArrayList<>();
-            }
-
-            List<CategoryPublicDto> publicDtos = categories.stream()
-                    .filter(category -> category.getIsActive() != null && category.getIsActive()) // только активные
-                    .map(this::toPublicDto)
-                    .collect(Collectors.toList());
-
-            log.debug("Mapped {} active categories to PublicDto list", publicDtos.size());
-            return publicDtos;
+    /**
+     * Генерирует строку с диапазоном цен
+     */
+    private String generatePriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
+        if (minPrice == null) {
+            return "Товары отсутствуют";
         }
 
+        if (maxPrice == null || minPrice.equals(maxPrice)) {
+            return String.format("от %.0f грн", minPrice);
+        }
+
+        return String.format("от %.0f до %.0f грн", minPrice, maxPrice);
+    }
 
 
     /**

@@ -14,6 +14,7 @@ import java.util.List;
 public class CategoryListPublicDto {
     private List<CategoryPublicDto> categories;
 
+
     // Основная информация
     private Integer totalCount;
     private Integer currentPage;

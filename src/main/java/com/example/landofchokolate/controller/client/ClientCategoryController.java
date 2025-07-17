@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ClientCategoryController {
     private final CategoryService categoryService;
 
+
     @GetMapping()
     public String categoriesList(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "6") int size,

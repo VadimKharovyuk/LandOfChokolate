@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -238,4 +239,31 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     boolean existsByCategoryId(Long id);
+
+
+    /**
+     * Находит минимальную цену товаров в категории
+     */
+    @Query("SELECT MIN(p.price) FROM Product p WHERE p.category.id = :categoryId AND p.price > 0")
+    BigDecimal findMinPriceByCategoryId(Long categoryId);
+
+    /**
+     * Находит максимальную цену товаров в категории
+     */
+    @Query("SELECT MAX(p.price) FROM Product p WHERE p.category.id = :categoryId")
+    BigDecimal findMaxPriceByCategoryId(Long categoryId);
+
+    /**
+     * Получает статистику цен для категории
+     */
+    @Query("""
+        SELECT new map(
+            MIN(p.price) as minPrice,
+            MAX(p.price) as maxPrice,
+            COUNT(p) as productCount
+        ) 
+        FROM Product p 
+        WHERE p.category.id = :categoryId AND p.price > 0
+        """)
+    Map<String, Object> findPriceStatsByCategoryId(Long categoryId);
 }

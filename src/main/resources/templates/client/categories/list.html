@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Категории - Land of Chocolate</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Категории - Land of Chocolate</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+
     <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --primary-medium: #5A5A5A;
+            --primary-light: #FAFAFA;
+            --accent-gold: #D4AF37;
+            --accent-warm: #F5F5F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #757575;
+            --border-subtle: #E8E8E8;
+            --shadow-soft: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.08);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,355 +37,491 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: #FFFFFF;
+            letter-spacing: -0.01em;
         }
 
-        .container {
-            max-width: 1200px;
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .main-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 2rem;
         }
 
-        .header {
+        .page-header {
+            padding: 6rem 0 4rem;
             text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #8B4513, #D2691E);
-            color: white;
-            padding: 40px 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 5rem;
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
         }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .categories-info {
-            text-align: center;
-            margin-bottom: 30px;
+        .page-subtitle {
             font-size: 1.1rem;
-            color: #666;
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 3rem;
+            margin-bottom: 6rem;
         }
 
         .category-card {
-            background: white;
-            border-radius: 15px;
+            background: #FFFFFF;
+            border-radius: 2px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
             text-decoration: none;
             color: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-subtle);
         }
 
         .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
             text-decoration: none;
             color: inherit;
+            box-shadow: 0 20px 40px var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        .category-image-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background-color: var(--accent-warm);
         }
 
         .category-image {
             width: 100%;
-            height: 200px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-image img {
-            width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .category-card:hover .category-image img {
-            transform: scale(1.05);
+        .category-card:hover .category-image {
+            transform: scale(1.02);
         }
 
         .category-placeholder {
             width: 100%;
-            height: 200px;
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #888;
+            background: linear-gradient(135deg, #F8F8F8 0%, #F0F0F0 100%);
+            color: var(--text-secondary);
             font-size: 2.5rem;
         }
 
-        .category-content {
-            padding: 25px;
+        .category-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-subtle);
         }
 
-        .category-name {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #8B4513;
+        .category-content {
+            padding: 2.5rem;
+        }
+
+        .category-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
         }
 
         .category-description {
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            font-weight: 300;
         }
 
         .category-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
-            color: #888;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .products-count {
-            background: #8B4513;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+        .meta-item {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .meta-icon {
+            color: var(--accent-gold);
+            margin-right: 0.5rem;
+        }
+
+        .price-section {
+            text-align: center;
+        }
+
+        .price-display {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .price-unavailable {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .stats-section {
+            margin-bottom: 3rem;
+        }
+
+        .stats-inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-inline {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .stat-separator {
+            width: 1px;
+            height: 20px;
+            background-color: var(--border-subtle);
+        }
+
+        .pagination-container {
+            margin: 4rem 0;
+        }
+
+        .pagination {
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .page-item {
+            margin: 0;
+        }
+
+        .page-link {
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            background: #FFFFFF;
+            font-weight: 400;
+            padding: 0.75rem 1.25rem;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .page-link:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-medium);
+            color: var(--text-primary);
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--text-primary);
+            border-color: var(--text-primary);
+            color: #FFFFFF;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: #FFFFFF;
+            border-color: var(--border-subtle);
+            color: var(--text-secondary);
+            opacity: 0.5;
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 6rem 2rem;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .empty-state h3 {
-            font-size: 1.5rem;
-            color: #666;
-            margin-bottom: 15px;
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
         }
 
-        .empty-state p {
-            color: #888;
-            font-size: 1.1rem;
+        .empty-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
+        .empty-description {
+            color: var(--text-secondary);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .back-button {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-        }
-
-        .pagination a,
-        .pagination span {
-            display: inline-block;
-            padding: 12px 16px;
+            gap: 0.75rem;
+            background: var(--text-primary);
+            color: #FFFFFF;
+            padding: 1rem 2rem;
+            border-radius: 2px;
             text-decoration: none;
-            color: #8B4513;
-            background: white;
-            border: 2px solid #8B4513;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            min-width: 45px;
-            text-align: center;
+            font-weight: 400;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            margin-top: 3rem;
         }
 
-        .pagination a:hover {
-            background: #8B4513;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .pagination .active {
-            background: #8B4513;
-            color: white;
-            font-weight: bold;
-        }
-
-        .pagination .disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: #f5f5f5;
-            color: #999;
-            border-color: #ddd;
-        }
-
-        .pagination-info {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 1rem;
-        }
-
-        .back-to-home {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .back-to-home a {
-            display: inline-block;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #8B4513, #D2691E);
-            color: white;
+        .back-button:hover {
+            background: var(--primary-medium);
+            color: #FFFFFF;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .back-to-home a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+            transform: translateY(-1px);
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+            .main-container {
+                padding: 0 1.5rem;
             }
 
-            .header h1 {
-                font-size: 2rem;
+            .page-header {
+                padding: 4rem 0 3rem;
+                margin-bottom: 3rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
             }
 
             .categories-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 2rem;
+                margin-bottom: 4rem;
             }
 
-            .pagination {
-                gap: 5px;
+            .category-content {
+                padding: 2rem;
             }
 
-            .pagination a,
-            .pagination span {
-                padding: 10px 12px;
-                font-size: 0.9rem;
+            .stats-section {
+                margin-bottom: 2rem;
+            }
+
+            .stats-inline {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stat-separator {
+                display: none;
+            }
+
+            .pagination-container {
+                margin: 3rem 0;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- Заголовок -->
-    <header class="header">
-        <h1>🍫 Наши категории</h1>
-        <p>Откройте мир вкуснейших сладостей Land of Chocolate</p>
+<!-- Подключение навигации -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<div class="main-container">
+    <!-- Заголовок сторінки -->
+    <header class="page-header">
+        <h1 class="page-title">Категорії</h1>
+        <p class="page-subtitle">
+            Вишукана колекція преміальних смаколиків для справжніх поціновувачів
+        </p>
     </header>
 
-    <!-- Информация о количестве -->
-    <div class="categories-info" th:if="${!categoryList.isEmpty()}">
-        <p>
-            Показано: <strong th:text="${categoryList.categories.size()}">12</strong> из
-            <strong th:text="${categoryList.totalCount}">48</strong> категорий
-            <span th:if="${categoryList.totalPages > 1}">
-                    (страница <span th:text="${categoryList.displayCurrentPage}">1</span>
-                    из <span th:text="${categoryList.totalPages}">4</span>)
-                </span>
+    <!-- Statistics -->
+    <section class="stats-section" th:if="${!categoryList.isEmpty()}">
+        <div class="stats-inline">
+            <div class="stat-inline">
+                <span>Показано</span>
+                <span class="stat-value" th:text="${categoryList.categories.size()}">12</span>
+                <span>из</span>
+                <span class="stat-value" th:text="${categoryList.totalCount}">48</span>
+            </div>
+
+            <div class="stat-separator" th:if="${categoryList.totalPages > 1}"></div>
+
+            <div class="stat-inline" th:if="${categoryList.totalPages > 1}">
+                <span>Страница</span>
+                <span class="stat-value" th:text="${categoryList.displayCurrentPage}">1</span>
+                <span>из</span>
+                <span class="stat-value" th:text="${categoryList.totalPages}">4</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Grid -->
+    <section th:if="${!categoryList.isEmpty()}">
+        <div class="categories-grid">
+            <a th:each="category : ${categoryList.categories}"
+               th:href="@{'/category/' + ${category.slug}}"
+               class="category-card">
+
+                <!-- Image Container -->
+                <div class="category-image-container">
+                    <img th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}"
+                         th:src="${category.imageUrl}"
+                         th:alt="${category.name}"
+                         class="category-image">
+                    <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
+                         class="category-placeholder">
+                        <i class="fas fa-image"></i>
+                    </div>
+
+                    <!-- Product Count Badge -->
+                    <div th:if="${category.productsCount != null and category.productsCount > 0}"
+                         class="category-badge">
+                        <span th:text="${category.productsCount}">12</span> товаров
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="category-content">
+                    <h3 class="category-title" th:text="${category.name}">Десерты</h3>
+                    <p class="category-description" th:text="${category.shortDescription}">
+                        Нежные и воздушные эклеры, наполненные ароматным кремом из бельгийского шоколада
+                    </p>
+
+                    <!-- Meta Information -->
+                    <div class="category-meta">
+                            <span class="meta-item" th:if="${category.createdAt != null}">
+                                <i class="fas fa-calendar meta-icon"></i>
+                                <span th:text="${#temporals.format(category.createdAt, 'dd.MM.yyyy')}">15.12.2024</span>
+                            </span>
+                        <span class="meta-item" th:if="${category.createdAt == null}">
+                                <i class="fas fa-star meta-icon"></i>
+                                Новая категория
+                            </span>
+                    </div>
+
+                    <!-- Price Section -->
+                    <div class="price-section">
+                        <div th:if="${category.minPrice != null}" class="price-display">
+                            <span th:text="${category.priceRange}">от 50 до 200 грн</span>
+                        </div>
+                        <div th:if="${category.minPrice == null}" class="price-unavailable">
+                            Товары появятся скоро
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Empty State -->
+    <section th:if="${categoryList.isEmpty()}" class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h2 class="empty-title">Категории не найдены</h2>
+        <p class="empty-description">
+            В данный момент нет доступных категорий для отображения.
+            Мы работаем над пополнением ассортимента.
         </p>
-    </div>
+    </section>
 
-    <!-- Сетка категорий -->
-    <div th:if="${!categoryList.isEmpty()}" class="categories-grid">
-        <a th:each="category : ${categoryList.categories}"
-           th:href="@{'/category/' + ${category.slug}}"
-           class="category-card">
+    <!-- Pagination -->
+    <nav th:if="${!categoryList.isEmpty() and categoryList.totalPages > 1}"
+         class="pagination-container"
+         aria-label="Category pagination">
+        <ul class="pagination">
+            <!-- Previous -->
+            <li class="page-item" th:classappend="${!categoryList.hasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${categoryList.hasPrevious} ? @{/categories(page=${categoryList.previousPage}, size=${categoryList.pageSize})} : '#'">
+                    Предыдущая
+                </a>
+            </li>
 
-            <!-- Изображение категории -->
-            <div class="category-image">
-                <img th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}"
-                     th:src="${category.imageUrl}"
-                     th:alt="${category.name}">
-                <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
-                     class="category-placeholder">
-                    🍰
-                </div>
-            </div>
-
-            <!-- Контент категории -->
-            <div class="category-content">
-                <h3 class="category-name" th:text="${category.name}">Десерти</h3>
-                <p class="category-description" th:text="${category.shortDescription}">
-                    Ніжні та повітряні еклери, наповнені ароматним кремом із бельгійського шоколаду
-                </p>
-
-                <div class="category-meta">
-                        <span class="category-created"
-                              th:text="${category.createdAt != null} ?
-                                       'Додано: ' + ${#temporals.format(category.createdAt, 'dd.MM.yyyy')} :
-                                       'Нова категорія'">
-                            Додано: 15.12.2024
-                        </span>
-
-                    <span th:if="${category.productsCount != null and category.productsCount > 0}"
-                          class="products-count"
-                          th:text="${category.productsCount} + ' товарів'">
-                            12 товарів
-                        </span>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <!-- Пустое состояние -->
-    <div th:if="${categoryList.isEmpty()}" class="empty-state">
-        <h3>🔍 Категории не найдены</h3>
-        <p>В данный момент нет доступных категорий для отображения.</p>
-    </div>
-
-    <!-- Пагинация -->
-    <nav th:if="${!categoryList.isEmpty() and categoryList.totalPages > 1}" class="pagination">
-        <!-- Кнопка "Назад" -->
-        <a th:if="${categoryList.hasPrevious}"
-           th:href="@{/categories(page=${categoryList.previousPage}, size=${categoryList.pageSize})}">
-            ← Назад
-        </a>
-        <span th:if="${!categoryList.hasPrevious}" class="disabled">← Назад</span>
-
-        <!-- Номера страниц -->
-        <span th:each="pageNum : ${categoryList.pageNumbers}">
-                <a th:if="${pageNum != categoryList.currentPage}"
+            <!-- Page Numbers -->
+            <li th:each="pageNum : ${categoryList.pageNumbers}"
+                class="page-item"
+                th:classappend="${pageNum == categoryList.currentPage} ? 'active'">
+                <a class="page-link"
                    th:href="@{/categories(page=${pageNum}, size=${categoryList.pageSize})}"
                    th:text="${pageNum + 1}">1</a>
-                <span th:if="${pageNum == categoryList.currentPage}"
-                      class="active"
-                      th:text="${pageNum + 1}">1</span>
-            </span>
+            </li>
 
-        <!-- Кнопка "Далее" -->
-        <a th:if="${categoryList.hasNext}"
-           th:href="@{/categories(page=${categoryList.nextPage}, size=${categoryList.pageSize})}">
-            Далее →
-        </a>
-        <span th:if="${!categoryList.hasNext}" class="disabled">Далее →</span>
+            <!-- Next -->
+            <li class="page-item" th:classappend="${!categoryList.hasNext} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${categoryList.hasNext} ? @{/categories(page=${categoryList.nextPage}, size=${categoryList.pageSize})} : '#'">
+                    Следующая
+                </a>
+            </li>
+        </ul>
     </nav>
 
-    <!-- Дополнительная информация о пагинации -->
-    <div th:if="${categoryList.totalPages > 1}" class="pagination-info">
-        <p>
-            Отображение страницы <strong th:text="${categoryList.displayCurrentPage}">1</strong>
-            из <strong th:text="${categoryList.totalPages}">4</strong>
-            • Всего категорий: <strong th:text="${categoryList.totalCount}">48</strong>
-        </p>
-    </div>
-
-    <!-- Кнопка возврата на главную -->
-    <div class="back-to-home">
-        <a href="/">🏠 Вернуться на главную</a>
+    <!-- Back to Home -->
+    <div class="text-center">
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Вернуться на главную
+        </a>
     </div>
 </div>
+<!-- Подключение JavaScript для навигации -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
