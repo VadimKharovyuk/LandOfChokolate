@@ -1,9 +1,6 @@
 package com.example.landofchokolate.service;
 
-import com.example.landofchokolate.dto.category.CategoryEditData;
-import com.example.landofchokolate.dto.category.CategoryListPublicDto;
-import com.example.landofchokolate.dto.category.CategoryResponseDto;
-import com.example.landofchokolate.dto.category.CreateCategoryDto;
+import com.example.landofchokolate.dto.category.*;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -48,4 +45,9 @@ public interface CategoryService {
 
 
     CategoryListPublicDto getPublicCategories(int page, int size);
+
+    /**
+     * Получает топ категории для главной страницы
+     */
+    List<CategoryPublicDto> getTopCategories(int limit);
 }

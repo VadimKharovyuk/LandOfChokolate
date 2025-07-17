@@ -70,13 +70,14 @@
             <th style="padding: 10px; text-align: left;">Meta Title</th>
             <th style="padding: 10px; text-align: left;">Meta Description</th>
             <th style="padding: 10px; text-align: center;">Статус</th>
+            <th style="padding: 10px; text-align: center;">Топовая</th>
             <th style="padding: 10px; text-align: center;">Создана</th>
             <th style="padding: 10px; text-align: center;">Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="category : ${categories}">
-            <!-- 🆕 Столбец с изображением -->
+            <!-- Столбец с изображением -->
             <td style="padding: 10px; text-align: center; width: 80px;">
                 <div th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}">
                     <img th:src="${category.imageUrl}"
@@ -99,12 +100,27 @@
                 th:text="${category.metaTitle != null and !category.metaTitle.isEmpty()} ? ${category.metaTitle} : '—'"></td>
             <td style="padding: 10px; max-width: 150px; word-wrap: break-word; color: #6c757d;"
                 th:text="${category.metaDescription != null and !category.metaDescription.isEmpty()} ? ${category.metaDescription} : '—'"></td>
+
+            <!-- Столбец статуса -->
             <td style="padding: 10px; text-align: center;">
-                <span th:if="${category.isActive != null and category.isActive}"
-                      style="color: #28a745; font-weight: bold;">✓ Активна</span>
+            <span th:if="${category.isActive != null and category.isActive}"
+                  style="color: #28a745; font-weight: bold;">✓ Активна</span>
                 <span th:if="${category.isActive == null or !category.isActive}"
                       style="color: #dc3545; font-weight: bold;">✗ Неактивна</span>
             </td>
+
+            <!-- 🆕 Столбец топовой категории -->
+            <td style="padding: 10px; text-align: center;">
+            <span th:if="${category.isFeatured != null and category.isFeatured}"
+                  style="color: #ffc107; font-weight: bold; font-size: 16px;" title="Отображается на главной странице">
+                ⭐ Топ
+            </span>
+                <span th:if="${category.isFeatured == null or !category.isFeatured}"
+                      style="color: #6c757d; font-size: 14px;">
+                —
+            </span>
+            </td>
+
             <td style="padding: 10px; text-align: center; font-size: 12px; color: #6c757d;"
                 th:text="${category.createdAt != null} ? ${#temporals.format(category.createdAt, 'dd.MM.yyyy HH:mm')} : '—'"></td>
             <td style="padding: 10px; text-align: center;">

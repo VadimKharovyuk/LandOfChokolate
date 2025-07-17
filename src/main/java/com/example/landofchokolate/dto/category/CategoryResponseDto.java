@@ -23,4 +23,7 @@ public class CategoryResponseDto {
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // 🆕 Добавить поля для топовых категорий
+    private Boolean isFeatured;
 }

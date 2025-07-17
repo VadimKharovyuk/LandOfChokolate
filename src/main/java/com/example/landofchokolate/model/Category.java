@@ -31,6 +31,12 @@ public class Category {
     // Статус активности
     private Boolean isActive = true;
 
+    // Ручная пометка топовой категории
+    private Boolean isFeatured = false;
+
+    // Счетчик просмотров (для аналитики)
+    private Long viewCount = 0L;
+
     // URL-friendly название для SEO
     @Column(unique = true)
     private String slug;

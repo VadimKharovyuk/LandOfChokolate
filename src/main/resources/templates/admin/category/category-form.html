@@ -121,6 +121,23 @@
         </div>
     </div>
 
+
+    <!-- В SEO разделе -->
+    <div style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+        <h4 style="margin-top: 0; color: #856404;">⭐ Топовая категория</h4>
+
+        <!-- Только чекбокс топовой категории -->
+        <div style="margin: 10px 0;">
+            <input type="checkbox" id="isFeatured" th:field="*{isFeatured}" style="margin-right: 8px;">
+            <label for="isFeatured" style="font-weight: bold;">Показывать на главной странице</label>
+            <small style="color: #6c757d; display: block; margin-top: 5px;">
+                💡 Отмеченные категории будут отображаться в разделе "Популярные категории" на главной странице
+            </small>
+        </div>
+    </div>
+
+
+
     <div style="margin: 20px 0;">
         <button type="submit"
                 style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">

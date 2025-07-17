@@ -33,6 +33,9 @@ public class CategoryMapper {
         category.setMetaDescription(createCategoryDto.getMetaDescription());
         category.setIsActive(createCategoryDto.getIsActive());
 
+        // 🆕 Добавляем поддержку топовых категорий
+        category.setIsFeatured(createCategoryDto.getIsFeatured());
+
         log.debug("Mapped CreateCategoryDto to Category: {}", createCategoryDto.getName());
         return category;
     }
@@ -52,9 +55,15 @@ public class CategoryMapper {
         existingCategory.setMetaDescription(dto.getMetaDescription());
         existingCategory.setIsActive(dto.getIsActive());
 
+        // 🆕 Обновляем статус топовой категории
+        existingCategory.setIsFeatured(dto.getIsFeatured());
+
         log.debug("Updated category entity with name: {}", dto.getName());
     }
 
+    /**
+     * Преобразует Entity в ResponseDto
+     */
     /**
      * Преобразует Entity в ResponseDto
      */
@@ -69,7 +78,7 @@ public class CategoryMapper {
         dto.setName(category.getName());
         dto.setShortDescription(category.getShortDescription());
 
-        // 🆕 Добавляем новые поля
+        // Добавляем новые поля
         dto.setSlug(category.getSlug());
         dto.setImageUrl(category.getImageUrl());
         dto.setImageId(category.getImageId());
@@ -79,7 +88,8 @@ public class CategoryMapper {
         dto.setCreatedAt(category.getCreatedAt());
         dto.setUpdatedAt(category.getUpdatedAt());
 
-
+        // 🆕 Добавляем только isFeatured (без featuredOrder)
+        dto.setIsFeatured(category.getIsFeatured());
 
         log.debug("Mapped Category entity to ResponseDto: id={}, name={}",
                 category.getId(), category.getName());
@@ -106,9 +116,6 @@ public class CategoryMapper {
 
 
     /**
-     * Преобразует Entity в PublicDto (для публичного API)
-     */
-    /**
      * Преобразует Entity в PublicDto (для публичного API) с ценовой информацией
      */
     public CategoryPublicDto toPublicDto(Category category, BigDecimal minPrice, BigDecimal maxPrice, Integer productCount) {
@@ -125,6 +132,7 @@ public class CategoryMapper {
         dto.setImageUrl(category.getImageUrl());
         dto.setIsActive(category.getIsActive());
         dto.setCreatedAt(category.getCreatedAt());
+
 
         // 🆕 Добавляем SEO поля
         dto.setMetaTitle(category.getMetaTitle());
@@ -174,11 +182,14 @@ public class CategoryMapper {
         editDto.setIsActive(category.getIsActive());
         editDto.setMetaDescription(category.getMetaDescription());
         editDto.setMetaTitle(category.getMetaTitle());
+        // 🆕 Добавляем поддержку топовых категорий
+        editDto.setIsFeatured(category.getIsFeatured());
 
      //Данные для отображения (только показать)
         CategoryEditData editData = new CategoryEditData();
         editData.setCategoryDto(editDto);
         editData.setCurrentImageUrl(category.getImageUrl());
+
 
         log.debug("Mapped CategoryResponseDto to CategoryEditData: id={}, name={}, hasImage={}",
                 category.getId(), category.getName(), category.getImageUrl() != null);

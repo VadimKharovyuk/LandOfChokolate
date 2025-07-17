@@ -784,6 +784,9 @@
     </div>
 </section>
 
+
+
+
 <!-- Preview Section -->
 <section class="preview-section" id="catalog">
     <div class="container">
@@ -796,7 +799,56 @@
             </p>
         </div>
 
-        <div class="product-grid">
+        <!-- Dynamic Product Grid -->
+        <div class="product-grid" th:if="${topCategories != null and !topCategories.isEmpty()}">
+            <a th:each="category : ${topCategories}"
+               th:href="@{'/category/' + ${category.slug}}"
+               class="product-card">
+
+                <!-- Category Image -->
+                <div class="product-image"
+                     th:style="${category.imageUrl != null and !category.imageUrl.isEmpty()} ?
+                               'background: url(' + ${category.imageUrl} + ') center/cover;' :
+                               'background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center;'">
+
+                    <!-- Placeholder if no image -->
+                    <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
+                         style="color: #adb5bd; font-size: 3rem;">
+                        <i class="fas fa-birthday-cake"></i>
+                    </div>
+
+                    <!-- Featured Star Badge -->
+                    <div style="position: absolute; top: 15px; right: 15px; background: rgba(255, 193, 7, 0.9); color: white; padding: 6px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: 600;">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <!-- Category Content -->
+                <div class="product-content">
+                    <p class="product-category">Категорія</p>
+                    <h3 class="product-title" th:text="${category.name}">Торти</h3>
+                    <p class="product-description" th:text="${category.shortDescription}">
+                        Святкові та повсякденні торти з вишуканим дизайном
+                    </p>
+
+                    <!-- Dynamic Price -->
+                    <div class="product-price">
+                        <span th:if="${category.minPrice != null}" th:text="${category.priceRange}">від 2 500 ₴</span>
+                        <span th:if="${category.minPrice == null}" style="color: #ffc107; font-style: italic;">Скоро в продажу</span>
+                    </div>
+
+                    <!-- Products Count (optional) -->
+                    <div th:if="${category.productsCount != null and category.productsCount > 0}"
+                         style="margin-top: 0.5rem; font-size: 0.85rem; color: #6c757d;">
+                        <i class="fas fa-box-open" style="color: #007bff;"></i>
+                        <span th:text="${category.productsCount}">12</span> товарів
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Fallback: Static cards if no dynamic data -->
+        <div class="product-grid" th:if="${topCategories == null or topCategories.isEmpty()}">
             <div class="product-card">
                 <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
                 <div class="product-content">
@@ -834,15 +886,54 @@
             </div>
         </div>
 
-        <!-- Кнопка "Переглянути більше" -->
+        <!-- Footer Button -->
         <div class="section-footer">
-            <a href="/categories" class="view-more-btn">
+            <a th:href="@{/categories}" class="view-more-btn">
                 Переглянути всі категорії
                 <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </div>
 </section>
+
+<!-- Additional styles for dynamic elements -->
+<style>
+    .product-card {
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        display: block;
+    }
+
+    .product-card:hover {
+        text-decoration: none;
+        color: inherit;
+        transform: translateY(-5px);
+    }
+
+    .product-image {
+        position: relative;
+    }
+
+    /* Ensure proper styling for fallback state */
+    .product-grid:empty::after {
+        content: "Завантаження категорій...";
+        display: block;
+        text-align: center;
+        color: #6c757d;
+        font-style: italic;
+        padding: 2rem;
+    }
+</style>
+
+
+
+
+
+
+
+
 
 <!-- Products Section -->
 <section class="preview-section" style="background: var(--primary-light); padding: 80px 0;">

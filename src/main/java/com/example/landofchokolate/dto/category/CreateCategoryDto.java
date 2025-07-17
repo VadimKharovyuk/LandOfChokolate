@@ -31,4 +31,6 @@ public class CreateCategoryDto {
     private Boolean isActive = true;
 
     private MultipartFile image;
+
+    private Boolean isFeatured = false;
 }

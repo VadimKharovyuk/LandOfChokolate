@@ -15,6 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
 
     <style>
         :root {
@@ -511,14 +513,15 @@
         </ul>
     </nav>
 
-    <!-- Back to Home -->
-    <div class="text-center">
-        <a href="/" class="back-button">
-            <i class="fas fa-arrow-left"></i>
-            Вернуться на главную
-        </a>
-    </div>
+<!--    &lt;!&ndash; Back to Home &ndash;&gt;-->
+<!--    <div class="text-center">-->
+<!--        <a href="/" class="back-button">-->
+<!--            <i class="fas fa-arrow-left"></i>-->
+<!--            Вернуться на главную-->
+<!--        </a>-->
+<!--    </div>-->
 </div>
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
 <!-- Подключение JavaScript для навигации -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <!-- Bootstrap JS -->

@@ -295,6 +295,23 @@ public class CategoryServiceImpl implements CategoryService {
         return result;
     }
 
+    @Override
+    public List<CategoryPublicDto> getTopCategories(int limit) {
+        log.info("Getting top {} featured categories", limit);
+
+        Pageable pageable = PageRequest.of(0, limit);
+        List<Category> featuredCategories = categoryRepository
+                .findByIsActiveTrueAndIsFeaturedTrueOrderByNameAsc(pageable);
+
+        // Обогащаем ценовой информацией
+        List<CategoryPublicDto> result = featuredCategories.stream()
+                .map(this::enrichCategoryWithPriceInfo)
+                .collect(Collectors.toList());
+
+        log.info("Found {} featured categories", result.size());
+        return result;
+    }
+
     /**
      * Обогащает категорию ценовой информацией
      */
