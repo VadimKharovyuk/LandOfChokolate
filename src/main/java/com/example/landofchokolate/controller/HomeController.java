@@ -16,8 +16,8 @@ public class HomeController {
     @GetMapping
     public String home(Model model) {
 
-        // Получаем топ 6 категорий для главной
-        List<CategoryPublicDto> topCategories = categoryService.getTopCategories(6);
+        // Получаем топ  категорий для главной
+        List<CategoryPublicDto> topCategories = categoryService.getTopCategories(12);
         model.addAttribute("topCategories", topCategories);
         return "homeV1";
     }
