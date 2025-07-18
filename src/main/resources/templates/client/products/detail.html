@@ -783,10 +783,10 @@
                             <i class="fas fa-image"></i>
                         </div>
 
-                        <!-- Бейдж наличия -->
-                        <div class="stock-badge" th:classappend="${product.stockBadgeClass}">
-                            <span th:text="${product.stockMessage}">В наличии: 12</span>
-                        </div>
+<!--                        &lt;!&ndash; Бейдж наличия &ndash;&gt;-->
+<!--                        <div class="stock-badge" th:classappend="${product.stockBadgeClass}">-->
+<!--                            <span th:text="${product.stockMessage}">В наличии: 12</span>-->
+<!--                        </div>-->
                     </div>
                 </div>
 
@@ -814,7 +814,7 @@
 
                     <!-- Количество -->
                     <div class="product-quantity" th:if="${product.inStock}">
-                        <div class="quantity-label">Количество:</div>
+                        <div class="quantity-label">Кількість:</div>
                         <div class="quantity-controls">
                             <div class="quantity-input">
                                 <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
@@ -841,7 +841,7 @@
                         </button>
                     </div>
 
-                    <!-- Дополнительная информация -->
+                    <!-- Додаткова інформація -->
                     <div class="product-extra-info">
                         <div class="info-item" th:if="${product.brand != null}">
                             <i class="fas fa-tag info-icon"></i>
@@ -849,15 +849,11 @@
                         </div>
                         <div class="info-item">
                             <i class="fas fa-truck info-icon"></i>
-                            <span>Доставка по всей Украине</span>
+                            <span>Доставка по всій Україні</span>
                         </div>
                         <div class="info-item">
                             <i class="fas fa-shield-alt info-icon"></i>
-                            <span>Гарантия качества</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-undo info-icon"></i>
-                            <span>Возврат в течение 14 дней</span>
+                            <span>Гарантія якості</span>
                         </div>
                     </div>
                 </div>
@@ -867,35 +863,35 @@
         <!-- Табы с дополнительной информацией -->
         <section class="product-tabs">
             <div class="tabs-header">
-                <h2 class="tabs-title">Подробная информация</h2>
+                <h2 class="tabs-title">Детальна інформація</h2>
                 <nav class="tabs-nav">
-                    <button class="tab-btn active" onclick="showTab('description')">Описание</button>
+                    <button class="tab-btn active" onclick="showTab('description')">Опис</button>
                     <button class="tab-btn" onclick="showTab('characteristics')">Характеристики</button>
-                    <button class="tab-btn" onclick="showTab('delivery')">Доставка и оплата</button>
+                    <button class="tab-btn" onclick="showTab('delivery')">Доставка та оплата</button>
                 </nav>
             </div>
 
             <div class="tabs-content">
                 <div id="description" class="tab-panel active">
-                    <p>Здесь будет подробное описание товара. Пока используем заглушку, которая показывает качество продукта, его особенности и преимущества.</p>
-                    <p>Этот раздел можно будет заполнить, когда в модели Product появится поле description.</p>
+                    <p>Тут буде детальний опис товару. Поки що використовується заглушка, яка демонструє якість продукту, його особливості та переваги.</p>
+                    <p>Цей розділ можна буде заповнити, коли в моделі Product з’явиться поле description.</p>
                 </div>
                 <div id="characteristics" class="tab-panel">
-                    <p><strong>Основные характеристики:</strong></p>
+                    <p><strong>Основні характеристики:</strong></p>
                     <ul>
                         <li>Артикул: <span th:text="${product.id}">12345</span></li>
-                        <li>Наличие: <span th:text="${product.stockMessage}">В наличии</span></li>
+                        <li>Наявність: <span th:text="${product.stockMessage}">В наявності</span></li>
                         <li>Бренд: <span th:if="${product.brand != null}" th:text="${product.brand.name}">Бренд</span></li>
                     </ul>
                 </div>
                 <div id="delivery" class="tab-panel">
                     <p><strong>Доставка:</strong></p>
                     <ul>
-                        <li>Новая Почта - от 50 грн</li>
-                        <li>Укрпочта - от 30 грн</li>
-                        <li>Курьер по Киеву - 80 грн</li>
+                        <li>Нова Пошта — від 50 грн</li>
+                        <li>Укрпошта — від 30 грн</li>
+                        <li>Кур’єр по Києву — 80 грн</li>
                     </ul>
-                    <p><strong>Оплата:</strong> наличными при получении, картой онлайн</p>
+                    <p><strong>Оплата:</strong> готівкою при отриманні, карткою онлайн</p>
                 </div>
             </div>
         </section>
@@ -904,8 +900,8 @@
         <!-- Похожие товары -->
         <section class="related-products" th:if="${relatedProducts != null and !#lists.isEmpty(relatedProducts)}">
             <div class="section-header">
-                <h2 class="section-title">Похожие товары</h2>
-                <p class="section-subtitle">Вам также может понравиться</p>
+                <h2 class="section-title">Схожі товари</h2>
+                <p class="section-subtitle">Вам також може сподобатися</p>
             </div>
 
             <div class="related-grid">
@@ -935,7 +931,7 @@
                                 th:disabled="${!relatedProduct.inStock}"
                                 th:onclick="'addToCart(' + ${relatedProduct.id} + ')'">
                             <i class="fas fa-shopping-cart"></i>
-                            <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Нет в наличии'">В корзину</span>
+                            <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Немає в наявності'">В корзину</span>
                         </button>
                         <button class="btn-related-favorite"
                                 th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'"
