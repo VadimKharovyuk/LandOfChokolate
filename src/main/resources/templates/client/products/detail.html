@@ -927,12 +927,15 @@
 
                     <!-- Кнопки действий вынесем отдельно, чтобы они не конфликтовали со ссылкой -->
                     <div class="related-actions">
+
                         <button class="btn-related-cart"
                                 th:disabled="${!relatedProduct.inStock}"
                                 th:onclick="'addToCart(' + ${relatedProduct.id} + ')'">
                             <i class="fas fa-shopping-cart"></i>
                             <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Немає в наявності'">В корзину</span>
                         </button>
+
+
                         <button class="btn-related-favorite"
                                 th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'"
                                 title="В избранное">

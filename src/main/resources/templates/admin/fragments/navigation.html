@@ -28,17 +28,17 @@
                 <li class="nav-item-luxury">
                     <a th:href="@{/product/all}"
                        class="nav-link-luxury"
-                       th:classappend="${#strings.startsWith(currentURI, '/product') ? 'active' : ''}">
+                       th:classappend="${#strings.startsWith(currentURI, '/product/all') ? 'active' : ''}">
                         <i class="fas fa-th-large nav-icon"></i>
-                        Каталог
+                        Все товары
                     </a>
                 </li>
                 <li class="nav-item-luxury">
-                    <a th:href="@{/about}"
+                    <a th:href="@{/categories}"
                        class="nav-link-luxury"
-                       th:classappend="${currentURI == '/about' ? 'active' : ''}">
+                       th:classappend="${currentURI == '/categories' ? 'active' : ''}">
                         <i class="fas fa-heart nav-icon"></i>
-                        Про нас
+                        Категории
                     </a>
                 </li>
                 <li class="nav-item-luxury">

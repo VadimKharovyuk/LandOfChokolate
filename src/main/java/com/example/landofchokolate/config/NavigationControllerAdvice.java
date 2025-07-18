@@ -1,13 +1,18 @@
 package com.example.landofchokolate.config;
 
+import com.example.landofchokolate.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class NavigationControllerAdvice {
+    private final CartService cartService;
 
     @ModelAttribute("currentURI")
     public String getCurrentURI(HttpServletRequest request) {
@@ -27,16 +32,13 @@ public class NavigationControllerAdvice {
     }
 
     @ModelAttribute("cartCount")
-    public Integer getCartCount(HttpServletRequest request) {
-        // В будущем здесь можно получать количество из сессии или базы данных
-        // Пример получения из сессии:
-        // HttpSession session = request != null ? request.getSession(false) : null;
-        // if (session != null) {
-        //     Integer count = (Integer) session.getAttribute("cart");
-        //     return count != null ? count : 0;
-        // }
-
-        return 0; // Заглушка для незарегистрированных пользователей
+    public Integer getCartCount(HttpSession session) {
+        try {
+            return cartService.getCartItemCount(session);
+        } catch (Exception e) {
+            log.warn("Ошибка при получении количества товаров в корзине: {}", e.getMessage());
+            return 0;
+        }
     }
 
     @ModelAttribute("favoritesCount")
