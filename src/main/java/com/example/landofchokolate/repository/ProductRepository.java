@@ -207,18 +207,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findRecommendedProductsByCategory(@Param("categoryId") Long categoryId,
                                                     @Param("excludeProductId") Long excludeProductId);
 
+    // Исправленный запрос без фильтров
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
-            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, " +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " + // ← Добавили p.slug
             "c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
-            "CASE WHEN p.stockQuantity < 10 THEN true ELSE false END) " +
+            "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " + // ← Исправили логику
             "FROM Product p " +
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.brand b")
     Page<ProductListDto> findAllProductListDto(Pageable pageable);
 
+    // Исправленный запрос с фильтрами
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
-            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, " +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " + // ← Добавили p.slug
             "c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
             "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " +
@@ -235,7 +237,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "     (:#{#filters.stockStatus} = 'low-stock' AND p.stockQuantity > 0 AND p.stockQuantity <= 10) OR " +
             "     (:#{#filters.stockStatus} = 'out-of-stock' AND p.stockQuantity = 0))")
     Page<ProductListDto> findAllProductListDtoWithFilters(Pageable pageable, @Param("filters") ProductFilterDto filters);
-
 
     boolean existsBySlug(String slug);
 

@@ -17,6 +17,8 @@ public class ProductListDto {
     private Integer stockQuantity;
     private String imageUrl;
 
+    private String slug ;
+
     // Простые поля для отображения в списках
     private String categoryName;
     private String brandName;

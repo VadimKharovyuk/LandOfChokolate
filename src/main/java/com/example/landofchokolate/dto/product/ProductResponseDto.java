@@ -17,6 +17,7 @@ public class ProductResponseDto {
     private BigDecimal price;
     private Integer stockQuantity;
     private String imageUrl;
+    private String slug ;
 
     // Вложенные объекты для связанных сущностей
     private CategoryInfo category;

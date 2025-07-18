@@ -29,9 +29,6 @@ public class ProductMapper {
         product.setName(createProductDto.getName());
         product.setPrice(createProductDto.getPrice());
         product.setStockQuantity(createProductDto.getStockQuantity());
-        // imageUrl и imageId будут установлены в сервисе после загрузки файла
-        // category и brand будут установлены в сервисе по ID
-
         log.debug("Mapped CreateProductDto to Product: {}", createProductDto.getName());
         return product;
     }
@@ -52,6 +49,7 @@ public class ProductMapper {
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
+        dto.setSlug(product.getSlug());
 
         // Маппинг категории
         if (product.getCategory() != null) {
@@ -59,6 +57,7 @@ public class ProductMapper {
             categoryInfo.setId(product.getCategory().getId());
             categoryInfo.setName(product.getCategory().getName());
             dto.setCategory(categoryInfo);
+
         }
 
         // Маппинг бренда
@@ -94,6 +93,9 @@ public class ProductMapper {
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
+        dto.setSlug(product.getSlug());
+
+
 
         // Простые поля для отображения
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : "Без категории");
@@ -108,22 +110,7 @@ public class ProductMapper {
         return dto;
     }
 
-    /**
-     * Преобразует список Entity в список ResponseDto
-     */
-    public List<ProductResponseDto> toResponseDtoList(List<Product> products) {
-        if (products == null || products.isEmpty()) {
-            log.debug("Products list is null or empty, returning empty list");
-            return new ArrayList<>();
-        }
 
-        List<ProductResponseDto> responseDtos = products.stream()
-                .map(this::toResponseDto)
-                .collect(Collectors.toList());
-
-        log.debug("Mapped {} products to ResponseDto list", responseDtos.size());
-        return responseDtos;
-    }
 
     /**
      * Преобразует список Entity в список ListDto

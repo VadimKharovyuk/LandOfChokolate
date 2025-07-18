@@ -348,16 +348,7 @@
             transform: scale(1.05);
         }
 
-        .product-actions {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            gap: 8px;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: var(--transition);
-        }
+
 
         .product-card:hover .product-actions {
             opacity: 1;
@@ -675,6 +666,83 @@
                 padding: 32px 24px;
             }
         }
+
+
+
+        /* Стили для ссылки на товар в сетке */
+        .product-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            flex: 1; /* Занимает всю доступную высоту карточки */
+        }
+
+        .product-link:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-link:hover .product-name {
+            color: var(--text-primary);
+        }
+
+        .product-link:hover .product-image {
+            transform: scale(1.03);
+        }
+
+        /* Структура карточки товара */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: #FFFFFF;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover {
+            box-shadow: 0 15px 30px var(--shadow-medium);
+            transform: translateY(-3px);
+        }
+
+        /* Контейнер для действий */
+        .product-actions-container {
+            position: relative;
+        }
+
+        /* Кнопка избранного поверх изображения */
+        .product-actions-overlay {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2;
+        }
+
+        /* Кнопки внизу карточки */
+        .product-actions-bottom {
+            padding: 1rem;
+            margin-top: auto; /* Прижимает кнопку к низу */
+        }
+
+        /* Обновляем контейнер изображения */
+        .product-image-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: var(--accent-warm);
+        }
+
+
+        /* Обновляем product-info чтобы убрать padding снизу */
+        .product-info {
+            padding: 1.25rem 1.25rem 0.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
     </style>
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
 </head>
@@ -805,45 +873,51 @@
             <!-- Products Grid -->
             <div class="products-grid" th:if="${products != null and !products.isEmpty()}">
                 <div class="product-card" th:each="product : ${products}">
-                    <div class="product-image-container">
-                        <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/400x300?text=Зображення+відсутнє'}"
-                             th:alt="${product.name}"
-                             class="product-image"
-                             onerror="this.src='https://via.placeholder.com/400x300?text=Зображення+відсутнє'">
-                        <div class="product-actions">
-                            <button class="action-btn favorite-btn"
-                                    th:onclick="'toggleFavorite(this, ' + ${product.id} + ')'">
-                                <i class="far fa-heart"></i>
+
+                    <!-- Основная ссылка на товар -->
+                    <a th:href="@{/product/{slug}(slug=${product.slug})}" class="product-link">
+                        <div class="product-image-container">
+                            <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/400x300?text=Зображення+відсутнє'}"
+                                 th:alt="${product.name}"
+                                 class="product-image"
+                                 onerror="this.src='https://via.placeholder.com/400x300?text=Зображення+відсутнє'">
+                        </div>
+
+                        <div class="product-info">
+                            <div class="product-name" th:text="${product.name}">Назва товару</div>
+                            <div class="product-price" th:text="${product.price} + ' ₴'">0 ₴</div>
+
+                            <div class="product-stock"
+                                 th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">
+                                <span class="stock-indicator"></span>
+                                <span th:if="${product.inStock and product.lowStock}"
+                                      th:text="'Мало на складі: ' + ${product.stockQuantity} + ' шт.'">Мало на складі</span>
+                                <span th:if="${product.inStock and !product.lowStock}"
+                                      th:text="'В наявності: ' + ${product.stockQuantity} + ' шт.'">В наявності</span>
+                                <span th:if="${!product.inStock}">Немає в наявності</span>
+                            </div>
+
+                            <div class="product-meta">
+                                <span class="product-category" th:text="${product.categoryName ?: 'Без категорії'}">Категорія</span>
+                                <span class="product-brand" th:text="${product.brandName ?: 'Без бренду'}">Бренд</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Кнопки действий отдельно от ссылки -->
+                    <div class="product-actions-container">
+                        
+                        <!-- Кнопка добавления в корзину внизу -->
+                        <div class="product-actions-bottom">
+                            <button class="add-to-cart-btn"
+                                    th:onclick="'event.stopPropagation(); addToCart(' + ${product.id} + ')'"
+                                    th:disabled="${!product.inStock}">
+                    <span class="btn-text">
+                        <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
+                        <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
+                    </span>
                             </button>
                         </div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name" th:text="${product.name}">Назва товару</div>
-                        <div class="product-price" th:text="${product.price} + ' ₴'">0 ₴</div>
-
-                        <div class="product-stock"
-                             th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">
-                            <span class="stock-indicator"></span>
-                            <span th:if="${product.inStock and product.lowStock}"
-                                  th:text="'Мало на складі: ' + ${product.stockQuantity} + ' шт.'">Мало на складі</span>
-                            <span th:if="${product.inStock and !product.lowStock}"
-                                  th:text="'В наявності: ' + ${product.stockQuantity} + ' шт.'">В наявності</span>
-                            <span th:if="${!product.inStock}">Немає в наявності</span>
-                        </div>
-
-                        <div class="product-meta">
-                            <span class="product-category" th:text="${product.categoryName ?: 'Без категорії'}">Категорія</span>
-                            <span class="product-brand" th:text="${product.brandName ?: 'Без бренду'}">Бренд</span>
-                        </div>
-
-                        <button class="add-to-cart-btn"
-                                th:onclick="'addToCart(' + ${product.id} + ')'"
-                                th:disabled="${!product.inStock}">
-                            <span class="btn-text">
-                                <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
-                                <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
-                            </span>
-                        </button>
                     </div>
                 </div>
             </div>
