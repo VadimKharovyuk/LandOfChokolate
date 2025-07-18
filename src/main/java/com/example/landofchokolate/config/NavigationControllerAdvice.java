@@ -31,6 +31,7 @@ public class NavigationControllerAdvice {
         return uri;
     }
 
+
     @ModelAttribute("cartCount")
     public Integer getCartCount(HttpSession session) {
         try {
