@@ -349,7 +349,6 @@
         }
 
 
-
         .product-card:hover .product-actions {
             opacity: 1;
             transform: translateY(0);
@@ -668,7 +667,6 @@
         }
 
 
-
         /* Стили для ссылки на товар в сетке */
         .product-link {
             display: block;
@@ -906,17 +904,19 @@
 
                     <!-- Кнопки действий отдельно от ссылки -->
                     <div class="product-actions-container">
-                        
+
                         <!-- Кнопка добавления в корзину внизу -->
                         <div class="product-actions-bottom">
+
                             <button class="add-to-cart-btn"
-                                    th:onclick="'event.stopPropagation(); addToCart(' + ${product.id} + ')'"
+                                    th:data-product-id="${product.id}"
                                     th:disabled="${!product.inStock}">
-                    <span class="btn-text">
-                        <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
-                        <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
-                    </span>
+    <span class="btn-text">
+        <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
+        <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
+    </span>
                             </button>
+
                         </div>
                     </div>
                 </div>
@@ -961,7 +961,7 @@
 
 <!-- Подключение JavaScript для навигации -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
-
+<script th:src="@{/js/add-to-cart-button.js}"></script>
 <script>
     // ============================================================================
     // МОДУЛЬ: Утилиты и общие функции
@@ -1295,24 +1295,11 @@
         }
     };
 
-    // ============================================================================
-    // ГЛОБАЛЬНЫЕ ФУНКЦИИ (для совместимости с HTML)
-    // ============================================================================
-    function addToCart(productId) {
-        CartAndFavorites.addToCart(productId);
-    }
-
-    function toggleFavorite(button, productId) {
-        CartAndFavorites.toggleFavorite(button, productId);
-    }
 
     function clearFilters() {
         Filters.clearFilters();
     }
 
-    // ============================================================================
-    // ЗАПУСК ПРИЛОЖЕНИЯ
-    // ============================================================================
     App.init();
 </script>
 

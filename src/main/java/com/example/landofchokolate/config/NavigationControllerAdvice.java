@@ -32,7 +32,7 @@ public class NavigationControllerAdvice {
         // Пример получения из сессии:
         // HttpSession session = request != null ? request.getSession(false) : null;
         // if (session != null) {
-        //     Integer count = (Integer) session.getAttribute("cartCount");
+        //     Integer count = (Integer) session.getAttribute("cart");
         //     return count != null ? count : 0;
         // }
 

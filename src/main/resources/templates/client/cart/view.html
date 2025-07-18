@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина - Land of Chocolate</title>
+  <meta name="description" content="Корзина покупок - Land of Chocolate">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/card/cart-styles.css}">
+
+  <style>
+    :root {
+      --primary-dark: #2C2C2C;
+      --primary-medium: #5A5A5A;
+      --primary-light: #FAFAFA;
+      --accent-gold: #D4AF37;
+      --accent-warm: #F5F5F0;
+      --text-primary: #1A1A1A;
+      --text-secondary: #757575;
+      --border-subtle: #E8E8E8;
+      --shadow-soft: rgba(0, 0, 0, 0.04);
+      --shadow-medium: rgba(0, 0, 0, 0.08);
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background-color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    .serif-font {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Основной контент с отступом от навигации */
+    .main-content {
+      margin-top: 80px;
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb-container {
+      padding: 2rem 0 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .breadcrumb {
+      background: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb-item {
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-item.active {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Cart Header */
+    .cart-header {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+
+    .cart-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .cart-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Cart Content */
+    .cart-section {
+      padding: 3rem 0;
+    }
+
+    .cart-container {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    /* Cart Items */
+    .cart-items {
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .cart-items-header {
+      background: var(--accent-warm);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .cart-items-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 120px 1fr auto auto auto;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item:hover {
+      background: var(--primary-light);
+    }
+
+    .cart-item-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--accent-warm);
+    }
+
+    .cart-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cart-item-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #F8F8F8 0%, #F0F0F0 100%);
+      color: var(--text-secondary);
+      font-size: 2rem;
+    }
+
+    .cart-item-details {
+      min-width: 0;
+    }
+
+    .cart-item-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .cart-item-price-info {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-current-price {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .cart-item-stock {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .price-changed {
+      color: var(--warning-color);
+      font-weight: 500;
+    }
+
+    /* Quantity Selector */
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .quantity-btn {
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+    }
+
+    .quantity-btn:hover:not(:disabled) {
+      background: var(--primary-light);
+    }
+
+    .quantity-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .quantity-input {
+      border: none;
+      padding: 0.5rem;
+      text-align: center;
+      width: 3rem;
+      background: #FFFFFF;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .quantity-input:focus {
+      background: var(--accent-warm);
+    }
+
+    /* Item Price and Actions */
+    .cart-item-total {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .btn-remove {
+      background: none;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      color: var(--danger-color);
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-remove:hover {
+      background: var(--danger-color);
+      color: #FFFFFF;
+      border-color: var(--danger-color);
+    }
+
+    /* Cart Summary */
+    .cart-summary {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 2rem;
+      height: fit-content;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .cart-summary-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .summary-label {
+      color: var(--text-secondary);
+    }
+
+    .summary-value {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .summary-total {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid var(--border-subtle);
+    }
+
+    .summary-total .summary-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .summary-total .summary-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .cart-actions {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .btn-checkout {
+      background: var(--text-primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .btn-checkout:hover {
+      background: var(--primary-medium);
+      transform: translateY(-1px);
+    }
+
+    .btn-clear {
+      background: none;
+      color: var(--danger-color);
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 400;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-clear:hover {
+      background: var(--danger-color);
+      color: #FFFFFF;
+      border-color: var(--danger-color);
+    }
+
+    /* Continue Shopping */
+    .continue-shopping {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .btn-continue {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: none;
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-continue:hover {
+      background: var(--primary-light);
+      color: var(--text-primary);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    /* Адаптивность */
+    @media (max-width: 992px) {
+      .cart-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .cart-summary {
+        position: static;
+      }
+
+      .cart-item {
+        grid-template-columns: 80px 1fr auto;
+        gap: 1rem;
+        padding: 1.5rem;
+      }
+
+      .cart-item-total,
+      .cart-item-actions {
+        grid-column: 2 / -1;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .cart-item-actions {
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0 1.5rem;
+      }
+
+      .cart-header {
+        padding: 3rem 0 2rem;
+      }
+
+      .cart-title {
+        font-size: 2.5rem;
+      }
+
+      .cart-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .cart-item-image {
+        justify-self: center;
+        width: 100px;
+        height: 100px;
+      }
+
+      .cart-item-total,
+      .cart-item-actions {
+        grid-column: 1;
+        margin-top: 0.5rem;
+      }
+
+      .quantity-selector {
+        justify-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент -->
+<div class="main-content">
+  <div class="main-container">
+    <!-- Хлебные крошки -->
+    <nav class="breadcrumb-container" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Корзина</li>
+      </ol>
+    </nav>
+
+    <!-- Заголовок корзины -->
+    <header class="cart-header">
+      <h1 class="cart-title">Корзина покупок</h1>
+      <p class="cart-subtitle" th:if="${!cart.isEmpty()}">
+        У вас <span th:text="${cartItemCount}">3</span> товара в корзине
+      </p>
+    </header>
+
+    <!-- Содержимое корзины -->
+    <section class="cart-section" th:if="${!cart.isEmpty()}">
+      <div class="cart-container">
+        <!-- Список товаров -->
+        <div class="cart-items">
+          <div class="cart-items-header">
+            <h2 class="cart-items-title">Ваши товары</h2>
+          </div>
+
+          <div class="cart-item"
+               th:each="item : ${cart.items}"
+               th:data-cart-item="${item.product.id}">
+
+            <!-- Изображение товара -->
+            <div class="cart-item-image">
+              <img th:if="${item.product.imageUrl != null and !item.product.imageUrl.isEmpty()}"
+                   th:src="${item.product.imageUrl}"
+                   th:alt="${item.product.name}">
+              <div th:if="${item.product.imageUrl == null or item.product.imageUrl.isEmpty()}"
+                   class="cart-item-placeholder">
+                <i class="fas fa-image"></i>
+              </div>
+            </div>
+
+            <!-- Детали товара -->
+            <div class="cart-item-details">
+              <h3 class="cart-item-title" th:text="${item.product.name}">Название товара</h3>
+
+              <div class="cart-item-price-info">
+                <span class="cart-item-current-price" th:text="${item.priceAtTime} + ' грн'">150 грн</span>
+                <span th:if="${item.priceChanged}" class="price-changed">
+                  (цена изменилась: <span th:text="${item.product.currentPrice} + ' грн'">160 грн</span>)
+                </span>
+              </div>
+
+              <div class="cart-item-stock">
+                <span th:if="${item.isInStock()}" class="text-success">
+                  <i class="fas fa-check-circle"></i> В наличии
+                </span>
+                <span th:if="${!item.isInStock()}" class="text-danger">
+                  <i class="fas fa-exclamation-triangle"></i> Нет в наличии
+                </span>
+              </div>
+            </div>
+
+            <!-- Селектор количества -->
+            <div class="quantity-selector">
+              <button class="quantity-btn"
+                      th:onclick="'updateCartQuantity(' + ${item.product.id} + ', ' + (${item.quantity} - 1) + ')'"
+                      th:disabled="${item.quantity <= 1}">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input type="number"
+                     class="quantity-input"
+                     th:value="${item.quantity}"
+                     min="1"
+                     th:max="${item.product.stockQuantity}"
+                     th:onchange="'updateCartQuantity(' + ${item.product.id} + ', this.value)'">
+              <button class="quantity-btn"
+                      th:onclick="'updateCartQuantity(' + ${item.product.id} + ', ' + (${item.quantity} + 1) + ')'"
+                      th:disabled="${item.quantity >= item.product.stockQuantity}">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- Общая стоимость товара -->
+            <div class="cart-item-total" th:data-item-total="${item.product.id}">
+              <span th:text="${item.totalPrice} + ' грн'">300 грн</span>
+            </div>
+
+            <!-- Действия -->
+            <div class="cart-item-actions">
+              <button class="btn-remove"
+                      th:onclick="'removeFromCart(' + ${item.product.id} + ')'"
+                      title="Удалить товар">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Итоги корзины -->
+        <div class="cart-summary">
+          <h3 class="cart-summary-title">Итого</h3>
+
+          <div class="summary-row">
+            <span class="summary-label">Товаров:</span>
+            <span class="summary-value" th:text="${cartItemCount}">3</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="summary-label">Подытог:</span>
+            <span class="summary-value" data-cart-total th:text="${cartTotal} + ' грн'">450 грн</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="summary-label">Доставка:</span>
+            <span class="summary-value">Рассчитается при оформлении</span>
+          </div>
+
+          <div class="summary-row summary-total">
+            <span class="summary-label">Всего:</span>
+            <span class="summary-value" th:text="${cartTotal} + ' грн'">450 грн</span>
+          </div>
+
+          <div class="cart-actions">
+            <button class="btn-checkout">
+              <i class="fas fa-credit-card"></i>
+              Оформить заказ
+            </button>
+
+            <button class="btn-clear" onclick="clearCart()">
+              <i class="fas fa-trash"></i>
+              Очистить корзину
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Продолжить покупки -->
+      <div class="continue-shopping">
+        <a href="/categories" class="btn-continue">
+          <i class="fas fa-arrow-left"></i>
+          Продолжить покупки
+        </a>
+      </div>
+    </section>
+
+    <!-- Пустая корзина -->
+    <section class="empty-cart" th:if="${cart.isEmpty()}">
+      <div class="empty-icon">
+        <i class="fas fa-shopping-cart"></i>
+      </div>
+      <h2 class="empty-title">Ваша корзина пуста</h2>
+      <p class="empty-description">
+        Добавьте товары в корзину, чтобы продолжить покупки.
+        У нас есть множество вкусных шоколадных изделий!
+      </p>
+      <a href="/categories" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Начать покупки
+      </a>
+    </section>
+  </div>
+</div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/card/cart.js}"></script>
+
+<script>
+  // Дополнительные функции для страницы корзины
+  document.addEventListener('DOMContentLoaded', function() {
+    // Обработка изменения количества через input
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        const productId = this.closest('[data-cart-item]').dataset.cartItem;
+        const quantity = parseInt(this.value);
+
+        if (quantity > 0) {
+          updateCartQuantity(productId, quantity);
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
