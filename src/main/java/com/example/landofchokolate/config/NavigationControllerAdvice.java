@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -39,6 +41,20 @@ public class NavigationControllerAdvice {
         } catch (Exception e) {
             log.warn("Ошибка при получении количества товаров в корзине: {}", e.getMessage());
             return 0;
+        }
+    }
+
+    /**
+     * Добавляет общую сумму корзины во все модели
+     * Доступно в шаблонах как ${cartTotal}
+     */
+    @ModelAttribute("cartTotal")
+    public BigDecimal getCartTotal(HttpSession session) {
+        try {
+            return cartService.getCartTotal(session);
+        } catch (Exception e) {
+            log.warn("Ошибка при получении общей суммы корзины: {}", e.getMessage());
+            return BigDecimal.ZERO;
         }
     }
 

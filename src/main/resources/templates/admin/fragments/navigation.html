@@ -58,15 +58,38 @@
                         <span class="favorites-badge" th:text="${favoritesCount ?: 0}">0</span>
                     </a>
                 </li>
+
                 <li class="nav-item-luxury">
                     <a th:href="@{/cart}"
                        class="nav-link-luxury position-relative"
                        th:classappend="${currentURI == '/cart' ? 'active' : ''}">
                         <i class="fas fa-shopping-bag nav-icon"></i>
                         Кошик
-                        <span class="cart-badge" th:text="${cartCount ?: 0}">0</span>
+
+                        <!-- Блок с количеством -->
+                        <div class="cart-info" th:if="${cartCount > 0}">
+                            <span class="cart-badge" th:text="${cartCount}">0</span>
+                            <span class="cart-total" th:text="${cartTotal} + ' грн'">0 грн</span>
+                        </div>
+
+                        <!-- Блок для пустой корзины -->
+                        <div class="cart-info empty" th:if="${cartCount == 0}">
+                            <span class="cart-badge">0</span>
+                        </div>
                     </a>
                 </li>
+
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/cart}"-->
+<!--                       class="nav-link-luxury position-relative"-->
+<!--                       th:classappend="${currentURI == '/cart' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-shopping-bag nav-icon"></i>-->
+<!--                        Кошик-->
+<!--&lt;!&ndash;                        <span class="cart-badge" th:text="${cartCount ?: 0}">0</span>&ndash;&gt;-->
+<!--                        <span  class="card-badge" th:text="${cartTotal} + ' грн'">0 грн</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+
             </ul>
 
             <!-- Mobile Toggle Button -->
