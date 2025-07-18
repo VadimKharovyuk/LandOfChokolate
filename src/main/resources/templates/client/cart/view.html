@@ -687,7 +687,11 @@
 <!-- JavaScript -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/card/cart.js}"></script>
+
+<!-- В правильном порядке -->
+<script th:src="@{/js/card/cart-update.js}"></script>
+<script th:src="@{/js/card/cart-remove.js}"></script>
+<script th:src="@{/js/card/cart-clear.js}"></script>
 
 <script>
   // Дополнительные функции для страницы корзины
