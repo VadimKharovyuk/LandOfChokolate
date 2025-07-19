@@ -183,6 +183,7 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
+
     /**
      * Получение информации о корзине (AJAX)
      * Полезно для обновления счетчиков на странице
