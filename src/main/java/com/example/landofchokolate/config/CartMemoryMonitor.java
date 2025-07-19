@@ -26,6 +26,7 @@ public class CartMemoryMonitor implements HttpSessionListener {
         long currentSessions = activeSessions.incrementAndGet();
         log.info("Session created. Active sessions: {}", currentSessions);
 
+
         // Логируем статистику корзин при достижении определенных порогов
         if (currentSessions % 100 == 0) {
             logCartStatistics();
