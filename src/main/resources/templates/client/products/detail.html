@@ -832,10 +832,12 @@
                     <div class="product-actions">
                         <button class="btn-add-to-cart"
                                 th:disabled="${!product.inStock}"
-                                th:onclick="'addToCart(' + ${product.id} + ')'">
+                                th:data-product-id="${product.id}"
+                                data-cart-action="add">
                             <i class="fas fa-shopping-cart"></i>
                             <span th:text="${product.inStock} ? 'Добавить в корзину' : 'Нет в наличии'">Добавить в корзину</span>
                         </button>
+
                         <button class="btn-favorite" onclick="toggleFavorite()" title="Добавить в избранное">
                             <i class="far fa-heart"></i>
                         </button>
@@ -928,9 +930,11 @@
                     <!-- Кнопки действий вынесем отдельно, чтобы они не конфликтовали со ссылкой -->
                     <div class="related-actions">
 
+                        <!-- 2. Кнопки в блоке похожих товаров (замените существующие) -->
                         <button class="btn-related-cart"
                                 th:disabled="${!relatedProduct.inStock}"
-                                th:onclick="'addToCart(' + ${relatedProduct.id} + ')'">
+                                th:data-product-id="${relatedProduct.id}"
+                                data-cart-action="add">
                             <i class="fas fa-shopping-cart"></i>
                             <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Немає в наявності'">В корзину</span>
                         </button>
@@ -991,14 +995,25 @@
     </div>
 </div>
 
+
 <!-- Подвал -->
 <div th:insert="~{admin/fragments/footer :: footer}"></div>
 
 <!-- JavaScript -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/add-to-cart-button.js}"></script>
+<script th:src="@{/js/category/add-to-cart-button.js}"></script>
+
 <script>
+    // Переопределяем функцию addToCart для работы с полем количества
+    function addToCartWithQuantity(productId) {
+        const quantityField = document.getElementById('quantity');
+        const quantity = quantityField ? parseInt(quantityField.value) || 1 : 1;
+
+        // Вызываем основную функцию из подключенного скрипта
+        addToCart(productId, quantity);
+    }
+
     // Управление количеством
     function increaseQuantity() {
         const quantityField = document.getElementById('quantity');
@@ -1021,25 +1036,19 @@
 
     // Управление табами
     function showTab(tabName) {
-        // Скрываем все панели
         document.querySelectorAll('.tab-panel').forEach(panel => {
             panel.classList.remove('active');
         });
 
-        // Убираем активный класс с кнопок
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
 
-        // Показываем нужную панель
         document.getElementById(tabName).classList.add('active');
-
-        // Активируем нужную кнопку
         event.target.classList.add('active');
     }
 
-
-    // Добавление в избранное (заглушка для будущей реализации)
+    // Добавление в избранное
     function toggleFavorite(productId = null) {
         const button = event.target.closest('.btn-favorite, .btn-related-favorite');
         const icon = button.querySelector('i');
@@ -1056,27 +1065,7 @@
             showNotification('Товар добавлен в избранное!', 'success');
         }
 
-        // Здесь будет логика сохранения в базу данных или сессию
         console.log('Toggle favorite for product:', productId || 'current product');
-    }
-
-    // Функция показа уведомлений
-    function showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-      ${message}
-    `;
-
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => {
-                notification.remove();
-            }, 300);
-        }, 3000);
     }
 
     // Валидация количества при ручном вводе
@@ -1095,7 +1084,22 @@
                 }
             });
         }
+
+        // Переопределяем обработчик для основной кнопки, чтобы учитывать количество
+        const mainAddButton = document.querySelector('.btn-add-to-cart[data-cart-action="add"]');
+        if (mainAddButton) {
+            mainAddButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                const productId = parseInt(this.getAttribute('data-product-id'));
+                if (productId && !this.disabled) {
+                    addToCartWithQuantity(productId);
+                }
+            });
+        }
     });
 </script>
+
 </body>
 </html>
