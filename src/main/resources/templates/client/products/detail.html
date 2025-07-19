@@ -930,7 +930,7 @@
                     <!-- Кнопки действий вынесем отдельно, чтобы они не конфликтовали со ссылкой -->
                     <div class="related-actions">
 
-                        <!-- 2. Кнопки в блоке похожих товаров (замените существующие) -->
+
                         <button class="btn-related-cart"
                                 th:disabled="${!relatedProduct.inStock}"
                                 th:data-product-id="${relatedProduct.id}"
@@ -1002,16 +1002,89 @@
 <!-- JavaScript -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/category/add-to-cart-button.js}"></script>
 
 <script>
-    // Переопределяем функцию addToCart для работы с полем количества
-    function addToCartWithQuantity(productId) {
-        const quantityField = document.getElementById('quantity');
-        const quantity = quantityField ? parseInt(quantityField.value) || 1 : 1;
+    // Модифицированная версия основной функции addToCart для работы с количеством
+    function addToCartWithQuantity(productId, forcedQuantity = null) {
+        // Проверяем, нет ли уже активного запроса для этого товара
+        const requestKey = `add-${productId}`;
+        if (typeof activeRequests !== 'undefined' && activeRequests.has(requestKey)) {
+            console.log('Запрос уже выполняется...');
+            return;
+        }
 
-        // Вызываем основную функцию из подключенного скрипта
-        addToCart(productId, quantity);
+        // Получаем количество из поля ввода или используем принудительное значение
+        let quantity = forcedQuantity;
+        if (quantity === null) {
+            const quantityField = document.getElementById('quantity');
+            quantity = quantityField ? parseInt(quantityField.value) || 1 : 1;
+        }
+
+        console.log('Добавляем товар:', productId, 'количество:', quantity);
+
+        // Находим кнопку для данного товара
+        const button = document.querySelector(`button[data-product-id="${productId}"]`);
+        if (!button) {
+            console.error('Кнопка не найдена для товара:', productId);
+            return;
+        }
+
+        // Блокируем кнопку и добавляем в активные запросы
+        if (typeof activeRequests !== 'undefined') {
+            activeRequests.add(requestKey);
+        }
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Добавление...';
+
+        // Выполняем AJAX запрос
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `productId=${productId}&quantity=${quantity}`
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Показываем уведомление об успехе
+                    showNotification(data.message || 'Товар добавлен в корзину', 'success');
+
+                    // Временно меняем текст кнопки
+                    button.innerHTML = '<i class="fas fa-check"></i> Добавлено!';
+                    button.style.backgroundColor = '#28a745';
+                    button.style.borderColor = '#28a745';
+
+                    // Возвращаем оригинальный вид кнопки через 2 секунды
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.style.backgroundColor = '';
+                        button.style.borderColor = '';
+                    }, 2000);
+
+                } else {
+                    // Показываем ошибку
+                    showNotification(data.message || 'Произошла ошибка при добавлении товара', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при добавлении товара в корзину:', error);
+                showNotification('Произошла ошибка. Попробуйте позже.', 'error');
+            })
+            .finally(() => {
+                // Разблокируем кнопку и удаляем из активных запросов
+                button.disabled = false;
+                if (typeof activeRequests !== 'undefined') {
+                    activeRequests.delete(requestKey);
+                }
+            });
     }
 
     // Управление количеством
@@ -1068,8 +1141,59 @@
         console.log('Toggle favorite for product:', productId || 'current product');
     }
 
-    // Валидация количества при ручном вводе
+    // Функция показа уведомлений (если нет в основном скрипте)
+    function showNotification(message, type = 'success') {
+        // Удаляем существующие уведомления
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+
+        const icon = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+
+        notification.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span>${message}</span>
+    `;
+
+        // Добавляем стили для уведомления
+        notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        padding: 1rem 1.5rem;
+        border-radius: 4px;
+        color: #FFFFFF;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+        background: ${type === 'success' ? '#28a745' : '#dc3545'};
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    `;
+
+        document.body.appendChild(notification);
+
+        // Автоматически удаляем уведомление через 4 секунды
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }
+        }, 4000);
+    }
+
+    // Инициализация
     document.addEventListener('DOMContentLoaded', function() {
+        // Валидация количества при ручном вводе
         const quantityField = document.getElementById('quantity');
         if (quantityField) {
             quantityField.addEventListener('change', function() {
@@ -1085,18 +1209,61 @@
             });
         }
 
-        // Переопределяем обработчик для основной кнопки, чтобы учитывать количество
-        const mainAddButton = document.querySelector('.btn-add-to-cart[data-cart-action="add"]');
-        if (mainAddButton) {
-            mainAddButton.addEventListener('click', function(e) {
+        // ВАЖНО: Удаляем все существующие обработчики и добавляем новые
+        const allAddButtons = document.querySelectorAll('button[data-cart-action="add"]');
+
+        allAddButtons.forEach(button => {
+            // Клонируем кнопку для удаления всех обработчиков
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+
+            // Добавляем новый обработчик
+            newButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
 
                 const productId = parseInt(this.getAttribute('data-product-id'));
                 if (productId && !this.disabled) {
-                    addToCartWithQuantity(productId);
+                    // Для основной кнопки используем количество из поля
+                    // Для кнопок похожих товаров используем количество = 1
+                    const isMainButton = this.classList.contains('btn-add-to-cart');
+                    if (isMainButton) {
+                        addToCartWithQuantity(productId); // Без параметра - возьмет из поля
+                    } else {
+                        addToCartWithQuantity(productId, 1); // Принудительно 1
+                    }
                 }
             });
+        });
+
+        // Добавляем CSS анимации если их нет
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+            document.head.appendChild(style);
         }
     });
 </script>
