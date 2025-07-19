@@ -1,5 +1,6 @@
 package com.example.landofchokolate.model;
 
+import com.example.landofchokolate.enums.CartStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +22,33 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Уникальный идентификатор корзины для Cookie
+    @Column(nullable = false, unique = true, length = 36)
+    private String cartUuid;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CartStatus status = CartStatus.ACTIVE;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
+
+
+    // Время последней активности (для очистки старых корзин)
+    @Column(nullable = false)
+    private LocalDateTime lastActivityAt = LocalDateTime.now();
+
+    // User Agent для анонимных корзин (опционально)
+    @Column(length = 500)
+    private String userAgent;
+
+
+    // IP адрес для анонимных корзин (опционально)
+    @Column(length = 45)
+    private String ipAddress;
+
+    // Время истечения корзины (опционально)
+    private LocalDateTime expiresAt;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -31,12 +57,20 @@ public class Cart {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.lastActivityAt = LocalDateTime.now();
+    }
+
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+        this.lastActivityAt = LocalDateTime.now();
     }
 
-
+}
 
 
 //    // Создание долгосрочной cookie (например, на год)
@@ -44,4 +78,3 @@ public class Cart {
 //userCookie.setMaxAge(365 * 24 * 60 * 60); // 1 год в секундах
 //userCookie.setPath("/");
 //response.addCookie(userCookie);
-}

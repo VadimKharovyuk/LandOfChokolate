@@ -1,5 +1,6 @@
 package com.example.landofchokolate.dto.card;
 
+import com.example.landofchokolate.enums.CartStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 public class CartDto {
     private Long id;
+
+    // Новые поля
+    private String cartUuid;
+    private CartStatus status;
+    private LocalDateTime lastActivityAt;
+    private String userAgent;
+    private String ipAddress;
+    private LocalDateTime expiresAt;
+
+    // Существующие поля
     private List<CartItemDto> items = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -37,5 +48,14 @@ public class CartDto {
 
     public int getItemsCount() {
         return items.size();
+    }
+
+    // Новые утилитарные методы
+    public boolean isActive() {
+        return CartStatus.ACTIVE.equals(this.status);
+    }
+
+    public boolean isExpired() {
+        return expiresAt != null && LocalDateTime.now().isAfter(expiresAt);
     }
 }

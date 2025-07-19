@@ -19,6 +19,16 @@ public class CartMapper {
 
         CartDto dto = new CartDto();
         dto.setId(cart.getId());
+
+        // Новые поля
+        dto.setCartUuid(cart.getCartUuid());
+        dto.setStatus(cart.getStatus());
+        dto.setLastActivityAt(cart.getLastActivityAt());
+        dto.setUserAgent(cart.getUserAgent());
+        dto.setIpAddress(cart.getIpAddress());
+        dto.setExpiresAt(cart.getExpiresAt());
+
+        // Существующие поля
         dto.setCreatedAt(cart.getCreatedAt());
         dto.setUpdatedAt(cart.getUpdatedAt());
 
@@ -60,11 +70,11 @@ public class CartMapper {
         return dto;
     }
 
-
-
     public List<CartDto> toDtoList(List<Cart> carts) {
         return carts.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
+
 }
