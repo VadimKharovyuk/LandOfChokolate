@@ -581,20 +581,25 @@
             </div>
 
             <!-- Селектор количества -->
+            <!-- Селектор количества (исправленная версия) -->
             <div class="quantity-selector">
-              <button class="quantity-btn"
-                      th:onclick="'updateCartQuantity(' + ${item.product.id} + ', ' + (${item.quantity} - 1) + ')'"
+              <button class="quantity-btn quantity-decrease"
+                      th:data-product-id="${item.product.id}"
+                      th:data-current-quantity="${item.quantity}"
                       th:disabled="${item.quantity <= 1}">
                 <i class="fas fa-minus"></i>
               </button>
+
               <input type="number"
                      class="quantity-input"
                      th:value="${item.quantity}"
+                     th:data-product-id="${item.product.id}"
                      min="1"
-                     th:max="${item.product.stockQuantity}"
-                     th:onchange="'updateCartQuantity(' + ${item.product.id} + ', this.value)'">
-              <button class="quantity-btn"
-                      th:onclick="'updateCartQuantity(' + ${item.product.id} + ', ' + (${item.quantity} + 1) + ')'"
+                     th:max="${item.product.stockQuantity}">
+
+              <button class="quantity-btn quantity-increase"
+                      th:data-product-id="${item.product.id}"
+                      th:data-current-quantity="${item.quantity}"
                       th:disabled="${item.quantity >= item.product.stockQuantity}">
                 <i class="fas fa-plus"></i>
               </button>
@@ -693,20 +698,84 @@
 <script th:src="@{/js/card/cart-remove.js}"></script>
 <script th:src="@{/js/card/cart-clear.js}"></script>
 
+
+<!-- И добавьте этот улучшенный скрипт в конец страницы: -->
 <script>
-  // Дополнительные функции для страницы корзины
   document.addEventListener('DOMContentLoaded', function() {
-    // Обработка изменения количества через input
+    // Обработка кнопок +/-
+    document.querySelectorAll('.quantity-decrease').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const productId = this.getAttribute('data-product-id');
+        const input = document.querySelector(`input[data-product-id="${productId}"]`);
+        const currentValue = parseInt(input.value);
+
+        if (currentValue > 1) {
+          const newValue = currentValue - 1;
+          input.value = newValue;
+          updateCartQuantity(productId, newValue);
+        }
+      });
+    });
+
+    document.querySelectorAll('.quantity-increase').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const productId = this.getAttribute('data-product-id');
+        const input = document.querySelector(`input[data-product-id="${productId}"]`);
+        const currentValue = parseInt(input.value);
+        const maxValue = parseInt(input.getAttribute('max'));
+
+        if (currentValue < maxValue) {
+          const newValue = currentValue + 1;
+          input.value = newValue;
+          updateCartQuantity(productId, newValue);
+        }
+      });
+    });
+
+    // Обработка изменения количества через input (с задержкой)
     const quantityInputs = document.querySelectorAll('.quantity-input');
+    let debounceTimer;
 
     quantityInputs.forEach(input => {
-      input.addEventListener('change', function() {
-        const productId = this.closest('[data-cart-item]').dataset.cartItem;
+      // Обновление при потере фокуса
+      input.addEventListener('blur', function() {
+        const productId = this.getAttribute('data-product-id');
         const quantity = parseInt(this.value);
 
         if (quantity > 0) {
           updateCartQuantity(productId, quantity);
         }
+      });
+
+      // Обновление при нажатии Enter
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const productId = this.getAttribute('data-product-id');
+          const quantity = parseInt(this.value);
+
+          if (quantity > 0) {
+            updateCartQuantity(productId, quantity);
+          }
+        }
+      });
+
+      // Опциональная задержка при вводе
+      input.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          const productId = this.getAttribute('data-product-id');
+          const quantity = parseInt(this.value);
+
+          if (quantity > 0) {
+            updateCartQuantity(productId, quantity);
+          }
+        }, 1000); // Обновляется через 1 секунду после остановки ввода
       });
     });
   });
