@@ -11,9 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
 
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <style>
         :root {
             --primary-color: #2c1810;
@@ -742,11 +743,9 @@
             flex-direction: column;
         }
     </style>
-    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+
 </head>
 <body>
-
-<!-- Подключение навигации -->
 <div th:insert="~{admin/fragments/navigation :: navigation}"></div>
 
 <div class="main-container">
@@ -959,8 +958,7 @@
 <!-- Toast Notification -->
 <div id="toast" class="toast"></div>
 
-<!-- Подключение JavaScript для навигации -->
-<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+
 <script th:src="@{/js/add-to-cart-button.js}"></script>
 <script>
     // ============================================================================
@@ -1006,65 +1004,6 @@
         }
     };
 
-    // ============================================================================
-    // МОДУЛЬ: Корзина и избранное
-    // ============================================================================
-    const CartAndFavorites = {
-        cart: [],
-        favorites: [],
-
-        addToCart(productId) {
-            const existingItem = this.cart.find(item => item.id === productId);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                this.cart.push({id: productId, quantity: 1});
-            }
-
-            Utils.showToast('Товар додано в кошик!', 'success');
-
-            // Add animation to button
-            const button = event.target.closest('.add-to-cart-btn');
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 150);
-        },
-
-        toggleFavorite(button, productId) {
-            const icon = button.querySelector('i');
-            const isCurrentlyFavorited = this.favorites.includes(productId);
-
-            if (isCurrentlyFavorited) {
-                this.favorites = this.favorites.filter(id => id !== productId);
-                icon.className = 'far fa-heart';
-                button.classList.remove('favorited');
-                Utils.showToast('Видалено з обраного', 'error');
-            } else {
-                this.favorites.push(productId);
-                icon.className = 'fas fa-heart';
-                button.classList.add('favorited');
-                Utils.showToast('Додано в обране!', 'success');
-            }
-
-            // Add animation
-            button.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 200);
-        },
-
-        initializeFavorites() {
-            this.favorites.forEach(productId => {
-                const favoriteBtn = document.querySelector(`[onclick*="toggleFavorite(this, ${productId})"]`);
-                if (favoriteBtn) {
-                    favoriteBtn.classList.add('favorited');
-                    favoriteBtn.querySelector('i').className = 'fas fa-heart';
-                }
-            });
-        }
-    };
 
     // ============================================================================
     // МОДУЛЬ: Сортировка
@@ -1302,6 +1241,8 @@
 
     App.init();
 </script>
+
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 
 </body>
 </html>
