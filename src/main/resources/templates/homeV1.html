@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="stylesheet" th:href="@{/css/store-location-section.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -692,62 +693,8 @@
     </style>
 </head>
 <body>
-<!-- Navigation -->
-<nav class="navbar-luxury fixed-top" id="mainNav">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center w-100">
-            <a href="#" class="navbar-brand-luxury">
-                <img src="/images/IMG_1721.JPG" alt="Land of Chocolate" class="brand-logo">
-                Країна шоколаду
-            </a>
-            <ul class="nav-luxury d-none d-lg-flex">
-                <li class="nav-item-luxury">
-                    <a href="#home" class="nav-link-luxury">
-                        <i class="fas fa-home nav-icon"></i>
-                        Головна
-                    </a>
-                </li>
-                <li class="nav-item-luxury">
-                    <a href="/product/all" class="nav-link-luxury">
-                        <i class="fas fa-th-large nav-icon"></i>
-                        Все товары
-                    </a>
-                </li>
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
 
-                <li class="nav-item-luxury">
-                    <a href="/categories" class="nav-link-luxury">
-                        <i class="fas fa-heart nav-icon"></i>
-                        Категории
-                    </a>
-                </li>
-                <li class="nav-item-luxury">
-                    <a href="#contact" class="nav-link-luxury">
-                        <i class="fas fa-envelope nav-icon"></i>
-                        Контакти
-                    </a>
-                </li>
-                <li class="nav-item-luxury">
-                    <a href="#favorites" class="nav-link-luxury position-relative">
-                        <i class="fas fa-heart nav-icon"></i>
-                        Вибране
-                        <span class="favorites-badge">3</span>
-                    </a>
-                </li>
-                <li class="nav-item-luxury">
-                    <a href="#cart" class="nav-link-luxury position-relative">
-                        <i class="fas fa-shopping-bag nav-icon"></i>
-                        Кошик
-                        <span class="cart-badge">12</span>
-                    </a>
-                </li>
-            </ul>
-
-            <button class="navbar-toggler-luxury d-lg-none" type="button" id="navToggler">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </div>
-</nav>
 
 <!-- Hero Section -->
 <section id="home" class="hero-luxury">
@@ -1436,7 +1383,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <script>
     // Navbar scroll effect
     window.addEventListener('scroll', function() {
