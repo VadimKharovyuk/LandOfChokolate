@@ -104,10 +104,24 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     // ===== Методы для поиска и фильтрации =====
 
     /**
-     * Найти корзину с элементами и продуктами (FETCH JOIN для избежания LazyInitializationException)
+     * Найти корзину с элементами и продуктами (улучшенная версия)
+     * FETCH JOIN загружает все связанные данные в одном запросе
      */
-    @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.items ci LEFT JOIN FETCH ci.product p " +
+    @Query("SELECT DISTINCT c FROM Cart c " +
+            "LEFT JOIN FETCH c.items ci " +
+            "LEFT JOIN FETCH ci.product p " +
             "WHERE c.cartUuid = :cartUuid AND c.status = :status")
     Optional<Cart> findByCartUuidAndStatusWithItems(@Param("cartUuid") String cartUuid,
                                                     @Param("status") CartStatus status);
+
+    /**
+     * Дополнительный метод для поиска только корзины с товарами (без пустых корзин)
+     */
+    @Query("SELECT DISTINCT c FROM Cart c " +
+            "JOIN FETCH c.items ci " +
+            "JOIN FETCH ci.product p " +
+            "WHERE c.cartUuid = :cartUuid AND c.status = :status " +
+            "AND SIZE(c.items) > 0")
+    Optional<Cart> findActiveCartWithItemsByUuid(@Param("cartUuid") String cartUuid,
+                                                 @Param("status") CartStatus status);
 }

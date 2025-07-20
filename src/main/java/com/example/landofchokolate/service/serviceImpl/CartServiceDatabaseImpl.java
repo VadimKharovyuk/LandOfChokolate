@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -54,13 +55,16 @@ public class CartServiceDatabaseImpl implements CartService {
     @Transactional(readOnly = true)
     public CartDto getCartDto(HttpSession session) {
         Cart cart = getCartReadOnly(session);
-        return cartMapper.toDto(cart);
+
+        CartDto cartDto = cartMapper.toDto(cart);
+
+        return cartDto;
     }
 
     @Override
     @Transactional
     public void addProduct(HttpSession session, Long productId, Integer quantity) {
-        // Загружаем продукт и корзину параллельно, если это возможно
+        // Загружаем продукт
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Товар не найден"));
 
@@ -78,7 +82,8 @@ public class CartServiceDatabaseImpl implements CartService {
 
         // Проверяем, есть ли уже такой товар в корзине
         Optional<CartItem> existingItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
+                .filter(item -> item.getProduct() != null &&
+                        productId.equals(item.getProduct().getId()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
@@ -92,7 +97,9 @@ public class CartServiceDatabaseImpl implements CartService {
             }
 
             item.setQuantity(newQuantity);
-            item.setUpdatedAt(LocalDateTime.now()); // Обновляем время изменения элемента
+            item.setUpdatedAt(LocalDateTime.now());
+            // Устанавливаем свежий объект продукта
+            item.setProduct(product);
         } else {
             // Добавляем новый товар в корзину
             CartItem newItem = createCartItem(cart, product, quantity);
@@ -101,6 +108,9 @@ public class CartServiceDatabaseImpl implements CartService {
 
         updateCartActivity(cart);
         cart = cartRepository.save(cart);
+
+        // ВАЖНО: Принудительно инициализируем данные перед сохранением в сессию
+        initializeCartData(cart);
 
         // Обновляем корзину в сессии
         updateCartInSession(session, cart);
@@ -113,37 +123,90 @@ public class CartServiceDatabaseImpl implements CartService {
         cart.setLastActivityAt(LocalDateTime.now());
     }
 
+
     @Override
     @Transactional
     public void updateQuantity(HttpSession session, Long productId, Integer quantity) {
+        // Валидация входных параметров
+        if (productId == null) {
+            throw new IllegalArgumentException("ID товара не может быть null");
+        }
+
+        if (quantity == null) {
+            throw new IllegalArgumentException("Количество не может быть null");
+        }
+
+        // Если количество 0 или меньше - удаляем товар из корзины
         if (quantity <= 0) {
             removeProduct(session, productId);
             return;
         }
 
-        Cart cart = getOrCreateCart(session);
-
-        Optional<CartItem> itemOpt = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst();
-
-        if (itemOpt.isPresent()) {
-            CartItem item = itemOpt.get();
-
-            // Проверяем наличие на складе
-            if (item.getProduct().getStockQuantity() < quantity) {
-                throw new RuntimeException("Недостаточно товара на складе");
-            }
-
-            item.setQuantity(quantity);
-            item.setUpdatedAt(LocalDateTime.now());
-            updateCartActivity(cart);
-            cart = cartRepository.save(cart);
-
-            // Обновляем корзину в сессии
-            updateCartInSession(session, cart);
+        // Получаем UUID корзины
+        String cartUuid = getCartUuidFromCookie();
+        if (cartUuid == null) {
+            throw new RuntimeException("Корзина не найдена");
         }
+
+        // Загружаем корзину с элементами через оптимизированный запрос
+        Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
+        if (cartOpt.isEmpty()) {
+            throw new RuntimeException("Корзина не найдена");
+        }
+
+        Cart cart = cartOpt.get();
+
+        // Проверяем, не истекла ли корзина
+        if (isCartExpired(cart)) {
+            throw new RuntimeException("Корзина истекла");
+        }
+
+        // Загружаем продукт отдельно
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Товар не найден"));
+
+        // Проверяем активность товара
+        if (!Boolean.TRUE.equals(product.getIsActive())) {
+            throw new RuntimeException("Товар больше не доступен");
+        }
+
+        // Проверяем наличие на складе
+        if (product.getStockQuantity() < quantity) {
+            throw new RuntimeException("Недостаточно товара на складе. Доступно: " + product.getStockQuantity());
+        }
+
+        // Ищем товар в корзине
+        CartItem targetItem = null;
+        for (CartItem item : cart.getItems()) {
+            // Безопасно сравниваем ID продуктов
+            if (item.getProduct() != null && productId.equals(item.getProduct().getId())) {
+                targetItem = item;
+                break;
+            }
+        }
+
+        if (targetItem == null) {
+            throw new RuntimeException("Товар не найден в корзине");
+        }
+
+        // Обновляем количество
+        targetItem.setQuantity(quantity);
+        targetItem.setUpdatedAt(LocalDateTime.now());
+        // Устанавливаем свежий объект продукта
+        targetItem.setProduct(product);
+
+        // Обновляем активность корзины
+        updateCartActivity(cart);
+
+        // Сохраняем корзину
+        cart = cartRepository.save(cart);
+
+        // Обновляем корзину в сессии
+        updateCartInSession(session, cart);
+
+        log.debug("Количество товара {} в корзине обновлено до {}", productId, quantity);
     }
+
 
     @Override
     @Transactional
@@ -367,27 +430,32 @@ public class CartServiceDatabaseImpl implements CartService {
     }
 
     /**
-     * Получить корзину без создания новой (только для чтения) с кешированием
-     * ИСПРАВЛЕНО: Используем FETCH JOIN для избежания LazyInitializationException
+     * ИСПРАВЛЕННЫЙ метод getCartReadOnly - гарантирует загрузку всех данных
      */
     @Transactional(readOnly = true)
     protected Cart getCartReadOnly(HttpSession session) {
         // Сначала проверяем сессию
         Cart cachedCart = getCartFromSession(session);
         if (cachedCart != null && !isCartExpired(cachedCart)) {
-            return cachedCart;
+            // Проверяем, что все данные загружены (не proxy)
+            if (isCartFullyLoaded(cachedCart)) {
+                return cachedCart;
+            }
         }
 
         // Если в сессии нет или корзина истекла, загружаем из БД
         String cartUuid = getCartUuidFromCookie();
 
         if (cartUuid != null) {
-            // ИСПРАВЛЕНО: Используем метод с FETCH JOIN для избежания LazyInitializationException
+            // Используем метод с FETCH JOIN для избежания LazyInitializationException
             Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
             if (cartOpt.isPresent()) {
                 Cart cart = cartOpt.get();
                 if (!isCartExpired(cart)) {
-                    // Сохраняем в сессии для последующих обращений (только для чтения)
+                    // Принудительно инициализируем все proxy-объекты
+                    initializeCartData(cart);
+
+                    // Сохраняем в сессии для последующих обращений
                     updateCartInSession(session, cart);
                     return cart;
                 }
@@ -398,6 +466,50 @@ public class CartServiceDatabaseImpl implements CartService {
         Cart emptyCart = createEmptyCart();
         updateCartInSession(session, emptyCart);
         return emptyCart;
+    }
+
+    /**
+     * Принудительная инициализация всех данных корзины
+     */
+    private void initializeCartData(Cart cart) {
+        if (cart.getItems() != null) {
+            for (CartItem item : cart.getItems()) {
+                if (item.getProduct() != null) {
+                    // Принудительно инициализируем proxy Product
+                    Product product = item.getProduct();
+                    // Обращаемся к полям, чтобы загрузить данные
+                    product.getId();
+                    product.getName();
+                    product.getPrice();
+                    product.getImageUrl();
+                    product.getStockQuantity();
+                    product.getIsActive();
+                    product.getSlug();
+                }
+            }
+        }
+    }
+
+    /**
+     * Проверить, что корзина полностью загружена (нет proxy-объектов)
+     */
+    private boolean isCartFullyLoaded(Cart cart) {
+        if (cart.getItems() == null) {
+            return true;
+        }
+
+        try {
+            for (CartItem item : cart.getItems()) {
+                if (item.getProduct() != null) {
+                    // Пытаемся обратиться к данным продукта
+                    item.getProduct().getName();
+                    item.getProduct().getPrice();
+                }
+            }
+            return true;
+        } catch (LazyInitializationException e) {
+            return false;
+        }
     }
 
     /**
