@@ -1,13 +1,12 @@
 package com.example.landofchokolate.model;
 
-import com.example.landofchokolate.enums.CartStatus;
+import com.example.landofchokolate.enums.WishlistStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,37 +16,36 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Cart {
+// Модель Wishlist (избранное)
+public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Уникальный идентификатор корзины для Cookie
-    @Column(nullable = false, unique = true, length = 36)
-    private String cartUuid;
+    // Уникальный идентификатор для анонимных пользователей
+    @Column(unique = true, length = 36)
+    private String wishlistUuid;
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CartStatus status = CartStatus.ACTIVE;
+    private WishlistStatus status = WishlistStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<WishlistItem> items = new ArrayList<>();
 
-
-    // Время последней активности (для очистки старых корзин)
-    @Column(nullable = false)
-    private LocalDateTime lastActivityAt = LocalDateTime.now();
-
-    // User Agent для анонимных корзин (опционально)
-    @Column(length = 500)
-    private String userAgent;
-
-
-    // IP адрес для анонимных корзин (опционально)
+    // Для анонимных пользователей
     @Column(length = 45)
     private String ipAddress;
 
-    // Время истечения корзины (опционально)
+    @Column(length = 500)
+    private String userAgent;
+
+    // Время последней активности
+    @Column(nullable = false)
+    private LocalDateTime lastActivityAt = LocalDateTime.now();
+
+    // Время истечения для анонимных wishlist
     private LocalDateTime expiresAt;
 
     @Column(nullable = false)
@@ -55,7 +53,6 @@ public class Cart {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
-
 
     @PrePersist
     public void prePersist() {

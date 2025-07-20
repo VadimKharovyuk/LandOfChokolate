@@ -50,7 +50,7 @@
                     </a>
                 </li>
                 <li class="nav-item-luxury">
-                    <a th:href="@{/favorites}"
+                    <a th:href="@{/wishlist}"
                        class="nav-link-luxury position-relative"
                        th:classappend="${currentURI == '/favorites' ? 'active' : ''}">
                         <i class="fas fa-heart nav-icon"></i>
@@ -128,7 +128,7 @@
                     </a>
                 </li>
                 <li class="mobile-nav-item">
-                    <a th:href="@{/favorites}" class="mobile-nav-link">
+                    <a th:href="@{/wishlist}" class="mobile-nav-link">
                         <i class="fas fa-heart nav-icon"></i>
                         Вибране <span th:text="'(' + ${favoritesCount ?: 0} + ')'"></span>
                     </a>
