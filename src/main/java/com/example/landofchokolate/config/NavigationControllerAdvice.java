@@ -1,6 +1,7 @@
 package com.example.landofchokolate.config;
 
 import com.example.landofchokolate.service.CartService;
+import com.example.landofchokolate.service.WishlistService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class NavigationControllerAdvice {
     private final CartService cartService;
+    private final WishlistService wishlistService;
 
     @ModelAttribute("currentURI")
     public String getCurrentURI(HttpServletRequest request) {
@@ -59,16 +61,14 @@ public class NavigationControllerAdvice {
     }
 
     @ModelAttribute("favoritesCount")
-    public Integer getFavoritesCount(HttpServletRequest request) {
-        // В будущем здесь можно получать количество из сессии или базы данных
-        // Пример получения из сессии:
-        // HttpSession session = request != null ? request.getSession(false) : null;
-        // if (session != null) {
-        //     Integer count = (Integer) session.getAttribute("favoritesCount");
-        //     return count != null ? count : 0;
-        // }
+    public Integer getFavoritesCount(HttpSession session) {
+     try {
+         return wishlistService.getWishlistItemCount(session);
+     }catch (Exception e) {
+         log.warn("Ошибка при получении количества товаров в избраном: {}", e.getMessage());
 
-        return 0; // Заглушка для незарегистрированных пользователей
+     }
+        return 0;
     }
 
 
