@@ -177,12 +177,6 @@ public class LiqPayPaymentServiceImpl implements PaymentService {
             params.put("server_url", serverUrl);
             params.put("language", "ru");
 
-            System.out.println("Параметры LiqPay:");
-            System.out.println("  - amount: " + params.get("amount"));
-            System.out.println("  - description: " + params.get("description"));
-            System.out.println("  - order_id: " + params.get("order_id"));
-            System.out.println("  - result_url: " + params.get("result_url"));
-            System.out.println("  - server_url: " + params.get("server_url"));
 
             String jsonString = objectMapper.writeValueAsString(params);
             System.out.println("JSON: " + jsonString);

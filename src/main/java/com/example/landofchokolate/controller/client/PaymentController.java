@@ -49,8 +49,6 @@ public class PaymentController {
         // URL для серверного callback от LiqPay
         String serverUrl = baseUrl + "/payment/callback";
 
-        System.out.println("Result URL: " + resultUrl);
-        System.out.println("Server URL: " + serverUrl);
 
         // Создаем или получаем существующий платеж
         Payment payment = liqPayService.processPayment(order, resultUrl, serverUrl);
@@ -65,20 +63,13 @@ public class PaymentController {
         // Получаем данные для формы LiqPay
         Map<String, String> paymentForm = liqPayService.getPaymentForm(order, resultUrl, serverUrl);
 
-        System.out.println("Public Key: " + paymentForm.get("public_key"));
-        System.out.println("Data: " + paymentForm.get("data"));
-        System.out.println("Signature: " + paymentForm.get("signature"));
-
-
 
         model.addAttribute("order", order);
         model.addAttribute("payment", payment);
         model.addAttribute("data", paymentForm.get("data"));        // ← правильно
         model.addAttribute("signature", paymentForm.get("signature")); // ← правильно
         model.addAttribute("publicKey", paymentForm.get("public_key"));
-
-
-        System.out.println("Возвращаем шаблон: client/payment/privatbank");
+        
         return "client/payment/privatbank";
     }
 

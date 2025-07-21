@@ -3,412 +3,534 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Оплата через ПриватБанк - Заказ №<span th:text="${order.id}">1</span></title>
+  <title>Безопасная оплата - Заказ №<span th:text="${order.id}">1</span></title>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --primary-color: #2563eb;
-      --privatbank-blue: #0066cc;
-      --privatbank-light: #e6f3ff;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --danger-color: #ef4444;
-      --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --border-color: #e5e7eb;
-      --background-light: #f9fafb;
+      --primary-cream: #FDFCF8;
+      --secondary-beige: #F7F3E9;
+      --warm-white: #FEFEFE;
+      --soft-gray: #F5F5F5;
+      --charcoal: #2A2A2A;
+      --accent-gold: #B8860B;
+      --light-gold: #D4AF37;
+      --muted-blue: #4A6741;
+      --text-primary: #1A1A1A;
+      --text-secondary: #6B6B6B;
+      --border-subtle: #E8E5E0;
+      --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+      --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--background-light);
+      background: linear-gradient(135deg, var(--primary-cream) 0%, var(--secondary-beige) 100%);
       color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    .serif {
+      font-family: 'Playfair Display', serif;
     }
 
     .payment-container {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .card {
-      border: none;
-      border-radius: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .card-header {
-      background: linear-gradient(135deg, var(--privatbank-blue) 0%, #0052a3 100%);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      border-bottom: none;
-    }
-
-    .privatbank-logo {
-      width: 80px;
-      height: 80px;
-      background: white;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      color: var(--privatbank-blue);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .card-body {
-      padding: 2rem;
+    .payment-card {
+      background: var(--warm-white);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid var(--border-subtle);
+      width: 100%;
+    }
+
+    .payment-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .payment-header {
+      background: linear-gradient(135deg, var(--charcoal) 0%, #1A1A1A 100%);
+      color: var(--warm-white);
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .payment-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" patternUnits="userSpaceOnUse" width="100" height="100"><circle cx="25" cy="25" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="0.3" fill="%23ffffff" opacity="0.05"/><circle cx="50" cy="10" r="0.4" fill="%23ffffff" opacity="0.08"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.6;
+    }
+
+    .payment-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent-gold) 0%, var(--light-gold) 100%);
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 8px 25px rgba(184, 134, 11, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .payment-title {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .payment-subtitle {
+      opacity: 0.8;
+      font-size: 1rem;
+      font-weight: 400;
+      position: relative;
+      z-index: 1;
+    }
+
+    .payment-body {
+      padding: 3rem 2rem;
     }
 
     .order-summary {
-      background: var(--privatbank-light);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border-left: 4px solid var(--privatbank-blue);
+      background: var(--soft-gray);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
     }
 
-    .order-info {
+    .order-summary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent-gold), var(--light-gold));
+    }
+
+    .order-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .order-number {
+      color: var(--accent-gold);
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .order-details {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .order-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
     }
 
-    .order-info:last-child {
-      margin-bottom: 0;
-      padding-top: 0.75rem;
-      border-top: 2px solid var(--privatbank-blue);
+    .order-row:last-child {
+      border-bottom: none;
+      padding-top: 1rem;
+      border-top: 2px solid var(--accent-gold);
       font-weight: 600;
       font-size: 1.1rem;
+      color: var(--accent-gold);
+    }
+
+    .order-row:hover {
+      padding-left: 0.5rem;
+      background: rgba(184, 134, 11, 0.05);
+      border-radius: 8px;
+    }
+
+    .order-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .order-value {
+      font-weight: 600;
+      color: var(--text-primary);
     }
 
     .payment-form {
-      display: none;
-    }
-
-    .liqpay-form {
       text-align: center;
       margin: 2rem 0;
     }
 
-    .liqpay-button {
-      background: linear-gradient(135deg, var(--privatbank-blue) 0%, #0052a3 100%);
+    .payment-button {
+      background: linear-gradient(135deg, var(--charcoal) 0%, #1A1A1A 100%);
       border: none;
-      color: white;
-      padding: 1rem 2.5rem;
-      border-radius: 12px;
+      color: var(--warm-white);
+      padding: 1.25rem 3rem;
+      border-radius: 16px;
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.75rem;
-      box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+      box-shadow: var(--shadow-soft);
       min-height: 60px;
       width: 100%;
+      position: relative;
+      overflow: hidden;
     }
 
-    .liqpay-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
-      color: white;
-      text-decoration: none;
+    .payment-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
     }
 
-    .security-info {
-      background: var(--background-light);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 1.5rem;
+    .payment-button:hover::before {
+      left: 100%;
+    }
+
+    .payment-button:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      background: linear-gradient(135deg, var(--accent-gold) 0%, var(--light-gold) 100%);
+    }
+
+    .payment-button:active {
+      transform: translateY(-1px);
+    }
+
+    .payment-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .security-section {
+      background: var(--primary-cream);
+      border-radius: 16px;
+      padding: 2rem;
       margin: 2rem 0;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .security-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .security-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
     }
 
     .security-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.75rem;
-      margin-bottom: 0.75rem;
+      padding: 1rem;
+      background: var(--warm-white);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
     }
 
-    .security-item:last-child {
-      margin-bottom: 0;
+    .security-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
     }
 
     .security-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--success-color);
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--muted-blue) 0%, #3A5A37 100%);
       color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .security-content {
+      flex: 1;
+    }
+
+    .security-content h6 {
+      margin: 0 0 0.25rem 0;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .security-content p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .info-alert {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+      border: 1px solid rgba(184, 134, 11, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      color: var(--text-primary);
+    }
+
+    .back-section {
+      text-align: center;
+      margin-top: 2rem;
     }
 
     .back-button {
-      background: var(--text-secondary);
-      color: white;
-      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 2px solid var(--border-subtle);
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: 12px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       transition: all 0.3s ease;
+      font-weight: 500;
     }
 
     .back-button:hover {
-      background: var(--text-primary);
-      color: white;
+      background: var(--charcoal);
+      color: var(--warm-white);
+      border-color: var(--charcoal);
       text-decoration: none;
-      transform: translateX(-2px);
+      transform: translateX(-3px);
     }
 
-    .payment-steps {
-      margin: 2rem 0;
-    }
-
-    .step {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .step:hover {
-      background: var(--privatbank-light);
-    }
-
-    .step-number {
-      width: 32px;
-      height: 32px;
-      background: var(--privatbank-blue);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
-    .step-content h6 {
-      margin: 0 0 0.25rem 0;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .step-content p {
-      margin: 0;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    .alert {
-      border: none;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-    }
-
-    .alert-info {
-      background: var(--privatbank-light);
-      color: var(--privatbank-blue);
-      border-left: 4px solid var(--privatbank-blue);
-    }
-
-    @media (max-width: 576px) {
+    @media (max-width: 768px) {
       .payment-container {
-        margin: 1rem auto;
-        padding: 0 0.5rem;
+        padding: 1rem;
       }
 
-      .card-header, .card-body {
+      .payment-header, .payment-body {
+        padding: 2rem 1.5rem;
+      }
+
+      .payment-title {
+        font-size: 1.5rem;
+      }
+
+      .security-items {
+        grid-template-columns: 1fr;
+      }
+
+      .order-summary {
         padding: 1.5rem;
       }
+    }
 
-      .liqpay-button {
-        padding: 1rem 2rem;
-        font-size: 1rem;
+    /* Subtle animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-      .step {
-        padding: 0.75rem;
-      }
+    .payment-card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .order-row:nth-child(odd) {
+      animation: fadeInUp 0.6s ease-out;
+      animation-delay: 0.1s;
+      animation-fill-mode: both;
+    }
+
+    .order-row:nth-child(even) {
+      animation: fadeInUp 0.6s ease-out;
+      animation-delay: 0.2s;
+      animation-fill-mode: both;
     }
   </style>
 </head>
 <body>
 
 <div class="payment-container">
-  <!-- Заголовок -->
-  <div class="card">
-    <div class="card-header">
-      <div class="privatbank-logo">
-        <i class="bi bi-credit-card-2-front"></i>
+  <div class="payment-card">
+    <!-- Заголовок -->
+    <div class="payment-header">
+      <div class="payment-icon">
+        <i class="bi bi-shield-check"></i>
       </div>
-      <h3 class="mb-2">Оплата через ПриватБанк</h3>
-      <p class="mb-0 opacity-90">Безопасная оплата через LiqPay</p>
+      <h1 class="payment-title serif">Безопасная оплата</h1>
+      <p class="payment-subtitle">Завершите оформление заказа</p>
     </div>
 
-    <div class="card-body">
+    <div class="payment-body">
       <!-- Информация о заказе -->
       <div class="order-summary">
-        <h5 class="mb-3 text-center" style="color: var(--privatbank-blue);">
-          <i class="bi bi-receipt me-2"></i>
-          Заказ №<span th:text="${order.id}">1</span>
-        </h5>
-
-        <div class="order-info">
-          <span class="text-muted">Товаров:</span>
-          <span th:text="${order.orderItems.size()} + ' шт.'">5 шт.</span>
-        </div>
-
-        <div class="order-info">
-          <span class="text-muted">Покупатель:</span>
-          <span th:text="${order.customerName}">Имя покупателя</span>
-        </div>
-
-        <div class="order-info">
-          <span class="text-muted">Email:</span>
-          <span th:text="${order.email}">email@example.com</span>
-        </div>
-
-        <div class="order-info">
-          <span style="color: var(--privatbank-blue);">Итого к оплате:</span>
-          <span style="color: var(--privatbank-blue); font-size: 1.25rem;" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
-        </div>
-      </div>
-
-      <!-- Инструкции по оплате -->
-      <div class="payment-steps">
-        <h6 class="mb-3" style="color: var(--privatbank-blue);">Как оплатить:</h6>
-
-        <div class="step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h6>Нажмите кнопку "Оплатить"</h6>
-            <p>Вы будете перенаправлены на безопасную страницу LiqPay</p>
+        <div class="order-header">
+          <div class="order-number serif">
+            <i class="bi bi-receipt"></i>
+            Заказ №<span th:text="${order.id}">1</span>
           </div>
         </div>
 
-        <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h6>Выберите способ оплаты</h6>
-            <p>Карта ПриватБанка, Privat24 или Apple Pay/Google Pay</p>
+        <div class="order-details">
+          <div class="order-row">
+            <span class="order-label">Товаров</span>
+            <span class="order-value" th:text="${order.orderItems.size()} + ' шт.'">5 шт.</span>
           </div>
-        </div>
 
-        <div class="step">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h6>Подтвердите платеж</h6>
-            <p>Следуйте инструкциям на экране для завершения оплаты</p>
+          <div class="order-row">
+            <span class="order-label">Покупатель</span>
+            <span class="order-value" th:text="${order.customerName}">Имя покупателя</span>
           </div>
-        </div>
 
-        <div class="step">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h6>Получите подтверждение</h6>
-            <p>После успешной оплаты вы вернетесь на наш сайт</p>
+          <div class="order-row">
+            <span class="order-label">Email</span>
+            <span class="order-value" th:text="${order.email}">email@example.com</span>
+          </div>
+
+          <div class="order-row">
+            <span class="order-label serif">Итого к оплате</span>
+            <span class="order-value serif" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
           </div>
         </div>
       </div>
 
-      <!-- Отладочная информация -->
-      <div class="alert alert-warning mb-3" style="font-size: 0.8rem;">
-        <strong>Отладка данных:</strong><br>
-        Data: <span th:text="${data}" style="word-break: break-all;"></span><br>
-        Signature: <span th:text="${signature}" style="word-break: break-all;"></span><br>
-        Public Key: <span th:text="${publicKey}"></span>
-      </div>
-
-      <!-- Форма LiqPay -->
-      <div class="liqpay-form">
-        <!-- Простая форма -->
+      <!-- Форма оплаты -->
+      <div class="payment-form">
         <form method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8" id="liqpay-form">
           <input type="hidden" name="data" th:value="${data}" />
           <input type="hidden" name="signature" th:value="${signature}" />
         </form>
 
-        <!-- Красивая кнопка с прямой отправкой -->
-        <button onclick="submitPayment()" class="liqpay-button w-100" id="main-pay-btn">
+        <button onclick="submitPayment()" class="payment-button" id="main-pay-btn">
           <i class="bi bi-credit-card-2-front"></i>
-          Оплатить <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+          <span>Оплатить <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span></span>
         </button>
       </div>
 
       <!-- Информация о безопасности -->
-      <div class="security-info">
-        <h6 class="mb-3 d-flex align-items-center gap-2">
-          <i class="bi bi-shield-check" style="color: var(--success-color);"></i>
-          Ваши данные защищены
-        </h6>
-
-        <div class="security-item">
-          <div class="security-icon">
-            <i class="bi bi-lock-fill"></i>
-          </div>
-          <div>
-            <strong>SSL шифрование</strong><br>
-            <small class="text-muted">256-битное шифрование данных</small>
-          </div>
+      <div class="security-section">
+        <div class="security-title">
+          <i class="bi bi-shield-check" style="color: var(--muted-blue);"></i>
+          <span>Ваши данные защищены</span>
         </div>
 
-        <div class="security-item">
-          <div class="security-icon">
-            <i class="bi bi-shield-fill-check"></i>
+        <div class="security-items">
+          <div class="security-item">
+            <div class="security-icon">
+              <i class="bi bi-lock-fill"></i>
+            </div>
+            <div class="security-content">
+              <h6>SSL шифрование</h6>
+              <p>256-битная защита данных</p>
+            </div>
           </div>
-          <div>
-            <strong>PCI DSS сертификат</strong><br>
-            <small class="text-muted">Международный стандарт безопасности</small>
-          </div>
-        </div>
 
-        <div class="security-item">
-          <div class="security-icon">
-            <i class="bi bi-bank"></i>
+          <div class="security-item">
+            <div class="security-icon">
+              <i class="bi bi-shield-fill-check"></i>
+            </div>
+            <div class="security-content">
+              <h6>PCI DSS</h6>
+              <p>Международный стандарт</p>
+            </div>
           </div>
-          <div>
-            <strong>Лицензированная система</strong><br>
-            <small class="text-muted">LiqPay - официальный сервис ПриватБанка</small>
+
+          <div class="security-item">
+            <div class="security-icon">
+              <i class="bi bi-bank"></i>
+            </div>
+            <div class="security-content">
+              <h6>LiqPay</h6>
+              <p>Официальный сервис</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Уведомление -->
-      <div class="alert alert-info">
-        <i class="bi bi-info-circle me-2"></i>
-        <strong>Важно:</strong> После нажатия кнопки "Оплатить" не закрывайте страницу до завершения платежа.
+      <!-- Важная информация -->
+      <div class="info-alert">
+        <div class="d-flex align-items-start gap-3">
+          <i class="bi bi-info-circle-fill" style="color: var(--accent-gold); margin-top: 2px;"></i>
+          <div>
+            <strong>Важно:</strong> После нажатия кнопки "Оплатить" вы будете перенаправлены на защищенную страницу платежного сервиса. Не закрывайте окно браузера до завершения операции.
+          </div>
+        </div>
       </div>
 
       <!-- Кнопка назад -->
-      <div class="text-center">
-        <a th:href="@{'/orders/' + ${order.id}}" class="back-button">
+      <div class="back-section">
+        <a th:href="@{'/order/' + ${order.id}}" class="back-button">
           <i class="bi bi-arrow-left"></i>
-          Вернуться к заказу
+          <span>Вернуться к заказу</span>
         </a>
       </div>
     </div>
@@ -419,17 +541,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  console.log('🚀 JavaScript загружен');
-
   // Главная функция для отправки платежа
   function submitPayment() {
-    console.log('💳 Начинаем процесс оплаты');
-
     const form = document.getElementById('liqpay-form');
     const button = document.getElementById('main-pay-btn');
 
     if (!form) {
-      console.error('❌ Форма не найдена');
       alert('Ошибка: форма не найдена');
       return;
     }
@@ -439,70 +556,36 @@
     const signatureInput = form.querySelector('input[name="signature"]');
 
     if (!dataInput?.value || !signatureInput?.value) {
-      console.error('❌ Пустые данные для оплаты');
       alert('Ошибка: данные для оплаты не заполнены');
       return;
     }
 
-    console.log('✅ Данные проверены');
-    console.log('📤 Отправляем на:', form.action);
-
     // Меняем внешний вид кнопки
     if (button) {
-      button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Перенаправление на LiqPay...';
+      button.innerHTML = '<i class="bi bi-hourglass-split"></i><span>Перенаправление...</span>';
       button.disabled = true;
       button.style.opacity = '0.7';
     }
 
     // Отправляем форму
     form.submit();
-    console.log('🚀 Форма отправлена!');
   }
 
-  // Простая функция для прямой отправки (для отладки)
-  function directSubmit() {
-    console.log('🧪 Прямая отправка формы');
-    const form = document.getElementById('liqpay-form');
+  // Предотвращение случайного закрытия страницы
+  let paymentInProgress = false;
 
-    if (!form) {
-      console.error('❌ Форма не найдена');
-      return;
-    }
-
-    console.log('📤 Отправляем форму:', form.action);
-    form.submit();
-  }
-
-  // Проверяем данные при загрузке
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 Страница загружена');
-
-    const form = document.getElementById('liqpay-form');
-    const dataInput = form?.querySelector('input[name="data"]');
-    const signatureInput = form?.querySelector('input[name="signature"]');
-
-    console.log('📋 Данные формы:');
-    console.log('  Data:', dataInput?.value?.substring(0, 50) + '...' || 'ПУСТО');
-    console.log('  Signature:', signatureInput?.value || 'ПУСТО');
-    console.log('  Action:', form?.action || 'НЕТ ФОРМЫ');
-
-    if (dataInput?.value && signatureInput?.value) {
-      console.log('✅ Все данные готовы для отправки');
-    } else {
-      console.warn('⚠️ Некоторые данные отсутствуют');
-    }
-  });
-
-  // Обработчик отправки формы
   document.addEventListener('submit', function(e) {
     if (e.target.id === 'liqpay-form') {
-      console.log('📤 Форма отправляется на:', e.target.action);
+      paymentInProgress = true;
     }
   });
 
-  console.log('💡 Доступные функции:');
-  console.log('  - submitPayment() - главная функция оплаты');
-  console.log('  - directSubmit() - прямая отправка формы');
+  window.addEventListener('beforeunload', function(e) {
+    if (paymentInProgress) {
+      e.preventDefault();
+      e.returnValue = 'Платеж в процессе. Вы уверены, что хотите покинуть страницу?';
+    }
+  });
 </script>
 
 </body>
