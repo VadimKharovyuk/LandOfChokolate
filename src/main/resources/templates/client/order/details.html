@@ -9,247 +9,745 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --primary-medium: #5A5A5A;
+            --primary-light: #FAFAFA;
+            --accent-gold: #D4AF37;
+            --accent-warm: #F5F5F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #757575;
+            --border-subtle: #E8E8E8;
+            --shadow-soft: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.08);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FFFFFF;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Success Message */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Card Styles */
+        .card {
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: none;
+        }
+
+        .card-header h4, .card-header h5 {
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Order Info Grid */
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-warm);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+
+        .info-content h6 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .info-content p {
+            margin: 0;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Table Styles */
+        .table {
+            margin: 0;
+        }
+
+        .table th {
+            background: var(--accent-warm);
+            border-bottom: 2px solid var(--border-subtle);
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1.5rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .product-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .product-placeholder {
+            width: 70px;
+            height: 70px;
+            background: var(--accent-warm);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .quantity-badge {
+            background: var(--primary-dark);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .table-total {
+            background: var(--primary-light);
+            border-top: 2px solid var(--primary-dark);
+        }
+
+        .table-total th {
+            background: transparent;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method {
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-method::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.1) 50%, transparent 100%);
+            transition: left 0.5s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-method:hover::before {
+            left: 100%;
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-dark);
+            background: var(--accent-warm);
+            box-shadow: 0 4px 15px rgba(44, 44, 44, 0.15);
+        }
+
+        .payment-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-icon.qr { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .payment-icon.iban { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .payment-icon.privatbank { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .payment-icon.monobank { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }
+        .payment-icon.cash { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; }
+
+        .payment-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-feature {
+            display: inline-block;
+            background: var(--primary-dark);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-feature.instant { background: var(--success-color); }
+        .payment-feature.pickup { background: var(--info-color); }
+        .payment-feature.secure { background: var(--warning-color); color: var(--text-primary); }
+
+        /* Payment Button */
+        .payment-button {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            border: none;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: none;
+            min-width: 250px;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(44, 44, 44, 0.2);
+        }
+
+        .payment-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Status Cards */
+        .status-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.9) 100%);
+            border-left: 4px solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1.5rem;
+        }
+
+        .status-card.paid { border-left-color: var(--success-color); }
+        .status-card.ready { border-left-color: var(--info-color); }
+        .status-card.completed { border-left-color: var(--success-color); }
+        .status-card.cancelled { border-left-color: var(--danger-color); }
+
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-home, .btn-catalog {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-home {
+            background: var(--primary-dark);
+            color: white;
+            border: 2px solid var(--primary-dark);
+        }
+
+        .btn-home:hover {
+            background: white;
+            color: var(--primary-dark);
+        }
+
+        .btn-catalog {
+            background: white;
+            color: var(--primary-dark);
+            border: 2px solid var(--border-subtle);
+        }
+
+        .btn-catalog:hover {
+            border-color: var(--primary-dark);
+            background: var(--accent-warm);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .order-info-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-home, .btn-catalog {
+                width: 100%;
+                justify-content: center;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .payment-methods {
+                gap: 1rem;
+            }
+
+            .payment-method {
+                padding: 1rem;
+            }
+
+            .payment-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+
+            .product-image, .product-placeholder {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
+
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
+    <!-- Success Message -->
+    <div class="alert alert-success text-center" th:if="${orderDTO.status.name() == 'NEW'}">
+        <div class="success-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h4 class="serif-font mb-2">Заказ успешно создан!</h4>
+        <p class="mb-0">Номер вашего заказа: <strong th:text="${orderDTO.id}">1</strong></p>
+    </div>
 
-            <!-- Success Message -->
-            <div class="alert alert-success text-center mb-4" th:if="${orderDTO.status.name() == 'NEW'}">
-                <i class="bi bi-check-circle-fill fs-2 text-success mb-2"></i>
-                <h4>Заказ успешно создан!</h4>
-                <p class="mb-0">Номер вашего заказа: <strong th:text="${orderDTO.id}">1</strong></p>
+    <!-- Order Header -->
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h4 class="d-flex align-items-center gap-2 mb-0">
+                    <i class="bi bi-receipt"></i>
+                    Заказ №<span th:text="${orderDTO.id}">1</span>
+                </h4>
+                <th:block th:switch="${orderDTO.status.name()}">
+                    <span th:case="'NEW'" class="status-badge bg-warning text-dark" th:text="${orderDTO.status.description}">Новый заказ</span>
+                    <span th:case="'PAID'" class="status-badge bg-success text-white" th:text="${orderDTO.status.description}">Оплачен</span>
+                    <span th:case="'READY_FOR_PICKUP'" class="status-badge bg-info text-white" th:text="${orderDTO.status.description}">Готов к выдаче</span>
+                    <span th:case="'COMPLETED'" class="status-badge bg-success text-white" th:text="${orderDTO.status.description}">Завершен</span>
+                    <span th:case="'CANCELLED'" class="status-badge bg-danger text-white" th:text="${orderDTO.status.description}">Отменен</span>
+                    <span th:case="*" class="status-badge bg-secondary text-white" th:text="${orderDTO.status.description}">Неизвестно</span>
+                </th:block>
             </div>
-
-            <!-- Order Header -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">
-                            <i class="bi bi-receipt"></i>
-                            Заказ №<span th:text="${orderDTO.id}">1</span>
-                        </h4>
-                        <th:block th:switch="${orderDTO.status.name()}">
-                            <span th:case="'NEW'" class="badge fs-6 bg-warning text-dark" th:text="${orderDTO.status.description}">Новый заказ</span>
-                            <span th:case="'PAID'" class="badge fs-6 bg-success" th:text="${orderDTO.status.description}">Оплачен</span>
-                            <span th:case="'READY_FOR_PICKUP'" class="badge fs-6 bg-info" th:text="${orderDTO.status.description}">Готов к выдаче</span>
-                            <span th:case="'COMPLETED'" class="badge fs-6 bg-success" th:text="${orderDTO.status.description}">Завершен</span>
-                            <span th:case="'CANCELLED'" class="badge fs-6 bg-danger" th:text="${orderDTO.status.description}">Отменен</span>
-                            <span th:case="*" class="badge fs-6 bg-secondary" th:text="${orderDTO.status.description}">Неизвестно</span>
-                        </th:block>
+        </div>
+        <div class="card-body">
+            <div class="order-info-grid">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-calendar3"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Дата заказа</h6>
+                        <p th:text="${#temporals.format(orderDTO.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</p>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6><i class="bi bi-calendar3"></i> Дата заказа:</h6>
-                            <p th:text="${#temporals.format(orderDTO.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</p>
 
-                            <h6><i class="bi bi-person"></i> Покупатель:</h6>
-                            <p th:text="${orderDTO.customerName}">Имя покупателя</p>
-
-                            <h6><i class="bi bi-envelope"></i> Email:</h6>
-                            <p th:text="${orderDTO.email}">email@example.com</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h6><i class="bi bi-telephone"></i> Телефон:</h6>
-                            <p th:text="${orderDTO.phoneNumber}">+7 999 123 45 67</p>
-
-                            <h6><i class="bi bi-truck"></i> Способ получения:</h6>
-                            <p>
-                                    <span class="badge bg-info" th:if="${orderDTO.deliveryMethod.name() == 'DELIVERY'}">
-                                        <i class="bi bi-truck"></i> Доставка
-                                    </span>
-                                <span class="badge bg-success" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}">
-                                        <i class="bi bi-shop"></i> Самовывоз
-                                    </span>
-                            </p>
-
-                            <h6 th:if="${orderDTO.someNotes}"><i class="bi bi-chat-dots"></i> Комментарий:</h6>
-                            <p th:if="${orderDTO.someNotes}" th:text="${orderDTO.someNotes}" class="text-muted fst-italic">Комментарий к заказу</p>
-                        </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Покупатель</h6>
+                        <p th:text="${orderDTO.customerName}">Имя покупателя</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Order Items -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="bi bi-list-ul"></i>
-                        Состав заказа
-                    </h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                            <tr>
-                                <th>Товар</th>
-                                <th class="text-center">Количество</th>
-                                <th class="text-end">Цена</th>
-                                <th class="text-end">Сумма</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="item : ${orderDTO.orderItems}">
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img th:if="${item.productImageUrl != null and !#strings.isEmpty(item.productImageUrl)}"
-                                             th:src="${item.productImageUrl}"
-                                             alt="Товар"
-                                             class="rounded me-3"
-                                             style="width: 60px; height: 60px; object-fit: cover;">
-                                        <div th:if="${item.productImageUrl == null or #strings.isEmpty(item.productImageUrl)}"
-                                             class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
-                                             style="width: 60px; height: 60px;">
-                                            <i class="bi bi-image text-muted"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0" th:text="${item.productName}">Название товара</h6>
-                                            <small class="text-muted">ID: <span th:text="${item.productId}">1</span></small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <span class="badge bg-secondary" th:text="${item.quantity}">1</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <span th:text="${#numbers.formatDecimal(item.priceAtOrder, 0, 2)} + ' ₽'">999.00 ₽</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <strong th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)} + ' ₽'">999.00 ₽</strong>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot class="table-light">
-                            <tr>
-                                <th colspan="3" class="text-end">Итого к оплате:</th>
-                                <th class="text-end text-primary fs-5">
-                                    <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' ₽'">999.00 ₽</span>
-                                </th>
-                            </tr>
-                            </tfoot>
-                        </table>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Email</h6>
+                        <p th:text="${orderDTO.email}">email@example.com</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Payment Section -->
-            <div class="card shadow-sm mb-4" th:if="${orderDTO.status.name() == 'NEW'}">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0">
-                        <i class="bi bi-credit-card"></i>
-                        Оплата заказа
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="mb-4">Выберите удобный способ оплаты:</p>
-
-                    <div class="row g-3">
-                        <!-- Банковская карта -->
-                        <div class="col-md-6">
-                            <div class="card h-100 payment-method border-2" onclick="selectPayment('card')">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-credit-card fs-1 text-primary mb-3"></i>
-                                    <h5>Банковская карта</h5>
-                                    <p class="text-muted mb-0">Visa, MasterCard, МИР</p>
-                                    <p class="text-success mb-0"><small>Мгновенная оплата</small></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Наличными при получении -->
-                        <div class="col-md-6" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}">
-                            <div class="card h-100 payment-method border-2" onclick="selectPayment('cash')">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-cash-stack fs-1 text-success mb-3"></i>
-                                    <h5>Наличными</h5>
-                                    <p class="text-muted mb-0">При получении в магазине</p>
-                                    <p class="text-info mb-0"><small>Оплата при получении</small></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- СБП -->
-                        <div class="col-md-6">
-                            <div class="card h-100 payment-method border-2" onclick="selectPayment('sbp')">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-qr-code fs-1 text-info mb-3"></i>
-                                    <h5>СБП</h5>
-                                    <p class="text-muted mb-0">Система быстрых платежей</p>
-                                    <p class="text-success mb-0"><small>Без комиссии</small></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Электронные кошельки -->
-                        <div class="col-md-6">
-                            <div class="card h-100 payment-method border-2" onclick="selectPayment('wallet')">
-                                <div class="card-body text-center">
-                                    <i class="bi bi-wallet2 fs-1 text-warning mb-3"></i>
-                                    <h5>Электронный кошелек</h5>
-                                    <p class="text-muted mb-0">ЮMoney, QIWI</p>
-                                    <p class="text-success mb-0"><small>Быстрая оплата</small></p>
-                                </div>
-                            </div>
-                        </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-telephone"></i>
                     </div>
-
-                    <div class="text-center mt-4">
-                        <button class="btn btn-success btn-lg px-5" id="payButton" onclick="processPayment()">
-                            <i class="bi bi-credit-card"></i>
-                            Оплатить <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' ₽'">999.00 ₽</span>
-                        </button>
+                    <div class="info-content">
+                        <h6>Телефон</h6>
+                        <p th:text="${orderDTO.phoneNumber}">+38 066 123 45 67</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Order Status Info -->
-            <div class="card shadow-sm mb-4" th:if="${orderDTO.status.name() != 'NEW'}">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle"></i>
-                        Статус заказа
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div th:switch="${orderDTO.status.name()}">
-                        <div th:case="'PAID'" class="alert alert-success">
-                            <i class="bi bi-check-circle"></i>
-                            <strong>Заказ оплачен!</strong> Мы приступили к его обработке.
-                        </div>
-                        <div th:case="'READY_FOR_PICKUP'" class="alert alert-info">
-                            <i class="bi bi-box-seam"></i>
-                            <strong>Заказ готов к выдаче!</strong> Можете забрать его в нашем магазине.
-                        </div>
-                        <div th:case="'COMPLETED'" class="alert alert-success">
-                            <i class="bi bi-check-circle-fill"></i>
-                            <strong>Заказ завершен!</strong> Спасибо за покупку!
-                        </div>
-                        <div th:case="'CANCELLED'" class="alert alert-danger">
-                            <i class="bi bi-x-circle"></i>
-                            <strong>Заказ отменен.</strong> Если у вас есть вопросы, свяжитесь с нами.
-                        </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Способ получения</h6>
+                        <p>
+                            <span class="status-badge bg-info text-white" th:if="${orderDTO.deliveryMethod.name() == 'DELIVERY'}">
+                                <i class="bi bi-truck"></i> Доставка
+                            </span>
+                            <span class="status-badge bg-success text-white" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}">
+                                <i class="bi bi-shop"></i> Самовывоз
+                            </span>
+                        </p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="text-center">
-                <a href="/" class="btn btn-primary">
-                    <i class="bi bi-house"></i>
-                    На главную
-                </a>
-                <a href="/catalog" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-left"></i>
-                    Продолжить покупки
-                </a>
+                <div class="info-item" th:if="${orderDTO.someNotes}">
+                    <div class="info-icon">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6>Комментарий</h6>
+                        <p th:text="${orderDTO.someNotes}" class="text-muted fst-italic">Комментарий к заказу</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Order Items -->
+    <div class="card">
+        <div class="card-header bg-light text-dark">
+            <h5 class="d-flex align-items-center gap-2 mb-0">
+                <i class="bi bi-list-ul"></i>
+                Состав заказа
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th class="text-center">Количество</th>
+                        <th class="text-end">Цена</th>
+                        <th class="text-end">Сумма</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${orderDTO.orderItems}">
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img th:if="${item.productImageUrl != null and !#strings.isEmpty(item.productImageUrl)}"
+                                     th:src="${item.productImageUrl}"
+                                     alt="Товар"
+                                     class="product-image">
+                                <div th:if="${item.productImageUrl == null or #strings.isEmpty(item.productImageUrl)}"
+                                     class="product-placeholder">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1" th:text="${item.productName}">Название товара</h6>
+                                    <small class="text-muted">ID: <span th:text="${item.productId}">1</span></small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="quantity-badge" th:text="${item.quantity}">1</span>
+                        </td>
+                        <td class="text-end">
+                            <span th:text="${#numbers.formatDecimal(item.priceAtOrder, 0, 2)} + ' грн'">999.00 грн</span>
+                        </td>
+                        <td class="text-end">
+                            <strong th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)} + ' грн'">999.00 грн</strong>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot class="table-total">
+                    <tr>
+                        <th colspan="3" class="text-end">Итого к оплате:</th>
+                        <th class="text-end text-primary serif-font" style="font-size: 1.25rem;">
+                            <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Section -->
+    <div class="card" th:if="${orderDTO.status.name() == 'NEW'}">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="d-flex align-items-center gap-2 mb-0">
+                <i class="bi bi-credit-card"></i>
+                Оплата заказа
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-4 text-center serif-font" style="font-size: 1.1rem;">Выберите удобный способ оплаты</p>
+
+            <div class="payment-methods">
+                <!-- QR Code Payment -->
+                <div class="payment-method" onclick="selectPayment('QRCODE')">
+                    <div class="payment-icon qr">
+                        <i class="bi bi-qr-code"></i>
+                    </div>
+                    <h5 class="payment-title">QR-код</h5>
+                    <p class="payment-description">Оплата по QR-коду через мобильное приложение банка</p>
+                    <span class="payment-feature instant">Мгновенная оплата</span>
+                </div>
+
+                <!-- IBAN Payment -->
+                <div class="payment-method" onclick="selectPayment('IBAN')">
+                    <div class="payment-icon iban">
+                        <i class="bi bi-bank"></i>
+                    </div>
+                    <h5 class="payment-title">IBAN</h5>
+                    <p class="payment-description">Банковский перевод по номеру счета IBAN</p>
+                    <span class="payment-feature secure">Безопасно</span>
+                </div>
+
+                <!-- PrivatBank -->
+                <div class="payment-method" onclick="selectPayment('PRIVATBANK')">
+                    <div class="payment-icon privatbank">
+                        <i class="bi bi-credit-card-2-front"></i>
+                    </div>
+                    <h5 class="payment-title">ПриватБанк</h5>
+                    <p class="payment-description">Оплата через Privat24 или карту ПриватБанка</p>
+                    <span class="payment-feature instant">Мгновенная оплата</span>
+                </div>
+
+                <!-- MonoBank -->
+                <div class="payment-method" onclick="selectPayment('MONOBANK')">
+                    <div class="payment-icon monobank">
+                        <i class="bi bi-phone"></i>
+                    </div>
+                    <h5 class="payment-title">MonoBank</h5>
+                    <p class="payment-description">Оплата по ссылке через мобильное приложение</p>
+                    <span class="payment-feature instant">Мгновенная оплата</span>
+                </div>
+
+                <!-- Cash on Pickup -->
+                <div class="payment-method" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}" onclick="selectPayment('CASH_ON_PICKUP')">
+                    <div class="payment-icon cash">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <h5 class="payment-title">Наличными</h5>
+                    <p class="payment-description">Оплата при получении в магазине</p>
+                    <span class="payment-feature pickup">При получении</span>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="payment-button" id="payButton" onclick="processPayment()">
+                    <i class="bi bi-credit-card me-2"></i>
+                    Оплатить <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Status Info -->
+    <div class="card" th:if="${orderDTO.status.name() != 'NEW'}">
+        <div class="card-header bg-info text-white">
+            <h5 class="d-flex align-items-center gap-2 mb-0">
+                <i class="bi bi-info-circle"></i>
+                Статус заказа
+            </h5>
+        </div>
+        <div class="card-body">
+            <div th:switch="${orderDTO.status.name()}">
+                <div th:case="'PAID'" class="status-card paid">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle status-icon text-success"></i>
+                        <div>
+                            <strong>Заказ оплачен!</strong>
+                            <p class="mb-0 text-muted">Мы приступили к его обработке.</p>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="'READY_FOR_PICKUP'" class="status-card ready">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-box-seam status-icon text-info"></i>
+                        <div>
+                            <strong>Заказ готов к выдаче!</strong>
+                            <p class="mb-0 text-muted">Можете забрать его в нашем магазине.</p>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="'COMPLETED'" class="status-card completed">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill status-icon text-success"></i>
+                        <div>
+                            <strong>Заказ завершен!</strong>
+                            <p class="mb-0 text-muted">Спасибо за покупку!</p>
+                        </div>
+                    </div>
+                </div>
+                <div th:case="'CANCELLED'" class="status-card cancelled">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-x-circle status-icon text-danger"></i>
+                        <div>
+                            <strong>Заказ отменен.</strong>
+                            <p class="mb-0 text-muted">Если у вас есть вопросы, свяжитесь с нами.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center">
+        <div class="action-buttons">
+            <a href="/" class="btn-home">
+                <i class="bi bi-house"></i>
+                На главную
+            </a>
+            <a href="/categories" class="btn-catalog">
+                <i class="bi bi-arrow-left"></i>
+                Продолжить покупки
+            </a>
+        </div>
+    </div>
 </div>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
@@ -260,57 +758,175 @@
     function selectPayment(method) {
         // Убираем активный класс со всех карточек
         document.querySelectorAll('.payment-method').forEach(card => {
-            card.classList.remove('border-primary', 'bg-light');
+            card.classList.remove('selected');
         });
 
         // Добавляем активный класс к выбранной карточке
-        event.currentTarget.classList.add('border-primary', 'bg-light');
+        event.currentTarget.classList.add('selected');
         selectedPaymentMethod = method;
 
         // Активируем кнопку оплаты
-        document.getElementById('payButton').disabled = false;
+        const payButton = document.getElementById('payButton');
+        if (payButton) {
+            payButton.disabled = false;
+
+            // Обновляем текст кнопки в зависимости от способа оплаты
+            const buttonText = getPaymentButtonText(method);
+            payButton.innerHTML = `<i class="bi bi-credit-card me-2"></i>${buttonText}`;
+        }
+    }
+
+    function getPaymentButtonText(method) {
+        const amount = '[[${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)}]]' + ' грн';
+
+        switch(method) {
+            case 'QRCODE':
+                return `Оплатить по QR-коду ${amount}`;
+            case 'IBAN':
+                return `Оплатить по IBAN ${amount}`;
+            case 'PRIVATBANK':
+                return `Оплатить через ПриватБанк ${amount}`;
+            case 'MONOBANK':
+                return `Оплатить через MonoBank ${amount}`;
+            case 'CASH_ON_PICKUP':
+                return `Подтвердить оплату наличными ${amount}`;
+            default:
+                return `Оплатить ${amount}`;
+        }
     }
 
     function processPayment() {
         if (!selectedPaymentMethod) {
-            alert('Выберите способ оплаты');
+            showNotification('Выберите способ оплаты', 'warning');
             return;
         }
 
         const orderId = '[[${orderDTO.id}]]';
+        const payButton = document.getElementById('payButton');
+
+        // Показываем индикатор загрузки
+        payButton.disabled = true;
+        payButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Обработка...';
 
         // В зависимости от способа оплаты перенаправляем
-        switch(selectedPaymentMethod) {
-            case 'card':
-                // Перенаправление на платежный шлюз
-                window.location.href = `/payment/card/${orderId}`;
-                break;
-            case 'cash':
-                // Подтверждение наличной оплаты при получении
-                if(confirm('Подтвердите оплату наличными при получении заказа')) {
-                    window.location.href = `/payment/cash/${orderId}`;
-                }
-                break;
-            case 'sbp':
-                // СБП оплата
-                window.location.href = `/payment/sbp/${orderId}`;
-                break;
-            case 'wallet':
-                // Электронные кошельки
-                window.location.href = `/payment/wallet/${orderId}`;
-                break;
-            default:
-                alert('Неизвестный способ оплаты');
-        }
+        setTimeout(() => {
+            switch(selectedPaymentMethod) {
+                case 'QRCODE':
+                    window.location.href = `/payment/qr/${orderId}`;
+                    break;
+                case 'IBAN':
+                    window.location.href = `/payment/iban/${orderId}`;
+                    break;
+                case 'PRIVATBANK':
+                    window.location.href = `/payment/privatbank/${orderId}`;
+                    break;
+                case 'MONOBANK':
+                    window.location.href = `/payment/monobank/${orderId}`;
+                    break;
+                case 'CASH_ON_PICKUP':
+                    if(confirm('Подтвердите оплату наличными при получении заказа в магазине')) {
+                        window.location.href = `/payment/cash/${orderId}`;
+                    } else {
+                        // Возвращаем кнопку в исходное состояние
+                        payButton.disabled = false;
+                        payButton.innerHTML = getPaymentButtonText(selectedPaymentMethod);
+                    }
+                    break;
+                default:
+                    showNotification('Неизвестный способ оплаты', 'error');
+                    payButton.disabled = false;
+                    payButton.innerHTML = getPaymentButtonText(selectedPaymentMethod);
+            }
+        }, 500);
     }
 
-    // Инициализация при загрузке страницы
+    function showNotification(message, type = 'info') {
+        // Создаем уведомление
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show`;
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '300px';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Автоматически убираем через 5 секунд
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    // Добавляем анимацию при наведении на карточки оплаты
     document.addEventListener('DOMContentLoaded', function() {
         const payButton = document.getElementById('payButton');
         if (payButton) {
             payButton.disabled = true;
         }
+
+        // Добавляем эффект параллакса для карточек
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        paymentMethods.forEach(method => {
+            method.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+
+            method.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('selected')) {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+
+        // Добавляем клавиатурную навигацию
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && selectedPaymentMethod && !document.getElementById('payButton').disabled) {
+                processPayment();
+            }
+        });
     });
+
+    // Добавляем функционал для мобильных устройств
+    if ('ontouchstart' in window) {
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        paymentMethods.forEach(method => {
+            method.addEventListener('touchstart', function() {
+                this.style.transform = 'translateY(-2px) scale(1.01)';
+            });
+
+            method.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    if (!this.classList.contains('selected')) {
+                        this.style.transform = 'translateY(0) scale(1)';
+                    }
+                }, 150);
+            });
+        });
+    }
+
+    // Функция для отслеживания статуса платежа (опционально)
+    function checkPaymentStatus(orderId) {
+        fetch(`/api/order/${orderId}/status`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'PAID') {
+                    showNotification('Платеж успешно обработан!', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking payment status:', error);
+            });
+    }
 </script>
 </body>
 </html>

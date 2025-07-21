@@ -1,239 +1,820 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оформление заказа - Land of Chocolate</title>
+    <meta name="description" content="Оформление заказа - Land of Chocolate">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
+    <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --primary-medium: #5A5A5A;
+            --primary-light: #FAFAFA;
+            --accent-gold: #D4AF37;
+            --accent-warm: #F5F5F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #757575;
+            --border-subtle: #E8E8E8;
+            --shadow-soft: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.08);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: #FFFFFF;
+            letter-spacing: -0.01em;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Основной контент с отступом от навигации */
+        .main-content {
+            padding-top: 120px; /* Используем padding вместо margin */
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumb-container {
+            padding: 6rem 0 1rem; /* Увеличиваем верхний отступ */
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Order Header */
+        .order-header {
+            padding: 4rem 0 3rem;
+            text-align: center;
+        }
+
+        .order-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .order-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Alert Messages */
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        /* Order Content */
+        .order-section {
+            padding: 3rem 0;
+        }
+
+        .order-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: #FFFFFF;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .order-summary-header {
+            background: var(--accent-warm);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .order-summary-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--accent-warm);
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #F8F8F8 0%, #F0F0F0 100%);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cart-item-name {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-price {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .cart-item-total {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .order-total {
+            padding: 1.5rem 2rem;
+            background: var(--primary-light);
+            border-top: 2px solid var(--border-subtle);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .total-row:last-child {
+            margin-bottom: 0;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .total-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .total-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .total-final .total-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .total-final .total-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Order Form */
+        .order-form {
+            background: #FFFFFF;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .order-form-header {
+            background: var(--accent-warm);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .order-form-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .order-form-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            background: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 0.2rem rgba(44, 44, 44, 0.1);
+            background: var(--accent-warm);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: var(--danger-color);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-text {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Phone Input Group */
+        .input-group {
+            display: flex;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 0.2rem rgba(44, 44, 44, 0.1);
+        }
+
+        .input-group-text {
+            background: var(--primary-dark);
+            color: #FFFFFF;
+            border: none;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .input-group .form-control {
+            border: none;
+            border-radius: 0;
+        }
+
+        .input-group .form-control:focus {
+            box-shadow: none;
+            border-color: transparent;
+        }
+
+        /* Delivery Method */
+        .delivery-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .delivery-option {
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #FFFFFF;
+        }
+
+        .delivery-option:hover {
+            border-color: var(--primary-medium);
+            background: var(--primary-light);
+        }
+
+        .delivery-option.selected {
+            border-color: var(--primary-dark);
+            background: var(--accent-warm);
+        }
+
+        .delivery-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .delivery-icon.delivery {
+            color: #007bff;
+        }
+
+        .delivery-icon.pickup {
+            color: var(--success-color);
+        }
+
+        .delivery-title {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Textarea */
+        .form-control[rows] {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-submit {
+            flex: 1;
+            background: var(--primary-dark);
+            color: #FFFFFF;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-medium);
+            transform: translateY(-1px);
+        }
+
+        .btn-back {
+            background: none;
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-light);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .order-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .order-summary {
+                position: static;
+                order: -1;
+            }
+
+            .delivery-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1.5rem;
+            }
+
+            .order-header {
+                padding: 3rem 0 2rem;
+            }
+
+            .order-title {
+                font-size: 2.5rem;
+            }
+
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .cart-item {
+                padding: 1rem 1.5rem;
+            }
+
+            .order-form-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Header -->
-            <div class="text-center mb-4">
-                <h1 class="h2 text-primary">
-                    <i class="bi bi-bag-check"></i>
-                    Оформление заказа
-                </h1>
-                <p class="text-muted">Заполните данные для оформления заказа</p>
-            </div>
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
 
-            <!-- Error/Success Messages -->
-            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle"></i>
-                <span th:text="${errorMessage}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+<!-- Основной контент -->
+<div class="main-content">
+    <div class="main-container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb-container" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item"><a href="/cart">Корзина</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Оформление заказа</li>
+            </ol>
+        </nav>
 
-            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle"></i>
-                <span th:text="${successMessage}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+        <!-- Заголовок -->
+        <header class="order-header">
+            <h1 class="order-title">Оформление заказа</h1>
+            <p class="order-subtitle">Заполните данные для оформления заказа</p>
+        </header>
 
-            <div class="row">
-                <!-- Order Summary -->
-                <div class="col-md-5 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-cart3"></i>
-                                Ваш заказ
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div th:each="item : ${cart.items}" class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0" th:text="${item.product.name}">Название товара</h6>
-                                    <small class="text-muted">
-                                        <span th:text="${item.quantity}">1</span> ×
-                                        <span th:text="${#numbers.formatDecimal(item.priceAtTime, 0, 2)}">999.00</span> ₽
-                                    </small>
-                                </div>
-                                <div class="text-end">
-                                    <strong th:text="${#numbers.formatDecimal(item.totalPrice, 0, 2)} + ' ₽'">999.00 ₽</strong>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                                <h5 class="mb-0">Итого:</h5>
-                                <h5 class="mb-0 text-primary" th:text="${#numbers.formatDecimal(cart.totalPrice, 0, 2)} + ' ₽'">999.00 ₽</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Order Form -->
-                <div class="col-md-7">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">
-                                <i class="bi bi-person"></i>
-                                Контактная информация
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <form th:action="@{/order}" th:object="${orderRequest}" method="post">
-
-                                <!-- Customer Name -->
-                                <div class="mb-3">
-                                    <label for="customerName" class="form-label">
-                                        <i class="bi bi-person"></i>
-                                        Имя *
-                                    </label>
-                                    <input type="text"
-                                           class="form-control"
-                                           id="customerName"
-                                           th:field="*{customerName}"
-                                           th:classappend="${#fields.hasErrors('customerName')} ? 'is-invalid' : ''"
-                                           placeholder="Введите ваше имя">
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}">
-                                        Имя обязательно для заполнения
-                                    </div>
-                                </div>
-
-                                <!-- Email -->
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">
-                                        <i class="bi bi-envelope"></i>
-                                        Email *
-                                    </label>
-                                    <input type="email"
-                                           class="form-control"
-                                           id="email"
-                                           th:field="*{email}"
-                                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
-                                           placeholder="example@email.com">
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
-                                        Введите корректный email
-                                    </div>
-                                </div>
-
-                                <!-- Phone Number -->
-                                <!-- Phone Number -->
-                                <div class="mb-3">
-                                    <label for="phoneNumber" class="form-label">
-                                        <i class="bi bi-telephone"></i>
-                                        Телефон *
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-primary text-white">+38</span>
-                                        <input type="tel"
-                                               class="form-control"
-                                               id="phoneNumber"
-                                               th:field="*{phoneNumber}"
-                                               th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
-                                               placeholder="066 842 0005"
-                                               maxlength="12">
-                                    </div>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">
-                                        Введите корректный номер телефона
-                                    </div>
-                                    <small class="form-text text-muted">
-                                        Введите номер без кода страны: 066 842 0005
-                                    </small>
-                                </div>
-
-                                <!-- Delivery Method -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="bi bi-truck"></i>
-                                        Способ получения *
-                                    </label>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="card h-100 delivery-option" onclick="selectDelivery('DELIVERY')">
-                                                <div class="card-body text-center">
-                                                    <i class="bi bi-truck fs-2 text-primary mb-2"></i>
-                                                    <h6>Доставка</h6>
-                                                    <input type="radio"
-                                                           th:field="*{deliveryMethod}"
-                                                           value="DELIVERY"
-                                                           class="form-check-input d-none">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="card h-100 delivery-option" onclick="selectDelivery('PICKUP')">
-                                                <div class="card-body text-center">
-                                                    <i class="bi bi-shop fs-2 text-success mb-2"></i>
-                                                    <h6>Самовывоз</h6>
-                                                    <input type="radio"
-                                                           th:field="*{deliveryMethod}"
-                                                           value="PICKUP"
-                                                           class="form-check-input d-none">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('deliveryMethod')}" th:errors="*{deliveryMethod}">
-                                        Выберите способ получения заказа
-                                    </div>
-                                </div>
-
-                                <!-- Notes -->
-                                <div class="mb-4">
-                                    <label for="someNotes" class="form-label">
-                                        <i class="bi bi-chat-dots"></i>
-                                        Комментарий к заказу
-                                    </label>
-                                    <textarea class="form-control"
-                                              id="someNotes"
-                                              th:field="*{someNotes}"
-                                              rows="3"
-                                              placeholder="Дополнительные пожелания или комментарии..."></textarea>
-                                </div>
-
-                                <!-- Submit Buttons -->
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary btn-lg flex-fill">
-                                        <i class="bi bi-check-circle"></i>
-                                        Оформить заказ
-                                    </button>
-                                    <a href="/cart" class="btn btn-outline-secondary btn-lg">
-                                        <i class="bi bi-arrow-left"></i>
-                                        Назад
-                                    </a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Сообщения об ошибках/успехе -->
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${errorMessage}"></span>
         </div>
+
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <!-- Содержимое заказа -->
+        <section class="order-section">
+            <div class="order-container">
+                <!-- Форма заказа -->
+                <div class="order-form">
+                    <div class="order-form-header">
+                        <h2 class="order-form-title">
+                            <i class="fas fa-user"></i>
+                            Контактная информация
+                        </h2>
+                    </div>
+                    <div class="order-form-body">
+                        <form th:action="@{/order}" th:object="${orderRequest}" method="post">
+
+                            <!-- Имя -->
+                            <div class="form-group">
+                                <label for="customerName" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Имя *
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="customerName"
+                                       th:field="*{customerName}"
+                                       th:classappend="${#fields.hasErrors('customerName')} ? 'is-invalid' : ''"
+                                       placeholder="Введите ваше имя">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}">
+                                    Имя обязательно для заполнения
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email *
+                                </label>
+                                <input type="email"
+                                       class="form-control"
+                                       id="email"
+                                       th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                       placeholder="example@email.com">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                    Введите корректный email
+                                </div>
+                            </div>
+
+                            <!-- Телефон -->
+                            <div class="form-group">
+                                <label for="phoneNumber" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Телефон *
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+38</span>
+                                    <input type="tel"
+                                           class="form-control"
+                                           id="phoneNumber"
+                                           th:field="*{phoneNumber}"
+                                           th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                                           placeholder="066 842 0005"
+                                           maxlength="12">
+                                </div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">
+                                    Введите корректный номер телефона
+                                </div>
+                                <small class="form-text">
+                                    Введите номер без кода страны: 066 842 0005
+                                </small>
+                            </div>
+
+                            <!-- Способ доставки -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-truck"></i>
+                                    Способ получения *
+                                </label>
+                                <div class="delivery-options">
+                                    <div class="delivery-option" onclick="selectDelivery('DELIVERY')">
+                                        <i class="fas fa-truck delivery-icon delivery"></i>
+                                        <h6 class="delivery-title">Доставка</h6>
+                                        <input type="radio"
+                                               th:field="*{deliveryMethod}"
+                                               value="DELIVERY"
+                                               class="d-none">
+                                    </div>
+                                    <div class="delivery-option" onclick="selectDelivery('PICKUP')">
+                                        <i class="fas fa-store delivery-icon pickup"></i>
+                                        <h6 class="delivery-title">Самовывоз</h6>
+                                        <input type="radio"
+                                               th:field="*{deliveryMethod}"
+                                               value="PICKUP"
+                                               class="d-none">
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('deliveryMethod')}" th:errors="*{deliveryMethod}">
+                                    Выберите способ получения заказа
+                                </div>
+                            </div>
+
+                            <!-- Комментарий -->
+                            <div class="form-group">
+                                <label for="someNotes" class="form-label">
+                                    <i class="fas fa-comment-dots"></i>
+                                    Комментарий к заказу
+                                </label>
+                                <textarea class="form-control"
+                                          id="someNotes"
+                                          th:field="*{someNotes}"
+                                          rows="3"
+                                          placeholder="Дополнительные пожелания или комментарии..."></textarea>
+                            </div>
+
+                            <!-- Кнопки -->
+                            <div class="order-actions">
+                                <button type="submit" class="btn-submit">
+                                    <i class="fas fa-check-circle"></i>
+                                    Оформить заказ
+                                </button>
+                                <a href="/cart" class="btn-back">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Назад
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Сводка заказа -->
+                <div class="order-summary">
+                    <div class="order-summary-header">
+                        <h3 class="order-summary-title">
+                            <i class="fas fa-shopping-cart"></i>
+                            Ваш заказ
+                        </h3>
+                    </div>
+
+                    <div th:each="item : ${cart.items}" class="cart-item">
+                        <div class="cart-item-image">
+                            <img th:if="${item.product.imageUrl != null and !item.product.imageUrl.isEmpty()}"
+                                 th:src="${item.product.imageUrl}"
+                                 th:alt="${item.product.name}">
+                            <div th:if="${item.product.imageUrl == null or item.product.imageUrl.isEmpty()}"
+                                 class="cart-item-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        </div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-name" th:text="${item.product.name}">Название товара</div>
+                            <div class="cart-item-price">
+                                <span th:text="${item.quantity}">1</span> ×
+                                <span th:text="${#numbers.formatDecimal(item.priceAtTime, 0, 2)}">999.00</span> грн
+                            </div>
+                        </div>
+                        <div class="cart-item-total" th:text="${#numbers.formatDecimal(item.totalPrice, 0, 2)} + ' грн'">999.00 грн</div>
+                    </div>
+
+                    <div class="order-total">
+                        <div class="total-row">
+                            <span class="total-label">Товаров:</span>
+                            <span class="total-value" th:text="${cart.totalQuantity}">3</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Подитог:</span>
+                            <span class="total-value" th:text="${#numbers.formatDecimal(cart.totalPrice, 0, 2)} + ' грн'">450 грн</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Доставка:</span>
+                            <span class="total-value">Рассчитается при оформлении</span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span class="total-label">Итого:</span>
+                            <span class="total-value" th:text="${#numbers.formatDecimal(cart.totalPrice, 0, 2)} + ' грн'">450 грн</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     // Выбор способа доставки
     function selectDelivery(method) {
         // Убираем активный класс со всех карточек
-        document.querySelectorAll('.delivery-option').forEach(card => {
-            card.classList.remove('border-primary', 'bg-light');
+        document.querySelectorAll('.delivery-option').forEach(option => {
+            option.classList.remove('selected');
         });
 
         // Добавляем активный класс к выбранной карточке
-        event.currentTarget.classList.add('border-primary', 'bg-light');
+        event.currentTarget.classList.add('selected');
 
         // Отмечаем соответствующий radio button
         document.querySelector(`input[value="${method}"]`).checked = true;
     }
 
+    // Обработка номера телефона
+    document.getElementById('phoneNumber').addEventListener('input', function(e) {
+        // Убираем все не-цифры
+        let value = e.target.value.replace(/\D/g, '');
+
+        // Ограничиваем длину до 10 цифр
+        if (value.length > 10) {
+            value = value.substring(0, 10);
+        }
+
+        // Форматируем номер: 066 842 0005
+        if (value.length >= 6) {
+            value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
+        } else if (value.length >= 3) {
+            value = value.substring(0, 3) + ' ' + value.substring(3);
+        }
+
+        e.target.value = value;
+    });
+
+    // Перед отправкой формы объединяем код страны с номером
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const phoneInput = document.getElementById('phoneNumber');
+        const phoneValue = phoneInput.value.replace(/\D/g, ''); // Убираем все не-цифры
+
+        if (phoneValue.length > 0 && !phoneValue.startsWith('38')) {
+            // Создаем скрытое поле с полным номером
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'phoneNumber';
+            hiddenInput.value = '+38' + phoneValue;
+
+            // Отключаем оригинальное поле и добавляем скрытое
+            phoneInput.disabled = true;
+            this.appendChild(hiddenInput);
+        }
+    });
+
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
         const checkedRadio = document.querySelector('input[name="deliveryMethod"]:checked');
         if (checkedRadio) {
-            const card = checkedRadio.closest('.delivery-option');
-            if (card) {
-                card.classList.add('border-primary', 'bg-light');
+            const option = checkedRadio.closest('.delivery-option');
+            if (option) {
+                option.classList.add('selected');
             }
         }
     });
