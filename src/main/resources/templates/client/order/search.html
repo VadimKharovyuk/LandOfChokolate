@@ -1,188 +1,827 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Поиск заказов - Land of Chocolate</title>
+  <meta name="description" content="Поиск заказов по номеру телефона - Land of Chocolate">
 
   <!-- Bootstrap CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
+  <style>
+    :root {
+      --primary-dark: #2C2C2C;
+      --primary-medium: #5A5A5A;
+      --primary-light: #FAFAFA;
+      --accent-gold: #D4AF37;
+      --accent-warm: #F5F5F0;
+      --text-primary: #1A1A1A;
+      --text-secondary: #757575;
+      --border-subtle: #E8E8E8;
+      --shadow-soft: rgba(0, 0, 0, 0.04);
+      --shadow-medium: rgba(0, 0, 0, 0.08);
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background-color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    .serif-font {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Основной контент с отступом от навигации */
+    .main-content {
+      padding-top: 120px;
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb-container {
+      padding: 6rem 0 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .breadcrumb {
+      background: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb-item {
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-item.active {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Page Header */
+    .page-header {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Card Styles */
+    .card {
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      background: #FFFFFF;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--accent-warm) 0%, #F8F8F8 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.5rem 2rem;
+    }
+
+    .card-header.primary {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      color: white;
+    }
+
+    .card-header.success {
+      background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+      color: white;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-body {
+      padding: 2rem;
+    }
+
+    /* Search Form */
+    .search-form {
+      background: #FFFFFF;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      color: var(--text-primary);
+      background: #FFFFFF;
+      transition: all 0.3s ease;
+      font-weight: 400;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-dark);
+      box-shadow: 0 0 0 0.2rem rgba(44, 44, 44, 0.1);
+      background: var(--accent-warm);
+    }
+
+    .form-control-lg {
+      padding: 1.25rem 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    .form-text {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Search Button */
+    .btn-search {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      border: none;
+      color: white;
+      padding: 1.25rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .btn-search:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(44, 44, 44, 0.2);
+      color: white;
+    }
+
+    /* Alert Messages */
+    .alert {
+      border: none;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .alert-success {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success-color);
+      border-left: 4px solid var(--success-color);
+    }
+
+    .alert-warning {
+      background: rgba(255, 193, 7, 0.1);
+      color: #856404;
+      border-left: 4px solid var(--warning-color);
+    }
+
+    .alert-danger {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--danger-color);
+      border-left: 4px solid var(--danger-color);
+    }
+
+    .alert-info {
+      background: rgba(23, 162, 184, 0.1);
+      color: var(--info-color);
+      border-left: 4px solid var(--info-color);
+    }
+
+    /* Orders Table */
+    .table {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .table th {
+      background: var(--accent-warm);
+      border-bottom: 2px solid var(--border-subtle);
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 1rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .table td {
+      padding: 1.25rem 1rem;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .table-hover tbody tr:hover {
+      background: var(--accent-warm);
+    }
+
+    .order-number {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 1rem;
+    }
+
+    .order-date {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .order-time {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .order-amount {
+      font-weight: 600;
+      color: var(--success-color);
+      font-size: 1rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.new {
+      background: rgba(255, 193, 7, 0.15);
+      color: #856404;
+    }
+
+    .status-badge.paid {
+      background: rgba(40, 167, 69, 0.15);
+      color: var(--success-color);
+    }
+
+    .status-badge.ready {
+      background: rgba(23, 162, 184, 0.15);
+      color: var(--info-color);
+    }
+
+    .status-badge.completed {
+      background: rgba(40, 167, 69, 0.15);
+      color: var(--success-color);
+    }
+
+    .status-badge.cancelled {
+      background: rgba(220, 53, 69, 0.15);
+      color: var(--danger-color);
+    }
+
+    .delivery-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 16px;
+      font-weight: 500;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .delivery-badge.delivery {
+      background: rgba(23, 162, 184, 0.15);
+      color: var(--info-color);
+    }
+
+    .delivery-badge.pickup {
+      background: rgba(40, 167, 69, 0.15);
+      color: var(--success-color);
+    }
+
+    /* View Button */
+    .btn-view {
+      background: white;
+      color: var(--primary-dark);
+      border: 1px solid var(--border-subtle);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-view:hover {
+      background: var(--primary-dark);
+      color: white;
+      border-color: var(--primary-dark);
+      text-decoration: none;
+    }
+
+    /* Orders Summary */
+    .orders-summary {
+      background: linear-gradient(135deg, var(--accent-warm) 0%, #F8F8F8 100%);
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem;
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .summary-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .empty-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .empty-text {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    /* Info Cards */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .info-card {
+      background: white;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .info-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .info-icon.primary { background: rgba(44, 44, 44, 0.1); color: var(--primary-dark); }
+    .info-icon.success { background: rgba(40, 167, 69, 0.1); color: var(--success-color); }
+    .info-icon.info { background: rgba(23, 162, 184, 0.1); color: var(--info-color); }
+
+    .info-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .info-description {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+
+    .btn-home, .btn-catalog {
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1rem;
+    }
+
+    .btn-home {
+      background: var(--primary-dark);
+      color: white;
+      border: 2px solid var(--primary-dark);
+    }
+
+    .btn-home:hover {
+      background: white;
+      color: var(--primary-dark);
+      text-decoration: none;
+    }
+
+    .btn-catalog {
+      background: white;
+      color: var(--primary-dark);
+      border: 2px solid var(--border-subtle);
+    }
+
+    .btn-catalog:hover {
+      border-color: var(--primary-dark);
+      background: var(--accent-warm);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .main-container {
+        padding: 0 1.5rem;
+      }
+
+      .orders-summary {
+        padding: 1.5rem;
+      }
+
+      .summary-item {
+        margin-bottom: 1rem;
+      }
+
+      .summary-item:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 3rem 0 2rem;
+      }
+
+      .page-title {
+        font-size: 2.5rem;
+      }
+
+      .card-body {
+        padding: 1.5rem;
+      }
+
+      .orders-summary {
+        padding: 1.5rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .info-card {
+        padding: 1.5rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn-home, .btn-catalog {
+        width: 100%;
+        justify-content: center;
+        max-width: 300px;
+      }
+
+      .table-responsive {
+        font-size: 0.85rem;
+      }
+
+      .empty-state {
+        padding: 3rem 1rem;
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-container {
+        padding: 0 1rem;
+      }
+
+      .breadcrumb-container {
+        padding: 5rem 0 1rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .card-header, .card-body {
+        padding: 1rem;
+      }
+
+      .orders-summary {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-light">
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
 
-      <!-- Header -->
-      <div class="text-center mb-4">
-        <h1 class="h2 text-primary">
-          <i class="bi bi-search"></i>
-          Поиск заказов
-        </h1>
-        <p class="text-muted">Введите номер телефона для поиска ваших заказов</p>
+<!-- Основной контент -->
+<div class="main-content">
+  <div class="main-container">
+    <!-- Хлебные крошки -->
+    <nav class="breadcrumb-container" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Поиск заказов</li>
+      </ol>
+    </nav>
+
+    <!-- Заголовок -->
+    <header class="page-header">
+      <h1 class="page-title">
+        <i class="bi bi-search"></i>
+        Поиск заказов
+      </h1>
+      <p class="page-subtitle">Введите номер телефона для поиска ваших заказов</p>
+    </header>
+
+    <!-- Форма поиска -->
+    <div class="card search-form">
+      <div class="card-header primary">
+        <h5 class="card-title">
+          <i class="bi bi-telephone"></i>
+          Поиск по номеру телефона
+        </h5>
       </div>
-
-      <!-- Search Form -->
-      <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">
-            <i class="bi bi-telephone"></i>
-            Поиск по номеру телефона
-          </h5>
-        </div>
-        <div class="card-body">
-          <form th:action="@{/order/info/search}" method="post">
-            <div class="row g-3 align-items-end">
-              <div class="col-md-8">
-                <label for="phone" class="form-label">Номер телефона</label>
-                <input type="tel"
-                       class="form-control form-control-lg"
-                       id="phone"
-                       name="phone"
-                       th:value="${searchPhone}"
-                       placeholder="393933211221"
-                       required>
-                <small class="form-text text-muted">
-                  Введите номер телефона без символов: 393933211221
-                </small>
-              </div>
-              <div class="col-md-4">
-                <button type="submit" class="btn btn-primary btn-lg w-100">
-                  <i class="bi bi-search"></i>
-                  Найти заказы
-                </button>
+      <div class="card-body">
+        <form th:action="@{/order/info/search}" method="post">
+          <div class="row g-4 align-items-end">
+            <div class="col-md-8">
+              <label for="phone" class="form-label">Номер телефона</label>
+              <input type="tel"
+                     class="form-control form-control-lg"
+                     id="phone"
+                     name="phone"
+                     th:value="${searchPhone}"
+                     placeholder="393933211221"
+                     required>
+              <div class="form-text">
+                Введите номер телефона без символов: 393933211221
               </div>
             </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Messages -->
-      <div th:if="${message}"
-           class="alert alert-dismissible fade show"
-           th:classappend="${messageType == 'success'} ? 'alert-success' :
-                                    (${messageType == 'warning'} ? 'alert-warning' : 'alert-danger')"
-           role="alert">
-        <i class="bi"
-           th:classappend="${messageType == 'success'} ? 'bi-check-circle' :
-                                      (${messageType == 'warning'} ? 'bi-exclamation-triangle' : 'bi-x-circle')"></i>
-        <span th:text="${message}">Сообщение</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-
-      <!-- Orders Results -->
-      <div th:if="${orders != null and !#lists.isEmpty(orders)}" class="card shadow-sm mb-4">
-        <div class="card-header bg-success text-white">
-          <h5 class="mb-0">
-            <i class="bi bi-list-ul"></i>
-            Ваши заказы
-          </h5>
-        </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead class="table-light">
-              <tr>
-                <th>№ заказа</th>
-                <th>Дата</th>
-                <th>Статус</th>
-                <th>Сумма</th>
-                <th>Доставка</th>
-                <th class="text-center">Действия</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="order : ${orders}">
-                <td>
-                  <strong class="text-primary" th:text="'№' + ${order.id}">№123</strong>
-                </td>
-                <td>
-                  <div th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy')}">01.01.2024</div>
-                  <small class="text-muted" th:text="${#temporals.format(order.createdAt, 'HH:mm')}">12:00</small>
-                </td>
-                <td>
-                  <th:block th:switch="${order.status.name()}">
-                                                <span th:case="'NEW'" class="badge bg-warning text-dark">
-                                                    <i class="bi bi-clock"></i> Новый
-                                                </span>
-                    <span th:case="'PAID'" class="badge bg-success">
-                                                    <i class="bi bi-check-circle"></i> Оплачен
-                                                </span>
-                    <span th:case="'READY_FOR_PICKUP'" class="badge bg-info">
-                                                    <i class="bi bi-box-seam"></i> Готов
-                                                </span>
-                    <span th:case="'COMPLETED'" class="badge bg-success">
-                                                    <i class="bi bi-check-circle-fill"></i> Завершен
-                                                </span>
-                    <span th:case="'CANCELLED'" class="badge bg-danger">
-                                                    <i class="bi bi-x-circle"></i> Отменен
-                                                </span>
-                    <span th:case="*" class="badge bg-secondary" th:text="${order.status.description}">
-                                                    Неизвестно
-                                                </span>
-                  </th:block>
-                </td>
-                <td>
-                  <strong class="text-success" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' ₽'">
-                    999.00 ₽
-                  </strong>
-                </td>
-                <td>
-                                            <span th:if="${order.deliveryMethod.name() == 'DELIVERY'}" class="badge bg-info">
-                                                <i class="bi bi-truck"></i> Доставка
-                                            </span>
-                  <span th:if="${order.deliveryMethod.name() == 'PICKUP'}" class="badge bg-success">
-                                                <i class="bi bi-shop"></i> Самовывоз
-                                            </span>
-                </td>
-                <td class="text-center">
-                  <a th:href="@{'/order/' + ${order.id}}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-eye"></i>
-                    Подробнее
-                  </a>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+            <div class="col-md-4">
+              <button type="submit" class="btn-search">
+                <i class="bi bi-search"></i>
+                Найти заказы
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
+      </div>
+    </div>
 
-        <!-- Orders Summary -->
-        <div class="card-footer bg-light">
-          <div class="row text-center">
-            <div class="col-md-4">
-              <div class="h5 mb-0 text-primary" th:text="${orders.size()}">3</div>
-              <small class="text-muted">Всего заказов</small>
+    <!-- Сообщения -->
+    <div th:if="${message}"
+         class="alert"
+         th:classappend="${messageType == 'success'} ? 'alert-success' :
+                                (${messageType == 'warning'} ? 'alert-warning' : 'alert-danger')"
+         role="alert">
+      <i class="bi"
+         th:classappend="${messageType == 'success'} ? 'bi-check-circle' :
+                                  (${messageType == 'warning'} ? 'bi-exclamation-triangle' : 'bi-x-circle')"></i>
+      <div>
+        <span th:text="${message}">Сообщение</span>
+      </div>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Результаты поиска -->
+    <div th:if="${orders != null and !#lists.isEmpty(orders)}" class="card">
+      <div class="card-header success">
+        <h5 class="card-title">
+          <i class="bi bi-list-ul"></i>
+          Ваши заказы
+        </h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+              <th>№ заказа</th>
+              <th>Дата</th>
+              <th>Статус</th>
+              <th>Сумма</th>
+              <th>Доставка</th>
+              <th class="text-center">Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+              <td>
+                <div class="order-number" th:text="'№' + ${order.id}">№123</div>
+              </td>
+              <td>
+                <div class="order-date" th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy')}">01.01.2024</div>
+                <div class="order-time" th:text="${#temporals.format(order.createdAt, 'HH:mm')}">12:00</div>
+              </td>
+              <td>
+                <th:block th:switch="${order.status.name()}">
+                                        <span th:case="'NEW'" class="status-badge new">
+                                            <i class="bi bi-clock"></i> Новый
+                                        </span>
+                  <span th:case="'PAID'" class="status-badge paid">
+                                            <i class="bi bi-check-circle"></i> Оплачен
+                                        </span>
+                  <span th:case="'READY_FOR_PICKUP'" class="status-badge ready">
+                                            <i class="bi bi-box-seam"></i> Готов
+                                        </span>
+                  <span th:case="'COMPLETED'" class="status-badge completed">
+                                            <i class="bi bi-check-circle-fill"></i> Завершен
+                                        </span>
+                  <span th:case="'CANCELLED'" class="status-badge cancelled">
+                                            <i class="bi bi-x-circle"></i> Отменен
+                                        </span>
+                  <span th:case="*" class="status-badge" th:text="${order.status.description}">
+                                            Неизвестно
+                                        </span>
+                </th:block>
+              </td>
+              <td>
+                <div class="order-amount" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">
+                  999.00 грн
+                </div>
+              </td>
+              <td>
+                                    <span th:if="${order.deliveryMethod.name() == 'DELIVERY'}" class="delivery-badge delivery">
+                                        <i class="bi bi-truck"></i> Доставка
+                                    </span>
+                <span th:if="${order.deliveryMethod.name() == 'PICKUP'}" class="delivery-badge pickup">
+                                        <i class="bi bi-shop"></i> Самовывоз
+                                    </span>
+              </td>
+              <td class="text-center">
+                <a th:href="@{'/order/' + ${order.id}}" class="btn-view">
+                  <i class="bi bi-eye"></i>
+                  Подробнее
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Сводка заказов -->
+      <div class="orders-summary">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="summary-item">
+              <div class="summary-value text-primary" th:text="${orders.size()}">3</div>
+              <div class="summary-label">Всего заказов</div>
             </div>
-            <div class="col-md-4">
-              <div class="h5 mb-0 text-success">
-                <span th:text="${#aggregates.sum(orders.![totalAmount])}">0</span> ₽
+          </div>
+          <div class="col-md-4">
+            <div class="summary-item">
+              <div class="summary-value text-success">
+                <span th:text="${#aggregates.sum(orders.![totalAmount])}">0</span> грн
               </div>
-              <small class="text-muted">Общая сумма</small>
+              <div class="summary-label">Общая сумма</div>
             </div>
-            <div class="col-md-4">
-              <div class="h5 mb-0 text-info"
+          </div>
+          <div class="col-md-4">
+            <div class="summary-item">
+              <div class="summary-value text-info"
                    th:text="${#temporals.format(orders[0].createdAt, 'dd.MM.yyyy')}">
                 01.01.2024
               </div>
-              <small class="text-muted">Последний заказ</small>
+              <div class="summary-label">Последний заказ</div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- No Orders Message -->
-      <div th:if="${searchPhone != null and (orders == null or #lists.isEmpty(orders))}" class="card shadow-sm border-warning">
-        <div class="card-body text-center py-5">
-          <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-          <h4 class="text-muted">Заказы не найдены</h4>
-          <p class="text-muted mb-4">
-            По номеру <strong th:text="${searchPhone}">393933211221</strong> заказы не найдены.
-          </p>
-          <div class="alert alert-info">
-            <i class="bi bi-lightbulb"></i>
+    <!-- Состояние "Заказы не найдены" -->
+    <div th:if="${searchPhone != null and (orders == null or #lists.isEmpty(orders))}" class="card">
+      <div class="card-body empty-state">
+        <i class="bi bi-inbox empty-icon"></i>
+        <h4 class="empty-title">Заказы не найдены</h4>
+        <p class="empty-text">
+          По номеру <strong th:text="${searchPhone}">393933211221</strong> заказы не найдены.
+        </p>
+        <div class="alert alert-info">
+          <i class="bi bi-lightbulb"></i>
+          <div>
             <strong>Советы:</strong>
             <ul class="list-unstyled mb-0 mt-2">
               <li>• Проверьте правильность номера телефона</li>
@@ -192,62 +831,45 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Info Section -->
-      <div th:if="${orders == null and searchPhone == null}" class="card shadow-sm border-info">
-        <div class="card-body text-center py-5">
-          <i class="bi bi-info-circle display-1 text-info mb-3"></i>
-          <h4 class="text-info">Как найти свои заказы?</h4>
-          <div class="row mt-4">
-            <div class="col-md-4 mb-3">
-              <div class="card h-100 border-0 bg-light">
-                <div class="card-body text-center">
-                  <i class="bi bi-telephone-fill text-primary fs-2 mb-2"></i>
-                  <h6>Введите номер</h6>
-                  <small class="text-muted">Укажите телефон, на который оформляли заказ</small>
-                </div>
-              </div>
+    <!-- Информационная секция -->
+    <div th:if="${orders == null and searchPhone == null}" class="card">
+      <div class="card-body empty-state">
+        <i class="bi bi-info-circle empty-icon text-info"></i>
+        <h4 class="empty-title text-info">Как найти свои заказы?</h4>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-icon info">
+              <i class="bi bi-eye-fill"></i>
             </div>
-            <div class="col-md-4 mb-3">
-              <div class="card h-100 border-0 bg-light">
-                <div class="card-body text-center">
-                  <i class="bi bi-search text-success fs-2 mb-2"></i>
-                  <h6>Найдите заказы</h6>
-                  <small class="text-muted">Система покажет все ваши заказы</small>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 mb-3">
-              <div class="card h-100 border-0 bg-light">
-                <div class="card-body text-center">
-                  <i class="bi bi-eye-fill text-info fs-2 mb-2"></i>
-                  <h6>Отслеживайте</h6>
-                  <small class="text-muted">Следите за статусом и деталями заказа</small>
-                </div>
-              </div>
-            </div>
+            <h6 class="info-title">Отслеживайте</h6>
+            <p class="info-description">Следите за статусом и деталями заказа</p>
           </div>
         </div>
       </div>
+    </div>
 
-
-      <!-- Action Buttons -->
-      <div class="text-center mt-4">
-        <a href="/" class="btn btn-primary">
-          <i class="bi bi-house"></i>
-          На главную
-        </a>
-        <a href="/categories" class="btn btn-outline-primary">
-          <i class="bi bi-shop"></i>
-          Каталог товаров
-        </a>
-      </div>
+    <!-- Кнопки действий -->
+    <div class="action-buttons">
+      <a href="/" class="btn-home">
+        <i class="bi bi-house"></i>
+        На главную
+      </a>
+      <a href="/categories" class="btn-catalog">
+        <i class="bi bi-shop"></i>
+        Каталог товаров
+      </a>
     </div>
   </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
   // Автофокус на поле поиска
@@ -256,6 +878,173 @@
     if (phoneInput && !phoneInput.value) {
       phoneInput.focus();
     }
+
+    // Анимация для карточек информации
+    const infoCards = document.querySelectorAll('.info-card');
+    infoCards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1}s`;
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, index * 100);
+    });
+
+    // Форматирование номера телефона при вводе
+    phoneInput?.addEventListener('input', function(e) {
+      // Убираем все не-цифры
+      let value = e.target.value.replace(/\D/g, '');
+
+      // Ограничиваем длину
+      if (value.length > 12) {
+        value = value.substring(0, 12);
+      }
+
+      e.target.value = value;
+    });
+
+    // Анимация строк таблицы
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach((row, index) => {
+      row.style.animationDelay = `${index * 0.05}s`;
+      row.style.opacity = '0';
+      row.style.transform = 'translateX(-10px)';
+
+      setTimeout(() => {
+        row.style.transition = 'all 0.4s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateX(0)';
+      }, index * 50);
+    });
+
+    // Добавляем пульсацию для кнопки поиска при фокусе на поле
+    phoneInput?.addEventListener('focus', function() {
+      const searchBtn = document.querySelector('.btn-search');
+      searchBtn?.classList.add('pulse-animation');
+    });
+
+    phoneInput?.addEventListener('blur', function() {
+      const searchBtn = document.querySelector('.btn-search');
+      searchBtn?.classList.remove('pulse-animation');
+    });
+  });
+
+  // Функция для показа уведомлений
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.style.minWidth = '300px';
+    notification.innerHTML = `
+                <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 5000);
+  }
+
+  // Обработка отправки формы с загрузкой
+  document.querySelector('form')?.addEventListener('submit', function(e) {
+    const submitBtn = document.querySelector('.btn-search');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Поиск...';
+    submitBtn.disabled = true;
+
+    // Если форма не прошла валидацию, возвращаем кнопку в исходное состояние
+    setTimeout(() => {
+      if (!this.checkValidity()) {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    }, 100);
+  });
+
+  // Добавляем стили для анимации пульсации
+  const style = document.createElement('style');
+  style.textContent = `
+            .pulse-animation {
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(44, 44, 44, 0.4);
+                }
+                70% {
+                    box-shadow: 0 0 0 10px rgba(44, 44, 44, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(44, 44, 44, 0);
+                }
+            }
+
+            .fade-in-up {
+                animation: fadeInUp 0.6s ease forwards;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .slide-in-left {
+                animation: slideInLeft 0.4s ease forwards;
+            }
+
+            @keyframes slideInLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        `;
+  document.head.appendChild(style);
+
+  // Плавное появление элементов при прокрутке
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Наблюдаем за карточками
+  document.querySelectorAll('.card').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'all 0.6s ease';
+    observer.observe(card);
   });
 </script>
 </body>
