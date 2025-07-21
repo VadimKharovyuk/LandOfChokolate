@@ -10,18 +10,14 @@ public class WishlistItemDto {
     private Long id;
     private ProductInfo product;
     private LocalDateTime addedAt;
-    private String addedFromPage;
+
 
     // Конструкторы
     public WishlistItemDto() {
         this.addedAt = LocalDateTime.now();
     }
 
-    public WishlistItemDto(ProductInfo product, String addedFromPage) {
-        this();
-        this.product = product;
-        this.addedFromPage = addedFromPage;
-    }
+
 
     // Вспомогательные методы
     public boolean hasValidProduct() {
@@ -194,7 +190,6 @@ public class WishlistItemDto {
                 "id=" + id +
                 ", product=" + (product != null ? product.getDisplayName() : "null") +
                 ", addedAt=" + addedAt +
-                ", addedFromPage='" + addedFromPage + '\'' +
                 '}';
     }
 }

@@ -1,6 +1,8 @@
 package com.example.landofchokolate.dto.wishlis;
 
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ public class WishlistDto {
     private LocalDateTime updatedAt;
     private boolean isEmpty;
     private int totalItems;
+
 
     // Геттеры и сеттеры для isEmpty
     public boolean isEmpty() {

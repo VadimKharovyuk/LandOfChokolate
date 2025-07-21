@@ -146,50 +146,7 @@ public class CartController {
 
         return ResponseEntity.ok(response);
     }
-//
-//    /**
-//     * Обновление количества товара в корзине (AJAX)
-//     */
-//    @PostMapping("/update")
-//    @ResponseBody
-//    public ResponseEntity<Map<String, Object>> updateQuantity(
-//            @RequestParam Long productId,
-//            @RequestParam Integer quantity,
-//            HttpSession session) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//
-//        try {
-//            cartService.updateQuantity(session, productId, quantity);
-//
-//            // Возвращаем обновленную информацию о корзине
-//            CartDto cart = cartService.getCartDto(session);
-//            Integer cartItemCount = cartService.getCartItemCount(session);
-//            BigDecimal cartTotal = cartService.getCartTotal(session);
-//
-//            // Находим обновленный товар для возврата его новой стоимости
-//            BigDecimal itemTotal = cart.getItems().stream()
-//                    .filter(item -> item.getProduct().getId().equals(productId))
-//                    .map(CartItemDto::getTotalPrice)
-//                    .findFirst()
-//                    .orElse(BigDecimal.ZERO);
-//
-//            response.put("success", true);
-//            response.put("message", "Количество обновлено");
-//            response.put("cartItemCount", cartItemCount);
-//            response.put("cartTotal", cartTotal);
-//            response.put("itemTotal", itemTotal);
-//
-//            log.info("Количество товара {} обновлено до: {}", productId, quantity);
-//
-//        } catch (Exception e) {
-//            response.put("success", false);
-//            response.put("message", e.getMessage());
-//            log.error("Ошибка обновления количества товара: {}", e.getMessage());
-//        }
-//
-//        return ResponseEntity.ok(response);
-//    }
+
 
     /**
      * Удаление товара из корзины (AJAX)

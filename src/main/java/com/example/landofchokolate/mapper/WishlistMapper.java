@@ -64,7 +64,7 @@ public class WishlistMapper {
             WishlistItemDto dto = new WishlistItemDto();
             dto.setId(item.getId());
             dto.setAddedAt(item.getAddedAt());
-            dto.setAddedFromPage(item.getAddedFromPage());
+
 
             // Безопасное преобразование Product
             if (item.getProduct() != null) {
@@ -190,32 +190,7 @@ public class WishlistMapper {
         return dto;
     }
 
-    /**
-     * Преобразовать список товаров в список ProductInfo для быстрого доступа
-     */
-    public List<WishlistItemDto.ProductInfo> toProductInfoList(List<Product> products) {
-        if (products == null || products.isEmpty()) {
-            return new ArrayList<>();
-        }
 
-        return products.stream()
-                .map(this::toProductInfo)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
 
-    /**
-     * Создать минимальный WishlistItemDto для случаев, когда нужно показать только основную информацию
-     */
-    public WishlistItemDto createMinimalItemDto(Product product, LocalDateTime addedAt, String addedFromPage) {
-        WishlistItemDto dto = new WishlistItemDto();
-        dto.setAddedAt(addedAt != null ? addedAt : LocalDateTime.now());
-        dto.setAddedFromPage(addedFromPage != null ? addedFromPage : "unknown");
 
-        if (product != null) {
-            dto.setProduct(toProductInfo(product));
-        }
-
-        return dto;
-    }
 }

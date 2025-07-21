@@ -1,5 +1,7 @@
 package com.example.landofchokolate.controller.client;
 import com.example.landofchokolate.dto.wishlis.WishlistDto;
+import com.example.landofchokolate.model.Wishlist;
+import com.example.landofchokolate.repository.WishlistRepository;
 import com.example.landofchokolate.service.WishlistService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/wishlist")
@@ -20,6 +23,7 @@ import java.util.Map;
 public class WishlistController {
 
     private final WishlistService wishlistService;
+    private final WishlistRepository wishlistRepository;
 
     @GetMapping
     public String wishlistPage(HttpSession session, Model model) {
@@ -35,6 +39,7 @@ public class WishlistController {
         }
     }
 
+
     /**
      * API: Добавить товар в избранное
      */
@@ -42,17 +47,15 @@ public class WishlistController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> addProduct(
             @RequestParam Long productId,
-            @RequestParam(required = false, defaultValue = "unknown") String addedFromPage,
             HttpSession session) {
 
-
-        log.info("Получен запрос на добавление в избранное: productId={}, addedFromPage={}", productId, addedFromPage);
+        log.info("Получен запрос на добавление в избранное: productId={}", productId);
 
 
         Map<String, Object> response = new HashMap<>();
 
         try {
-            wishlistService.addProduct(session, productId, addedFromPage);
+            wishlistService.addProduct(session, productId);
 
             response.put("success", true);
             response.put("message", "Товар добавлен в избранное");
@@ -258,6 +261,195 @@ public class WishlistController {
         } catch (Exception e) {
             log.error("Ошибка при получении данных избранного", e);
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+
+
+
+
+
+
+
+    @GetMapping("/debug")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getDebugInfo(HttpSession session) {
+        try {
+            Map<String, Object> debugInfo = wishlistService.getDebugInfo(session);
+
+            // Добавляем информацию о сессии
+            debugInfo.put("sessionId", session.getId());
+            debugInfo.put("sessionCreationTime", new Date(session.getCreationTime()));
+            debugInfo.put("sessionLastAccessedTime", new Date(session.getLastAccessedTime()));
+            debugInfo.put("sessionMaxInactiveInterval", session.getMaxInactiveInterval());
+
+            return ResponseEntity.ok(debugInfo);
+
+        } catch (Exception e) {
+            log.error("Ошибка при получении отладочной информации", e);
+
+            Map<String, Object> errorInfo = new HashMap<>();
+            errorInfo.put("error", e.getMessage());
+            errorInfo.put("sessionId", session.getId());
+
+            return ResponseEntity.ok(errorInfo);
+        }
+    }
+
+    /**
+     * API: Расширенная отладочная информация
+     */
+    @GetMapping("/debug/enhanced")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getEnhancedDebugInfo(HttpSession session) {
+        try {
+            Map<String, Object> debugInfo = wishlistService.getEnhancedDebugInfo(session);
+
+            // Добавляем информацию о сессии
+            debugInfo.put("sessionId", session.getId());
+            debugInfo.put("sessionCreationTime", new Date(session.getCreationTime()));
+            debugInfo.put("sessionLastAccessedTime", new Date(session.getLastAccessedTime()));
+
+            return ResponseEntity.ok(debugInfo);
+
+        } catch (Exception e) {
+            log.error("Ошибка при получении расширенной отладочной информации", e);
+
+            Map<String, Object> errorInfo = new HashMap<>();
+            errorInfo.put("error", e.getMessage());
+            return ResponseEntity.ok(errorInfo);
+        }
+    }
+
+    /**
+     * API: Принудительное пересоздание wishlist
+     */
+    @PostMapping("/debug/recreate")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> forceRecreateWishlist(HttpSession session) {
+        try {
+            Map<String, Object> result = wishlistService.forceRecreateWishlist(session);
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("Ошибка при пересоздании wishlist", e);
+
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("success", false);
+            errorResult.put("error", e.getMessage());
+
+            return ResponseEntity.ok(errorResult);
+        }
+    }
+
+    /**
+     * API: Поиск потерянных wishlist
+     */
+    @GetMapping("/debug/orphaned")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> findOrphanedWishlists() {
+        try {
+            List<Map<String, Object>> orphaned = wishlistService.findOrphanedWishlists();
+            return ResponseEntity.ok(orphaned);
+
+        } catch (Exception e) {
+            log.error("Ошибка при поиске потерянных wishlist", e);
+            return ResponseEntity.ok(new ArrayList<>());
+        }
+    }
+
+    /**
+     * API: Проверка конкретного UUID в базе данных
+     */
+    @GetMapping("/debug/check-uuid/{uuid}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkUuidInDatabase(@PathVariable String uuid) {
+        try {
+            Map<String, Object> result = new HashMap<>();
+
+            // Проверяем в БД
+            Optional<Wishlist> wishlist = wishlistRepository.findByWishlistUuid(uuid);
+
+            if (wishlist.isPresent()) {
+                Wishlist w = wishlist.get();
+                result.put("found", true);
+                result.put("status", w.getStatus().toString());
+                result.put("createdAt", w.getCreatedAt());
+                result.put("expiresAt", w.getExpiresAt());
+                result.put("itemCount", w.getItems() != null ? w.getItems().size() : 0);
+                result.put("expired", w.getExpiresAt() != null && LocalDateTime.now().isAfter(w.getExpiresAt()));
+
+                // Показываем товары
+                if (w.getItems() != null && !w.getItems().isEmpty()) {
+                    List<Map<String, Object>> items = w.getItems().stream()
+                            .map(item -> {
+                                Map<String, Object> itemInfo = new HashMap<>();
+                                itemInfo.put("productId", item.getProduct() != null ? item.getProduct().getId() : null);
+                                itemInfo.put("addedAt", item.getAddedAt());
+                                return itemInfo;
+                            })
+                            .collect(Collectors.toList());
+                    result.put("items", items);
+                }
+            } else {
+                result.put("found", false);
+                result.put("message", "Wishlist с UUID " + uuid + " не найден в базе данных");
+            }
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("Ошибка при проверке UUID в БД", e);
+
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("error", e.getMessage());
+
+            return ResponseEntity.ok(errorResult);
+        }
+    }
+
+    @PostMapping("/sync-cookie")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> syncCookieWithSession(HttpSession session) {
+        try {
+            Map<String, Object> result = wishlistService.syncCookieWithSession(session);
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("Ошибка при синхронизации cookie", e);
+
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("success", false);
+            errorResult.put("error", e.getMessage());
+
+            return ResponseEntity.ok(errorResult);
+        }
+    }
+
+    /**
+     * API: Обновление cookie для текущего wishlist
+     */
+    @PostMapping("/update-cookie")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateWishlistCookie(HttpSession session) {
+        try {
+            wishlistService.updateWishlistCookie(session);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("message", "Cookie обновлен");
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("Ошибка при обновлении cookie", e);
+
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("success", false);
+            errorResult.put("error", e.getMessage());
+
+            return ResponseEntity.ok(errorResult);
         }
     }
 }

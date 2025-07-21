@@ -16,7 +16,7 @@ public interface WishlistService {
     /**
      * Добавить товар в избранное
      */
-    void addProduct(HttpSession session, Long productId, String addedFromPage);
+    void addProduct(HttpSession session, Long productId);
 
     /**
      * Удалить товар из избранного
@@ -59,4 +59,31 @@ public interface WishlistService {
      * @return Map где ключ - ID товара, значение - находится ли в избранном
      */
     Map<Long, Boolean> checkProductsInWishlist(HttpSession session, List<Long> productIds);
+
+    Map<String, Object> getDebugInfo(HttpSession session);
+
+    /**
+     * Получить расширенную отладочную информацию
+     */
+    Map<String, Object> getEnhancedDebugInfo(HttpSession session);
+
+    /**
+     * Принудительно пересоздать wishlist
+     */
+    Map<String, Object> forceRecreateWishlist(HttpSession session);
+
+    /**
+     * Найти потерянные wishlist
+     */
+    List<Map<String, Object>> findOrphanedWishlists();
+
+    /**
+     * Обновить cookie для текущего wishlist
+     */
+    void updateWishlistCookie(HttpSession session);
+
+    /**
+     * Синхронизировать cookie с сессией
+     */
+    Map<String, Object> syncCookieWithSession(HttpSession session);
 }

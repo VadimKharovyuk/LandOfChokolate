@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -22,10 +23,9 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Уникальный идентификатор для анонимных пользователей
-    @Column(unique = true, length = 36)
-    private String wishlistUuid;
 
+    @Column(name = "wishlist_uuid", unique = true, nullable = false)
+    private String wishlistUuid;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -56,9 +56,14 @@ public class Wishlist {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.lastActivityAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        this.lastActivityAt = now;
+
+        if (this.wishlistUuid == null || this.wishlistUuid.isEmpty()) {
+            this.wishlistUuid = UUID.randomUUID().toString();
+        }
     }
 
     @PreUpdate

@@ -13,7 +13,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
@@ -537,7 +538,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -577,6 +580,7 @@
                         <span class="wishlist-count" th:text="${wishlist.totalItems}">3</span>
                     </div>
 
+                    <!-- Товары в избранном -->
                     <div class="wishlist-item"
                          th:each="item : ${wishlist.items}"
                          th:data-wishlist-item="${item.product.id}">
@@ -606,15 +610,15 @@
 
                             <div class="wishlist-item-info">
                                 <div class="wishlist-item-stock">
-                  <span th:if="${item.product.available}" class="status-available">
-                    <i class="fas fa-check-circle"></i> В наличии
-                  </span>
+                                    <span th:if="${item.product.available}" class="status-available">
+                                        <i class="fas fa-check-circle"></i> В наличии
+                                    </span>
                                     <span th:if="${!item.product.active}" class="status-unavailable">
-                    <i class="fas fa-times-circle"></i> Недоступен
-                  </span>
+                                        <i class="fas fa-times-circle"></i> Недоступен
+                                    </span>
                                     <span th:if="${item.product.active and !item.product.inStock}" class="status-out-of-stock">
-                    <i class="fas fa-exclamation-triangle"></i> Нет в наличии
-                  </span>
+                                        <i class="fas fa-exclamation-triangle"></i> Нет в наличии
+                                    </span>
                                 </div>
 
                                 <div class="wishlist-item-added">
@@ -624,18 +628,20 @@
                             </div>
                         </div>
 
-                        <!-- Действия -->
+                        <!-- Действия с товаром -->
                         <div class="wishlist-item-actions">
                             <button class="btn-add-to-cart"
-                                    th:onclick="'addToCartFromWishlist(' + ${item.product.id} + ')'"
+                                    th:data-product-id="${item.product.id}"
                                     th:disabled="${!item.product.available}"
-                                    th:title="${item.product.available ? 'Добавить в корзину' : 'Товар недоступен'}">
+                                    th:title="${item.product.available ? 'Добавить в корзину' : 'Товар недоступен'}"
+                                    onclick="addToCartFromWishlist(this)">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span th:text="${item.product.available ? 'В корзину' : 'Недоступен'}">В корзину</span>
                             </button>
 
                             <button class="btn-remove-wishlist"
-                                    th:onclick="'removeFromWishlist(' + ${item.product.id} + ')'"
+                                    th:data-product-id="${item.product.id}"
+                                    onclick="removeFromWishlist(this)"
                                     title="Удалить из избранного">
                                 <i class="fas fa-heart-broken"></i>
                             </button>
@@ -654,15 +660,27 @@
 
                     <div class="summary-row">
                         <span class="summary-label">Доступно для покупки:</span>
-                        <span class="summary-value" th:text="${#lists.size(#lists.select(wishlist.items, 'product.available'))}">2</span>
+                        <span class="summary-value">
+                            <th:block th:with="availableCount=0">
+                                <th:block th:each="item : ${wishlist.items}">
+                                    <th:block th:if="${item.product.available}" th:with="availableCount=${availableCount + 1}"></th:block>
+                                </th:block>
+                                <span th:text="${availableCount}">0</span>
+                            </th:block>
+                        </span>
                     </div>
 
                     <div class="summary-row">
                         <span class="summary-label">Общая стоимость:</span>
-                        <span class="summary-value"
-                              th:text="${#aggregates.sum(#lists.select(#lists.select(wishlist.items, 'product.available'), 'product.currentPrice'))} + ' грн'">
-              450 грн
-            </span>
+                        <span class="summary-value">
+                            <th:block th:with="totalPrice=0">
+                                <th:block th:each="item : ${wishlist.items}">
+                                    <th:block th:if="${item.product.available}"
+                                              th:with="totalPrice=${totalPrice + item.product.currentPrice}"></th:block>
+                                </th:block>
+                                <span th:text="${totalPrice + ' грн'}">0 грн</span>
+                            </th:block>
+                        </span>
                     </div>
 
                     <div class="wishlist-actions">
@@ -709,226 +727,84 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Исправленный отдельный скрипт для работы с избранным
+    // Функции для работы с избранным и корзиной
     (function() {
         'use strict';
 
-        console.log('Загрузка wishlist скрипта...');
+        // Функция добавления в корзину из избранного
+        window.addToCartFromWishlist = function(button) {
+            const productId = button.getAttribute('data-product-id');
 
-        // Инициализируем Set для активных запросов, если его нет
-        if (typeof window.activeRequests === 'undefined') {
-            window.activeRequests = new Set();
-        }
-
-        // Главная функция для работы с избранным
-        function toggleFavorite(productId, buttonElement = null) {
-            console.log('toggleFavorite вызвана с ID:', productId);
-
-            // Получаем кнопку избранного
-            let button = buttonElement;
-            if (!button) {
-                // Пытаемся найти кнопку по ID товара
-                button = document.querySelector(`[data-product-id="${productId}"].btn-favorite, [data-product-id="${productId}"].btn-related-favorite`);
-            }
-
-            if (!button) {
-                console.error('Кнопка избранного не найдена для товара:', productId);
-                return;
-            }
-
-            // Валидируем ID товара
             if (!productId || isNaN(productId)) {
                 console.error('Некорректный ID товара:', productId);
                 return;
             }
 
-            // Проверяем, нет ли уже активного запроса для этого товара
-            const requestKey = `wishlist-${productId}`;
-            if (window.activeRequests.has(requestKey)) {
-                console.log('Запрос избранного уже выполняется для товара:', productId);
-                return;
-            }
-
-            const icon = button.querySelector('i');
-            const textSpan = button.querySelector('span');
-            const isCurrentlyInWishlist = button.classList.contains('active');
-
-            console.log('Текущее состояние в избранном:', isCurrentlyInWishlist);
-
-            // Блокируем кнопку на время запроса
+            // Блокируем кнопку
+            const originalText = button.innerHTML;
             button.disabled = true;
-            window.activeRequests.add(requestKey);
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Добавление...';
 
-            // Показываем состояние загрузки
-            const originalIconClass = icon ? icon.className : '';
-            const originalText = textSpan ? textSpan.textContent : '';
-
-            if (icon) {
-                icon.className = 'fas fa-spinner fa-spin';
-            }
-            if (textSpan) {
-                textSpan.textContent = isCurrentlyInWishlist ? 'Удаление...' : 'Добавление...';
-            }
-
-            // Определяем действие (добавить или удалить)
-            const action = isCurrentlyInWishlist ? 'remove' : 'add';
-            const url = `/wishlist/${action}`;
-
-            console.log(`Выполняем действие: ${action} для товара ${productId}`);
-
-            // Определяем источник добавления
-            const currentPage = window.location.pathname;
-            let addedFromPage = 'unknown';
-
-            if (currentPage.includes('/products/')) {
-                addedFromPage = 'product-detail';
-            } else if (currentPage.includes('/categories')) {
-                addedFromPage = 'catalog';
-            } else if (currentPage === '/') {
-                addedFromPage = 'homepage';
-            }
-
-            // Подготавливаем данные для отправки
-            const requestBody = `productId=${encodeURIComponent(productId)}${action === 'add' ? `&addedFromPage=${encodeURIComponent(addedFromPage)}` : ''}`;
-
-            console.log('Отправляем запрос:', { url, body: requestBody });
-
-            // Выполняем запрос
-            fetch(url, {
+            fetch('/cart/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: requestBody
+                body: `productId=${encodeURIComponent(productId)}&quantity=1`
             })
                 .then(response => {
-                    console.log('Ответ сервера:', response.status, response.statusText);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Данные ответа:', data);
-
                     if (data.success) {
-                        // Обновляем визуальное состояние кнопки
-                        if (action === 'add') {
-                            button.classList.add('active');
-                            if (icon) {
-                                icon.className = 'fas fa-heart';
-                            }
-                            button.title = 'Удалить из избранного';
-                            if (textSpan) {
-                                textSpan.textContent = 'В избранном';
-                            }
-                        } else {
-                            button.classList.remove('active');
-                            if (icon) {
-                                icon.className = 'far fa-heart';
-                            }
-                            button.title = 'В избранное';
-                            if (textSpan) {
-                                textSpan.textContent = 'В избранное';
-                            }
-                        }
+                        showNotification(data.message, 'success');
+                        updateCartCounter(data.cartItemCount);
 
-                        // Обновляем счетчик избранного в навигации
-                        updateWishlistCounter(data.itemCount);
-
-                        // Показываем уведомление
-                        showWishlistNotification(data.message, 'success');
-
-                        // Анимация сердечка
-                        if (action === 'add' && icon) {
-                            icon.style.animation = 'heartbeat 0.6s ease';
-                            setTimeout(() => {
-                                icon.style.animation = '';
-                            }, 600);
-                        }
-
+                        button.innerHTML = '<i class="fas fa-check"></i> Добавлено!';
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                        }, 2000);
                     } else {
-                        // В случае ошибки возвращаем исходное состояние
-                        if (icon) {
-                            icon.className = originalIconClass;
-                        }
-                        if (textSpan) {
-                            textSpan.textContent = originalText;
-                        }
-                        showWishlistNotification(data.message || 'Произошла ошибка', 'error');
+                        throw new Error(data.message || 'Ошибка при добавлении в корзину');
                     }
                 })
                 .catch(error => {
-                    console.error('Ошибка при работе с избранным:', error);
-
-                    // Возвращаем исходное состояние
-                    if (icon) {
-                        icon.className = originalIconClass;
-                    }
-                    if (textSpan) {
-                        textSpan.textContent = originalText;
-                    }
-                    showWishlistNotification('Произошла ошибка. Попробуйте позже.', 'error');
-                })
-                .finally(() => {
-                    // Разблокируем кнопку
+                    console.error('Ошибка при добавлении в корзину:', error);
+                    showNotification('Ошибка при добавлении в корзину: ' + error.message, 'error');
+                    button.innerHTML = originalText;
                     button.disabled = false;
-                    window.activeRequests.delete(requestKey);
-                    console.log('Запрос завершен для товара:', productId);
                 });
-        }
+        };
 
-        // Функция для обновления счетчика избранного в навигации
-        function updateWishlistCounter(count) {
-            const wishlistCounters = document.querySelectorAll('.wishlist-count, .nav-wishlist-count, [data-wishlist-count]');
+        // Функция удаления из избранного
+        window.removeFromWishlist = function(button) {
+            const productId = button.getAttribute('data-product-id');
 
-            wishlistCounters.forEach(counter => {
-                counter.textContent = count;
-
-                if (count > 0) {
-                    counter.style.display = 'inline-block';
-                    counter.style.opacity = '1';
-                } else {
-                    counter.style.display = 'none';
-                }
-            });
-
-            console.log('Обновлен счетчик избранного:', count);
-        }
-
-        // Функция для проверки статуса товаров в избранном при загрузке страницы
-        function checkWishlistStatus() {
-            const wishlistButtons = document.querySelectorAll('.btn-favorite[data-product-id], .btn-related-favorite[data-product-id]');
-            if (wishlistButtons.length === 0) {
-                console.log('Кнопки избранного не найдены');
+            if (!productId || isNaN(productId)) {
+                console.error('Некорректный ID товара:', productId);
                 return;
             }
 
-            // Собираем все ID товаров на странице
-            const productIds = [];
-            wishlistButtons.forEach(button => {
-                const productId = button.getAttribute('data-product-id');
-                if (productId && !isNaN(productId)) {
-                    productIds.push(parseInt(productId));
-                }
-            });
-
-            if (productIds.length === 0) {
-                console.log('ID товаров не найдены');
+            if (!confirm('Удалить товар из избранного?')) {
                 return;
             }
 
-            console.log('Проверяем статус для товаров:', productIds);
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            // Проверяем статус всех товаров одним запросом
-            fetch('/wishlist/check-multiple', {
+            fetch('/wishlist/remove', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify(productIds)
+                body: `productId=${encodeURIComponent(productId)}`
             })
                 .then(response => {
                     if (!response.ok) {
@@ -937,51 +813,49 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Статус товаров в избранном:', data);
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        updateWishlistCounter(data.itemCount);
 
-                    if (data.success && data.results) {
-                        // Обновляем состояние всех кнопок
-                        Object.keys(data.results).forEach(productId => {
-                            const isInWishlist = data.results[productId];
-                            const button = document.querySelector(`[data-product-id="${productId}"].btn-favorite, [data-product-id="${productId}"].btn-related-favorite`);
+                        // Удаляем элемент из DOM с анимацией
+                        const wishlistItem = button.closest('.wishlist-item');
+                        if (wishlistItem) {
+                            wishlistItem.style.transition = 'all 0.3s ease';
+                            wishlistItem.style.opacity = '0';
+                            wishlistItem.style.transform = 'translateX(100%)';
 
-                            if (button) {
-                                const icon = button.querySelector('i');
-                                const textSpan = button.querySelector('span');
+                            setTimeout(() => {
+                                wishlistItem.remove();
 
-                                if (isInWishlist) {
-                                    button.classList.add('active');
-                                    if (icon) {
-                                        icon.className = 'fas fa-heart';
-                                    }
-                                    button.title = 'Удалить из избранного';
-                                    if (textSpan) {
-                                        textSpan.textContent = 'В избранном';
-                                    }
-                                } else {
-                                    button.classList.remove('active');
-                                    if (icon) {
-                                        icon.className = 'far fa-heart';
-                                    }
-                                    button.title = 'В избранное';
-                                    if (textSpan) {
-                                        textSpan.textContent = 'В избранное';
-                                    }
+                                // Проверяем, остались ли товары
+                                const remainingItems = document.querySelectorAll('.wishlist-item');
+                                if (remainingItems.length === 0) {
+                                    window.location.reload();
                                 }
-                            }
-                        });
+                            }, 300);
+                        }
+                    } else {
+                        throw new Error(data.message || 'Ошибка при удалении из избранного');
                     }
                 })
                 .catch(error => {
-                    console.error('Ошибка при проверке статуса избранного:', error);
+                    console.error('Ошибка при удалении из избранного:', error);
+                    showNotification('Ошибка при удалении из избранного: ' + error.message, 'error');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
                 });
-        }
+        };
 
-        // Функция для получения текущего количества товаров в избранном
-        function getWishlistCount() {
-            fetch('/wishlist/count', {
-                method: 'GET',
+        // Функция очистки избранного
+        window.clearWishlist = function() {
+            if (!confirm('Очистить все избранное? Это действие нельзя отменить.')) {
+                return;
+            }
+
+            fetch('/wishlist/clear', {
+                method: 'POST',
                 headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
@@ -993,31 +867,56 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        updateWishlistCounter(data.itemCount);
+                        showNotification(data.message, 'success');
+                        updateWishlistCounter(0);
+
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        throw new Error(data.message || 'Ошибка при очистке избранного');
                     }
                 })
                 .catch(error => {
-                    console.error('Ошибка при получении количества товаров в избранном:', error);
+                    console.error('Ошибка при очистке избранного:', error);
+                    showNotification('Ошибка при очистке избранного: ' + error.message, 'error');
                 });
+        };
+
+        // Функция обновления счетчика корзины
+        function updateCartCounter(count) {
+            const cartCounters = document.querySelectorAll('.cart-count, .nav-cart-count, [data-cart-count]');
+            cartCounters.forEach(counter => {
+                counter.textContent = count;
+                counter.style.display = count > 0 ? 'inline-block' : 'none';
+            });
         }
 
-        // Функция показа уведомлений для избранного
-        function showWishlistNotification(message, type = 'success') {
-            // Удаляем существующие уведомления избранного
-            const existingNotifications = document.querySelectorAll('.wishlist-notification');
+        // Функция обновления счетчика избранного
+        function updateWishlistCounter(count) {
+            const wishlistCounters = document.querySelectorAll('.wishlist-count, .nav-wishlist-count, [data-wishlist-count]');
+            wishlistCounters.forEach(counter => {
+                counter.textContent = count;
+                counter.style.display = count > 0 ? 'inline-block' : 'none';
+            });
+        }
+
+        // Функция показа уведомлений
+        function showNotification(message, type = 'success') {
+            const existingNotifications = document.querySelectorAll('.notification');
             existingNotifications.forEach(notification => notification.remove());
 
             const notification = document.createElement('div');
-            notification.className = `wishlist-notification notification ${type}`;
+            notification.className = `notification ${type}`;
 
-            const icon = type === 'success' ? 'heart' : 'exclamation-triangle';
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+            const bgColor = type === 'success' ? '#28a745' : '#dc3545';
 
             notification.innerHTML = `
             <i class="fas fa-${icon}"></i>
             <span>${message}</span>
         `;
 
-            // Добавляем стили для уведомления
             notification.style.cssText = `
             position: fixed;
             top: 20px;
@@ -1028,198 +927,47 @@
             border-radius: 4px;
             color: #FFFFFF;
             font-weight: 500;
-            animation: slideIn 0.3s ease;
-            background: ${type === 'success' ? '#e91e63' : '#dc3545'};
+            background: ${bgColor};
             display: flex;
             align-items: center;
             gap: 0.5rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.3s ease;
         `;
 
             document.body.appendChild(notification);
 
-            // Автоматически удаляем уведомление через 4 секунды
             setTimeout(() => {
                 if (notification.parentNode) {
-                    notification.style.animation = 'slideOut 0.3s ease';
+                    notification.style.animation = 'slideOutRight 0.3s ease';
                     setTimeout(() => {
                         if (notification.parentNode) {
                             notification.remove();
                         }
                     }, 300);
                 }
-            }, 4000);
+            }, 3000);
         }
 
-        // Обработчик клика по кнопке избранного
-        function handleWishlistClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const productId = parseInt(this.getAttribute('data-product-id'));
-            console.log('Клик по кнопке избранного, ID товара:', productId);
-
-            if (productId && !isNaN(productId)) {
-                toggleFavorite(productId, this);
-            } else {
-                console.error('Некорректный ID товара:', this.getAttribute('data-product-id'));
+        // CSS анимации
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
             }
-        }
-
-        // Инициализация при загрузке страницы
-        function initWishlist() {
-            console.log('Инициализация wishlist...');
-
-            // Инициализация кнопок избранного
-            const wishlistButtons = document.querySelectorAll('.btn-favorite[data-product-id], .btn-related-favorite[data-product-id]');
-            console.log('Найдено кнопок избранного:', wishlistButtons.length);
-
-            wishlistButtons.forEach((button, index) => {
-                const productId = button.getAttribute('data-product-id');
-                console.log(`Кнопка ${index + 1}: ID=${productId}, класс=${button.className}`);
-
-                // Удаляем старые обработчики если есть
-                button.removeEventListener('click', handleWishlistClick);
-
-                // Добавляем новый обработчик
-                button.addEventListener('click', handleWishlistClick);
-            });
-
-            // Проверяем статус товаров в избранном
-            checkWishlistStatus();
-
-            // Получаем актуальное количество товаров в избранном
-            getWishlistCount();
-
-            // Добавляем CSS анимации если их нет
-            if (!document.querySelector('#wishlist-styles')) {
-                const style = document.createElement('style');
-                style.id = 'wishlist-styles';
-                style.textContent = `
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-
-                @keyframes slideOut {
-                    from {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                    to {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                }
-
-                @keyframes heartbeat {
-                    0% { transform: scale(1); }
-                    25% { transform: scale(1.2); }
-                    50% { transform: scale(1); }
-                    75% { transform: scale(1.1); }
-                    100% { transform: scale(1); }
-                }
-
-                .btn-favorite, .btn-related-favorite {
-                    transition: all 0.2s ease;
-                    background: none;
-                    border: 1px solid #E8E8E8;
-                    border-radius: 4px;
-                    padding: 0.75rem 1.5rem;
-                    color: #757575;
-                    font-size: 0.9rem;
-                    font-weight: 500;
-                    cursor: pointer;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    text-decoration: none;
-                    min-height: 44px;
-                }
-
-                .btn-favorite:hover, .btn-related-favorite:hover {
-                    border-color: #e91e63;
-                    color: #e91e63;
-                    transform: translateY(-1px);
-                    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.2);
-                }
-
-                .btn-favorite:disabled, .btn-related-favorite:disabled {
-                    opacity: 0.6;
-                    cursor: not-allowed;
-                    transform: none;
-                    box-shadow: none;
-                }
-
-                .btn-favorite.active, .btn-related-favorite.active {
-                    background: #e91e63;
-                    border-color: #e91e63;
-                    color: white;
-                }
-
-                .btn-favorite.active:hover, .btn-related-favorite.active:hover {
-                    background: #c2185b;
-                    border-color: #c2185b;
-                }
-
-                .btn-favorite.active i, .btn-related-favorite.active i {
-                    color: white;
-                }
-
-                .btn-favorite i, .btn-related-favorite i {
-                    font-size: 1.1rem;
-                    transition: all 0.2s ease;
-                }
-
-                .btn-favorite:hover i, .btn-related-favorite:hover i {
-                    transform: scale(1.1);
-                }
-
-                .btn-favorite .fa-spinner, .btn-related-favorite .fa-spinner {
-                    animation: spin 1s linear infinite;
-                }
-
-                @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-            `;
-                document.head.appendChild(style);
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
             }
-
-            console.log('Инициализация wishlist завершена');
+        `;
+            document.head.appendChild(style);
         }
-
-        // Экспортируем функции в глобальную область
-        window.wishlistFunctions = window.wishlistFunctions || {};
-        Object.assign(window.wishlistFunctions, {
-            toggleFavorite,
-            updateWishlistCounter,
-            checkWishlistStatus,
-            getWishlistCount,
-            showWishlistNotification,
-            initWishlist
-        });
-
-        // Автоматическая инициализация при загрузке DOM
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initWishlist);
-        } else {
-            initWishlist();
-        }
-
-        // Реинициализация при динамическом добавлении контента
-        window.addEventListener('wishlist:reinit', initWishlist);
-
-        console.log('Wishlist скрипт загружен');
 
     })();
 </script>
 
 </body>
+</html>

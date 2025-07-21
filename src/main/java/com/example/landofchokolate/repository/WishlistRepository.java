@@ -66,12 +66,16 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
      */
     void deleteByStatusAndExpiresAtBefore(WishlistStatus status, LocalDateTime beforeTime);
 
+
+
+
     /**
-     * Найти wishlist, содержащие определенный товар
+     * Проверить существование wishlist по UUID
      */
-    @Query("SELECT DISTINCT w FROM Wishlist w JOIN w.items i " +
-            "WHERE i.product.id = :productId AND w.status = :status")
-    List<Wishlist> findByProductIdAndStatus(
-            @Param("productId") Long productId,
-            @Param("status") WishlistStatus status);
+    boolean existsByWishlistUuid(String wishlistUuid);
+
+
+
+
+    Optional<Wishlist> findByWishlistUuid(String cookieUuid);
 }

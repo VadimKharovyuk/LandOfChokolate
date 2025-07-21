@@ -838,10 +838,16 @@
                             <span th:text="${product.inStock} ? 'Добавить в корзину' : 'Нет в наличии'">Добавить в корзину</span>
                         </button>
 
-                        <button class="btn-favorite" onclick="toggleFavorite()" title="Добавить в избранное">
+                        <!-- Обновленная кнопка избранного -->
+                        <button class="btn-favorite"
+                                th:data-product-id="${product.id}"
+                                th:title="'Добавить товар ' + ${product.name} + ' в избранное'">
                             <i class="far fa-heart"></i>
+                            <div class="spinner"></div>
                         </button>
                     </div>
+
+                    <script src="/js/category/toggleFavorite.js"></script>
 
                     <!-- Додаткова інформація -->
                     <div class="product-extra-info">
@@ -940,11 +946,11 @@
                         </button>
 
 
-                        <button class="btn-related-favorite"
-                                th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'"
-                                title="В избранное">
-                            <i class="far fa-heart"></i>
-                        </button>
+<!--                        <button class="btn-related-favorite"-->
+<!--                                th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'"-->
+<!--                                title="В избранное">-->
+<!--                            <i class="far fa-heart"></i>-->
+<!--                        </button>-->
                     </div>
                 </div>
             </div>
