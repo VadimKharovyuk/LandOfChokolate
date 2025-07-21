@@ -5,7 +5,6 @@ import lombok.*;
 import jakarta.validation.constraints.*;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateOrderRequest {
@@ -17,8 +16,9 @@ public class CreateOrderRequest {
     @NotBlank(message = "Email обязателен для заполнения")
     private String email;
 
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Некорректный номер телефона")
-    @NotBlank(message = "Номер телефона обязателен")
+    // Временно упрощенная валидация для отладки
+//    @Pattern(regexp = "^(\\+38)?\\d{10}$", message = "Некорректный номер телефона")
+//    @NotBlank(message = "Номер телефона обязателен")
     private String phoneNumber;
 
     @NotNull(message = "Способ доставки обязателен")

@@ -115,20 +115,28 @@
                                 </div>
 
                                 <!-- Phone Number -->
+                                <!-- Phone Number -->
                                 <div class="mb-3">
                                     <label for="phoneNumber" class="form-label">
                                         <i class="bi bi-telephone"></i>
                                         Телефон *
                                     </label>
-                                    <input type="tel"
-                                           class="form-control"
-                                           id="phoneNumber"
-                                           th:field="*{phoneNumber}"
-                                           th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
-                                           placeholder="+7 (999) 123-45-67">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-primary text-white">+38</span>
+                                        <input type="tel"
+                                               class="form-control"
+                                               id="phoneNumber"
+                                               th:field="*{phoneNumber}"
+                                               th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"
+                                               placeholder="066 842 0005"
+                                               maxlength="12">
+                                    </div>
                                     <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">
                                         Введите корректный номер телефона
                                     </div>
+                                    <small class="form-text text-muted">
+                                        Введите номер без кода страны: 066 842 0005
+                                    </small>
                                 </div>
 
                                 <!-- Delivery Method -->

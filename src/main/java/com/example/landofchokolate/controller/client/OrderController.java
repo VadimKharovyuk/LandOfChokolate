@@ -31,28 +31,26 @@ public class OrderController {
 
     @GetMapping
     public String showOrderForm(Model model, HttpSession session) {
-        // Проверяем, что корзина не пуста
         if (cartService.isCartEmpty(session)) {
             return "redirect:/cart";
         }
 
         CartDto cartDto = cartService.getCartDto(session);
         model.addAttribute("cart", cartDto);
+
         model.addAttribute("orderRequest", new CreateOrderRequest());
 
         return "client/order/form";
     }
 
-
     @PostMapping
-    public String createOrder(@Valid @ModelAttribute CreateOrderRequest orderRequest,
+    public String createOrder(@Valid @ModelAttribute("orderRequest") CreateOrderRequest orderRequest,
                               BindingResult bindingResult,
                               Model model,
                               HttpSession session,
                               RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            // Если ошибки валидации - показываем форму снова
             CartDto cartDto = cartService.getCartDto(session);
             model.addAttribute("cart", cartDto);
             return "client/order/form";
