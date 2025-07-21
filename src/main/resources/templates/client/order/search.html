@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поиск заказов - Land of Chocolate</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h1 class="h2 text-primary">
+          <i class="bi bi-search"></i>
+          Поиск заказов
+        </h1>
+        <p class="text-muted">Введите номер телефона для поиска ваших заказов</p>
+      </div>
+
+      <!-- Search Form -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-telephone"></i>
+            Поиск по номеру телефона
+          </h5>
+        </div>
+        <div class="card-body">
+          <form th:action="@{/order/info/search}" method="post">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-8">
+                <label for="phone" class="form-label">Номер телефона</label>
+                <input type="tel"
+                       class="form-control form-control-lg"
+                       id="phone"
+                       name="phone"
+                       th:value="${searchPhone}"
+                       placeholder="393933211221"
+                       required>
+                <small class="form-text text-muted">
+                  Введите номер телефона без символов: 393933211221
+                </small>
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                  <i class="bi bi-search"></i>
+                  Найти заказы
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div th:if="${message}"
+           class="alert alert-dismissible fade show"
+           th:classappend="${messageType == 'success'} ? 'alert-success' :
+                                    (${messageType == 'warning'} ? 'alert-warning' : 'alert-danger')"
+           role="alert">
+        <i class="bi"
+           th:classappend="${messageType == 'success'} ? 'bi-check-circle' :
+                                      (${messageType == 'warning'} ? 'bi-exclamation-triangle' : 'bi-x-circle')"></i>
+        <span th:text="${message}">Сообщение</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+      <!-- Orders Results -->
+      <div th:if="${orders != null and !#lists.isEmpty(orders)}" class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-list-ul"></i>
+            Ваши заказы
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+              <tr>
+                <th>№ заказа</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>Сумма</th>
+                <th>Доставка</th>
+                <th class="text-center">Действия</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="order : ${orders}">
+                <td>
+                  <strong class="text-primary" th:text="'№' + ${order.id}">№123</strong>
+                </td>
+                <td>
+                  <div th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy')}">01.01.2024</div>
+                  <small class="text-muted" th:text="${#temporals.format(order.createdAt, 'HH:mm')}">12:00</small>
+                </td>
+                <td>
+                  <th:block th:switch="${order.status.name()}">
+                                                <span th:case="'NEW'" class="badge bg-warning text-dark">
+                                                    <i class="bi bi-clock"></i> Новый
+                                                </span>
+                    <span th:case="'PAID'" class="badge bg-success">
+                                                    <i class="bi bi-check-circle"></i> Оплачен
+                                                </span>
+                    <span th:case="'READY_FOR_PICKUP'" class="badge bg-info">
+                                                    <i class="bi bi-box-seam"></i> Готов
+                                                </span>
+                    <span th:case="'COMPLETED'" class="badge bg-success">
+                                                    <i class="bi bi-check-circle-fill"></i> Завершен
+                                                </span>
+                    <span th:case="'CANCELLED'" class="badge bg-danger">
+                                                    <i class="bi bi-x-circle"></i> Отменен
+                                                </span>
+                    <span th:case="*" class="badge bg-secondary" th:text="${order.status.description}">
+                                                    Неизвестно
+                                                </span>
+                  </th:block>
+                </td>
+                <td>
+                  <strong class="text-success" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' ₽'">
+                    999.00 ₽
+                  </strong>
+                </td>
+                <td>
+                                            <span th:if="${order.deliveryMethod.name() == 'DELIVERY'}" class="badge bg-info">
+                                                <i class="bi bi-truck"></i> Доставка
+                                            </span>
+                  <span th:if="${order.deliveryMethod.name() == 'PICKUP'}" class="badge bg-success">
+                                                <i class="bi bi-shop"></i> Самовывоз
+                                            </span>
+                </td>
+                <td class="text-center">
+                  <a th:href="@{'/order/' + ${order.id}}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-eye"></i>
+                    Подробнее
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Orders Summary -->
+        <div class="card-footer bg-light">
+          <div class="row text-center">
+            <div class="col-md-4">
+              <div class="h5 mb-0 text-primary" th:text="${orders.size()}">3</div>
+              <small class="text-muted">Всего заказов</small>
+            </div>
+            <div class="col-md-4">
+              <div class="h5 mb-0 text-success">
+                <span th:text="${#aggregates.sum(orders.![totalAmount])}">0</span> ₽
+              </div>
+              <small class="text-muted">Общая сумма</small>
+            </div>
+            <div class="col-md-4">
+              <div class="h5 mb-0 text-info"
+                   th:text="${#temporals.format(orders[0].createdAt, 'dd.MM.yyyy')}">
+                01.01.2024
+              </div>
+              <small class="text-muted">Последний заказ</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Orders Message -->
+      <div th:if="${searchPhone != null and (orders == null or #lists.isEmpty(orders))}" class="card shadow-sm border-warning">
+        <div class="card-body text-center py-5">
+          <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+          <h4 class="text-muted">Заказы не найдены</h4>
+          <p class="text-muted mb-4">
+            По номеру <strong th:text="${searchPhone}">393933211221</strong> заказы не найдены.
+          </p>
+          <div class="alert alert-info">
+            <i class="bi bi-lightbulb"></i>
+            <strong>Советы:</strong>
+            <ul class="list-unstyled mb-0 mt-2">
+              <li>• Проверьте правильность номера телефона</li>
+              <li>• Убедитесь, что заказ был оформлен на этот номер</li>
+              <li>• Попробуйте ввести номер в другом формате</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div th:if="${orders == null and searchPhone == null}" class="card shadow-sm border-info">
+        <div class="card-body text-center py-5">
+          <i class="bi bi-info-circle display-1 text-info mb-3"></i>
+          <h4 class="text-info">Как найти свои заказы?</h4>
+          <div class="row mt-4">
+            <div class="col-md-4 mb-3">
+              <div class="card h-100 border-0 bg-light">
+                <div class="card-body text-center">
+                  <i class="bi bi-telephone-fill text-primary fs-2 mb-2"></i>
+                  <h6>Введите номер</h6>
+                  <small class="text-muted">Укажите телефон, на который оформляли заказ</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="card h-100 border-0 bg-light">
+                <div class="card-body text-center">
+                  <i class="bi bi-search text-success fs-2 mb-2"></i>
+                  <h6>Найдите заказы</h6>
+                  <small class="text-muted">Система покажет все ваши заказы</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="card h-100 border-0 bg-light">
+                <div class="card-body text-center">
+                  <i class="bi bi-eye-fill text-info fs-2 mb-2"></i>
+                  <h6>Отслеживайте</h6>
+                  <small class="text-muted">Следите за статусом и деталями заказа</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="text-center mt-4">
+        <a href="/" class="btn btn-primary">
+          <i class="bi bi-house"></i>
+          На главную
+        </a>
+        <a href="/catalog" class="btn btn-outline-primary">
+          <i class="bi bi-shop"></i>
+          Каталог товаров
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Автофокус на поле поиска
+  document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput && !phoneInput.value) {
+      phoneInput.focus();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказ №<span th:text="${orderDTO.id}">1</span> - Land of Chocolate</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Success Message -->
+            <div class="alert alert-success text-center mb-4" th:if="${orderDTO.status.name() == 'NEW'}">
+                <i class="bi bi-check-circle-fill fs-2 text-success mb-2"></i>
+                <h4>Заказ успешно создан!</h4>
+                <p class="mb-0">Номер вашего заказа: <strong th:text="${orderDTO.id}">1</strong></p>
+            </div>
+
+            <!-- Order Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="bi bi-receipt"></i>
+                            Заказ №<span th:text="${orderDTO.id}">1</span>
+                        </h4>
+                        <th:block th:switch="${orderDTO.status.name()}">
+                            <span th:case="'NEW'" class="badge fs-6 bg-warning text-dark" th:text="${orderDTO.status.description}">Новый заказ</span>
+                            <span th:case="'PAID'" class="badge fs-6 bg-success" th:text="${orderDTO.status.description}">Оплачен</span>
+                            <span th:case="'READY_FOR_PICKUP'" class="badge fs-6 bg-info" th:text="${orderDTO.status.description}">Готов к выдаче</span>
+                            <span th:case="'COMPLETED'" class="badge fs-6 bg-success" th:text="${orderDTO.status.description}">Завершен</span>
+                            <span th:case="'CANCELLED'" class="badge fs-6 bg-danger" th:text="${orderDTO.status.description}">Отменен</span>
+                            <span th:case="*" class="badge fs-6 bg-secondary" th:text="${orderDTO.status.description}">Неизвестно</span>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-calendar3"></i> Дата заказа:</h6>
+                            <p th:text="${#temporals.format(orderDTO.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</p>
+
+                            <h6><i class="bi bi-person"></i> Покупатель:</h6>
+                            <p th:text="${orderDTO.customerName}">Имя покупателя</p>
+
+                            <h6><i class="bi bi-envelope"></i> Email:</h6>
+                            <p th:text="${orderDTO.email}">email@example.com</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="bi bi-telephone"></i> Телефон:</h6>
+                            <p th:text="${orderDTO.phoneNumber}">+7 999 123 45 67</p>
+
+                            <h6><i class="bi bi-truck"></i> Способ получения:</h6>
+                            <p>
+                                    <span class="badge bg-info" th:if="${orderDTO.deliveryMethod.name() == 'DELIVERY'}">
+                                        <i class="bi bi-truck"></i> Доставка
+                                    </span>
+                                <span class="badge bg-success" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}">
+                                        <i class="bi bi-shop"></i> Самовывоз
+                                    </span>
+                            </p>
+
+                            <h6 th:if="${orderDTO.someNotes}"><i class="bi bi-chat-dots"></i> Комментарий:</h6>
+                            <p th:if="${orderDTO.someNotes}" th:text="${orderDTO.someNotes}" class="text-muted fst-italic">Комментарий к заказу</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-ul"></i>
+                        Состав заказа
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Товар</th>
+                                <th class="text-center">Количество</th>
+                                <th class="text-end">Цена</th>
+                                <th class="text-end">Сумма</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${orderDTO.orderItems}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img th:if="${item.productImageUrl != null and !#strings.isEmpty(item.productImageUrl)}"
+                                             th:src="${item.productImageUrl}"
+                                             alt="Товар"
+                                             class="rounded me-3"
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                        <div th:if="${item.productImageUrl == null or #strings.isEmpty(item.productImageUrl)}"
+                                             class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
+                                             style="width: 60px; height: 60px;">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0" th:text="${item.productName}">Название товара</h6>
+                                            <small class="text-muted">ID: <span th:text="${item.productId}">1</span></small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="badge bg-secondary" th:text="${item.quantity}">1</span>
+                                </td>
+                                <td class="text-end align-middle">
+                                    <span th:text="${#numbers.formatDecimal(item.priceAtOrder, 0, 2)} + ' ₽'">999.00 ₽</span>
+                                </td>
+                                <td class="text-end align-middle">
+                                    <strong th:text="${#numbers.formatDecimal(item.subtotal, 0, 2)} + ' ₽'">999.00 ₽</strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot class="table-light">
+                            <tr>
+                                <th colspan="3" class="text-end">Итого к оплате:</th>
+                                <th class="text-end text-primary fs-5">
+                                    <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' ₽'">999.00 ₽</span>
+                                </th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="card shadow-sm mb-4" th:if="${orderDTO.status.name() == 'NEW'}">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="bi bi-credit-card"></i>
+                        Оплата заказа
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Выберите удобный способ оплаты:</p>
+
+                    <div class="row g-3">
+                        <!-- Банковская карта -->
+                        <div class="col-md-6">
+                            <div class="card h-100 payment-method border-2" onclick="selectPayment('card')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-credit-card fs-1 text-primary mb-3"></i>
+                                    <h5>Банковская карта</h5>
+                                    <p class="text-muted mb-0">Visa, MasterCard, МИР</p>
+                                    <p class="text-success mb-0"><small>Мгновенная оплата</small></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Наличными при получении -->
+                        <div class="col-md-6" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}">
+                            <div class="card h-100 payment-method border-2" onclick="selectPayment('cash')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-cash-stack fs-1 text-success mb-3"></i>
+                                    <h5>Наличными</h5>
+                                    <p class="text-muted mb-0">При получении в магазине</p>
+                                    <p class="text-info mb-0"><small>Оплата при получении</small></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- СБП -->
+                        <div class="col-md-6">
+                            <div class="card h-100 payment-method border-2" onclick="selectPayment('sbp')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-qr-code fs-1 text-info mb-3"></i>
+                                    <h5>СБП</h5>
+                                    <p class="text-muted mb-0">Система быстрых платежей</p>
+                                    <p class="text-success mb-0"><small>Без комиссии</small></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Электронные кошельки -->
+                        <div class="col-md-6">
+                            <div class="card h-100 payment-method border-2" onclick="selectPayment('wallet')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-wallet2 fs-1 text-warning mb-3"></i>
+                                    <h5>Электронный кошелек</h5>
+                                    <p class="text-muted mb-0">ЮMoney, QIWI</p>
+                                    <p class="text-success mb-0"><small>Быстрая оплата</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button class="btn btn-success btn-lg px-5" id="payButton" onclick="processPayment()">
+                            <i class="bi bi-credit-card"></i>
+                            Оплатить <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' ₽'">999.00 ₽</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Status Info -->
+            <div class="card shadow-sm mb-4" th:if="${orderDTO.status.name() != 'NEW'}">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Статус заказа
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div th:switch="${orderDTO.status.name()}">
+                        <div th:case="'PAID'" class="alert alert-success">
+                            <i class="bi bi-check-circle"></i>
+                            <strong>Заказ оплачен!</strong> Мы приступили к его обработке.
+                        </div>
+                        <div th:case="'READY_FOR_PICKUP'" class="alert alert-info">
+                            <i class="bi bi-box-seam"></i>
+                            <strong>Заказ готов к выдаче!</strong> Можете забрать его в нашем магазине.
+                        </div>
+                        <div th:case="'COMPLETED'" class="alert alert-success">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <strong>Заказ завершен!</strong> Спасибо за покупку!
+                        </div>
+                        <div th:case="'CANCELLED'" class="alert alert-danger">
+                            <i class="bi bi-x-circle"></i>
+                            <strong>Заказ отменен.</strong> Если у вас есть вопросы, свяжитесь с нами.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center">
+                <a href="/" class="btn btn-primary">
+                    <i class="bi bi-house"></i>
+                    На главную
+                </a>
+                <a href="/catalog" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i>
+                    Продолжить покупки
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let selectedPaymentMethod = null;
+
+    function selectPayment(method) {
+        // Убираем активный класс со всех карточек
+        document.querySelectorAll('.payment-method').forEach(card => {
+            card.classList.remove('border-primary', 'bg-light');
+        });
+
+        // Добавляем активный класс к выбранной карточке
+        event.currentTarget.classList.add('border-primary', 'bg-light');
+        selectedPaymentMethod = method;
+
+        // Активируем кнопку оплаты
+        document.getElementById('payButton').disabled = false;
+    }
+
+    function processPayment() {
+        if (!selectedPaymentMethod) {
+            alert('Выберите способ оплаты');
+            return;
+        }
+
+        const orderId = '[[${orderDTO.id}]]';
+
+        // В зависимости от способа оплаты перенаправляем
+        switch(selectedPaymentMethod) {
+            case 'card':
+                // Перенаправление на платежный шлюз
+                window.location.href = `/payment/card/${orderId}`;
+                break;
+            case 'cash':
+                // Подтверждение наличной оплаты при получении
+                if(confirm('Подтвердите оплату наличными при получении заказа')) {
+                    window.location.href = `/payment/cash/${orderId}`;
+                }
+                break;
+            case 'sbp':
+                // СБП оплата
+                window.location.href = `/payment/sbp/${orderId}`;
+                break;
+            case 'wallet':
+                // Электронные кошельки
+                window.location.href = `/payment/wallet/${orderId}`;
+                break;
+            default:
+                alert('Неизвестный способ оплаты');
+        }
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const payButton = document.getElementById('payButton');
+        if (payButton) {
+            payButton.disabled = true;
+        }
+    });
+</script>
+</body>
+</html>
