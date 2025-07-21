@@ -466,15 +466,15 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <h4 class="d-flex align-items-center gap-2 mb-0">
                     <i class="bi bi-receipt"></i>
-                    Заказ №<span th:text="${orderDTO.id}">1</span>
+                    Замовлення №<span th:text="${orderDTO.id}">1</span>
                 </h4>
                 <th:block th:switch="${orderDTO.status.name()}">
-                    <span th:case="'NEW'" class="status-badge bg-warning text-dark" th:text="${orderDTO.status.description}">Новый заказ</span>
-                    <span th:case="'PAID'" class="status-badge bg-success text-white" th:text="${orderDTO.status.description}">Оплачен</span>
-                    <span th:case="'READY_FOR_PICKUP'" class="status-badge bg-info text-white" th:text="${orderDTO.status.description}">Готов к выдаче</span>
-                    <span th:case="'COMPLETED'" class="status-badge bg-success text-white" th:text="${orderDTO.status.description}">Завершен</span>
-                    <span th:case="'CANCELLED'" class="status-badge bg-danger text-white" th:text="${orderDTO.status.description}">Отменен</span>
-                    <span th:case="*" class="status-badge bg-secondary text-white" th:text="${orderDTO.status.description}">Неизвестно</span>
+                    <span th:case="'NEW'" class="status-badge bg-warning text-dark" th:text="${orderDTO.status.description}">Новe замовлення</span>
+                    <span th:case="'PAID'" class="status-badge bg-success text-white" th:text="${orderDTO.status.description}">Оплачено</span>
+                    <span th:case="'READY_FOR_PICKUP'" class="status-badge bg-info text-white" th:text="${orderDTO.status.description}">Готове до видачі</span>
+                    <span th:case="'COMPLETED'" class="status-badge bg-success text-white" th:text="${orderDTO.status.description}">Завершено</span>
+                    <span th:case="'CANCELLED'" class="status-badge bg-danger text-white" th:text="${orderDTO.status.description}">Скасовано</span>
+                    <span th:case="*" class="status-badge bg-secondary text-white" th:text="${orderDTO.status.description}">Невідомо</span>
                 </th:block>
             </div>
         </div>
@@ -485,7 +485,7 @@
                         <i class="bi bi-calendar3"></i>
                     </div>
                     <div class="info-content">
-                        <h6>Дата заказа</h6>
+                        <h6>Дата замовлення</h6>
                         <p th:text="${#temporals.format(orderDTO.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</p>
                     </div>
                 </div>
@@ -495,8 +495,8 @@
                         <i class="bi bi-person"></i>
                     </div>
                     <div class="info-content">
-                        <h6>Покупатель</h6>
-                        <p th:text="${orderDTO.customerName}">Имя покупателя</p>
+                        <h6>Покупець</h6>
+                        <p th:text="${orderDTO.customerName}">Ім’я покупця</p>
                     </div>
                 </div>
 
@@ -525,14 +525,14 @@
                         <i class="bi bi-truck"></i>
                     </div>
                     <div class="info-content">
-                        <h6>Способ получения</h6>
+                        <h6>Спосіб отримання</h6>
                         <p>
-                            <span class="status-badge bg-info text-white" th:if="${orderDTO.deliveryMethod.name() == 'DELIVERY'}">
-                                <i class="bi bi-truck"></i> Доставка
-                            </span>
+        <span class="status-badge bg-info text-white" th:if="${orderDTO.deliveryMethod.name() == 'DELIVERY'}">
+            <i class="bi bi-truck"></i> Доставка
+        </span>
                             <span class="status-badge bg-success text-white" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}">
-                                <i class="bi bi-shop"></i> Самовывоз
-                            </span>
+            <i class="bi bi-shop"></i> Самовивіз
+        </span>
                         </p>
                     </div>
                 </div>
@@ -542,20 +542,20 @@
                         <i class="bi bi-chat-dots"></i>
                     </div>
                     <div class="info-content">
-                        <h6>Комментарий</h6>
-                        <p th:text="${orderDTO.someNotes}" class="text-muted fst-italic">Комментарий к заказу</p>
+                        <h6>Коментар</h6>
+                        <p th:text="${orderDTO.someNotes}" class="text-muted fst-italic">Коментар до замовлення</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Order Items -->
+    <!-- Товари у замовленні -->
     <div class="card">
         <div class="card-header bg-light text-dark">
             <h5 class="d-flex align-items-center gap-2 mb-0">
                 <i class="bi bi-list-ul"></i>
-                Состав заказа
+                Склад замовлення
             </h5>
         </div>
         <div class="card-body p-0">
@@ -564,9 +564,9 @@
                     <thead>
                     <tr>
                         <th>Товар</th>
-                        <th class="text-center">Количество</th>
-                        <th class="text-end">Цена</th>
-                        <th class="text-end">Сумма</th>
+                        <th class="text-center">Кількість</th>
+                        <th class="text-end">Ціна</th>
+                        <th class="text-end">Сума</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -582,7 +582,7 @@
                                     <i class="bi bi-image"></i>
                                 </div>
                                 <div>
-                                    <h6 class="mb-1" th:text="${item.productName}">Название товара</h6>
+                                    <h6 class="mb-1" th:text="${item.productName}">Назва товару</h6>
                                     <small class="text-muted">ID: <span th:text="${item.productId}">1</span></small>
                                 </div>
                             </div>
@@ -600,7 +600,7 @@
                     </tbody>
                     <tfoot class="table-total">
                     <tr>
-                        <th colspan="3" class="text-end">Итого к оплате:</th>
+                        <th colspan="3" class="text-end">Разом до сплати:</th>
                         <th class="text-end text-primary serif-font" style="font-size: 1.25rem;">
                             <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
                         </th>
@@ -616,11 +616,11 @@
         <div class="card-header bg-warning text-dark">
             <h5 class="d-flex align-items-center gap-2 mb-0">
                 <i class="bi bi-credit-card"></i>
-                Оплата заказа
+                Оплата замовлення
             </h5>
         </div>
         <div class="card-body">
-            <p class="mb-4 text-center serif-font" style="font-size: 1.1rem;">Выберите удобный способ оплаты</p>
+            <p class="mb-4 text-center serif-font" style="font-size: 1.1rem;">Оберіть зручний спосіб оплати</p>
 
             <div class="payment-methods">
                 <!-- QR Code Payment -->
@@ -629,8 +629,8 @@
                         <i class="bi bi-qr-code"></i>
                     </div>
                     <h5 class="payment-title">QR-код</h5>
-                    <p class="payment-description">Оплата по QR-коду через мобильное приложение банка</p>
-                    <span class="payment-feature instant">Мгновенная оплата</span>
+                    <p class="payment-description">Оплата за QR-кодом через мобільний додаток банку</p>
+                    <span class="payment-feature instant">Миттєва оплата</span>
                 </div>
 
                 <!-- IBAN Payment -->
@@ -639,8 +639,8 @@
                         <i class="bi bi-bank"></i>
                     </div>
                     <h5 class="payment-title">IBAN</h5>
-                    <p class="payment-description">Банковский перевод по номеру счета IBAN</p>
-                    <span class="payment-feature secure">Безопасно</span>
+                    <p class="payment-description">Банківський переказ за номером рахунку IBAN</p>
+                    <span class="payment-feature secure">Безпечно</span>
                 </div>
 
                 <!-- PrivatBank -->
@@ -649,8 +649,8 @@
                         <i class="bi bi-credit-card-2-front"></i>
                     </div>
                     <h5 class="payment-title">ПриватБанк</h5>
-                    <p class="payment-description">Оплата через Privat24 или карту ПриватБанка</p>
-                    <span class="payment-feature instant">Мгновенная оплата</span>
+                    <p class="payment-description">Оплата через Privat24 або карткою ПриватБанку</p>
+                    <span class="payment-feature instant">Миттєва оплата</span>
                 </div>
 
                 <!-- MonoBank -->
@@ -659,8 +659,8 @@
                         <i class="bi bi-phone"></i>
                     </div>
                     <h5 class="payment-title">MonoBank</h5>
-                    <p class="payment-description">Оплата по ссылке через мобильное приложение</p>
-                    <span class="payment-feature instant">Мгновенная оплата</span>
+                    <p class="payment-description">Оплата за посиланням через мобільний додаток</p>
+                    <span class="payment-feature instant">Миттєва оплата</span>
                 </div>
 
                 <!-- Cash on Pickup -->
@@ -668,16 +668,16 @@
                     <div class="payment-icon cash">
                         <i class="bi bi-cash-stack"></i>
                     </div>
-                    <h5 class="payment-title">Наличными</h5>
-                    <p class="payment-description">Оплата при получении в магазине</p>
-                    <span class="payment-feature pickup">При получении</span>
+                    <h5 class="payment-title">Готівкою</h5>
+                    <p class="payment-description">Оплата при отриманні в магазині</p>
+                    <span class="payment-feature pickup">При отриманні</span>
                 </div>
             </div>
 
             <div class="text-center">
                 <button class="payment-button" id="payButton" onclick="processPayment()">
                     <i class="bi bi-credit-card me-2"></i>
-                    Оплатить <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+                    Сплатити <span th:text="${#numbers.formatDecimal(orderDTO.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
                 </button>
             </div>
         </div>
@@ -688,7 +688,7 @@
         <div class="card-header bg-info text-white">
             <h5 class="d-flex align-items-center gap-2 mb-0">
                 <i class="bi bi-info-circle"></i>
-                Статус заказа
+                Статус замовлення
             </h5>
         </div>
         <div class="card-body">
@@ -697,8 +697,8 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-check-circle status-icon text-success"></i>
                         <div>
-                            <strong>Заказ оплачен!</strong>
-                            <p class="mb-0 text-muted">Мы приступили к его обработке.</p>
+                            <strong>Замовлення оплачене!</strong>
+                            <p class="mb-0 text-muted">Ми вже обробляємо його.</p>
                         </div>
                     </div>
                 </div>
@@ -706,8 +706,8 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-box-seam status-icon text-info"></i>
                         <div>
-                            <strong>Заказ готов к выдаче!</strong>
-                            <p class="mb-0 text-muted">Можете забрать его в нашем магазине.</p>
+                            <strong>Замовлення готове до видачі!</strong>
+                            <p class="mb-0 text-muted">Ви можете забрати його в нашому магазині.</p>
                         </div>
                     </div>
                 </div>
@@ -715,8 +715,8 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-check-circle-fill status-icon text-success"></i>
                         <div>
-                            <strong>Заказ завершен!</strong>
-                            <p class="mb-0 text-muted">Спасибо за покупку!</p>
+                            <strong>Замовлення завершене!</strong>
+                            <p class="mb-0 text-muted">Дякуємо за покупку!</p>
                         </div>
                     </div>
                 </div>
@@ -724,8 +724,8 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-x-circle status-icon text-danger"></i>
                         <div>
-                            <strong>Заказ отменен.</strong>
-                            <p class="mb-0 text-muted">Если у вас есть вопросы, свяжитесь с нами.</p>
+                            <strong>Замовлення скасовано.</strong>
+                            <p class="mb-0 text-muted">Якщо у вас виникли запитання, зв’яжіться з нами.</p>
                         </div>
                     </div>
                 </div>
@@ -738,11 +738,11 @@
         <div class="action-buttons">
             <a href="/" class="btn-home">
                 <i class="bi bi-house"></i>
-                На главную
+                На головну
             </a>
             <a href="/categories" class="btn-catalog">
                 <i class="bi bi-arrow-left"></i>
-                Продолжить покупки
+                Продовжити покупки
             </a>
         </div>
     </div>

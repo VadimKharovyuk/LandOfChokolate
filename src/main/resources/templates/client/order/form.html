@@ -543,16 +543,16 @@
         <!-- Хлебные крошки -->
         <nav class="breadcrumb-container" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Главная</a></li>
-                <li class="breadcrumb-item"><a href="/cart">Корзина</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Оформление заказа</li>
+                <li class="breadcrumb-item"><a href="/">Головна</a></li>
+                <li class="breadcrumb-item"><a href="/cart">Кошик</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Оформлення замовлення</li>
             </ol>
         </nav>
 
         <!-- Заголовок -->
         <header class="order-header">
-            <h1 class="order-title">Оформление заказа</h1>
-            <p class="order-subtitle">Заполните данные для оформления заказа</p>
+            <h1 class="order-title">Оформлення замовлення</h1>
+            <p class="order-subtitle">Заповніть дані для оформлення замовлення</p>
         </header>
 
         <!-- Сообщения об ошибках/успехе -->
@@ -574,26 +574,26 @@
                     <div class="order-form-header">
                         <h2 class="order-form-title">
                             <i class="fas fa-user"></i>
-                            Контактная информация
+                            Контактна інформація
                         </h2>
                     </div>
                     <div class="order-form-body">
                         <form th:action="@{/order}" th:object="${orderRequest}" method="post">
 
-                            <!-- Имя -->
+                            <!-- Ім'я -->
                             <div class="form-group">
                                 <label for="customerName" class="form-label">
                                     <i class="fas fa-user"></i>
-                                    Имя *
+                                    Ім'я *
                                 </label>
                                 <input type="text"
                                        class="form-control"
                                        id="customerName"
                                        th:field="*{customerName}"
                                        th:classappend="${#fields.hasErrors('customerName')} ? 'is-invalid' : ''"
-                                       placeholder="Введите ваше имя">
+                                       placeholder="Введіть ваше ім'я">
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}">
-                                    Имя обязательно для заполнения
+                                    Ім'я є обов'язковим для заповнення
                                 </div>
                             </div>
 
@@ -610,7 +610,7 @@
                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
                                        placeholder="example@email.com">
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
-                                    Введите корректный email
+                                    Введіть коректний email
                                 </div>
                             </div>
 
@@ -631,18 +631,18 @@
                                            maxlength="12">
                                 </div>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">
-                                    Введите корректный номер телефона
+                                    Введіть коректний номер телефону
                                 </div>
                                 <small class="form-text">
-                                    Введите номер без кода страны: 066 842 0005
+                                    Введіть номер без коду країни: 066 842 0005
                                 </small>
                             </div>
 
-                            <!-- Способ доставки -->
+                            <!-- Спосіб отримання -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-truck"></i>
-                                    Способ получения *
+                                    Спосіб отримання *
                                 </label>
                                 <div class="delivery-options">
                                     <div class="delivery-option" onclick="selectDelivery('DELIVERY')">
@@ -655,7 +655,7 @@
                                     </div>
                                     <div class="delivery-option" onclick="selectDelivery('PICKUP')">
                                         <i class="fas fa-store delivery-icon pickup"></i>
-                                        <h6 class="delivery-title">Самовывоз</h6>
+                                        <h6 class="delivery-title">Самовивіз</h6>
                                         <input type="radio"
                                                th:field="*{deliveryMethod}"
                                                value="PICKUP"
@@ -663,28 +663,27 @@
                                     </div>
                                 </div>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('deliveryMethod')}" th:errors="*{deliveryMethod}">
-                                    Выберите способ получения заказа
+                                    Оберіть спосіб отримання замовлення
                                 </div>
                             </div>
-
-                            <!-- Комментарий -->
+                            <!-- Коментар до замовлення -->
                             <div class="form-group">
                                 <label for="someNotes" class="form-label">
                                     <i class="fas fa-comment-dots"></i>
-                                    Комментарий к заказу
+                                    Коментар до замовлення
                                 </label>
                                 <textarea class="form-control"
                                           id="someNotes"
                                           th:field="*{someNotes}"
                                           rows="3"
-                                          placeholder="Дополнительные пожелания или комментарии..."></textarea>
+                                          placeholder="Додаткові побажання або коментарі..."></textarea>
                             </div>
 
                             <!-- Кнопки -->
                             <div class="order-actions">
                                 <button type="submit" class="btn-submit">
                                     <i class="fas fa-check-circle"></i>
-                                    Оформить заказ
+                                    Оформити замовлення
                                 </button>
                                 <a href="/cart" class="btn-back">
                                     <i class="fas fa-arrow-left"></i>
@@ -700,7 +699,7 @@
                     <div class="order-summary-header">
                         <h3 class="order-summary-title">
                             <i class="fas fa-shopping-cart"></i>
-                            Ваш заказ
+                            Ваше замовлення
                         </h3>
                     </div>
 
@@ -715,7 +714,7 @@
                             </div>
                         </div>
                         <div class="cart-item-details">
-                            <div class="cart-item-name" th:text="${item.product.name}">Название товара</div>
+                            <div class="cart-item-name" th:text="${item.product.name}">Назва товару</div>
                             <div class="cart-item-price">
                                 <span th:text="${item.quantity}">1</span> ×
                                 <span th:text="${#numbers.formatDecimal(item.priceAtTime, 0, 2)}">999.00</span> грн
@@ -726,19 +725,19 @@
 
                     <div class="order-total">
                         <div class="total-row">
-                            <span class="total-label">Товаров:</span>
+                            <span class="total-label">Товарів:</span>
                             <span class="total-value" th:text="${cart.totalQuantity}">3</span>
                         </div>
                         <div class="total-row">
-                            <span class="total-label">Подитог:</span>
+                            <span class="total-label">Підсумок:</span>
                             <span class="total-value" th:text="${#numbers.formatDecimal(cart.totalPrice, 0, 2)} + ' грн'">450 грн</span>
                         </div>
                         <div class="total-row">
                             <span class="total-label">Доставка:</span>
-                            <span class="total-value">Рассчитается при оформлении</span>
+                            <span class="total-value">Розрахується при оформленні</span>
                         </div>
                         <div class="total-row total-final">
-                            <span class="total-label">Итого:</span>
+                            <span class="total-label">Всього:</span>
                             <span class="total-value" th:text="${#numbers.formatDecimal(cart.totalPrice, 0, 2)} + ' грн'">450 грн</span>
                         </div>
                     </div>

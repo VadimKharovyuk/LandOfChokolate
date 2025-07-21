@@ -640,8 +640,8 @@
     <!-- Хлебные крошки -->
     <nav class="breadcrumb-container" aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Главная</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Поиск заказов</li>
+        <li class="breadcrumb-item"><a href="/">Головна</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Пошук замовлень</li>
       </ol>
     </nav>
 
@@ -649,9 +649,9 @@
     <header class="page-header">
       <h1 class="page-title">
         <i class="bi bi-search"></i>
-        Поиск заказов
+        Пошук замовлень
       </h1>
-      <p class="page-subtitle">Введите номер телефона для поиска ваших заказов</p>
+      <p class="page-subtitle">Введіть номер телефону для пошуку ваших замовлень</p>
     </header>
 
     <!-- Форма поиска -->
@@ -659,29 +659,29 @@
       <div class="card-header primary">
         <h5 class="card-title">
           <i class="bi bi-telephone"></i>
-          Поиск по номеру телефона
+          Пошук за номером телефону
         </h5>
       </div>
       <div class="card-body">
         <form th:action="@{/order/info/search}" method="post">
           <div class="row g-4 align-items-end">
             <div class="col-md-8">
-              <label for="phone" class="form-label">Номер телефона</label>
+              <label for="phone" class="form-label">Номер телефону</label>
               <input type="tel"
                      class="form-control form-control-lg"
                      id="phone"
                      name="phone"
                      th:value="${searchPhone}"
-                     placeholder="393933211221"
+                     placeholder="06684200051"
                      required>
               <div class="form-text">
-                Введите номер телефона без символов: 393933211221
+                Введіть номер телефону без символів: 06684200051
               </div>
             </div>
             <div class="col-md-4">
               <button type="submit" class="btn-search">
                 <i class="bi bi-search"></i>
-                Найти заказы
+                Знайти замовлення
               </button>
             </div>
           </div>
@@ -704,12 +704,12 @@
       <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- Результаты поиска -->
+    <!-- Результати пошуку -->
     <div th:if="${orders != null and !#lists.isEmpty(orders)}" class="card">
       <div class="card-header success">
         <h5 class="card-title">
           <i class="bi bi-list-ul"></i>
-          Ваши заказы
+          Ваші замовлення
         </h5>
       </div>
       <div class="card-body p-0">
@@ -717,12 +717,12 @@
           <table class="table table-hover mb-0">
             <thead>
             <tr>
-              <th>№ заказа</th>
+              <th>№ замовлення</th>
               <th>Дата</th>
               <th>Статус</th>
-              <th>Сумма</th>
+              <th>Сума</th>
               <th>Доставка</th>
-              <th class="text-center">Действия</th>
+              <th class="text-center">Дії</th>
             </tr>
             </thead>
             <tbody>
@@ -736,24 +736,24 @@
               </td>
               <td>
                 <th:block th:switch="${order.status.name()}">
-                                        <span th:case="'NEW'" class="status-badge new">
-                                            <i class="bi bi-clock"></i> Новый
-                                        </span>
+              <span th:case="'NEW'" class="status-badge new">
+                <i class="bi bi-clock"></i> Новий
+              </span>
                   <span th:case="'PAID'" class="status-badge paid">
-                                            <i class="bi bi-check-circle"></i> Оплачен
-                                        </span>
+                <i class="bi bi-check-circle"></i> Оплачено
+              </span>
                   <span th:case="'READY_FOR_PICKUP'" class="status-badge ready">
-                                            <i class="bi bi-box-seam"></i> Готов
-                                        </span>
+                <i class="bi bi-box-seam"></i> Готово
+              </span>
                   <span th:case="'COMPLETED'" class="status-badge completed">
-                                            <i class="bi bi-check-circle-fill"></i> Завершен
-                                        </span>
+                <i class="bi bi-check-circle-fill"></i> Завершено
+              </span>
                   <span th:case="'CANCELLED'" class="status-badge cancelled">
-                                            <i class="bi bi-x-circle"></i> Отменен
-                                        </span>
+                <i class="bi bi-x-circle"></i> Скасовано
+              </span>
                   <span th:case="*" class="status-badge" th:text="${order.status.description}">
-                                            Неизвестно
-                                        </span>
+                Невідомо
+              </span>
                 </th:block>
               </td>
               <td>
@@ -762,17 +762,17 @@
                 </div>
               </td>
               <td>
-                                    <span th:if="${order.deliveryMethod.name() == 'DELIVERY'}" class="delivery-badge delivery">
-                                        <i class="bi bi-truck"></i> Доставка
-                                    </span>
+            <span th:if="${order.deliveryMethod.name() == 'DELIVERY'}" class="delivery-badge delivery">
+              <i class="bi bi-truck"></i> Доставка
+            </span>
                 <span th:if="${order.deliveryMethod.name() == 'PICKUP'}" class="delivery-badge pickup">
-                                        <i class="bi bi-shop"></i> Самовывоз
-                                    </span>
+              <i class="bi bi-shop"></i> Самовивіз
+            </span>
               </td>
               <td class="text-center">
                 <a th:href="@{'/order/' + ${order.id}}" class="btn-view">
                   <i class="bi bi-eye"></i>
-                  Подробнее
+                  Детальніше
                 </a>
               </td>
             </tr>
@@ -781,13 +781,13 @@
         </div>
       </div>
 
-      <!-- Сводка заказов -->
+      <!-- Підсумок замовлень -->
       <div class="orders-summary">
         <div class="row">
           <div class="col-md-4">
             <div class="summary-item">
               <div class="summary-value text-primary" th:text="${orders.size()}">3</div>
-              <div class="summary-label">Всего заказов</div>
+              <div class="summary-label">Всього замовлень</div>
             </div>
           </div>
           <div class="col-md-4">
@@ -795,7 +795,7 @@
               <div class="summary-value text-success">
                 <span th:text="${#aggregates.sum(orders.![totalAmount])}">0</span> грн
               </div>
-              <div class="summary-label">Общая сумма</div>
+              <div class="summary-label">Загальна сума</div>
             </div>
           </div>
           <div class="col-md-4">
@@ -804,47 +804,47 @@
                    th:text="${#temporals.format(orders[0].createdAt, 'dd.MM.yyyy')}">
                 01.01.2024
               </div>
-              <div class="summary-label">Последний заказ</div>
+              <div class="summary-label">Останнє замовлення</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Состояние "Заказы не найдены" -->
+    <!-- Стан "Замовлення не знайдені" -->
     <div th:if="${searchPhone != null and (orders == null or #lists.isEmpty(orders))}" class="card">
       <div class="card-body empty-state">
         <i class="bi bi-inbox empty-icon"></i>
-        <h4 class="empty-title">Заказы не найдены</h4>
+        <h4 class="empty-title">Замовлення не знайдені</h4>
         <p class="empty-text">
-          По номеру <strong th:text="${searchPhone}">393933211221</strong> заказы не найдены.
+          За номером <strong th:text="${searchPhone}">06684200051</strong> замовлення не знайдені.
         </p>
         <div class="alert alert-info">
           <i class="bi bi-lightbulb"></i>
           <div>
-            <strong>Советы:</strong>
+            <strong>Поради:</strong>
             <ul class="list-unstyled mb-0 mt-2">
-              <li>• Проверьте правильность номера телефона</li>
-              <li>• Убедитесь, что заказ был оформлен на этот номер</li>
-              <li>• Попробуйте ввести номер в другом формате</li>
+              <li>• Перевірте правильність номеру телефону</li>
+              <li>• Переконайтеся, що замовлення було оформлене на цей номер</li>
+              <li>• Спробуйте ввести номер у іншому форматі</li>
             </ul>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Информационная секция -->
+    <!-- Інформаційний блок -->
     <div th:if="${orders == null and searchPhone == null}" class="card">
       <div class="card-body empty-state">
         <i class="bi bi-info-circle empty-icon text-info"></i>
-        <h4 class="empty-title text-info">Как найти свои заказы?</h4>
+        <h4 class="empty-title text-info">Як знайти свої замовлення?</h4>
         <div class="info-grid">
           <div class="info-card">
             <div class="info-icon info">
               <i class="bi bi-eye-fill"></i>
             </div>
-            <h6 class="info-title">Отслеживайте</h6>
-            <p class="info-description">Следите за статусом и деталями заказа</p>
+            <h6 class="info-title">Відстежуйте</h6>
+            <p class="info-description">Слідкуйте за статусом та деталями замовлення</p>
           </div>
         </div>
       </div>
@@ -854,11 +854,11 @@
     <div class="action-buttons">
       <a href="/" class="btn-home">
         <i class="bi bi-house"></i>
-        На главную
+        На головну
       </a>
       <a href="/categories" class="btn-catalog">
         <i class="bi bi-shop"></i>
-        Каталог товаров
+        Каталог товарів
       </a>
     </div>
   </div>
