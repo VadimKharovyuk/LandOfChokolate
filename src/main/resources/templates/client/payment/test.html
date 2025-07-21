@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test LiqPay</title>
+</head>
+<body>
+<h2>Тест LiqPay</h2>
+
+<form method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8">
+    <input type="hidden" name="data" value="eyJ2ZXJzaW9uIjozLCJhY3Rpb24iOiJwYXkiLCJhbW91bnQiOjEsImN1cnJlbmN5IjoiVUFIIiwiZGVzY3JpcHRpb24iOiJ0ZXN0IiwicHVibGljX2tleSI6InNhbmRib3hfaTE2MDMwNzgwMDMxIn0=" />
+    <input type="hidden" name="signature" value="YWI4ZjhkYTdjYmJjOWY1YTI1NDU0MjdkZDg0ODNlZDEzMDFjNmQ2ZQ==" />
+
+    <button type="submit" style="padding: 10px 20px; background: blue; color: white; border: none;">
+        Тестовая оплата 1 грн
+    </button>
+</form>
+
+<script>
+    document.querySelector('button').addEventListener('click', function() {
+        console.log('Отправляем тестовую форму');
+    });
+</script>
+</body>
+</html>

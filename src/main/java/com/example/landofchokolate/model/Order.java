@@ -49,7 +49,7 @@ public class Order {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        status = OrderStatus.NEW; // по умолчанию
+        status = OrderStatus.NEW;
     }
 
     @PreUpdate

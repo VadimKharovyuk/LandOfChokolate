@@ -4,12 +4,15 @@ import lombok.Getter;
 @Getter
 public enum PaymentStatus {
     PENDING("Ожидает оплаты"),
-    PAID("Оплачено"),
-    FAILED("Ошибка оплаты");
+    PROCESSING("В обработке"),
+    COMPLETED("Завершено"),
+    FAILED("Не удалось"),
+    REFUNDED("Возвращено"),
+    CANCELLED("Отменено");
 
-    private final String description;
+    private final String displayName;
 
-    PaymentStatus(String description) {
-        this.description = description;
+    PaymentStatus(String displayName) {
+        this.displayName = displayName;
     }
 }

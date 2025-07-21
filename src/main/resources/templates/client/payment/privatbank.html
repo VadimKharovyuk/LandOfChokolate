@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата через ПриватБанк - Заказ №<span th:text="${order.id}">1</span></title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --privatbank-blue: #0066cc;
+      --privatbank-light: #e6f3ff;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --background-light: #f9fafb;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background-light);
+      color: var(--text-primary);
+    }
+
+    .payment-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--privatbank-blue) 0%, #0052a3 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      border-bottom: none;
+    }
+
+    .privatbank-logo {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--privatbank-blue);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-body {
+      padding: 2rem;
+    }
+
+    .order-summary {
+      background: var(--privatbank-light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-left: 4px solid var(--privatbank-blue);
+    }
+
+    .order-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .order-info:last-child {
+      margin-bottom: 0;
+      padding-top: 0.75rem;
+      border-top: 2px solid var(--privatbank-blue);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .payment-form {
+      display: none;
+    }
+
+    .liqpay-form {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .liqpay-button {
+      background: linear-gradient(135deg, var(--privatbank-blue) 0%, #0052a3 100%);
+      border: none;
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+      min-height: 60px;
+      width: 100%;
+    }
+
+    .liqpay-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
+    .security-info {
+      background: var(--background-light);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .security-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .security-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .security-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--success-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .back-button {
+      background: var(--text-secondary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: var(--text-primary);
+      color: white;
+      text-decoration: none;
+      transform: translateX(-2px);
+    }
+
+    .payment-steps {
+      margin: 2rem 0;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .step:hover {
+      background: var(--privatbank-light);
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--privatbank-blue);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .step-content h6 {
+      margin: 0 0 0.25rem 0;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .step-content p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .alert {
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+    }
+
+    .alert-info {
+      background: var(--privatbank-light);
+      color: var(--privatbank-blue);
+      border-left: 4px solid var(--privatbank-blue);
+    }
+
+    @media (max-width: 576px) {
+      .payment-container {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+      }
+
+      .card-header, .card-body {
+        padding: 1.5rem;
+      }
+
+      .liqpay-button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+
+      .step {
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="payment-container">
+  <!-- Заголовок -->
+  <div class="card">
+    <div class="card-header">
+      <div class="privatbank-logo">
+        <i class="bi bi-credit-card-2-front"></i>
+      </div>
+      <h3 class="mb-2">Оплата через ПриватБанк</h3>
+      <p class="mb-0 opacity-90">Безопасная оплата через LiqPay</p>
+    </div>
+
+    <div class="card-body">
+      <!-- Информация о заказе -->
+      <div class="order-summary">
+        <h5 class="mb-3 text-center" style="color: var(--privatbank-blue);">
+          <i class="bi bi-receipt me-2"></i>
+          Заказ №<span th:text="${order.id}">1</span>
+        </h5>
+
+        <div class="order-info">
+          <span class="text-muted">Товаров:</span>
+          <span th:text="${order.orderItems.size()} + ' шт.'">5 шт.</span>
+        </div>
+
+        <div class="order-info">
+          <span class="text-muted">Покупатель:</span>
+          <span th:text="${order.customerName}">Имя покупателя</span>
+        </div>
+
+        <div class="order-info">
+          <span class="text-muted">Email:</span>
+          <span th:text="${order.email}">email@example.com</span>
+        </div>
+
+        <div class="order-info">
+          <span style="color: var(--privatbank-blue);">Итого к оплате:</span>
+          <span style="color: var(--privatbank-blue); font-size: 1.25rem;" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+        </div>
+      </div>
+
+      <!-- Инструкции по оплате -->
+      <div class="payment-steps">
+        <h6 class="mb-3" style="color: var(--privatbank-blue);">Как оплатить:</h6>
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h6>Нажмите кнопку "Оплатить"</h6>
+            <p>Вы будете перенаправлены на безопасную страницу LiqPay</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h6>Выберите способ оплаты</h6>
+            <p>Карта ПриватБанка, Privat24 или Apple Pay/Google Pay</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h6>Подтвердите платеж</h6>
+            <p>Следуйте инструкциям на экране для завершения оплаты</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h6>Получите подтверждение</h6>
+            <p>После успешной оплаты вы вернетесь на наш сайт</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Отладочная информация -->
+      <div class="alert alert-warning mb-3" style="font-size: 0.8rem;">
+        <strong>Отладка данных:</strong><br>
+        Data: <span th:text="${data}" style="word-break: break-all;"></span><br>
+        Signature: <span th:text="${signature}" style="word-break: break-all;"></span><br>
+        Public Key: <span th:text="${publicKey}"></span>
+      </div>
+
+      <!-- Форма LiqPay -->
+      <div class="liqpay-form">
+        <!-- Простая форма -->
+        <form method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8" id="liqpay-form">
+          <input type="hidden" name="data" th:value="${data}" />
+          <input type="hidden" name="signature" th:value="${signature}" />
+        </form>
+
+        <!-- Красивая кнопка с прямой отправкой -->
+        <button onclick="submitPayment()" class="liqpay-button w-100" id="main-pay-btn">
+          <i class="bi bi-credit-card-2-front"></i>
+          Оплатить <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+        </button>
+      </div>
+
+      <!-- Информация о безопасности -->
+      <div class="security-info">
+        <h6 class="mb-3 d-flex align-items-center gap-2">
+          <i class="bi bi-shield-check" style="color: var(--success-color);"></i>
+          Ваши данные защищены
+        </h6>
+
+        <div class="security-item">
+          <div class="security-icon">
+            <i class="bi bi-lock-fill"></i>
+          </div>
+          <div>
+            <strong>SSL шифрование</strong><br>
+            <small class="text-muted">256-битное шифрование данных</small>
+          </div>
+        </div>
+
+        <div class="security-item">
+          <div class="security-icon">
+            <i class="bi bi-shield-fill-check"></i>
+          </div>
+          <div>
+            <strong>PCI DSS сертификат</strong><br>
+            <small class="text-muted">Международный стандарт безопасности</small>
+          </div>
+        </div>
+
+        <div class="security-item">
+          <div class="security-icon">
+            <i class="bi bi-bank"></i>
+          </div>
+          <div>
+            <strong>Лицензированная система</strong><br>
+            <small class="text-muted">LiqPay - официальный сервис ПриватБанка</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Уведомление -->
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>Важно:</strong> После нажатия кнопки "Оплатить" не закрывайте страницу до завершения платежа.
+      </div>
+
+      <!-- Кнопка назад -->
+      <div class="text-center">
+        <a th:href="@{'/orders/' + ${order.id}}" class="back-button">
+          <i class="bi bi-arrow-left"></i>
+          Вернуться к заказу
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  console.log('🚀 JavaScript загружен');
+
+  // Главная функция для отправки платежа
+  function submitPayment() {
+    console.log('💳 Начинаем процесс оплаты');
+
+    const form = document.getElementById('liqpay-form');
+    const button = document.getElementById('main-pay-btn');
+
+    if (!form) {
+      console.error('❌ Форма не найдена');
+      alert('Ошибка: форма не найдена');
+      return;
+    }
+
+    // Проверяем данные
+    const dataInput = form.querySelector('input[name="data"]');
+    const signatureInput = form.querySelector('input[name="signature"]');
+
+    if (!dataInput?.value || !signatureInput?.value) {
+      console.error('❌ Пустые данные для оплаты');
+      alert('Ошибка: данные для оплаты не заполнены');
+      return;
+    }
+
+    console.log('✅ Данные проверены');
+    console.log('📤 Отправляем на:', form.action);
+
+    // Меняем внешний вид кнопки
+    if (button) {
+      button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Перенаправление на LiqPay...';
+      button.disabled = true;
+      button.style.opacity = '0.7';
+    }
+
+    // Отправляем форму
+    form.submit();
+    console.log('🚀 Форма отправлена!');
+  }
+
+  // Простая функция для прямой отправки (для отладки)
+  function directSubmit() {
+    console.log('🧪 Прямая отправка формы');
+    const form = document.getElementById('liqpay-form');
+
+    if (!form) {
+      console.error('❌ Форма не найдена');
+      return;
+    }
+
+    console.log('📤 Отправляем форму:', form.action);
+    form.submit();
+  }
+
+  // Проверяем данные при загрузке
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 Страница загружена');
+
+    const form = document.getElementById('liqpay-form');
+    const dataInput = form?.querySelector('input[name="data"]');
+    const signatureInput = form?.querySelector('input[name="signature"]');
+
+    console.log('📋 Данные формы:');
+    console.log('  Data:', dataInput?.value?.substring(0, 50) + '...' || 'ПУСТО');
+    console.log('  Signature:', signatureInput?.value || 'ПУСТО');
+    console.log('  Action:', form?.action || 'НЕТ ФОРМЫ');
+
+    if (dataInput?.value && signatureInput?.value) {
+      console.log('✅ Все данные готовы для отправки');
+    } else {
+      console.warn('⚠️ Некоторые данные отсутствуют');
+    }
+  });
+
+  // Обработчик отправки формы
+  document.addEventListener('submit', function(e) {
+    if (e.target.id === 'liqpay-form') {
+      console.log('📤 Форма отправляется на:', e.target.action);
+    }
+  });
+
+  console.log('💡 Доступные функции:');
+  console.log('  - submitPayment() - главная функция оплаты');
+  console.log('  - directSubmit() - прямая отправка формы');
+</script>
+
+</body>
+</html>

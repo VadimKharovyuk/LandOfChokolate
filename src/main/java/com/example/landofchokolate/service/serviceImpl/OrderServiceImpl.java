@@ -87,6 +87,16 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toDTO(order);
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Заказ с ID " + orderId + " не найден"));
+    }
+
+
+
     private Order createOrderEntity(CreateOrderRequest request) {
         return Order.builder()
                 .email(request.getEmail())
