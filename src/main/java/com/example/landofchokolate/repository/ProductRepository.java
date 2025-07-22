@@ -291,4 +291,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * Альтернативный вариант с Pageable (если хотите использовать пагинацию)
      */
     Page<Product> findByCategoryAndIsActiveTrueOrderByIdDesc(Category category, Pageable pageable);
+
+
+    Page<Product> findByBrandSlugAndIsActiveTrue(String slug, Pageable pageable);
 }

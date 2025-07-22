@@ -26,4 +26,7 @@ public interface BrandService {
 
 
     void generateMissingSlugForBrands();
+
+
+    BrandProductsPageResponseDto getBrandDetailBySlug(String slug, Pageable pageable);
 }

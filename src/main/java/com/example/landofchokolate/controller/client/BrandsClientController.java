@@ -2,6 +2,7 @@ package com.example.landofchokolate.controller.client;
 
 import com.example.landofchokolate.dto.brend.BrandClientDto;
 import com.example.landofchokolate.dto.brend.BrandPageResponseDto;
+import com.example.landofchokolate.dto.brend.BrandProductsPageResponseDto;
 import com.example.landofchokolate.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/brands")
@@ -18,6 +20,7 @@ public class BrandsClientController {
     private final BrandService brandService;
 
     private static final int DEFAULT_PAGE_SIZE = 12;
+    private static final int DEFAULT_PAGE_SIZE_PRODUCT = 12;
 
     @GetMapping
     public String listBrands(Model model, Pageable pageable) {
@@ -45,11 +48,35 @@ public class BrandsClientController {
         return "client/brands/list";
     }
 
-    // Дополнительный метод для отображения конкретного бренда
+    // Метод для отображения конкретного бренда с продуктами
     @GetMapping("/{slug}")
-    public String brandDetail(@PathVariable String slug, Model model) {
+    public String brandDetail(@PathVariable String slug, Model model, Pageable pageable) {
+        // Устанавливаем размер страницы для продуктов
+        if (pageable.getPageSize() > 10) {
+            pageable = PageRequest.of(pageable.getPageNumber(), DEFAULT_PAGE_SIZE_PRODUCT, pageable.getSort());
+        }
+
+        // Получаем информацию о бренде
         BrandClientDto brand = brandService.getBrandBySlug(slug);
         model.addAttribute("brand", brand);
+
+        // Получаем продукты бренда с пагинацией
+        BrandProductsPageResponseDto productsPage = brandService.getBrandDetailBySlug(slug, pageable);
+
+        // Добавляем продукты
+        model.addAttribute("products", productsPage.getProducts());
+
+        // Добавляем полную информацию о пагинации
+        model.addAttribute("currentPage", productsPage.getCurrentPage());
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+        model.addAttribute("totalElements", productsPage.getTotalElements());
+        model.addAttribute("pageSize", productsPage.getPageSize());
+        model.addAttribute("hasNext", productsPage.isHasNext());
+        model.addAttribute("hasPrevious", productsPage.isHasPrevious());
+
+        // Добавляем весь объект пагинации для удобства
+        model.addAttribute("productsPagination", productsPage);
+
         return "client/brands/detail";
     }
 }

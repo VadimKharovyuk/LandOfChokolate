@@ -3,7 +3,9 @@ package com.example.landofchokolate.service.serviceImpl;
 import com.example.landofchokolate.dto.brend.*;
 import com.example.landofchokolate.mapper.BrandMapper;
 import com.example.landofchokolate.model.Brand;
+import com.example.landofchokolate.model.Product;
 import com.example.landofchokolate.repository.BrandRepository;
+import com.example.landofchokolate.repository.ProductRepository;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.SlugService;
 import com.example.landofchokolate.util.StorageService;
@@ -28,6 +30,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandMapper brandMapper;
     private final StorageService storageService;
     private final SlugService slugService;
+    private final ProductRepository productRepository;
 
     @Override
     public BrandResponseDto createBrand(CreateBrandDto createBrandDto) {
@@ -157,6 +160,54 @@ public class BrandServiceImpl implements BrandService {
         log.info("Generated slugs for {} brands", brandsWithoutSlug.size());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public BrandProductsPageResponseDto getBrandDetailBySlug(String slug, Pageable pageable) {
+        // Получаем страницу продуктов по slug бренда (только активные)
+        Page<Product> productPage = productRepository.findByBrandSlugAndIsActiveTrue(slug, pageable);
+
+        // Конвертируем продукты в DTO через стрим
+        List<ProductBrandClientDto> productDtos = productPage.getContent().stream()
+                .map(this::convertToProductBrandClientDto)
+                .collect(Collectors.toList());
+
+        // Возвращаем обертку с пагинацией
+        return new BrandProductsPageResponseDto(
+                productDtos,
+                productPage.getNumber(),
+                productPage.getTotalPages(),
+                productPage.getTotalElements(),
+                productPage.getSize(),
+                productPage.hasNext(),
+                productPage.hasPrevious()
+        );
+    }
+
+    // Вспомогательный метод для конвертации
+    private ProductBrandClientDto convertToProductBrandClientDto(Product product) {
+        ProductBrandClientDto dto = new ProductBrandClientDto();
+
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setImageUrl(product.getImageUrl());
+        dto.setSlug(product.getSlug());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setIsActive(product.getIsActive());
+
+        // Устанавливаем название категории
+        dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
+
+        // Устанавливаем статусы товара
+        dto.setInStock(product.getStockQuantity() != null && product.getStockQuantity() > 0);
+        dto.setLowStock(product.getStockQuantity() != null &&
+                product.getStockQuantity() < 10 &&
+                product.getStockQuantity() > 0);
+
+        return dto;
+    }
+
+
     // Вспомогательный метод для конвертации
     private BrandClientDto convertToBrandClientDto(Brand brand) {
         return new BrandClientDto(
@@ -281,4 +332,8 @@ public class BrandServiceImpl implements BrandService {
 
         log.debug("Image file validation passed: {}", originalFilename);
     }
+
+
+
+
 }
