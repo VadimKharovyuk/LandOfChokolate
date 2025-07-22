@@ -151,9 +151,6 @@ public class LiqPayPaymentServiceImpl implements PaymentService {
      */
     public Map<String, String> getPaymentForm(Order order, String resultUrl, String serverUrl) {
         try {
-            System.out.println("=== СОЗДАНИЕ ФОРМЫ LIQPAY ===");
-            System.out.println("Public Key: " + publicKey);
-            System.out.println("Private Key: " + (privateKey != null ? privateKey.substring(0, 10) + "..." : "null"));
 
             // Перезагружаем заказ с orderItems для корректного подсчета
             Order fullOrder = orderRepository.findByIdWithItems(order.getId()).orElse(order);
@@ -179,21 +176,20 @@ public class LiqPayPaymentServiceImpl implements PaymentService {
 
 
             String jsonString = objectMapper.writeValueAsString(params);
-            System.out.println("JSON: " + jsonString);
 
             String data = Base64.getEncoder().encodeToString(
                     jsonString.getBytes(StandardCharsets.UTF_8));
-            System.out.println("Base64 Data: " + data);
+
 
             String signature = getSignature(data);
-            System.out.println("Signature: " + signature);
+
 
             Map<String, String> formData = new HashMap<>();
             formData.put("data", data);
             formData.put("signature", signature);
             formData.put("public_key", publicKey);
 
-            System.out.println("✅ Форма создана успешно");
+
             return formData;
         } catch (Exception e) {
             System.out.println("❌ ОШИБКА при создании формы:");

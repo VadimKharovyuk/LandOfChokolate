@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ожидание оплаты - Заказ №<span th:text="${order.id}">1</span></title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-cream: #FDFCF8;
+            --secondary-beige: #F7F3E9;
+            --warm-white: #FEFEFE;
+            --soft-gray: #F5F5F5;
+            --charcoal: #2A2A2A;
+            --pending-orange: #F59E0B;
+            --light-orange: #FBBF24;
+            --pending-bg: #FFFBEB;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --border-subtle: #E8E5E0;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-cream) 0%, var(--secondary-beige) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .pending-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pending-card {
+            background: var(--warm-white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            width: 100%;
+            text-align: center;
+        }
+
+        .pending-header {
+            background: linear-gradient(135deg, var(--pending-orange) 0%, var(--light-orange) 100%);
+            color: var(--warm-white);
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .pending-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            animation: pendingPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pendingPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .pending-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .pending-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .pending-body {
+            padding: 3rem 2rem;
+        }
+
+        .status-info {
+            background: var(--pending-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--pending-orange);
+        }
+
+        .status-message {
+            color: var(--pending-orange);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .order-details {
+            display: grid;
+            gap: 1rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--pending-orange);
+        }
+
+        .loading-section {
+            background: var(--soft-gray);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border-subtle);
+            border-top: 4px solid var(--pending-orange);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .loading-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-subtle);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--pending-orange), var(--light-orange));
+            border-radius: 4px;
+            width: 0%;
+            animation: progressAnimation 3s ease-in-out infinite;
+        }
+
+        @keyframes progressAnimation {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .next-steps {
+            background: var(--soft-gray);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .steps-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--warm-white);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--pending-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h6 {
+            margin: 0 0 0.25rem 0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .step-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--pending-orange) 0%, var(--light-orange) 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--charcoal);
+            color: white;
+            border-color: var(--charcoal);
+            text-decoration: none;
+        }
+
+        .refresh-notice {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .pending-container {
+                padding: 1rem;
+            }
+
+            .pending-header, .pending-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .pending-title {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="pending-container">
+    <div class="pending-card fade-in">
+        <!-- Заголовок ожидания -->
+        <div class="pending-header">
+            <div class="pending-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <h1 class="pending-title serif">Ожидание оплаты</h1>
+            <p class="pending-subtitle">Обрабатываем ваш платеж</p>
+        </div>
+
+        <div class="pending-body">
+            <!-- Статус оплаты -->
+            <div class="status-info">
+                <div class="status-message">
+                    <i class="bi bi-clock-history"></i>
+                    Платеж в обработке
+                </div>
+
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span>Заказ:</span>
+                        <span>№<span th:text="${order.id}">1</span></span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Сумма:</span>
+                        <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span>Статус:</span>
+                        <span>Ожидает подтверждения</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Индикатор загрузки -->
+            <div class="loading-section">
+                <div class="loading-spinner"></div>
+                <div class="loading-title">Проверяем статус платежа...</div>
+                <div class="loading-description">
+                    Это может занять от нескольких секунд до 2-3 минут.
+                    Пожалуйста, не закрывайте эту страницу.
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Что происходит -->
+            <div class="next-steps">
+                <div class="steps-title">
+                    <i class="bi bi-gear-fill"></i>
+                    Что происходит сейчас?
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h6>Проверка данных</h6>
+                        <p>Банк проверяет информацию о платеже и карте</p>
+                    </div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h6>Авторизация платежа</h6>
+                        <p>Выполняется списание средств с вашей карты</p>
+                    </div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h6>Подтверждение</h6>
+                        <p>Получение окончательного результата операции</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Уведомление об автообновлении -->
+            <div class="refresh-notice">
+                <i class="bi bi-arrow-clockwise me-2"></i>
+                <strong>Страница обновляется автоматически.</strong>
+                Как только платеж будет обработан, вы увидите результат.
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="action-buttons">
+                <button onclick="checkPaymentStatus()" class="btn-primary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Проверить статус
+                </button>
+
+                <a th:href="@{'/orders/' + ${order.id}}" class="btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Вернуться к заказу
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let checkInterval;
+    let checkCount = 0;
+    const maxChecks = 30; // Максимум 30 проверок (5 минут при интервале 10 сек)
+
+    // Функция проверки статуса платежа
+    function checkPaymentStatus() {
+        const orderId = /*[[${order.id}]]*/ '1';
+        const button = document.querySelector('.btn-primary');
+
+        // Показываем индикатор загрузки на кнопке
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-hourglass-split"></i> Проверяем...';
+        button.disabled = true;
+
+        fetch(`/payment/order-status/${orderId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.isPaid) {
+                    // Платеж успешен - перенаправляем
+                    window.location.href = `/payment/result?order_id=${orderId}`;
+                } else if (data.status === 'FAILED') {
+                    // Платеж неудачен - перенаправляем
+                    window.location.href = `/payment/result?order_id=${orderId}`;
+                } else {
+                    // Все еще в обработке - восстанавливаем кнопку
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }, 1000);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка проверки статуса:', error);
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 1000);
+            });
+    }
+
+    // Автоматическая проверка статуса каждые 10 секунд
+    function startAutoCheck() {
+        checkInterval = setInterval(() => {
+            checkCount++;
+
+            if (checkCount >= maxChecks) {
+                // Останавливаем проверки после максимального количества
+                clearInterval(checkInterval);
+                document.querySelector('.refresh-notice').innerHTML =
+                    '<i class="bi bi-exclamation-triangle me-2"></i>' +
+                    '<strong>Время ожидания истекло.</strong> ' +
+                    'Пожалуйста, проверьте статус вручную или обратитесь в поддержку.';
+                return;
+            }
+
+            checkPaymentStatus();
+        }, 10000); // Проверяем каждые 10 секунд
+    }
+
+    // Запускаем автопроверку при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Первая проверка через 5 секунд после загрузки
+        setTimeout(() => {
+            checkPaymentStatus();
+            startAutoCheck();
+        }, 5000);
+    });
+
+    // Останавливаем проверки при уходе со страницы
+    window.addEventListener('beforeunload', function() {
+        if (checkInterval) {
+            clearInterval(checkInterval);
+        }
+    });
+
+    // Возобновляем проверки при возврате на страницу
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && !checkInterval && checkCount < maxChecks) {
+            startAutoCheck();
+        } else if (document.visibilityState === 'hidden' && checkInterval) {
+            clearInterval(checkInterval);
+            checkInterval = null;
+        }
+    });
+</script>
+
+</body>
+</html>
