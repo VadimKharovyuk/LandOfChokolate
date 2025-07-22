@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Безопасная оплата - Заказ №<span th:text="${order.id}">1</span></title>
 
+
   <!-- Bootstrap CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
@@ -419,6 +420,7 @@
 </head>
 <body>
 
+
 <div class="payment-container">
   <div class="payment-card">
     <!-- Заголовок -->
@@ -426,8 +428,8 @@
       <div class="payment-icon">
         <i class="bi bi-shield-check"></i>
       </div>
-      <h1 class="payment-title serif">Безопасная оплата</h1>
-      <p class="payment-subtitle">Завершите оформление заказа</p>
+      <h1 class="payment-title serif">Безпечна оплата</h1>
+      <p class="payment-subtitle">Завершіть оформлення замовлення</p>
     </div>
 
     <div class="payment-body">
@@ -436,19 +438,19 @@
         <div class="order-header">
           <div class="order-number serif">
             <i class="bi bi-receipt"></i>
-            Заказ №<span th:text="${order.id}">1</span>
+            Замовлення №<span th:text="${order.id}">1</span>
           </div>
         </div>
 
         <div class="order-details">
           <div class="order-row">
-            <span class="order-label">Товаров</span>
+            <span class="order-label">Товарів</span>
             <span class="order-value" th:text="${order.orderItems.size()} + ' шт.'">5 шт.</span>
           </div>
 
           <div class="order-row">
-            <span class="order-label">Покупатель</span>
-            <span class="order-value" th:text="${order.customerName}">Имя покупателя</span>
+            <span class="order-label">Покупець</span>
+            <span class="order-value" th:text="${order.customerName}">Ім’я покупця</span>
           </div>
 
           <div class="order-row">
@@ -457,7 +459,7 @@
           </div>
 
           <div class="order-row">
-            <span class="order-label serif">Итого к оплате</span>
+            <span class="order-label serif">Разом до сплати</span>
             <span class="order-value serif" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
           </div>
         </div>
@@ -472,15 +474,15 @@
 
         <button onclick="submitPayment()" class="payment-button" id="main-pay-btn">
           <i class="bi bi-credit-card-2-front"></i>
-          <span>Оплатить <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span></span>
+          <span>Сплатити <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span></span>
         </button>
       </div>
 
-      <!-- Информация о безопасности -->
+      <!-- Інформація про безпеку -->
       <div class="security-section">
         <div class="security-title">
           <i class="bi bi-shield-check" style="color: var(--muted-blue);"></i>
-          <span>Ваши данные защищены</span>
+          <span>Ваші дані захищені</span>
         </div>
 
         <div class="security-items">
@@ -489,8 +491,8 @@
               <i class="bi bi-lock-fill"></i>
             </div>
             <div class="security-content">
-              <h6>SSL шифрование</h6>
-              <p>256-битная защита данных</p>
+              <h6>SSL шифрування</h6>
+              <p>256-бітний захист даних</p>
             </div>
           </div>
 
@@ -500,7 +502,7 @@
             </div>
             <div class="security-content">
               <h6>PCI DSS</h6>
-              <p>Международный стандарт</p>
+              <p>Міжнародний стандарт</p>
             </div>
           </div>
 
@@ -510,7 +512,7 @@
             </div>
             <div class="security-content">
               <h6>LiqPay</h6>
-              <p>Официальный сервис</p>
+              <p>Офіційний сервіс</p>
             </div>
           </div>
         </div>
@@ -521,7 +523,7 @@
         <div class="d-flex align-items-start gap-3">
           <i class="bi bi-info-circle-fill" style="color: var(--accent-gold); margin-top: 2px;"></i>
           <div>
-            <strong>Важно:</strong> После нажатия кнопки "Оплатить" вы будете перенаправлены на защищенную страницу платежного сервиса. Не закрывайте окно браузера до завершения операции.
+            <strong>Важливо:</strong> Після натискання кнопки "Сплатити" ви будете перенаправлені на захищену сторінку платіжного сервісу. Не закривайте вікно браузера до завершення операції.
           </div>
         </div>
       </div>
@@ -530,12 +532,13 @@
       <div class="back-section">
         <a th:href="@{'/order/' + ${order.id}}" class="back-button">
           <i class="bi bi-arrow-left"></i>
-          <span>Вернуться к заказу</span>
+          <span>Повернутися до замовлення</span>
         </a>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
