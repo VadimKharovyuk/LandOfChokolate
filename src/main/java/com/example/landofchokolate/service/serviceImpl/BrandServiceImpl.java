@@ -1,9 +1,6 @@
 package com.example.landofchokolate.service.serviceImpl;
 
-import com.example.landofchokolate.dto.brend.BrandFilterDto;
-import com.example.landofchokolate.dto.brend.BrandProjection;
-import com.example.landofchokolate.dto.brend.BrandResponseDto;
-import com.example.landofchokolate.dto.brend.CreateBrandDto;
+import com.example.landofchokolate.dto.brend.*;
 import com.example.landofchokolate.mapper.BrandMapper;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.repository.BrandRepository;
@@ -11,12 +8,16 @@ import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +93,54 @@ public class BrandServiceImpl implements BrandService {
 
         brandRepository.deleteById(id);
         log.info("Brand deleted successfully with id: {}", id);
+    }
+
+    @Override
+    public BrandPageResponseDto getBrandsForClient(Pageable pageable) {
+        Page<Brand> brandPage = brandRepository.findAll(pageable);
+
+        List<BrandClientDto> brandClientDtos = brandPage.getContent().stream()
+                .map(this::convertToBrandClientDto)
+                .collect(Collectors.toList());
+
+        return new BrandPageResponseDto(
+                brandClientDtos,
+                brandPage.getNumber(),
+                brandPage.getTotalPages(),
+                brandPage.getTotalElements(),
+                brandPage.getSize(),
+                brandPage.hasNext(),
+                brandPage.hasPrevious()
+        );
+    }
+
+    @Override
+    public BrandClientDto getBrandBySlug(String slug) {
+        Brand brand = brandRepository.findBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("Brand not found with slug: " + slug));
+
+        return convertToBrandClientDto(brand);
+    }
+
+    @Override
+    public List<BrandClientDto> getBrandByLimit(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        Page<Brand> brandPage = brandRepository.findAll(pageable);
+
+        return brandPage.getContent().stream()
+                .map(this::convertToBrandClientDto)
+                .collect(Collectors.toList());
+    }
+
+    // Вспомогательный метод для конвертации
+    private BrandClientDto convertToBrandClientDto(Brand brand) {
+        return new BrandClientDto(
+                brand.getId(),
+                brand.getName(),
+                brand.getDescription(),
+                brand.getImageUrl(),
+                brand.getSlug()
+        );
     }
 
     @Override

@@ -878,6 +878,183 @@
 
 
 
+<!-- Brands Section -->
+<section class="preview-section" id="brands">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-subtitle">Наші бренди</p>
+            <h2 class="section-title">Преміальні виробники</h2>
+            <p class="section-description">
+                Працюємо лише з найкращими світовими брендами кондитерських виробів.
+                Якість, смак і неперевершений досвід у кожному продукті.
+            </p>
+        </div>
+
+        <!-- Dynamic Brands Grid -->
+        <div class="product-grid" th:if="${brands != null and !brands.isEmpty()}">
+            <a th:each="brand : ${brands}"
+               th:href="@{'/brands/' + ${brand.slug}}"
+               class="product-card brand-card">
+
+                <!-- Brand Image -->
+                <div class="product-image brand-image"
+                     th:style="${brand.imageUrl != null and !brand.imageUrl.isEmpty()} ?
+                               'background: url(' + ${brand.imageUrl} + ') center/contain no-repeat; background-color: #fff;' :
+                               'background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center;'">
+
+                    <!-- Placeholder if no image -->
+                    <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"
+                         style="color: #adb5bd; font-size: 3rem;">
+                        <i class="fas fa-award"></i>
+                    </div>
+
+                    <!-- Premium Badge -->
+                    <div class="brand-badge">
+                        <i class="fas fa-crown"></i>
+                        Premium
+                    </div>
+                </div>
+
+                <!-- Brand Content -->
+                <div class="product-content brand-content">
+                    <p class="product-category">Бренд</p>
+                    <h3 class="product-title" th:text="${brand.name}">Ferrero</h3>
+                    <p class="product-description" th:text="${brand.description}">
+                        Італійський виробник преміальних шоколадних виробів
+                    </p>
+
+                    <!-- Brand Info -->
+                    <div class="brand-info">
+                        <span class="brand-status">
+                            <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                            Офіційний дистриб'ютор
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Fallback: Message if no dynamic data -->
+        <div class="empty-brands-message" th:if="${brands == null or brands.isEmpty()}">
+            <div class="empty-state">
+                <i class="fas fa-award" style="font-size: 4rem; color: #ffc107; margin-bottom: 1rem;"></i>
+                <h3 style="color: #6c757d; margin-bottom: 0.5rem;">Бренди скоро будуть</h3>
+                <p style="color: #adb5bd;">Ми працюємо над додаванням найкращих світових брендів</p>
+            </div>
+        </div>
+
+        <!-- Footer Button -->
+        <div class="section-footer">
+            <a th:href="@{/brands}" class="view-more-btn">
+                Переглянути всі бренди
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Additional styles for brands -->
+<style>
+    .brand-card {
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        display: block;
+    }
+
+    .brand-card:hover {
+        text-decoration: none;
+        color: inherit;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .brand-image {
+        position: relative;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+    }
+
+    .brand-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #333;
+        padding: 6px 10px;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .brand-content {
+        text-align: center;
+    }
+
+    .brand-info {
+        margin-top: 0.75rem;
+    }
+
+    .brand-status {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Brands grid - 3 per row */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    /* Responsive grid */
+    @media (max-width: 992px) {
+        .product-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .product-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+    .empty-brands-message {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+        padding: 2rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        max-width: 400px;
+    }
+
+    /* Responsive adjustments for brands */
+    @media (max-width: 768px) {
+        .brand-badge {
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+        }
+    }
+</style>
+
 
 
 
