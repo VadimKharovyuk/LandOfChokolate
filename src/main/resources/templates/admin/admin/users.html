@@ -269,10 +269,6 @@
           </td>
           <td>
             <div class="btn-group">
-              <!-- Просмотр (все роли) -->
-              <a th:href="@{'/admin/user/' + ${user.id}}" class="btn btn-outline-primary btn-sm">
-                <i class="fas fa-eye"></i> Просмотр
-              </a>
 
               <!-- Редактирование (EDITOR и SUPER_ADMIN) -->
               <a th:if="${currentUser.adminType.name() == 'EDITOR' or currentUser.adminType.name() == 'SUPER_ADMIN'}"
@@ -318,22 +314,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Администраторы</h5>
-          <h2 class="text-success" th:text="${users != null ? users.stream().filter(u -> u.adminType.name() != 'NONE').count() : 0}">0</h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Супер-админы</h5>
-          <h2 class="text-danger" th:text="${users != null ? users.stream().filter(u -> u.adminType.name() == 'SUPER_ADMIN').count() : 0}">0</h2>
-        </div>
-      </div>
-    </div>
+
   </div>
 </div>
 

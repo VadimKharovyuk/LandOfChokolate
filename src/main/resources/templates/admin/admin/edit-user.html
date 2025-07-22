@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование пользователя - Админ панель</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: #343a40;
+            border-bottom: 3px solid #fd7e14;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .edit-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);
+            color: white;
+            padding: 25px;
+            border: none;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #fd7e14;
+            box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.15);
+        }
+
+        .btn-primary {
+            background-color: #fd7e14;
+            border-color: #fd7e14;
+            padding: 12px 25px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #e8590c;
+            border-color: #e8590c;
+        }
+
+        .btn-secondary {
+            padding: 12px 25px;
+            font-weight: 600;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-info-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .role-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .role-super-admin {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .role-editor {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .role-viewer {
+            background-color: #198754;
+            color: white;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb-item a {
+            color: #fd7e14;
+            text-decoration: none;
+        }
+
+        .form-text {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+
+        .password-requirements {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 0.875rem;
+        }
+
+        .readonly-field {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin">
+            <i class="fas fa-shield-alt me-2"></i>Админ панель
+        </a>
+        <div class="navbar-nav ms-auto">
+                <span class="navbar-text text-light" th:if="${currentUser}">
+                    <i class="fas fa-user me-1"></i>
+                    <span th:text="${currentUser.username}">admin</span>
+                    <span class="role-badge"
+                          th:classappend="${currentUser.adminType.name() == 'SUPER_ADMIN'} ? 'role-super-admin' :
+                                         (${currentUser.adminType.name() == 'EDITOR'} ? 'role-editor' : 'role-viewer')"
+                          th:text="${currentUser.adminType.displayName}">
+                        Редактирование
+                    </span>
+                </span>
+            <a href="/admin/logout" class="btn btn-outline-light btn-sm ms-3">
+                <i class="fas fa-sign-out-alt me-1"></i>Выйти
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin"><i class="fas fa-home"></i> Главная</a></li>
+            <li class="breadcrumb-item"><a href="/admin/users">Пользователи</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Редактирование</li>
+        </ol>
+    </nav>
+
+    <!-- Карточка редактирования -->
+    <div class="edit-card">
+        <div class="card-header">
+            <h2>
+                <i class="fas fa-user-edit me-2"></i>
+                Редактирование пользователя
+            </h2>
+            <small class="opacity-75">Изменение данных пользователя <strong th:text="${user.username}">admin</strong></small>
+        </div>
+
+        <div class="card-body">
+            <!-- Информация о текущем редакторе -->
+            <div class="user-info-card" th:if="${currentUser}">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle text-primary me-2"></i>
+                    <span>Редактирует: <strong th:text="${currentUser.username}">admin</strong></span>
+                    <span class="role-badge"
+                          th:classappend="${currentUser.adminType.name() == 'SUPER_ADMIN'} ? 'role-super-admin' : 'role-editor'"
+                          th:text="${currentUser.adminType.displayName}">
+                            Полный доступ
+                        </span>
+                </div>
+                <small class="text-muted mt-1 d-block" th:if="${currentUser.adminType.name() != 'SUPER_ADMIN'}">
+                    <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                    Изменение роли доступно только SUPER_ADMIN
+                </small>
+            </div>
+
+            <!-- Сообщения -->
+            <div class="alert alert-danger" th:if="${error}">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}">Ошибка</span>
+            </div>
+
+            <div class="alert alert-success" th:if="${success}">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}">Успех</span>
+            </div>
+
+            <!-- Форма редактирования -->
+            <form th:action="@{'/admin/user/' + ${user.id} + '/edit'}" th:object="${user}" method="post">
+
+                <!-- ID пользователя (только для отображения) -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="fas fa-hashtag me-2"></i>ID пользователя
+                    </label>
+                    <input type="text" class="form-control readonly-field" th:value="${user.id}" readonly>
+                    <div class="form-text">Системный идентификатор пользователя</div>
+                </div>
+
+                <!-- Имя пользователя -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user me-2"></i>Имя пользователя *
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           id="username"
+                           th:field="*{username}"
+                           placeholder="Введите имя пользователя"
+                           required>
+                    <div class="form-text">Минимум 3 символа. Используется для входа в систему.</div>
+                </div>
+
+                <!-- Роль пользователя -->
+                <div class="mb-3">
+                    <label for="adminType" class="form-label">
+                        <i class="fas fa-user-cog me-2"></i>Роль пользователя
+                    </label>
+                    <select class="form-select"
+                            id="adminType"
+                            th:field="*{adminType}"
+                            th:disabled="${currentUser.adminType.name() != 'SUPER_ADMIN'}">
+                        <option th:each="type : ${adminTypes}"
+                                th:value="${type}"
+                                th:text="${type.displayName}"
+                                th:selected="${type == user.adminType}">
+                            Роль
+                        </option>
+                    </select>
+                    <div class="form-text" th:if="${currentUser.adminType.name() == 'SUPER_ADMIN'}">
+                        Изменение роли влияет на права доступа пользователя
+                    </div>
+                    <div class="form-text text-warning" th:if="${currentUser.adminType.name() != 'SUPER_ADMIN'}">
+                        Изменение роли доступно только для SUPER_ADMIN
+                    </div>
+                </div>
+
+                <!-- Новый пароль (опционально) -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock me-2"></i>Новый пароль
+                    </label>
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           th:field="*{password}"
+                           placeholder="Оставьте пустым, если не хотите менять пароль">
+                    <div class="password-requirements">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Требования к паролю:</strong> минимум 6 символов.
+                        Если поле оставить пустым, пароль не изменится.
+                    </div>
+                </div>
+
+                <!-- Даты создания и обновления -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-plus me-2"></i>Дата создания
+                        </label>
+                        <input type="text" class="form-control readonly-field"
+                               th:value="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm') : 'Не указана'}"
+                               readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-check me-2"></i>Последнее обновление
+                        </label>
+                        <input type="text" class="form-control readonly-field"
+                               th:value="${user.updatedAt != null ? #temporals.format(user.updatedAt, 'dd.MM.yyyy HH:mm') : 'Не указана'}"
+                               readonly>
+                    </div>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Сохранить изменения
+                    </button>
+
+                    <a href="/admin/users" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Отмена
+                    </a>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Автоматическое скрытие алертов через 5 секунд
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+
+    // Валидация формы
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (username.length < 3) {
+            e.preventDefault();
+            alert('Имя пользователя должно содержать минимум 3 символа');
+            return;
+        }
+
+        if (password && password.length < 6) {
+            e.preventDefault();
+            alert('Пароль должен содержать минимум 6 символов');
+            return;
+        }
+    });
+
+    // Подтверждение изменений
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        if (!confirm(`Сохранить изменения для пользователя "${username}"?`)) {
+            e.preventDefault();
+        }
+    });
+</script>
+</body>
+</html>

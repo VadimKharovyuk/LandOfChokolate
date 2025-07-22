@@ -130,6 +130,9 @@ public class AdminDashboardController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+
+
     // === АУТЕНТИФИКАЦИЯ ===
 
     @GetMapping("/login")
@@ -345,4 +348,149 @@ public class AdminDashboardController {
             return "redirect:/admin/create-user";
         }
     }
+
+    @PostMapping("/user/{id}/delete")
+    public String deleteUser(@PathVariable Long id,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("adminUser");
+
+            // Только SUPER_ADMIN может удалять пользователей
+            if (currentUser.getAdminType() != AdminType.SUPER_ADMIN) {
+                redirectAttributes.addFlashAttribute("error", "У вас нет прав для удаления пользователей");
+                return "redirect:/admin/users";
+            }
+
+            User userToDelete = userRepository.findById(id).orElse(null);
+            if (userToDelete == null) {
+                redirectAttributes.addFlashAttribute("error", "Пользователь не найден");
+                return "redirect:/admin/users";
+            }
+
+            // Нельзя удалить самого себя
+            if (userToDelete.getId().equals(currentUser.getId())) {
+                redirectAttributes.addFlashAttribute("error", "Нельзя удалить самого себя");
+                return "redirect:/admin/users";
+            }
+
+            String deletedUsername = userToDelete.getUsername();
+            userRepository.deleteById(id);
+
+            log.info("User deleted: {} by admin: {}", deletedUsername, currentUser.getUsername());
+            redirectAttributes.addFlashAttribute("success", "Пользователь успешно удален");
+
+        } catch (Exception e) {
+            log.error("Error deleting user with id: {}", id, e);
+            redirectAttributes.addFlashAttribute("error", "Ошибка при удалении пользователя");
+        }
+
+        return "redirect:/admin/users";
+    }
+
+    // GET метод - показ формы редактирования
+    @GetMapping("/user/{id}/edit")
+    public String showEditUserForm(@PathVariable Long id,
+                                   HttpSession session,
+                                   Model model,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("adminUser");
+
+            // Только SUPER_ADMIN и EDITOR могут редактировать
+            if (currentUser.getAdminType() == AdminType.VIEWER || currentUser.getAdminType() == AdminType.NONE) {
+                redirectAttributes.addFlashAttribute("error", "У вас нет прав для редактирования пользователей");
+                return "redirect:/admin/users";
+            }
+
+            User userToEdit = userRepository.findById(id).orElse(null);
+            if (userToEdit == null) {
+                redirectAttributes.addFlashAttribute("error", "Пользователь не найден");
+                return "redirect:/admin/users";
+            }
+
+            model.addAttribute("user", userToEdit);
+            model.addAttribute("adminTypes", AdminType.values());
+            model.addAttribute("currentUser", currentUser);
+
+            return "admin/admin/edit-user";
+
+        } catch (Exception e) {
+            log.error("Error loading edit form for user id: {}", id, e);
+            redirectAttributes.addFlashAttribute("error", "Ошибка при загрузке формы редактирования");
+            return "redirect:/admin/users";
+        }
+    }
+
+    // POST метод - обновление пользователя
+    @PostMapping("/user/{id}/edit")
+    public String updateUser(@PathVariable Long id,
+                             @ModelAttribute User updatedUser,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("adminUser");
+
+            // Проверка прав доступа
+            if (currentUser.getAdminType() == AdminType.VIEWER || currentUser.getAdminType() == AdminType.NONE) {
+                redirectAttributes.addFlashAttribute("error", "У вас нет прав для редактирования пользователей");
+                return "redirect:/admin/users";
+            }
+
+            User existingUser = userRepository.findById(id).orElse(null);
+            if (existingUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Пользователь не найден");
+                return "redirect:/admin/users";
+            }
+
+            // Валидация данных
+            if (updatedUser.getUsername() == null || updatedUser.getUsername().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Имя пользователя не может быть пустым");
+                return "redirect:/admin/user/" + id + "/edit";
+            }
+
+            if (updatedUser.getUsername().length() < 3) {
+                redirectAttributes.addFlashAttribute("error", "Имя пользователя должно содержать минимум 3 символа");
+                return "redirect:/admin/user/" + id + "/edit";
+            }
+
+            // Проверка на существование пользователя с таким именем (кроме текущего)
+            User existingByUsername = userRepository.findByUsername(updatedUser.getUsername()).orElse(null);
+            if (existingByUsername != null && !existingByUsername.getId().equals(id)) {
+                redirectAttributes.addFlashAttribute("error", "Пользователь с таким именем уже существует");
+                return "redirect:/admin/user/" + id + "/edit";
+            }
+
+            // Обновляем основные поля
+            existingUser.setUsername(updatedUser.getUsername());
+
+            // Обновляем роль (только SUPER_ADMIN может изменять роли)
+            if (currentUser.getAdminType() == AdminType.SUPER_ADMIN) {
+                existingUser.setAdminType(updatedUser.getAdminType());
+            }
+
+            // Обновляем пароль только если он был введен
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().trim().isEmpty()) {
+                if (updatedUser.getPassword().length() < 6) {
+                    redirectAttributes.addFlashAttribute("error", "Пароль должен содержать минимум 6 символов");
+                    return "redirect:/admin/user/" + id + "/edit";
+                }
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
+
+            userRepository.save(existingUser);
+
+            log.info("User updated: {} by admin: {}", existingUser.getUsername(), currentUser.getUsername());
+            redirectAttributes.addFlashAttribute("success", "Пользователь успешно обновлен");
+
+            return "redirect:/admin/users";
+
+        } catch (Exception e) {
+            log.error("Error updating user with id: {}", id, e);
+            redirectAttributes.addFlashAttribute("error", "Ошибка при обновлении пользователя");
+            return "redirect:/admin/user/" + id + "/edit";
+        }
+    }
+
+
 }

@@ -30,11 +30,11 @@ public class DataInitializer {
         if (userRepository.countByAdminType(AdminType.SUPER_ADMIN) == 0) {
             User superAdmin = new User();
             superAdmin.setUsername("admin");
-            superAdmin.setPassword(passwordEncoder.encode("admin123")); // Измените пароль!
+            superAdmin.setPassword(passwordEncoder.encode("admin"));
             superAdmin.setAdminType(AdminType.SUPER_ADMIN);
 
             userRepository.save(superAdmin);
-            log.info("Создан первоначальный SUPER_ADMIN: username=admin, password=admin123");
+            log.info("Создан первоначальный SUPER_ADMIN: username=admin, password=admin");
             log.warn("ВАЖНО: Смените пароль по умолчанию после первого входа!");
         }
     }
