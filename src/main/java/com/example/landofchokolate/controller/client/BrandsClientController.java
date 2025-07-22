@@ -74,6 +74,7 @@ public class BrandsClientController {
         model.addAttribute("hasNext", productsPage.isHasNext());
         model.addAttribute("hasPrevious", productsPage.isHasPrevious());
 
+
         // Добавляем весь объект пагинации для удобства
         model.addAttribute("productsPagination", productsPage);
 
