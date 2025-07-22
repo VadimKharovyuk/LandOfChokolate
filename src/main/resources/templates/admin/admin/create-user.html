@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание пользователя - Админ панель</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .create-user-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border: none;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .card-header .subtitle {
+            opacity: 0.9;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-floating {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+        }
+
+        .form-select {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+        }
+
+        .admin-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #667eea;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .role-super-admin {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+
+        .form-group-inline {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-group-inline .btn {
+            min-width: 120px;
+        }
+
+        .password-requirements {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #667eea;
+        }
+
+        .role-description {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <div class="create-user-card">
+        <div class="card-header">
+            <h2><i class="fas fa-user-plus me-2"></i>Создание пользователя</h2>
+            <div class="subtitle">Добавление нового администратора в систему</div>
+        </div>
+
+        <div class="card-body">
+            <!-- Информация о текущем пользователе -->
+            <div class="admin-info" th:if="${currentUser}">
+                <i class="fas fa-info-circle me-2"></i>
+                Вы вошли как: <strong th:text="${currentUser.username}">admin</strong>
+                <span class="role-badge role-super-admin" th:text="${currentUser.adminType.displayName}">Полный доступ</span>
+            </div>
+
+            <!-- Сообщения об ошибках и успехе -->
+            <div class="alert alert-danger" th:if="${error}">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}">Ошибка</span>
+            </div>
+
+            <div class="alert alert-success" th:if="${success}">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}">Успех</span>
+            </div>
+
+            <!-- Форма создания пользователя -->
+            <form th:action="@{/admin/create-user}" th:object="${user}" method="post">
+
+                <!-- Имя пользователя -->
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="username"
+                           th:field="*{username}"
+                           placeholder="Введите имя пользователя"
+                           required>
+                    <label for="username">
+                        <i class="fas fa-user me-2"></i>Имя пользователя
+                    </label>
+                </div>
+
+                <!-- Пароль -->
+                <div class="form-floating">
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           th:field="*{password}"
+                           placeholder="Введите пароль"
+                           required>
+                    <label for="password">
+                        <i class="fas fa-lock me-2"></i>Пароль
+                    </label>
+                    <div class="password-requirements">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Пароль должен содержать минимум 6 символов
+                    </div>
+                </div>
+
+                <!-- Тип администратора -->
+                <div class="form-floating">
+                    <select class="form-select"
+                            id="adminType"
+                            th:field="*{adminType}"
+                            required>
+                        <option value="">Выберите тип доступа...</option>
+                        <option th:each="type : ${adminTypes}"
+                                th:value="${type}"
+                                th:text="${type.displayName}"
+                                th:selected="${type == T(com.example.landofchokolate.enums.AdminType).VIEWER}">
+                            Тип доступа
+                        </option>
+                    </select>
+                    <label for="adminType">
+                        <i class="fas fa-user-cog me-2"></i>Тип доступа
+                    </label>
+                </div>
+
+                <!-- Описание ролей -->
+                <div class="role-description">
+                    <strong>Описание ролей:</strong><br>
+                    • <strong>Нет доступа</strong> - пользователь не может войти в админ панель<br>
+                    • <strong>Только просмотр</strong> - может только просматривать данные<br>
+                    • <strong>Редактирование</strong> - может просматривать и редактировать данные<br>
+                    • <strong>Полный доступ</strong> - может всё, включая управление пользователями
+                </div>
+
+                <!-- Кнопки -->
+                <div class="form-group-inline mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Создать пользователя
+                    </button>
+
+                    <a th:href="@{/admin/users}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Отмена
+                    </a>
+                </div>
+            </form>
+
+            <!-- Дополнительные ссылки -->
+            <div class="text-center mt-4">
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/admin}" class="text-decoration-none">
+                        <i class="fas fa-home me-1"></i>На главную
+                    </a>
+                    <a th:href="@{/admin/users}" class="text-decoration-none">
+                        <i class="fas fa-users me-1"></i>Список пользователей
+                    </a>
+                    <a th:href="@{/admin/logout}" class="text-decoration-none text-danger">
+                        <i class="fas fa-sign-out-alt me-1"></i>Выйти
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Автоматическое скрытие алертов через 5 секунд
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+
+    // Валидация формы на стороне клиента
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const adminType = document.getElementById('adminType').value;
+
+        if (username.length < 3) {
+            e.preventDefault();
+            alert('Имя пользователя должно содержать минимум 3 символа');
+            return;
+        }
+
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Пароль должен содержать минимум 6 символов');
+            return;
+        }
+
+        if (!adminType) {
+            e.preventDefault();
+            alert('Выберите тип доступа');
+            return;
+        }
+    });
+
+    // Показ/скрытие пароля
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.querySelector('.password-toggle');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    }
+</script>
+</body>
+</html>

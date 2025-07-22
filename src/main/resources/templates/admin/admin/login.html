@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в админ панель - Land of Chocolate</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Анимированный фон */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: -2;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="25" cy="25" r="20" fill="url(%23g)"><animate attributeName="r" values="20;25;20" dur="3s" repeatCount="indefinite"/></circle><circle cx="75" cy="75" r="15" fill="url(%23g)"><animate attributeName="r" values="15;20;15" dur="4s" repeatCount="indefinite"/></circle></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px 30px;
+            text-align: center;
+            border: none;
+            position: relative;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+        }
+
+        .card-header h1 {
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card-header .subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .card-body {
+            padding: 40px 30px;
+        }
+
+        .form-floating {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-control {
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-floating label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .btn-login:active {
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            animation: slideInAlert 0.5s ease-out;
+        }
+
+        @keyframes slideInAlert {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #764ba2;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 5;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .btn-login.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        .btn-login.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        .security-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+
+        .version-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="animated-bg"></div>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="card-header">
+            <div class="logo-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>Админ панель</h1>
+            <div class="subtitle">Land of Chocolate</div>
+        </div>
+
+        <div class="card-body">
+            <!-- Информация о безопасности -->
+            <div class="security-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Доступ только для авторизованных администраторов
+            </div>
+
+            <!-- Сообщения об ошибках -->
+            <div class="alert alert-danger" th:if="${error}">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}">Ошибка входа</span>
+            </div>
+
+            <!-- Сообщения об успехе -->
+            <div class="alert alert-success" th:if="${success}">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}">Успешный выход</span>
+            </div>
+
+            <!-- Форма входа -->
+            <form th:action="@{/admin/login}" method="post" id="loginForm">
+
+                <!-- Имя пользователя -->
+                <div class="form-floating">
+                    <input type="text"
+                           class="form-control"
+                           id="username"
+                           name="username"
+                           placeholder="Введите имя пользователя"
+                           required
+                           autocomplete="username">
+                    <label for="username">
+                        <i class="fas fa-user me-2"></i>Имя пользователя
+                    </label>
+                </div>
+
+                <!-- Пароль -->
+                <div class="form-floating position-relative">
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           name="password"
+                           placeholder="Введите пароль"
+                           required
+                           autocomplete="current-password">
+                    <label for="password">
+                        <i class="fas fa-lock me-2"></i>Пароль
+                    </label>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <!-- Кнопка входа -->
+                <button type="submit" class="btn btn-primary btn-login">
+                        <span class="btn-text">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти в систему
+                        </span>
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+            </form>
+
+            <!-- Дополнительная информация -->
+            <div class="footer-links">
+                <div class="mb-2">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        Сессия автоматически истекает через 24 часа
+                    </small>
+                </div>
+                <a href="/" class="text-decoration-none">
+                    <i class="fas fa-home me-1"></i>Вернуться на сайт
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Информация о версии -->
+<div class="version-info">
+    <i class="fas fa-code-branch me-1"></i>v1.0.0
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Автоматическое скрытие алертов через 5 секунд
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+
+    // Показ/скрытие пароля
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.querySelector('.password-toggle i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.classList.remove('fa-eye');
+            toggleBtn.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.classList.remove('fa-eye-slash');
+            toggleBtn.classList.add('fa-eye');
+        }
+    }
+
+    // Обработка отправки формы
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const submitBtn = document.querySelector('.btn-login');
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        // Базовая валидация
+        if (!username || !password) {
+            e.preventDefault();
+            showAlert('Заполните все поля', 'danger');
+            return;
+        }
+
+        if (username.length < 3) {
+            e.preventDefault();
+            showAlert('Имя пользователя слишком короткое', 'danger');
+            return;
+        }
+
+        // Показываем индикатор загрузки
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+    });
+
+    // Функция для показа алертов
+    function showAlert(message, type) {
+        const existingAlert = document.querySelector('.alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                ${message}
+            `;
+
+        const form = document.getElementById('loginForm');
+        form.parentNode.insertBefore(alertDiv, form);
+
+        // Автоматическое удаление через 3 секунды
+        setTimeout(() => {
+            alertDiv.style.transition = 'opacity 0.5s ease';
+            alertDiv.style.opacity = '0';
+            setTimeout(() => alertDiv.remove(), 500);
+        }, 3000);
+    }
+
+    // Фокус на первое поле при загрузке страницы
+    window.addEventListener('load', function() {
+        document.getElementById('username').focus();
+    });
+
+    // Обработка Enter в полях формы
+    document.querySelectorAll('#username, #password').forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (this.id === 'username') {
+                    document.getElementById('password').focus();
+                } else {
+                    document.getElementById('loginForm').submit();
+                }
+            }
+        });
+    });
+
+    // Удаление индикатора загрузки при ошибке
+    window.addEventListener('pageshow', function() {
+        const submitBtn = document.querySelector('.btn-login');
+        if (submitBtn) {
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
