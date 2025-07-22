@@ -5,6 +5,7 @@ import com.example.landofchokolate.mapper.BrandMapper;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.repository.BrandRepository;
 import com.example.landofchokolate.service.BrandService;
+import com.example.landofchokolate.service.SlugService;
 import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final StorageService storageService;
+    private final SlugService slugService;
 
     @Override
     public BrandResponseDto createBrand(CreateBrandDto createBrandDto) {
@@ -35,6 +37,9 @@ public class BrandServiceImpl implements BrandService {
 
         // Обработка загрузки изображения
         handleImageUpload(createBrandDto.getImage(), brand);
+
+        String slug = slugService.generateUniqueSlugForBrand(createBrandDto.getName());
+        brand.setSlug(slug);
 
         Brand savedBrand = brandRepository.save(brand);
 
@@ -130,6 +135,26 @@ public class BrandServiceImpl implements BrandService {
         return brandPage.getContent().stream()
                 .map(this::convertToBrandClientDto)
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Генерирует slug для всех брендов где он null
+     */
+    @Override
+    @Transactional
+    public void generateMissingSlugForBrands() {
+        List<Brand> brandsWithoutSlug = brandRepository.findBySlugIsNull();
+
+        for (Brand brand : brandsWithoutSlug) {
+            String slug = slugService.generateUniqueSlugForBrand(brand.getName());
+            brand.setSlug(slug);
+            brandRepository.save(brand);
+            log.info("Generated slug '{}' for brand id={} name='{}'",
+                    slug, brand.getId(), brand.getName());
+        }
+
+        log.info("Generated slugs for {} brands", brandsWithoutSlug.size());
     }
 
     // Вспомогательный метод для конвертации

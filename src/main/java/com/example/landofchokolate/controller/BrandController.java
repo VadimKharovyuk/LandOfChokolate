@@ -4,6 +4,7 @@ import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.brend.CreateBrandDto;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.service.BrandService;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -142,4 +143,10 @@ public class BrandController {
 
         return "redirect:/admin/brand/list";
     }
+
+
+//        @PostConstruct
+//    public void init() {
+//        brandService.generateMissingSlugForBrands();
+//    }
 }

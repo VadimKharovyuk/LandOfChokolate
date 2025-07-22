@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Наші бренди - Land of Chocolate</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
+  <style>
+    :root {
+      --primary-dark: #2C2C2C;
+      --primary-medium: #5A5A5A;
+      --primary-light: #FAFAFA;
+      --accent-gold: #D4AF37;
+      --accent-warm: #F5F5F0;
+      --text-primary: #1A1A1A;
+      --text-secondary: #757575;
+      --border-subtle: #E8E8E8;
+      --shadow-soft: rgba(0, 0, 0, 0.04);
+      --shadow-medium: rgba(0, 0, 0, 0.08);
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background-color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    .serif-font {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Основной контент с отступом от навигации */
+    .main-content {
+      margin-top: 80px;
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumb-container {
+      padding: 2rem 0 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .breadcrumb {
+      background: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb-item {
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb-item a:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-item.active {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Page Header */
+    .page-header {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Results Info */
+    .results-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding: 1.5rem 2rem;
+      background: var(--accent-warm);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .results-count {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .results-meta {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Brands Grid */
+    .brands-section {
+      padding: 3rem 0;
+    }
+
+    .brands-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .brand-card {
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      height: fit-content;
+    }
+
+    .brand-card:hover {
+      text-decoration: none;
+      color: inherit;
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .brand-image {
+      width: 100%;
+      height: 200px;
+      background-color: var(--accent-warm);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: relative;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-image-placeholder {
+      color: var(--text-secondary);
+      font-size: 4rem;
+    }
+
+    .premium-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent-gold);
+      color: #FFFFFF;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-content {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .brand-category {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    .brand-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--success-color);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--accent-warm);
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .empty-state i {
+      font-size: 5rem;
+      color: var(--accent-gold);
+      margin-bottom: 2rem;
+    }
+
+    .empty-state h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Pagination */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 4rem;
+    }
+
+    .pagination {
+      background: #FFFFFF;
+      border-radius: 8px;
+      box-shadow: var(--shadow-soft);
+      padding: 1rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .page-link {
+      border: none;
+      color: var(--text-primary);
+      padding: 12px 18px;
+      margin: 0 2px;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background: transparent;
+    }
+
+    .page-link:hover {
+      background: var(--primary-light);
+      color: var(--text-primary);
+    }
+
+    .page-item.active .page-link {
+      background: var(--primary-dark);
+      color: #FFFFFF;
+    }
+
+    .page-item.disabled .page-link {
+      color: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    .page-item.disabled .page-link:hover {
+      background: transparent;
+    }
+
+    /* Continue Shopping */
+    .continue-shopping {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .btn-continue {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: none;
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-continue:hover {
+      background: var(--primary-light);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .brands-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .page-title {
+        font-size: 2.5rem;
+      }
+
+      .results-info {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-container {
+        padding: 0 1.5rem;
+      }
+
+      .brands-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .brand-content {
+        padding: 1.5rem;
+      }
+
+      .page-header {
+        padding: 3rem 0 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент -->
+<div class="main-content">
+  <div class="main-container">
+    <!-- Хлебные крошки -->
+    <nav class="breadcrumb-container" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}">
+            <i class="fas fa-home"></i> Головна
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Бренди</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title">Наші бренди</h1>
+      <p class="page-subtitle">
+        Преміальні світові виробники кондитерських виробів
+      </p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="brands-section">
+
+      <!-- Results Info -->
+      <div class="results-info" th:if="${totalElements > 0}">
+        <div class="results-count">
+          <strong th:text="${totalElements}">24</strong> брендів знайдено
+        </div>
+        <div class="results-meta">
+          Сторінка <span th:text="${currentPage + 1}">1</span> з <span th:text="${totalPages}">3</span>
+        </div>
+      </div>
+
+      <!-- Brands Grid -->
+      <div class="brands-grid" th:if="${brands != null and !brands.isEmpty()}">
+        <a th:each="brand : ${brands}"
+           th:href="@{'/brands/' + ${brand.slug}}"
+           class="brand-card">
+
+          <!-- Brand Image -->
+          <div class="brand-image"
+               th:style="${brand.imageUrl != null and !brand.imageUrl.isEmpty()} ?
+                                       'background-image: url(' + ${brand.imageUrl} + ');' : ''">
+
+            <!-- Placeholder if no image -->
+            <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"
+                 class="brand-image-placeholder">
+              <i class="fas fa-award"></i>
+            </div>
+
+            <!-- Premium Badge -->
+            <div class="premium-badge">
+              <i class="fas fa-crown"></i>
+              Premium
+            </div>
+          </div>
+
+          <!-- Brand Content -->
+          <div class="brand-content">
+            <p class="brand-category">Бренд</p>
+            <h3 class="brand-name" th:text="${brand.name}">Ferrero</h3>
+            <p class="brand-description" th:text="${brand.description}">
+              Італійський виробник преміальних шоколадних виробів з багаторічною історією та традиціями якості.
+            </p>
+
+            <!-- Brand Footer -->
+            <div class="brand-footer">
+              <i class="fas fa-check-circle"></i>
+              Офіційний дистриб'ютор
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" th:if="${brands == null or brands.isEmpty()}">
+        <i class="fas fa-award"></i>
+        <h3>Бренди скоро будуть</h3>
+        <p>Ми працюємо над додаванням найкращих світових брендів кондитерських виробів</p>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container" th:if="${totalPages > 1}">
+        <nav>
+          <ul class="pagination">
+            <!-- Previous Button -->
+            <li class="page-item" th:classappend="${!hasPrevious} ? 'disabled' : ''">
+              <a class="page-link"
+                 th:href="${hasPrevious} ? @{/brands(page=${currentPage - 1})} : '#'"
+                 tabindex="-1">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+            </li>
+
+            <!-- Page Numbers -->
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item"
+                th:classappend="${i == currentPage} ? 'active' : ''">
+              <a class="page-link"
+                 th:href="@{/brands(page=${i})}"
+                 th:text="${i + 1}">1</a>
+            </li>
+
+            <!-- Next Button -->
+            <li class="page-item" th:classappend="${!hasNext} ? 'disabled' : ''">
+              <a class="page-link"
+                 th:href="${hasNext} ? @{/brands(page=${currentPage + 1})} : '#'">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Continue Shopping -->
+      <div class="continue-shopping">
+        <a th:href="@{/categories}" class="btn-continue">
+          <i class="fas fa-arrow-left"></i>
+          Повернутися до категорій
+        </a>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

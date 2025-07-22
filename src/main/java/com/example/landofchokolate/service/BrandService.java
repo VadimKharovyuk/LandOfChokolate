@@ -22,4 +22,8 @@ public interface BrandService {
     BrandClientDto getBrandBySlug(String slug);
 
     List<BrandClientDto> getBrandByLimit(int limit);
+
+
+
+    void generateMissingSlugForBrands();
 }
