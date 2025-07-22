@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата успешна - Заказ №<span th:text="${order.id}">1</span></title>
+    <title>Ошибка оплаты - Заказ №<span th:text="${order.id}">1</span></title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -19,9 +19,9 @@
             --warm-white: #FEFEFE;
             --soft-gray: #F5F5F5;
             --charcoal: #2A2A2A;
-            --success-green: #059669;
-            --light-green: #10b981;
-            --success-bg: #ECFDF5;
+            --error-red: #DC2626;
+            --light-red: #EF4444;
+            --error-bg: #FEF2F2;
             --text-primary: #1A1A1A;
             --text-secondary: #6B6B6B;
             --border-subtle: #E8E5E0;
@@ -43,7 +43,7 @@
             font-family: 'Playfair Display', serif;
         }
 
-        .success-container {
+        .error-container {
             max-width: 680px;
             margin: 0 auto;
             padding: 2rem 1rem;
@@ -53,7 +53,7 @@
             justify-content: center;
         }
 
-        .success-card {
+        .error-card {
             background: var(--warm-white);
             border-radius: 24px;
             box-shadow: var(--shadow-soft);
@@ -63,14 +63,14 @@
             text-align: center;
         }
 
-        .success-header {
-            background: linear-gradient(135deg, var(--success-green) 0%, var(--light-green) 100%);
+        .error-header {
+            background: linear-gradient(135deg, var(--error-red) 0%, var(--light-red) 100%);
             color: var(--warm-white);
             padding: 3rem 2rem;
             position: relative;
         }
 
-        .success-icon {
+        .error-icon {
             width: 100px;
             height: 100px;
             background: rgba(255, 255, 255, 0.2);
@@ -80,66 +80,65 @@
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            animation: successPulse 2s ease-in-out infinite;
+            animation: errorShake 1s ease-in-out;
         }
 
-        @keyframes successPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        .success-title {
+        .error-title {
             font-size: 2.5rem;
             font-weight: 300;
             margin-bottom: 0.5rem;
         }
 
-        .success-subtitle {
+        .error-subtitle {
             opacity: 0.9;
             font-size: 1.1rem;
             font-weight: 400;
         }
 
-        .success-body {
+        .error-body {
             padding: 3rem 2rem;
         }
 
-        .order-confirmation {
-            background: var(--success-bg);
+        .error-details {
+            background: var(--error-bg);
             border-radius: 16px;
             padding: 2rem;
             margin-bottom: 2rem;
-            border-left: 4px solid var(--success-green);
+            border-left: 4px solid var(--error-red);
         }
 
-        .order-number {
-            color: var(--success-green);
-            font-size: 1.2rem;
+        .error-message {
+            color: var(--error-red);
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 1rem;
         }
 
-        .order-details {
+        .order-info {
             display: grid;
             gap: 1rem;
             text-align: left;
         }
 
-        .detail-row {
+        .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(5, 150, 105, 0.1);
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
         }
 
-        .detail-row:last-child {
+        .info-row:last-child {
             border-bottom: none;
-            font-weight: 600;
-            color: var(--success-green);
         }
 
-        .next-steps {
+        .troubleshooting {
             background: var(--soft-gray);
             border-radius: 16px;
             padding: 2rem;
@@ -147,7 +146,7 @@
             text-align: left;
         }
 
-        .steps-title {
+        .troubleshooting-title {
             color: var(--text-primary);
             font-weight: 600;
             margin-bottom: 1.5rem;
@@ -156,7 +155,7 @@
             gap: 0.5rem;
         }
 
-        .step-item {
+        .solution-item {
             display: flex;
             align-items: flex-start;
             gap: 1rem;
@@ -167,10 +166,10 @@
             border: 1px solid var(--border-subtle);
         }
 
-        .step-number {
+        .solution-icon {
             width: 32px;
             height: 32px;
-            background: var(--success-green);
+            background: var(--error-red);
             color: white;
             border-radius: 50%;
             display: flex;
@@ -181,13 +180,13 @@
             flex-shrink: 0;
         }
 
-        .step-content h6 {
+        .solution-content h6 {
             margin: 0 0 0.25rem 0;
             font-weight: 600;
             color: var(--text-primary);
         }
 
-        .step-content p {
+        .solution-content p {
             margin: 0;
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -201,7 +200,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--success-green) 0%, var(--light-green) 100%);
+            background: linear-gradient(135deg, var(--error-red) 0%, var(--light-red) 100%);
             border: none;
             color: white;
             padding: 1rem 2rem;
@@ -245,15 +244,15 @@
         }
 
         @media (max-width: 768px) {
-            .success-container {
+            .error-container {
                 padding: 1rem;
             }
 
-            .success-header, .success-body {
+            .error-header, .error-body {
                 padding: 2rem 1.5rem;
             }
 
-            .success-title {
+            .error-title {
                 font-size: 2rem;
             }
 
@@ -280,90 +279,93 @@
 </head>
 <body>
 
-<div class="success-container">
-    <div class="success-card fade-in">
-        <!-- Заголовок успеха -->
-        <div class="success-header">
-            <div class="success-icon">
-                <i class="bi bi-check-circle-fill"></i>
+<div class="error-container">
+    <div class="error-card fade-in">
+        <!-- Заголовок ошибки -->
+        <div class="error-header">
+            <div class="error-icon">
+                <i class="bi bi-x-circle-fill"></i>
             </div>
-            <h1 class="success-title serif">Оплата успешна!</h1>
-            <p class="success-subtitle">Ваш заказ принят в обработку</p>
+            <h1 class="error-title serif">Ошибка оплаты</h1>
+            <p class="error-subtitle">К сожалению, платеж не прошел</p>
         </div>
 
-        <div class="success-body">
-            <!-- Подтверждение заказа -->
-            <div class="order-confirmation">
-                <div class="order-number serif">
-                    <i class="bi bi-receipt-cutoff me-2"></i>
-                    Заказ №<span th:text="${order.id}">1</span> оплачен
+        <div class="error-body">
+            <!-- Детали ошибки -->
+            <div class="error-details">
+                <div class="error-message">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Платеж отклонен банком
                 </div>
 
-                <div class="order-details">
-                    <div class="detail-row">
-                        <span>Сумма платежа:</span>
-                        <span th:text="${#numbers.formatDecimal(payment.amount, 0, 2)} + ' грн'">999.00 грн</span>
+                <div class="order-info">
+                    <div class="info-row">
+                        <span>Заказ:</span>
+                        <span>№<span th:text="${order.id}">1</span></span>
                     </div>
 
-                    <div class="detail-row">
-                        <span>Дата оплаты:</span>
-                        <span th:text="${#temporals.format(payment.paidAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</span>
+                    <div class="info-row">
+                        <span>Сумма:</span>
+                        <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 2)} + ' грн'">999.00 грн</span>
                     </div>
 
-                    <div class="detail-row">
-                        <span>Способ оплаты:</span>
-                        <span>Банковская карта</span>
-                    </div>
-
-                    <div class="detail-row">
+                    <div class="info-row">
                         <span>Статус:</span>
-                        <span>Оплачено</span>
+                        <span style="color: var(--error-red);">Не оплачен</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Следующие шаги -->
-            <div class="next-steps">
-                <div class="steps-title">
-                    <i class="bi bi-list-check"></i>
-                    Что дальше?
+            <!-- Решения проблемы -->
+            <div class="troubleshooting">
+                <div class="troubleshooting-title">
+                    <i class="bi bi-tools"></i>
+                    Как решить проблему?
                 </div>
 
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h6>Подтверждение заказа</h6>
-                        <p>На вашу почту отправлено подтверждение с деталями заказа</p>
+                <div class="solution-item">
+                    <div class="solution-icon">1</div>
+                    <div class="solution-content">
+                        <h6>Проверьте данные карты</h6>
+                        <p>Убедитесь в правильности номера карты, срока действия и CVV-кода</p>
                     </div>
                 </div>
 
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h6>Обработка заказа</h6>
-                        <p>Мы начнем подготовку вашего заказа в течение 1-2 часов</p>
+                <div class="solution-item">
+                    <div class="solution-icon">2</div>
+                    <div class="solution-content">
+                        <h6>Проверьте баланс</h6>
+                        <p>На карте должно быть достаточно средств для оплаты</p>
                     </div>
                 </div>
 
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h6>Уведомление о готовности</h6>
-                        <p>Вы получите SMS/email когда заказ будет готов к получению</p>
+                <div class="solution-item">
+                    <div class="solution-icon">3</div>
+                    <div class="solution-content">
+                        <h6>Попробуйте другую карту</h6>
+                        <p>Используйте карту другого банка или платежной системы</p>
+                    </div>
+                </div>
+
+                <div class="solution-item">
+                    <div class="solution-icon">4</div>
+                    <div class="solution-content">
+                        <h6>Свяжитесь с банком</h6>
+                        <p>Возможно, банк заблокировал операцию в целях безопасности</p>
                     </div>
                 </div>
             </div>
 
             <!-- Кнопки действий -->
             <div class="action-buttons">
-                <a href="/" class="btn-primary">
-                    <i class="bi bi-house"></i>
-                    На главную
+                <a th:href="@{'/payment/privatbank/' + ${order.id}}" class="btn-primary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Попробовать снова
                 </a>
 
-                <a href="/categories" class="btn-secondary">
+                <a th:href="@{'/order/' + ${order.id}}" class="btn-secondary">
                     <i class="bi bi-arrow-left"></i>
-                    Продолжить покупки
+                    Вернуться к заказу
                 </a>
             </div>
         </div>

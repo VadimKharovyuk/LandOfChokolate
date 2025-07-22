@@ -31,17 +31,12 @@ public class PaymentController {
     @GetMapping("/{orderId}")
     @Transactional
     public String privatbankPayment(@PathVariable Long orderId, Model model) {
-        System.out.println("=== ОТЛАДКА ПЛАТЕЖА ===");
-        System.out.println("Order ID: " + orderId);
 
         Order order = orderService.findById(orderId);
         if (order == null) {
             System.out.println("Заказ не найден!");
             return "redirect:/error";
         }
-
-        System.out.println("Заказ найден: " + order.getId());
-        System.out.println("Сумма заказа: " + order.getTotalAmount());
 
 
 //        // URL для возврата пользователя после оплаты
@@ -69,7 +64,7 @@ public class PaymentController {
         model.addAttribute("data", paymentForm.get("data"));        // ← правильно
         model.addAttribute("signature", paymentForm.get("signature")); // ← правильно
         model.addAttribute("publicKey", paymentForm.get("public_key"));
-        
+
         return "client/payment/privatbank";
     }
 
