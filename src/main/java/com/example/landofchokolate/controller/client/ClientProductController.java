@@ -50,9 +50,6 @@ public class ClientProductController {
             @RequestParam(required = false) String stockStatus,
             Model model) {
 
-        log.info("Getting products page: {}, sortBy: {}, sortDirection: {}, filters: searchName={}, minPrice={}, maxPrice={}, category={}, brand={}, stockStatus={}",
-                page, sortBy, sortDirection, searchName, minPrice, maxPrice, category, brand, stockStatus);
-
         // ИСПРАВЛЕНО: Создаем объект сортировки правильно
         Sort sort;
         try {
@@ -75,8 +72,6 @@ public class ClientProductController {
             // Получаем данные через сервис с фильтрами
             ProductListResponseDto response = clientProductService.getAllProductsWithFilters(
                     pageable, searchName, minPrice, maxPrice, category, brand, stockStatus);
-
-            log.info("Found {} products on page {}", response.getTotalCount(), page);
 
             //для фильтра категорий
             List<CategoryResponseDto> cat = categoryService.getAllCategories();
