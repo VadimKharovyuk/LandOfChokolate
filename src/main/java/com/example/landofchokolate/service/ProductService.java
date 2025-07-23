@@ -4,6 +4,7 @@ import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.model.Product;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -104,6 +105,8 @@ public interface ProductService {
 
 
     List<ProductListRecommendationDto> getProductListRecommendations( int limit);
+
+    PagedResponse<ProductListClickDto> getProductsClick(Pageable pageable);
 
     /**
      * Внутренний класс для статистики

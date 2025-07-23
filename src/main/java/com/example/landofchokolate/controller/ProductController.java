@@ -2,10 +2,7 @@ package com.example.landofchokolate.controller;
 
 import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
-import com.example.landofchokolate.dto.product.CreateProductDto;
-import com.example.landofchokolate.dto.product.ProductListDto;
-import com.example.landofchokolate.dto.product.ProductResponseDto;
-import com.example.landofchokolate.dto.product.UpdateProductDto;
+import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.ProductService;
@@ -13,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -296,6 +294,16 @@ public class ProductController {
             model.addAttribute("filterCategories", List.of());
             model.addAttribute("filterBrands", List.of());
         }
+    }
+
+    @GetMapping("/click")
+    public String click(Model model, Pageable pageable) {
+        // Убираем дублирующий параметр size, используем pageable
+        PagedResponse<ProductListClickDto> clickDtoPagedResponse =
+                productService.getProductsClick(pageable);
+
+        model.addAttribute("clickDtoPagedResponse", clickDtoPagedResponse);
+        return "admin/product/product-click";
     }
 
 

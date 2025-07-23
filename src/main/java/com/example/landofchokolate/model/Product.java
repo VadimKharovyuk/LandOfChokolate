@@ -37,7 +37,7 @@ public class Product {
     private Boolean isActive = true;
 
 
-    // Новый атрибут для отображения на главной странице
+
     @Column(name = "is_recommendation")
     private Boolean isRecommendation = false;
 

@@ -76,10 +76,9 @@ public class ProductMapper {
          dto.setCreatedAt(product.getCreatedAt());
          dto.setUpdatedAt(product.getUpdatedAt());
 
-        log.debug("Mapped Product entity to ResponseDto: id={}, name={}",
-                product.getId(), product.getName());
         return dto;
     }
+
 
     /**
      * Преобразует Entity в упрощенный ListDto для списков
@@ -232,6 +231,26 @@ public class ProductMapper {
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
+
+        return dto;
+    }
+
+
+//список кликов
+    public ProductListClickDto toListDtoClick(Product product) {
+        if (product == null) {
+            return null;
+        }
+
+        ProductListClickDto dto = new ProductListClickDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setImageUrl(product.getImageUrl());
+        dto.setSlug(product.getSlug());
+        dto.setClickCount(product.getClickCount());
+
 
         return dto;
     }

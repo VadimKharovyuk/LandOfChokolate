@@ -9,6 +9,7 @@ import com.example.landofchokolate.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -177,4 +178,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "AND p.isRecommendation = true " +
             "ORDER BY p.clickCount DESC, p.createdAt DESC")
     List<ProductListRecommendationDto> findAllRecommendationProducts();
+
+
+    /**
+     * Атомарно увеличивает счетчик кликов продукта
+     */
+    @Modifying
+    @Query("UPDATE Product p SET p.clickCount = p.clickCount + 1 WHERE p.id = :productId")
+    void incrementClickCount(@Param("productId") Long productId);
 }

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Статистика кликов по продуктам</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .stats-summary {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+      display: block;
+    }
+
+    .stat-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      padding: 0;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    .table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .table th,
+    .table td {
+      padding: 15px 12px;
+      text-align: left;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .table th {
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .product-name {
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .product-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #dee2e6;
+    }
+
+    .price {
+      font-weight: 600;
+      color: #28a745;
+      font-size: 1.1rem;
+    }
+
+    .click-count {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .stock-quantity {
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .stock-high {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .stock-medium {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .stock-low {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .pagination-container {
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f8f9fa;
+    }
+
+    .pagination {
+      display: flex;
+      list-style: none;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pagination li {
+      display: inline-block;
+    }
+
+    .pagination a,
+    .pagination span {
+      display: inline-block;
+      padding: 12px 16px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .pagination a {
+      background: white;
+      color: #667eea;
+      border-color: #dee2e6;
+    }
+
+    .pagination a:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .pagination .active a,
+    .pagination .active span {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+
+    .pagination .disabled a {
+      background: #f8f9fa;
+      color: #6c757d;
+      cursor: not-allowed;
+      border-color: #dee2e6;
+    }
+
+    .pagination .disabled a:hover {
+      background: #f8f9fa;
+      color: #6c757d;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .page-info {
+      margin: 0 20px;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6c757d;
+    }
+
+    .no-data i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .stats-summary {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+      }
+
+      .pagination a,
+      .pagination span {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+
+      .container {
+        margin: 10px;
+        border-radius: 10px;
+      }
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 Статистика кликов</h1>
+    <p>Анализ популярности продуктов</p>
+  </div>
+
+  <!-- Сводная статистика -->
+  <div class="stats-summary" th:if="${clickDtoPagedResponse.content.size() > 0}">
+    <div class="stat-item">
+      <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.totalElements}">0</span>
+      <div class="stat-label">Всего продуктов</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.totalPages}">0</span>
+      <div class="stat-label">Всего страниц</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.page + 1}">1</span>
+      <div class="stat-label">Текущая страница</div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="table" th:if="${clickDtoPagedResponse.content.size() > 0}">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Изображение</th>
+        <th>Название продукта</th>
+        <th>Цена</th>
+        <th>Клики</th>
+        <th>В наличии</th>
+        <th>Действия</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="product : ${clickDtoPagedResponse.content}">
+        <td th:text="${product.id}">1</td>
+        <td>
+          <img th:if="${product.imageUrl}"
+               th:src="${product.imageUrl}"
+               th:alt="${product.name}"
+               class="product-image">
+          <div th:unless="${product.imageUrl}"
+               class="product-image"
+               style="background: #dee2e6; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+            📦
+          </div>
+        </td>
+        <td>
+          <div class="product-name" th:text="${product.name}">Название продукта</div>
+          <small th:if="${product.slug}"
+                 style="color: #6c757d;"
+                 th:text="'/' + ${product.slug}">slug</small>
+        </td>
+        <td>
+          <span class="price" th:text="${product.price} + ' ₽'">150.00 ₽</span>
+        </td>
+        <td>
+          <span class="click-count" th:text="${product.clickCount}">25</span>
+        </td>
+        <td>
+                            <span th:class="${product.stockQuantity > 50} ? 'stock-quantity stock-high' :
+                                           (${product.stockQuantity > 10} ? 'stock-quantity stock-medium' : 'stock-quantity stock-low')"
+                                  th:text="${product.stockQuantity}">100</span>
+        </td>
+        <td>
+          <a th:href="@{'/admin/product/view/' + ${product.id}}"
+             style="color: #667eea; text-decoration: none; font-weight: 500;">
+            👁️ Просмотр
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Сообщение об отсутствии данных -->
+    <div class="no-data" th:if="${clickDtoPagedResponse.content.size() == 0}">
+      <i>📊</i>
+      <h3>Нет данных для отображения</h3>
+      <p>Статистика кликов пока не собрана</p>
+    </div>
+  </div>
+
+  <!-- Пагинация -->
+  <div class="pagination-container" th:if="${clickDtoPagedResponse.metadata.totalPages > 1}">
+    <nav>
+      <ul class="pagination">
+        <!-- Предыдущая страница -->
+        <li th:class="${!clickDtoPagedResponse.metadata.hasPrevious} ? 'disabled' : ''">
+          <a th:href="${clickDtoPagedResponse.metadata.hasPrevious} ?
+                                   @{/admin/products/click(page=${clickDtoPagedResponse.metadata.page - 1})} : '#'"
+             th:class="${!clickDtoPagedResponse.metadata.hasPrevious} ? 'disabled' : ''">
+            ← Предыдущая
+          </a>
+        </li>
+
+        <!-- Номера страниц -->
+        <li th:each="i : ${#numbers.sequence(
+                        T(java.lang.Math).max(0, clickDtoPagedResponse.metadata.page - 2),
+                        T(java.lang.Math).min(clickDtoPagedResponse.metadata.totalPages - 1, clickDtoPagedResponse.metadata.page + 2)
+                    )}" th:class="${i == clickDtoPagedResponse.metadata.page} ? 'active' : ''">
+          <a th:href="@{/admin/products/click(page=${i})}"
+             th:text="${i + 1}">1</a>
+        </li>
+
+        <!-- Следующая страница -->
+        <li th:class="${!clickDtoPagedResponse.metadata.hasNext} ? 'disabled' : ''">
+          <a th:href="${clickDtoPagedResponse.metadata.hasNext} ?
+                                   @{/admin/products/click(page=${clickDtoPagedResponse.metadata.page + 1})} : '#'"
+             th:class="${!clickDtoPagedResponse.metadata.hasNext} ? 'disabled' : ''">
+            Следующая →
+          </a>
+        </li>
+      </ul>
+
+      <!-- Информация о текущей странице -->
+      <div class="page-info">
+        Страница <span th:text="${clickDtoPagedResponse.metadata.page + 1}">1</span>
+        из <span th:text="${clickDtoPagedResponse.metadata.totalPages}">5</span>
+        (всего элементов: <span th:text="${clickDtoPagedResponse.metadata.totalElements}">100</span>)
+      </div>
+    </nav>
+  </div>
+</div>
+
+<script>
+  // Добавляем интерактивность
+  document.addEventListener('DOMContentLoaded', function() {
+    // Анимация появления строк таблицы
+    const rows = document.querySelectorAll('.table tbody tr');
+    rows.forEach((row, index) => {
+      row.style.opacity = '0';
+      row.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        row.style.transition = 'all 0.5s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateY(0)';
+      }, index * 100);
+    });
+
+    // Подсветка строк с высокими кликами
+    const clickCounts = document.querySelectorAll('.click-count');
+    const maxClicks = Math.max(...Array.from(clickCounts).map(el => parseInt(el.textContent)));
+
+    clickCounts.forEach(el => {
+      const clicks = parseInt(el.textContent);
+      if (clicks === maxClicks && clicks > 0) {
+        el.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)';
+        el.parentElement.parentElement.style.borderLeft = '4px solid #ff6b6b';
+      }
+    });
+  });
+</script>
+</body>
+</html>

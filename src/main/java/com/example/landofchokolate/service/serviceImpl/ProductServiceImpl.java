@@ -334,8 +334,22 @@ public class ProductServiceImpl implements ProductService {
     public ProductDetailDto getProductBySlug(String slug) {
         Product product = productRepository.findBySlug(slug)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with slug: " + slug));
-
+        // Увеличиваем счетчик кликов при просмотре продукта
+        incrementClickCount(product.getId());
         return productMapper.toDetailDto(product);
+    }
+
+    /**
+     * Приватный метод для увеличения счетчика кликов продукта
+     */
+    private void incrementClickCount(Long productId) {
+        try {
+            productRepository.incrementClickCount(productId);
+            log.debug("Incremented click count for product with id: {}", productId);
+        } catch (Exception e) {
+            log.error("Failed to increment click count for product id: {}", productId, e);
+
+        }
     }
 
 
@@ -402,6 +416,26 @@ public class ProductServiceImpl implements ProductService {
                 .limit(limit)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public PagedResponse<ProductListClickDto> getProductsClick(Pageable pageable) {
+        // Сортировка по количеству кликов (по убыванию)
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "clickCount")
+        );
+
+        Page<Product> productPage = productRepository.findAll(sortedPageable);
+
+        List<ProductListClickDto> productDtos = productPage.getContent()
+                .stream()
+                .map(productMapper::toListDtoClick)
+                .collect(Collectors.toList());
+
+        return new PagedResponse<>(productDtos, productPage);
+    }
+
 
     /**
      * Приватный метод для обработки загрузки изображения
