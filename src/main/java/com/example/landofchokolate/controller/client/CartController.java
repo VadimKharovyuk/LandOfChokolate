@@ -3,6 +3,7 @@ package com.example.landofchokolate.controller.client;
 import com.example.landofchokolate.dto.card.CartDto;
 import com.example.landofchokolate.dto.card.CartItemDto;
 import com.example.landofchokolate.service.CartService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,22 +41,29 @@ public class CartController {
         return "client/cart/view";
     }
 
-    /**
-     * Добавление товара в корзину (AJAX)
-     */
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> addProduct(
             @RequestParam Long productId,
             @RequestParam(defaultValue = "1") Integer quantity,
-            HttpSession session) {
+            HttpSession session,
+            HttpServletRequest request) {
+
+
+        // Проверяем куки
+        if (request.getCookies() != null) {
+            Arrays.stream(request.getCookies()).forEach(cookie ->
+                    log.info("Cookie: {} = {}", cookie.getName(), cookie.getValue())
+            );
+        } else {
+            log.warn("No cookies in request!");
+        }
 
         Map<String, Object> response = new HashMap<>();
 
         try {
             cartService.addProduct(session, productId, quantity);
 
-            // Возвращаем обновленную информацию о корзине
             Integer cartItemCount = cartService.getCartItemCount(session);
             BigDecimal cartTotal = cartService.getCartTotal(session);
 
@@ -63,17 +72,15 @@ public class CartController {
             response.put("cartItemCount", cartItemCount);
             response.put("cartTotal", cartTotal);
 
-            log.info("Товар {} добавлен в корзину, количество: {}", productId, quantity);
 
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", e.getMessage());
-            log.error("Ошибка добавления товара в корзину: {}", e.getMessage());
+            log.error("ERROR adding product to cart: {}", e.getMessage(), e);
         }
 
         return ResponseEntity.ok(response);
     }
-
 
     /**
      * Обновление количества товара в корзине (AJAX)

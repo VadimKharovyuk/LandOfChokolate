@@ -1,7 +1,6 @@
 package com.example.landofchokolate.service.serviceImpl;
 
 import com.example.landofchokolate.dto.card.CartDto;
-import com.example.landofchokolate.dto.card.CartItemDto;
 import com.example.landofchokolate.enums.CartStatus;
 import com.example.landofchokolate.mapper.CartMapper;
 import com.example.landofchokolate.model.Cart;
@@ -55,30 +54,30 @@ public class CartServiceDatabaseImpl implements CartService {
     @Transactional(readOnly = true)
     public CartDto getCartDto(HttpSession session) {
         Cart cart = getCartReadOnly(session);
-
-        CartDto cartDto = cartMapper.toDto(cart);
-
-        return cartDto;
+        return cartMapper.toDto(cart);
     }
 
     @Override
     @Transactional
     public void addProduct(HttpSession session, Long productId, Integer quantity) {
+        log.info("Добавляем продукт {} (количество: {}) в корзину", productId, quantity);
+
         // Загружаем продукт
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Товар не найден"));
 
-        // Проверка активности товара
+        // Проверки продукта
         if (!Boolean.TRUE.equals(product.getIsActive())) {
             throw new RuntimeException("Товар недоступен");
         }
 
-        // Проверка наличия
         if (product.getStockQuantity() < quantity) {
             throw new RuntimeException("Недостаточно товара на складе");
         }
 
+        // Получаем или создаем корзину
         Cart cart = getOrCreateCart(session);
+        log.info("Используем корзину: ID={}, UUID='{}'", cart.getId(), cart.getCartUuid());
 
         // Проверяем, есть ли уже такой товар в корзине
         Optional<CartItem> existingItem = cart.getItems().stream()
@@ -91,43 +90,39 @@ public class CartServiceDatabaseImpl implements CartService {
             CartItem item = existingItem.get();
             int newQuantity = item.getQuantity() + quantity;
 
-            // Проверяем, что общее количество не превышает остаток
             if (product.getStockQuantity() < newQuantity) {
                 throw new RuntimeException("Недостаточно товара на складе");
             }
 
             item.setQuantity(newQuantity);
             item.setUpdatedAt(LocalDateTime.now());
-            // Устанавливаем свежий объект продукта
             item.setProduct(product);
+
+            log.info("Обновлено количество товара {} до {}", productId, newQuantity);
         } else {
             // Добавляем новый товар в корзину
             CartItem newItem = createCartItem(cart, product, quantity);
             cart.getItems().add(newItem);
+
+            log.info("Добавлен новый товар {} в корзину", productId);
         }
 
+        // Обновляем и сохраняем корзину
         updateCartActivity(cart);
         cart = cartRepository.save(cart);
 
-        // ВАЖНО: Принудительно инициализируем данные перед сохранением в сессию
+        // Принудительно инициализируем данные перед сохранением в сессию
         initializeCartData(cart);
 
         // Обновляем корзину в сессии
         updateCartInSession(session, cart);
-    }
 
-    /**
-     * Обновить активность корзины
-     */
-    private void updateCartActivity(Cart cart) {
-        cart.setLastActivityAt(LocalDateTime.now());
+        log.info("Товар {} успешно добавлен в корзину {}", productId, cart.getCartUuid());
     }
-
 
     @Override
     @Transactional
     public void updateQuantity(HttpSession session, Long productId, Integer quantity) {
-        // Валидация входных параметров
         if (productId == null) {
             throw new IllegalArgumentException("ID товара не может быть null");
         }
@@ -136,77 +131,43 @@ public class CartServiceDatabaseImpl implements CartService {
             throw new IllegalArgumentException("Количество не может быть null");
         }
 
-        // Если количество 0 или меньше - удаляем товар из корзины
         if (quantity <= 0) {
             removeProduct(session, productId);
             return;
         }
 
-        // Получаем UUID корзины
-        String cartUuid = getCartUuidFromCookie();
-        if (cartUuid == null) {
-            throw new RuntimeException("Корзина не найдена");
-        }
+        Cart cart = getOrCreateCart(session);
 
-        // Загружаем корзину с элементами через оптимизированный запрос
-        Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
-        if (cartOpt.isEmpty()) {
-            throw new RuntimeException("Корзина не найдена");
-        }
-
-        Cart cart = cartOpt.get();
-
-        // Проверяем, не истекла ли корзина
-        if (isCartExpired(cart)) {
-            throw new RuntimeException("Корзина истекла");
-        }
-
-        // Загружаем продукт отдельно
+        // Загружаем продукт
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Товар не найден"));
 
-        // Проверяем активность товара
         if (!Boolean.TRUE.equals(product.getIsActive())) {
             throw new RuntimeException("Товар больше не доступен");
         }
 
-        // Проверяем наличие на складе
         if (product.getStockQuantity() < quantity) {
             throw new RuntimeException("Недостаточно товара на складе. Доступно: " + product.getStockQuantity());
         }
 
         // Ищем товар в корзине
-        CartItem targetItem = null;
-        for (CartItem item : cart.getItems()) {
-            // Безопасно сравниваем ID продуктов
-            if (item.getProduct() != null && productId.equals(item.getProduct().getId())) {
-                targetItem = item;
-                break;
-            }
-        }
-
-        if (targetItem == null) {
-            throw new RuntimeException("Товар не найден в корзине");
-        }
+        CartItem targetItem = cart.getItems().stream()
+                .filter(item -> item.getProduct() != null && productId.equals(item.getProduct().getId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Товар не найден в корзине"));
 
         // Обновляем количество
         targetItem.setQuantity(quantity);
         targetItem.setUpdatedAt(LocalDateTime.now());
-        // Устанавливаем свежий объект продукта
         targetItem.setProduct(product);
 
-        // Обновляем активность корзины
+        // Сохраняем изменения
         updateCartActivity(cart);
-
-        // Сохраняем корзину
         cart = cartRepository.save(cart);
-
-        // Обновляем корзину в сессии
         updateCartInSession(session, cart);
 
         log.debug("Количество товара {} в корзине обновлено до {}", productId, quantity);
     }
-
 
     @Override
     @Transactional
@@ -217,7 +178,6 @@ public class CartServiceDatabaseImpl implements CartService {
         updateCartActivity(cart);
         cart = cartRepository.save(cart);
 
-        // Обновляем корзину в сессии
         updateCartInSession(session, cart);
     }
 
@@ -229,7 +189,6 @@ public class CartServiceDatabaseImpl implements CartService {
         updateCartActivity(cart);
         cart = cartRepository.save(cart);
 
-        // Обновляем корзину в сессии
         updateCartInSession(session, cart);
     }
 
@@ -240,15 +199,6 @@ public class CartServiceDatabaseImpl implements CartService {
         return calculateCartTotalQuantity(cart);
     }
 
-    /**
-     * Получить общее количество товаров в корзине
-     */
-    private Integer calculateCartTotalQuantity(Cart cart) {
-        return cart.getItems().stream()
-                .mapToInt(CartItem::getQuantity)
-                .sum();
-    }
-
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getCartTotal(HttpSession session) {
@@ -256,122 +206,200 @@ public class CartServiceDatabaseImpl implements CartService {
         return calculateCartTotalPrice(cart);
     }
 
-    /**
-     * Получить общую стоимость корзины
-     */
-    private BigDecimal calculateCartTotalPrice(Cart cart) {
-        return cart.getItems().stream()
-                .map(item -> item.getPriceAtTime().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public boolean isCartEmpty(HttpSession session) {
         Cart cart = getCartReadOnly(session);
-        return checkIfCartEmpty(cart);
-    }
-
-    /**
-     * Проверить, пуста ли корзина
-     */
-    private boolean checkIfCartEmpty(Cart cart) {
         return cart.getItems().isEmpty();
     }
 
+    // =============================================================================
+    // ПРИВАТНЫЕ МЕТОДЫ
+    // =============================================================================
+
     /**
-     * Получить или создать корзину с использованием FETCH JOIN
+     * ИСПРАВЛЕННЫЙ метод создания новой корзины
      */
     @Transactional
+    protected Cart createNewCart() {
+        log.info("=== СОЗДАНИЕ НОВОЙ КОРЗИНЫ - НАЧАЛО ===");
+
+        String newCartUuid = UUID.randomUUID().toString();
+        log.info("Step 1: Сгенерирован UUID: '{}'", newCartUuid);
+
+        if (newCartUuid == null || newCartUuid.trim().isEmpty()) {
+            log.error("КРИТИЧЕСКАЯ ОШИБКА: UUID.randomUUID() вернул пустое значение!");
+            throw new RuntimeException("Failed to generate cart UUID");
+        }
+
+        // СОЗДАЕМ КОРЗИНУ ЧЕРЕЗ new Cart() - БЕЗ ПАРАМЕТРОВ
+        Cart cart = new Cart();
+        log.info("Step 2: Создан объект Cart с конструктором по умолчанию");
+
+        // ЯВНО УСТАНАВЛИВАЕМ ВСЕ ПОЛЯ
+        cart.setCartUuid(newCartUuid);
+        log.info("Step 3: Установлен cartUuid: '{}'", cart.getCartUuid());
+
+        cart.setStatus(CartStatus.ACTIVE);
+        log.info("Step 4: Установлен status: {}", cart.getStatus());
+
+        cart.setIpAddress(getClientIpAddress());
+        log.info("Step 5: Установлен ipAddress: {}", cart.getIpAddress());
+
+        String userAgent = request.getHeader("User-Agent");
+        if (userAgent != null && userAgent.length() > 500) {
+            userAgent = userAgent.substring(0, 500); // Обрезаем до максимальной длины
+        }
+        cart.setUserAgent(userAgent);
+
+        cart.setExpiresAt(LocalDateTime.now().plusDays(cartExpirationDays));
+
+
+        // Инициализируем временные поля
+        LocalDateTime now = LocalDateTime.now();
+        cart.setCreatedAt(now);
+        cart.setUpdatedAt(now);
+        cart.setLastActivityAt(now);
+
+
+        // Инициализируем список items (хотя он должен быть инициализирован по умолчанию)
+        if (cart.getItems() == null) {
+            cart.setItems(new ArrayList<>());
+        }
+        log.info("Step 9: Инициализирован список items (size: {})", cart.getItems().size());
+
+
+        if (cart.getCartUuid() == null || cart.getCartUuid().trim().isEmpty()) {
+            log.error("КРИТИЧЕСКАЯ ОШИБКА: cartUuid пустой перед сохранением!");
+            throw new RuntimeException("Cart UUID is null or empty before saving");
+        }
+
+        try {
+            // Проверяем, не существует ли уже такой UUID
+            if (cartRepository.existsByCartUuidAndStatus(cart.getCartUuid(), CartStatus.ACTIVE)) {
+                log.warn("UUID {} уже существует! Генерируем новый.", cart.getCartUuid());
+                String newUuid = UUID.randomUUID().toString();
+                cart.setCartUuid(newUuid);
+                log.info("Новый UUID установлен: '{}'", cart.getCartUuid());
+            }
+
+            log.info("Step 10: Сохраняем корзину в БД...");
+            Cart savedCart = cartRepository.save(cart);
+            log.info("Step 11: Корзина сохранена с ID: {}", savedCart.getId());
+
+
+            if (savedCart.getCartUuid() == null || savedCart.getCartUuid().trim().isEmpty()) {
+                log.error("КРИТИЧЕСКАЯ ОШИБКА: cartUuid пустой ПОСЛЕ сохранения!");
+                throw new RuntimeException("Cart UUID became null or empty after saving");
+            }
+
+            // Устанавливаем cookie
+            setCartCookie(savedCart.getCartUuid());
+
+
+            return savedCart;
+
+        } catch (Exception e) {
+            log.error("Ошибка при создании корзины: {}", e.getMessage(), e);
+
+            if (e.getCause() != null) {
+                log.error("Причина ошибки: {}", e.getCause().getMessage());
+            }
+
+            throw new RuntimeException("Failed to create new cart: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional
     protected Cart getOrCreateCart(HttpSession session) {
+        log.debug("=== ПОЛУЧЕНИЕ ИЛИ СОЗДАНИЕ КОРЗИНЫ ===");
+
         // Сначала проверяем сессию
         Cart cachedCart = getCartFromSession(session);
         if (cachedCart != null && !isCartExpired(cachedCart)) {
-            return cachedCart;
+            log.debug("Найдена корзина в сессии: UUID='{}'", cachedCart.getCartUuid());
+
+            if (cachedCart.getCartUuid() == null || cachedCart.getCartUuid().trim().isEmpty()) {
+                log.warn("Корзина в сессии имеет пустой UUID, удаляем из сессии");
+                clearCartFromSession(session);
+            } else {
+                return cachedCart;
+            }
         }
 
         // Если в сессии нет или корзина истекла, загружаем из БД
         String cartUuid = getCartUuidFromCookie();
 
-        if (cartUuid != null) {
-            // Используем оптимизированный запрос с FETCH JOIN
+        if (cartUuid != null && !cartUuid.trim().isEmpty()) {
             Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
             if (cartOpt.isPresent()) {
                 Cart cart = cartOpt.get();
-                // Проверяем, не истекла ли корзина
+                log.debug("Найдена корзина в БД: ID={}, UUID='{}'", cart.getId(), cart.getCartUuid());
+
                 if (!isCartExpired(cart)) {
                     updateCartActivity(cart);
                     cart = cartRepository.save(cart);
-                    // Сохраняем в сессии для последующих обращений
                     updateCartInSession(session, cart);
                     return cart;
                 } else {
-                    // Помечаем корзину как истёкшую
+
                     cart.setStatus(CartStatus.EXPIRED);
                     cartRepository.save(cart);
-                    // Удаляем из сессии
                     clearCartFromSession(session);
                 }
+            } else {
+                log.warn("Корзина с UUID '{}' не найдена в БД", cartUuid);
             }
+        } else {
+            log.debug("UUID корзины отсутствует в куки");
         }
 
         // Создаём новую корзину
+        log.info("Создаём новую корзину");
         Cart newCart = createNewCart();
+
+        if (newCart.getCartUuid() == null || newCart.getCartUuid().trim().isEmpty()) {
+            log.error("КРИТИЧЕСКАЯ ОШИБКА: новая корзина имеет пустой UUID!");
+            throw new RuntimeException("New cart has empty UUID");
+        }
+
         updateCartInSession(session, newCart);
         return newCart;
     }
 
-    /**
-     * Получить корзину из сессии
-     */
-    private Cart getCartFromSession(HttpSession session) {
-        try {
-            return (Cart) session.getAttribute(CART_SESSION_KEY);
-        } catch (ClassCastException e) {
-            log.warn("Invalid cart object in session, removing", e);
-            session.removeAttribute(CART_SESSION_KEY);
-            return null;
+    @Transactional(readOnly = true)
+    protected Cart getCartReadOnly(HttpSession session) {
+        Cart cachedCart = getCartFromSession(session);
+        if (cachedCart != null && !isCartExpired(cachedCart)) {
+            if (isCartFullyLoaded(cachedCart)) {
+                return cachedCart;
+            }
         }
+
+        String cartUuid = getCartUuidFromCookie();
+        if (cartUuid != null) {
+            Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
+            if (cartOpt.isPresent()) {
+                Cart cart = cartOpt.get();
+                if (!isCartExpired(cart)) {
+                    initializeCartData(cart);
+                    updateCartInSession(session, cart);
+                    return cart;
+                }
+            }
+        }
+
+        Cart emptyCart = createEmptyCart();
+        updateCartInSession(session, emptyCart);
+        return emptyCart;
     }
 
-    /**
-     * Обновить корзину в сессии
-     */
-    private void updateCartInSession(HttpSession session, Cart cart) {
-        session.setAttribute(CART_SESSION_KEY, cart);
+    // Вспомогательные методы
+    private void updateCartActivity(Cart cart) {
+        cart.setLastActivityAt(LocalDateTime.now());
+        cart.setUpdatedAt(LocalDateTime.now());
     }
 
-    /**
-     * Очистить корзину из сессии
-     */
-    private void clearCartFromSession(HttpSession session) {
-        session.removeAttribute(CART_SESSION_KEY);
-    }
-
-    /**
-     * Создать новую корзину
-     */
-    @Transactional
-    protected Cart createNewCart() {
-        Cart cart = new Cart();
-        cart.setCartUuid(UUID.randomUUID().toString());
-        cart.setStatus(CartStatus.ACTIVE);
-        cart.setExpiresAt(LocalDateTime.now().plusDays(cartExpirationDays));
-
-        // Сохраняем информацию о клиенте для анонимных корзин
-        cart.setIpAddress(getClientIpAddress());
-
-        cart = cartRepository.save(cart);
-
-        // Устанавливаем cookie
-        setCartCookie(cart.getCartUuid());
-
-        return cart;
-    }
-
-    /**
-     * Создать новый элемент корзины с установкой времени
-     */
     private CartItem createCartItem(Cart cart, Product product, Integer quantity) {
         CartItem item = new CartItem();
         item.setCart(cart);
@@ -386,9 +414,44 @@ public class CartServiceDatabaseImpl implements CartService {
         return item;
     }
 
-    /**
-     * Получить UUID корзины из cookie
-     */
+    private Integer calculateCartTotalQuantity(Cart cart) {
+        return cart.getItems().stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+    }
+
+    private BigDecimal calculateCartTotalPrice(Cart cart) {
+        return cart.getItems().stream()
+                .map(item -> item.getPriceAtTime().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private Cart getCartFromSession(HttpSession session) {
+        try {
+            return (Cart) session.getAttribute(CART_SESSION_KEY);
+        } catch (ClassCastException e) {
+            log.warn("Invalid cart object in session, removing", e);
+            session.removeAttribute(CART_SESSION_KEY);
+            return null;
+        }
+    }
+
+    private void updateCartInSession(HttpSession session, Cart cart) {
+        log.debug("updateCartInSession: входящий cart UUID='{}'", cart.getCartUuid());
+
+        if (cart.getCartUuid() == null || cart.getCartUuid().trim().isEmpty()) {
+            log.error("ПОПЫТКА СОХРАНИТЬ КОРЗИНУ С ПУСТЫМ UUID В СЕССИЮ!");
+            return;
+        }
+
+        session.setAttribute(CART_SESSION_KEY, cart);
+        log.debug("Корзина сохранена в сессии с UUID='{}'", cart.getCartUuid());
+    }
+
+    private void clearCartFromSession(HttpSession session) {
+        session.removeAttribute(CART_SESSION_KEY);
+    }
+
     private String getCartUuidFromCookie() {
         if (request.getCookies() != null) {
             return Arrays.stream(request.getCookies())
@@ -400,21 +463,30 @@ public class CartServiceDatabaseImpl implements CartService {
         return null;
     }
 
-    /**
-     * Установить cookie с UUID корзины
-     */
     private void setCartCookie(String cartUuid) {
-        Cookie cookie = new Cookie(CART_COOKIE_NAME, cartUuid);
-        cookie.setMaxAge(cookieMaxAge);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true); // Раскомментировать для HTTPS
-        response.addCookie(cookie);
+
+
+        if (cartUuid == null || cartUuid.trim().isEmpty()) {
+            log.error("Попытка установить пустую куку {}!", CART_COOKIE_NAME);
+            return;
+        }
+
+        try {
+            Cookie cookie = new Cookie(CART_COOKIE_NAME, cartUuid);
+            cookie.setMaxAge(cookieMaxAge);
+            cookie.setPath("/");
+            cookie.setHttpOnly(false); // JavaScript должен читать
+            cookie.setSecure(false);   // для localhost
+
+            response.addCookie(cookie);
+
+            log.info("Кука {} успешно установлена: '{}'", CART_COOKIE_NAME, cartUuid);
+
+        } catch (Exception e) {
+            log.error("Ошибка при установке куки {}: {}", CART_COOKIE_NAME, e.getMessage(), e);
+        }
     }
 
-    /**
-     * Получить IP адрес клиента
-     */
     private String getClientIpAddress() {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
@@ -429,55 +501,11 @@ public class CartServiceDatabaseImpl implements CartService {
         return request.getRemoteAddr();
     }
 
-    /**
-     * ИСПРАВЛЕННЫЙ метод getCartReadOnly - гарантирует загрузку всех данных
-     */
-    @Transactional(readOnly = true)
-    protected Cart getCartReadOnly(HttpSession session) {
-        // Сначала проверяем сессию
-        Cart cachedCart = getCartFromSession(session);
-        if (cachedCart != null && !isCartExpired(cachedCart)) {
-            // Проверяем, что все данные загружены (не proxy)
-            if (isCartFullyLoaded(cachedCart)) {
-                return cachedCart;
-            }
-        }
-
-        // Если в сессии нет или корзина истекла, загружаем из БД
-        String cartUuid = getCartUuidFromCookie();
-
-        if (cartUuid != null) {
-            // Используем метод с FETCH JOIN для избежания LazyInitializationException
-            Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
-            if (cartOpt.isPresent()) {
-                Cart cart = cartOpt.get();
-                if (!isCartExpired(cart)) {
-                    // Принудительно инициализируем все proxy-объекты
-                    initializeCartData(cart);
-
-                    // Сохраняем в сессии для последующих обращений
-                    updateCartInSession(session, cart);
-                    return cart;
-                }
-            }
-        }
-
-        // Возвращаем пустую корзину для отображения
-        Cart emptyCart = createEmptyCart();
-        updateCartInSession(session, emptyCart);
-        return emptyCart;
-    }
-
-    /**
-     * Принудительная инициализация всех данных корзины
-     */
     private void initializeCartData(Cart cart) {
         if (cart.getItems() != null) {
             for (CartItem item : cart.getItems()) {
                 if (item.getProduct() != null) {
-                    // Принудительно инициализируем proxy Product
                     Product product = item.getProduct();
-                    // Обращаемся к полям, чтобы загрузить данные
                     product.getId();
                     product.getName();
                     product.getPrice();
@@ -490,9 +518,6 @@ public class CartServiceDatabaseImpl implements CartService {
         }
     }
 
-    /**
-     * Проверить, что корзина полностью загружена (нет proxy-объектов)
-     */
     private boolean isCartFullyLoaded(Cart cart) {
         if (cart.getItems() == null) {
             return true;
@@ -501,7 +526,6 @@ public class CartServiceDatabaseImpl implements CartService {
         try {
             for (CartItem item : cart.getItems()) {
                 if (item.getProduct() != null) {
-                    // Пытаемся обратиться к данным продукта
                     item.getProduct().getName();
                     item.getProduct().getPrice();
                 }
@@ -512,21 +536,14 @@ public class CartServiceDatabaseImpl implements CartService {
         }
     }
 
-    /**
-     * Проверить истечение корзины
-     */
     private boolean isCartExpired(Cart cart) {
         return cart.getExpiresAt() != null && LocalDateTime.now().isAfter(cart.getExpiresAt());
     }
 
-    /**
-     * Создать пустую корзину для отображения (без сохранения в БД)
-     */
     private Cart createEmptyCart() {
         Cart cart = new Cart();
         cart.setCartUuid("");
         cart.setStatus(CartStatus.ACTIVE);
-        // Инициализируем пустую коллекцию items для избежания NullPointerException
         cart.setItems(new ArrayList<>());
         return cart;
     }

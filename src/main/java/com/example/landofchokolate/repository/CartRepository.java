@@ -124,4 +124,12 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             "AND SIZE(c.items) > 0")
     Optional<Cart> findActiveCartWithItemsByUuid(@Param("cartUuid") String cartUuid,
                                                  @Param("status") CartStatus status);
+
+
+    boolean existsByCartUuidAndStatus(String newCartUuid, CartStatus cartStatus);
+
+    @Modifying
+    @Query("DELETE FROM Cart c WHERE c.cartUuid IS NULL OR c.cartUuid = ''")
+    void deleteByCartUuidIsNullOrCartUuidEquals(String emptyString);
+
 }
