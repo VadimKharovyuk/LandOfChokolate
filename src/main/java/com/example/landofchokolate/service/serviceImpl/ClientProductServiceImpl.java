@@ -58,8 +58,6 @@ public class ClientProductServiceImpl implements ClientProductService {
 
     // Приватный метод для обработки фильтрации
     private ProductListResponseDto getAllProductsWithFilters(Pageable pageable, ProductFilterDto filters) {
-        log.info("Getting products page {} with filters: {}", pageable.getPageNumber(), filters);
-
         // Создаем новый Pageable с фиксированным размером
         Pageable fixedPageable = PageRequest.of(
                 pageable.getPageNumber(),
@@ -91,9 +89,6 @@ public class ClientProductServiceImpl implements ClientProductService {
     // Приватный метод для выбора правильного метода репозитория
     private Page<ProductListDto> getFilteredProducts(Pageable pageable, ProductFilterDto filters) {
         boolean hasFilters = hasAnyFilters(filters);
-
-        log.debug("Filter analysis: {}", filters);
-        log.debug("Has any filters: {}", hasFilters);
 
         if (!hasFilters) {
             // Без фильтров - используем обычный метод

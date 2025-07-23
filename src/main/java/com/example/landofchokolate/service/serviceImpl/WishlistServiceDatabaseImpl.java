@@ -82,7 +82,6 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
                     dbWishlist.map(w -> w.getItems().size()).orElse(0));
         }
 
-        log.debug("===============");
     }
 
     /**
@@ -427,7 +426,7 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
         try {
             Wishlist newWishlist = createNewWishlistAndSave();
             updateWishlistInSession(session, newWishlist);
-            log.debug("Создан новый wishlist: {}", newWishlist.getWishlistUuid());
+
             return newWishlist;
         } catch (Exception e) {
             log.error("Критическая ошибка при создании нового wishlist", e);
@@ -450,8 +449,6 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
             // Сохраняем в БД
             wishlist = wishlistRepository.save(wishlist);
 
-            log.info("Wishlist сохранен в БД с UUID: {}", wishlist.getWishlistUuid());
-
             // Проверяем, что действительно сохранился
             Optional<Wishlist> verification = wishlistRepository.findByWishlistUuid(wishlist.getWishlistUuid());
             if (!verification.isPresent()) {
@@ -461,7 +458,6 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
             // ВАЖНО: Устанавливаем cookie ПОСЛЕ сохранения
             setWishlistCookie(wishlist.getWishlistUuid());
 
-            log.info("Cookie установлен для нового wishlist: {}", wishlist.getWishlistUuid());
             return wishlist;
 
         } catch (Exception e) {
@@ -535,7 +531,6 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
                     .findFirst()
                     .orElse(null);
 
-            log.debug("Cookie UUID: {}", uuid);
             return uuid;
         }
         log.debug("Нет cookies в запросе");
@@ -742,7 +737,6 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
             // Устанавливаем новый
             setWishlistCookie(wishlist.getWishlistUuid());
 
-            log.info("Cookie обновлен для wishlist: {}", wishlist.getWishlistUuid());
         }
     }
 
@@ -831,8 +825,6 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
             result.put("success", true);
             result.put("newUuid", newWishlist.getWishlistUuid());
             result.put("message", "Wishlist успешно пересоздан");
-
-            log.info("Принудительно пересоздан wishlist: {}", newWishlist.getWishlistUuid());
 
         } catch (Exception e) {
             result.put("success", false);

@@ -34,7 +34,6 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public BrandResponseDto createBrand(CreateBrandDto createBrandDto) {
-        log.info("Creating brand with name: {}", createBrandDto.getName());
 
         Brand brand = brandMapper.toEntity(createBrandDto);
 
@@ -46,13 +45,11 @@ public class BrandServiceImpl implements BrandService {
 
         Brand savedBrand = brandRepository.save(brand);
 
-        log.info("Brand created successfully with id: {}", savedBrand.getId());
         return brandMapper.toResponseDto(savedBrand);
     }
 
     @Override
     public BrandResponseDto updateBrand(Long id, CreateBrandDto updateBrandDto) {
-        log.info("Updating brand with id: {}", id);
 
         Brand existingBrand = brandRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Brand not found with id: " + id));
@@ -75,22 +72,17 @@ public class BrandServiceImpl implements BrandService {
         }
 
         Brand savedBrand = brandRepository.save(existingBrand);
-
-        log.info("Brand updated successfully with id: {}", savedBrand.getId());
         return brandMapper.toResponseDto(savedBrand);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<BrandProjection> getBrandsForFilters() {
-        log.info("Getting brands for filter");
         return brandRepository.findAllByOrderByNameAsc();
     }
 
     @Override
     public void deleteBrand(Long id) {
-        log.info("Deleting brand with id: {}", id);
-
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Brand not found with id: " + id));
 
@@ -100,7 +92,7 @@ public class BrandServiceImpl implements BrandService {
         }
 
         brandRepository.deleteById(id);
-        log.info("Brand deleted successfully with id: {}", id);
+
     }
 
     @Override
@@ -153,11 +145,8 @@ public class BrandServiceImpl implements BrandService {
             String slug = slugService.generateUniqueSlugForBrand(brand.getName());
             brand.setSlug(slug);
             brandRepository.save(brand);
-            log.info("Generated slug '{}' for brand id={} name='{}'",
-                    slug, brand.getId(), brand.getName());
         }
 
-        log.info("Generated slugs for {} brands", brandsWithoutSlug.size());
     }
 
     @Override
@@ -221,8 +210,6 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public BrandResponseDto getBrandById(Long id) {
-        log.info("Getting brand with id: {}", id);
-
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Brand not found with id: " + id));
 
@@ -231,10 +218,8 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public List<BrandResponseDto> getAllBrands() {
-        log.info("Getting all brands");
 
         List<Brand> brands = brandRepository.findAll();
-        log.info("Found {} brands", brands.size());
 
         return brandMapper.toResponseDtoList(brands);
     }

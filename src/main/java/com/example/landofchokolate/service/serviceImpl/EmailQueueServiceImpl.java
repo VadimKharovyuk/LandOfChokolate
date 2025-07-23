@@ -1,8 +1,4 @@
 package com.example.landofchokolate.service.serviceImpl;
-
-
-
-
 import com.example.landofchokolate.service.EmailService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -138,7 +134,6 @@ public class EmailQueueServiceImpl implements EmailService {
             }
 
             mailSender.send(message);
-            log.info("Email успешно отправлен на адрес: {}", task.getTo());
         } catch (MessagingException e) {
             log.error("Ошибка при отправке email на адрес {}: {}", task.getTo(), e.getMessage());
         }
@@ -206,8 +201,6 @@ public class EmailQueueServiceImpl implements EmailService {
             log.warn("Попытка массовой отправки на пустой список получателей");
             return;
         }
-
-        log.info("Начало массовой рассылки. Тема: {}, Количество получателей: {}", subject, recipients.size());
 
         for (String recipient : recipients) {
             Map<String, Object> personalizedContext = new HashMap<>(context);

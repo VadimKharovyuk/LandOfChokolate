@@ -62,15 +62,12 @@ public class OrderServiceImpl implements OrderService {
         // Шаг 5: Очищаем корзину
         cartService.clearCart(session);
 
-        log.info("Order created successfully with ID: {}", savedOrder.getId());
-
         return orderMapper.toDTO(savedOrder);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<OrderDTO> getOrdersByPhoneNumber(String phoneNumber) {
-        log.info("Getting orders for phone: {}", phoneNumber);
 
         List<Order> orders = orderRepository.findByPhoneNumberOrderByCreatedAtDesc(phoneNumber);
 

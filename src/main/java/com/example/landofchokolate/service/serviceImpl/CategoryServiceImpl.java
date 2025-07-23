@@ -37,7 +37,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto) {
-        log.info("Creating category with name: {}", createCategoryDto.getName());
 
         // Проверяем, что категория с таким именем не существует
         if (categoryRepository.existsByName(createCategoryDto.getName())) {
@@ -55,15 +54,12 @@ public class CategoryServiceImpl implements CategoryService {
         // Сохраняем в базе данных
         Category savedCategory = categoryRepository.save(category);
 
-        log.info("Category created successfully with id: {}", savedCategory.getId());
-
         // Возвращаем ResponseDto
         return categoryMapper.toResponseDto(savedCategory);
     }
 
     @Override
     public CategoryResponseDto updateCategory(Long id, CreateCategoryDto updateCategoryDto) {
-        log.info("Updating category with id: {}", id);
 
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
@@ -79,20 +75,15 @@ public class CategoryServiceImpl implements CategoryService {
         // Обновляем существующую entity
         categoryMapper.updateEntityFromDto(updateCategoryDto, existingCategory);
 
-
-
         // Сохраняем изменения
         Category savedCategory = categoryRepository.save(existingCategory);
 
-        log.info("Category updated successfully with id: {}", savedCategory.getId());
 
         return categoryMapper.toResponseDto(savedCategory);
     }
 
     @Override
     public void deleteCategory(Long id) {
-        log.info("Attempting to delete category with id: {}", id);
-
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Категорію з id " + id + " не знайдено"));
 
@@ -109,13 +100,10 @@ public class CategoryServiceImpl implements CategoryService {
         // 🆕 Удаляем изображение перед удалением категории
         deleteImageIfExists(category);
         categoryRepository.deleteById(id);
-        log.info("Category '{}' deleted successfully with id: {}", category.getName(), id);
     }
 
     @Override
     public CategoryResponseDto getCategoryById(Long id) {
-        log.info("Getting category with id: {}", id);
-
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
 
@@ -124,21 +112,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDto> getAllCategories() {
-        log.info("Getting all categories");
-
         List<Category> categories = categoryRepository.findAll();
-        log.info("Found {} categories", categories.size());
-
         return categoryMapper.toResponseDtoList(categories);
     }
 
     @Override
     public List<CategoryResponseDto> getCategoriesByName(String name) {
-        log.info("Searching categories by name: {}", name);
-
         List<Category> categories = categoryRepository.findByNameContainingIgnoreCase(name);
-        log.info("Found {} categories matching name: {}", categories.size(), name);
-
         return categoryMapper.toResponseDtoList(categories);
     }
 
@@ -148,7 +128,6 @@ public class CategoryServiceImpl implements CategoryService {
     private void handleImageUpload(CreateCategoryDto dto, Category category) {
         if (dto.getImage() != null && !dto.getImage().isEmpty()) {
             try {
-                log.info("Uploading image for category: {}", dto.getName());
 
                 // Загружаем изображение через StorageService
                 StorageService.StorageResult result = storageService.uploadImage(dto.getImage());
@@ -156,7 +135,6 @@ public class CategoryServiceImpl implements CategoryService {
                 category.setImageUrl(result.getUrl());
                 category.setImageId(result.getImageId());
 
-                log.info("Image uploaded successfully. URL: {}, ID: {}", result.getUrl(), result.getImageId());
             } catch (Exception e) {
                 log.error("Error uploading image for category: {}", dto.getName(), e);
                 throw new RuntimeException("Помилка завантаження зображення: " + e.getMessage());
@@ -174,7 +152,6 @@ public class CategoryServiceImpl implements CategoryService {
     private void handleImageUpdate(CreateCategoryDto dto, Category existingCategory) {
         if (dto.getImage() != null && !dto.getImage().isEmpty()) {
             try {
-                log.info("Updating image for category id: {}", existingCategory.getId());
 
                 // Удаляем старое изображение если оно есть
                 deleteImageIfExists(existingCategory);
@@ -185,7 +162,6 @@ public class CategoryServiceImpl implements CategoryService {
                 existingCategory.setImageUrl(result.getUrl());
                 existingCategory.setImageId(result.getImageId());
 
-                log.info("Image updated successfully. New URL: {}, ID: {}", result.getUrl(), result.getImageId());
             } catch (Exception e) {
                 log.error("Error updating image for category id: {}", existingCategory.getId(), e);
                 throw new RuntimeException("Помилка оновлення зображення: " + e.getMessage());
@@ -201,8 +177,6 @@ public class CategoryServiceImpl implements CategoryService {
     private void deleteImageIfExists(Category category) {
         if (category.getImageId() != null && !category.getImageId().isEmpty()) {
             try {
-                log.info("Deleting image for category id: {}, imageId: {}",
-                        category.getId(), category.getImageId());
 
                 boolean deleted = storageService.deleteImage(category.getImageId());
 
@@ -234,11 +208,7 @@ public class CategoryServiceImpl implements CategoryService {
             String slug = slugService.generateUniqueSlugForCategory(category.getName());
             category.setSlug(slug);
             categoryRepository.save(category);
-            log.info("Generated slug '{}' for category id={} name='{}'",
-                    slug, category.getId(), category.getName());
         }
-
-        log.info("Generated slugs for {} categories", categoriesWithoutSlug.size());
     }
 
     /**
@@ -246,7 +216,6 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public CategoryEditData prepareEditData(Long id) {
-        log.info("Preparing edit data for category with id: {}", id);
 
         // Получаем категорию
         CategoryResponseDto category = getCategoryById(id);
@@ -260,8 +229,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryListPublicDto getPublicCategories(int page, int size) {
-        log.info("Getting public categories with price info for page: {}, size: {}", page, size);
-
         // Создаем Pageable с сортировкой по названию
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
@@ -290,16 +257,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .pageNumbers(pageNumbers)
                 .build();
 
-        log.info("Found {} active categories with price info, total pages: {}",
-                publicDtos.size(), categoryPage.getTotalPages());
-
         return result;
     }
 
     @Override
     public List<CategoryPublicDto> getTopCategories(int limit) {
-        log.info("Getting top {} featured categories", limit);
-
         Pageable pageable = PageRequest.of(0, limit);
         List<Category> featuredCategories = categoryRepository
                 .findByIsActiveTrueAndIsFeaturedTrueOrderByNameAsc(pageable);
@@ -309,7 +271,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(this::enrichCategoryWithPriceInfo)
                 .collect(Collectors.toList());
 
-        log.info("Found {} featured categories", result.size());
         return result;
     }
 
