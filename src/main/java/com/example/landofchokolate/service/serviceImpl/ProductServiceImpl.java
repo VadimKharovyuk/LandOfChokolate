@@ -93,6 +93,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setName(updateProductDto.getName());
         existingProduct.setPrice(updateProductDto.getPrice());
         existingProduct.setStockQuantity(updateProductDto.getStockQuantity());
+        existingProduct.setIsRecommendation(updateProductDto.getIsRecommendation());
 
         // Обновляем slug если название изменилось
         if (!oldName.equals(updateProductDto.getName())) {
