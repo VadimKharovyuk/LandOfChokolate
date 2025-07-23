@@ -33,5 +33,8 @@ public class CreateProductDto {
     @NotNull(message = "Бренд обязателен")
     private Long brandId;
 
+
+    private Boolean isRecommendation = false;
+
     private MultipartFile image;
 }

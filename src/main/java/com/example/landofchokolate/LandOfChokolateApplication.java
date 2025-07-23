@@ -13,5 +13,16 @@ public class LandOfChokolateApplication {
     public static void main(String[] args) {
         SpringApplication.run(LandOfChokolateApplication.class, args);
     }
-///баг кнопки доавление в корзину
+///add cuint product/ category
+
+
+    /// add   private String metaTitle;
+///     private String metaDescription; by product / brand
+
+    ///add  recomentProduct
+
+
+    ///сломаолся фильтер список продуктов
+
+
 }

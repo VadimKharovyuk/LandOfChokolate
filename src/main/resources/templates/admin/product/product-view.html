@@ -35,6 +35,18 @@
   <div style="flex: 1;">
     <h2 th:text="${product.name}" style="margin: 0 0 20px 0; color: #333;"></h2>
 
+    <!-- Статус рекомендации (визуально выделенный) -->
+    <div th:if="${product.isRecommendation != null and product.isRecommendation}"
+         style="background: linear-gradient(45deg, #ffd700, #ffed4a); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #f39c12;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 24px;">⭐</span>
+        <div>
+          <div style="font-weight: bold; color: #333; font-size: 14px;">РЕКОМЕНДУЕМЫЙ ТОВАР</div>
+          <div style="font-size: 12px; color: #666;">Отображается на главной странице сайта</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Основные характеристики -->
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
       <table style="width: 100%; border-collapse: collapse;">
@@ -51,22 +63,35 @@
         <tr>
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Количество на складе:</td>
           <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
-                        <span th:text="${product.stockQuantity}"
-                              th:style="${product.stockQuantity == 0 ? 'color: red; font-weight: bold;' : (product.stockQuantity < 10 ? 'color: orange; font-weight: bold;' : 'color: green; font-weight: bold;')}"></span>
+            <span th:text="${product.stockQuantity}"
+                  th:style="${product.stockQuantity == 0 ? 'color: red; font-weight: bold;' : (product.stockQuantity < 10 ? 'color: orange; font-weight: bold;' : 'color: green; font-weight: bold;')}"></span>
 
             <!-- Статус -->
             <span th:if="${product.stockQuantity == 0}"
                   style="margin-left: 10px; padding: 3px 8px; background-color: #dc3545; color: white; border-radius: 3px; font-size: 11px;">
-                            Нет в наличии
-                        </span>
+              Нет в наличии
+            </span>
             <span th:if="${product.stockQuantity > 0 and product.stockQuantity < 10}"
                   style="margin-left: 10px; padding: 3px 8px; background-color: #ffc107; color: black; border-radius: 3px; font-size: 11px;">
-                            Заканчивается
-                        </span>
+              Заканчивается
+            </span>
             <span th:if="${product.stockQuantity >= 10}"
                   style="margin-left: 10px; padding: 3px 8px; background-color: #28a745; color: white; border-radius: 3px; font-size: 11px;">
-                            В наличии
-                        </span>
+              В наличии
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Рекомендация:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
+            <span th:if="${product.isRecommendation != null and product.isRecommendation}"
+                  style="padding: 3px 8px; background-color: #ffd700; color: #333; border-radius: 3px; font-size: 11px; font-weight: bold;">
+              ⭐ ДА
+            </span>
+            <span th:if="${product.isRecommendation == null or !product.isRecommendation}"
+                  style="padding: 3px 8px; background-color: #6c757d; color: white; border-radius: 3px; font-size: 11px;">
+              НЕТ
+            </span>
           </td>
         </tr>
         <tr>
@@ -160,6 +185,7 @@
     <p><strong>ID продукта:</strong> <span th:text="${product.id}"></span></p>
     <p><strong>ID категории:</strong> <span th:text="${product.category.id}"></span></p>
     <p><strong>ID бренда:</strong> <span th:text="${product.brand.id}"></span></p>
+    <p><strong>Рекомендация:</strong> <span th:text="${product.isRecommendation}"></span></p>
     <p th:if="${product.imageUrl != null}"><strong>URL изображения:</strong> <span th:text="${product.imageUrl}"></span></p>
     <p th:if="${product.createdAt != null}"><strong>Дата создания:</strong> <span th:text="${#temporals.format(product.createdAt, 'dd.MM.yyyy HH:mm')}"></span></p>
     <p th:if="${product.updatedAt != null}"><strong>Последнее обновление:</strong> <span th:text="${#temporals.format(product.updatedAt, 'dd.MM.yyyy HH:mm')}"></span></p>

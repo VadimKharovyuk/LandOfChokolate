@@ -13,6 +13,7 @@
     <span th:text="${successMessage}"></span>
 </div>
 
+
 <div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
     <span th:text="${errorMessage}"></span>
 </div>
@@ -22,10 +23,12 @@
 
     <!-- Кнопка создания нового продукта -->
     <div style="margin-bottom: 15px;">
-        <a th:href="@{/admin/product}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
+        <a th:href="@{/admin/product}"
+           style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
             + Создать новый продукт
         </a>
-        <a th:href="@{/admin/product/statistics}" style="margin-left: 10px; padding: 10px 20px; background-color: #17a2b8; color: white; text-decoration: none; display: inline-block;">
+        <a th:href="@{/admin/product/statistics}"
+           style="margin-left: 10px; padding: 10px 20px; background-color: #17a2b8; color: white; text-decoration: none; display: inline-block;">
             📊 Статистика
         </a>
     </div>
@@ -40,7 +43,8 @@
                 <input type="text" id="search" name="search" th:value="${searchTerm}"
                        placeholder="Название продукта..."
                        style="padding: 8px; width: 200px;">
-                <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+                <button type="submit"
+                        style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">
                     Найти
                 </button>
             </form>
@@ -82,20 +86,23 @@
                     <option value="">Все товары</option>
                     <option value="in-stock" th:selected="${selectedStatus == 'in-stock'}">В наличии</option>
                     <option value="low-stock" th:selected="${selectedStatus == 'low-stock'}">Заканчивается</option>
-                    <option value="out-of-stock" th:selected="${selectedStatus == 'out-of-stock'}">Нет в наличии</option>
+                    <option value="out-of-stock" th:selected="${selectedStatus == 'out-of-stock'}">Нет в наличии
+                    </option>
                 </select>
             </form>
         </div>
 
         <!-- Сброс фильтров -->
         <div>
-            <a th:href="@{/admin/product/list}" style="padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
+            <a th:href="@{/admin/product/list}"
+               style="padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
                 Сбросить
             </a>
         </div>
     </div>
 </div>
 
+<!-- Таблица продуктов -->
 <!-- Таблица продуктов -->
 <div th:if="${products != null and !products.isEmpty()}">
     <h2>Найдено продуктов: <span th:text="${products.size()}"></span></h2>
@@ -110,6 +117,7 @@
             <th style="padding: 10px; text-align: left;">Остаток</th>
             <th style="padding: 10px; text-align: left;">Категория</th>
             <th style="padding: 10px; text-align: left;">Бренд</th>
+            <th style="padding: 10px; text-align: center;">Рекомендация</th>
             <th style="padding: 10px; text-align: left;">Статус</th>
             <th style="padding: 10px; text-align: center;">Действия</th>
         </tr>
@@ -155,6 +163,18 @@
             <!-- Бренд -->
             <td style="padding: 10px;" th:text="${product.brandName}"></td>
 
+            <!-- Рекомендация -->
+            <td style="padding: 10px; text-align: center;">
+                <span th:if="${product.isRecommendation != null and product.isRecommendation}"
+                      style="padding: 3px 8px; background-color: #ffd700; color: #333; border-radius: 3px; font-size: 11px; font-weight: bold;">
+                    ⭐ РЕКОМЕНДУЕМ
+                </span>
+                <span th:if="${product.isRecommendation == null or !product.isRecommendation}"
+                      style="color: #6c757d; font-size: 11px; font-style: italic;">
+                    —
+                </span>
+            </td>
+
             <!-- Статус -->
             <td style="padding: 10px; text-align: center;">
                 <span th:if="${!product.inStock}"
@@ -193,7 +213,8 @@
 </div>
 
 <!-- Сообщение когда список пуст -->
-<div th:if="${products == null or products.isEmpty()}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
+<div th:if="${products == null or products.isEmpty()}"
+     style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
     <h3>Продукты не найдены</h3>
     <p th:if="${searchTerm != null and !searchTerm.isEmpty()}">
         По запросу "<span th:text="${searchTerm}"></span>" ничего не найдено.
@@ -203,7 +224,8 @@
         Пока что ни одного продукта не создано.
     </p>
 
-    <a th:href="@{/admin/product}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
+    <a th:href="@{/admin/product}"
+       style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
         Создать первый продукт
     </a>
 </div>

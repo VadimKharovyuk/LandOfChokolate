@@ -22,6 +22,7 @@ public class ProductResponseDto {
     // Вложенные объекты для связанных сущностей
     private CategoryInfo category;
     private BrandInfo brand;
+     private Boolean isRecommendation = false;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

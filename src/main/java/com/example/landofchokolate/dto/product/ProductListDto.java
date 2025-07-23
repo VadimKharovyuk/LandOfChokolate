@@ -18,6 +18,7 @@ public class ProductListDto {
     private String imageUrl;
 
     private String slug ;
+    private Boolean isRecommendation;
 
     // Простые поля для отображения в списках
     private String categoryName;

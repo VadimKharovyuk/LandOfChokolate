@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -34,6 +37,15 @@ public class Product {
     private Boolean isActive = true;
 
 
+    // Новый атрибут для отображения на главной странице
+    @Column(name = "is_recommendation")
+    private Boolean isRecommendation = false;
+
+    // Новый атрибут для подсчета кликов
+    @Column(name = "click_count", nullable = false)
+    private Integer clickCount = 0;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -43,4 +55,13 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }

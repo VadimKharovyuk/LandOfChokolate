@@ -29,6 +29,7 @@ public class ProductMapper {
         product.setName(createProductDto.getName());
         product.setPrice(createProductDto.getPrice());
         product.setStockQuantity(createProductDto.getStockQuantity());
+        product.setIsRecommendation(createProductDto.getIsRecommendation());
         log.debug("Mapped CreateProductDto to Product: {}", createProductDto.getName());
         return product;
     }
@@ -50,6 +51,7 @@ public class ProductMapper {
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
         dto.setSlug(product.getSlug());
+        dto.setIsRecommendation(product.getIsRecommendation());
 
         // Маппинг категории
         if (product.getCategory() != null) {
@@ -57,6 +59,7 @@ public class ProductMapper {
             categoryInfo.setId(product.getCategory().getId());
             categoryInfo.setName(product.getCategory().getName());
             dto.setCategory(categoryInfo);
+
 
         }
 
@@ -69,9 +72,9 @@ public class ProductMapper {
             dto.setBrand(brandInfo);
         }
 
-        // Если у Product есть поля createdAt/updatedAt, добавьте их
-//         dto.setCreatedAt(product.getCreatedAt());
-//         dto.setUpdatedAt(product.getUpdatedAt());
+
+         dto.setCreatedAt(product.getCreatedAt());
+         dto.setUpdatedAt(product.getUpdatedAt());
 
         log.debug("Mapped Product entity to ResponseDto: id={}, name={}",
                 product.getId(), product.getName());
@@ -94,6 +97,7 @@ public class ProductMapper {
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
         dto.setSlug(product.getSlug());
+        dto.setIsRecommendation(product.getIsRecommendation());
 
 
 

@@ -121,6 +121,7 @@ public class ProductController {
         return "admin/product/product-list";
     }
 
+
     @GetMapping("/edit/{id}")
     public String productEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
@@ -132,6 +133,7 @@ public class ProductController {
             editDto.setStockQuantity(product.getStockQuantity());
             editDto.setCategoryId(product.getCategory().getId());
             editDto.setBrandId(product.getBrand().getId());
+            editDto.setIsRecommendation(product.getIsRecommendation());
 
             model.addAttribute("product", editDto);
             model.addAttribute("productId", id);

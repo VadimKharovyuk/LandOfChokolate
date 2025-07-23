@@ -36,6 +36,8 @@ public class UpdateProductDto {
     // Новое изображение (опционально при обновлении)
     private MultipartFile image;
 
+    private Boolean isRecommendation = false;
+
     // Флаг для удаления текущего изображения
     private Boolean removeCurrentImage = false;
 }
