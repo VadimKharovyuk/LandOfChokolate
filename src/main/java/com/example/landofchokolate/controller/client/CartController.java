@@ -136,7 +136,7 @@ public class CartController {
             response.put("cartTotal", cartTotal != null ? cartTotal : BigDecimal.ZERO);
             response.put("itemTotal", itemTotal);
 
-            log.info("Количество товара {} обновлено до: {}", productId, quantity);
+
 
         } catch (RuntimeException e) {
             // Обработка бизнес-ошибок (недостаток товара на складе и т.д.)
@@ -180,7 +180,6 @@ public class CartController {
             response.put("cartTotal", cartTotal);
             response.put("isEmpty", isEmpty);
 
-            log.info("Товар {} удален из корзины", productId);
 
         } catch (Exception e) {
             response.put("success", false);
@@ -209,7 +208,6 @@ public class CartController {
             response.put("cartTotal", BigDecimal.ZERO);
             response.put("isEmpty", true);
 
-            log.info("Корзина очищена");
 
         } catch (Exception e) {
             response.put("success", false);
