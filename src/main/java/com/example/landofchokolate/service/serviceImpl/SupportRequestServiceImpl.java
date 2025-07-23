@@ -26,36 +26,28 @@ public class SupportRequestServiceImpl implements SupportRequestService {
 
     @Override
     public SupportRequestResponseDto createSupport(CreateSupportRequestDto createSupportRequestDto) {
-        log.info("Creating support request for email: {}", createSupportRequestDto.getEmail());
 
-        // Маппинг DTO -> Entity
         SupportRequest supportRequest = supportRequestMapper.toEntity(createSupportRequestDto);
 
         // Сохранение
         SupportRequest saved = supportRequestRepository.save(supportRequest);
 
-        // Маппинг Entity -> ResponseDTO
         SupportRequestResponseDto responseDto = supportRequestMapper.toDto(saved);
 
-        log.info("Support request created with ID: {}", saved.getId());
         return responseDto;
     }
 
     @Override
     public SupportRequestResponseDto getById(Long id) {
-        log.info("Getting support request by ID: {}", id);
 
         SupportRequest supportRequest = supportRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Support request not found with ID: " + id));
 
-        // ИСПРАВЛЕНО: добавил вызов метода
         return supportRequestMapper.toDto(supportRequest);
     }
 
     @Override
     public PagedResponse<SupportRequestResponseDto> getAllSupport(Pageable pageable) {
-        log.info("Getting all support requests with pagination: page={}, size={}",
-                pageable.getPageNumber(), pageable.getPageSize());
 
         // Получение Page<SupportRequest>
         Page<SupportRequest> supportRequestPage = supportRequestRepository.findAll(pageable);
@@ -66,7 +58,6 @@ public class SupportRequestServiceImpl implements SupportRequestService {
                 .map(supportRequestMapper::toDto)
                 .collect(Collectors.toList());
 
-        // Создание PagedResponse
         return new PagedResponse<>(content, supportRequestPage);
     }
 

@@ -12,11 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.example.landofchokolate.dto.product.PagedResponse;
-import com.example.landofchokolate.dto.supportRequestDto.SupportRequestResponseDto;
 import com.example.landofchokolate.enums.SupportTopic;
-import com.example.landofchokolate.service.SupportRequestService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -43,8 +40,6 @@ public class SupportRequestAdminController {
                                      @RequestParam(required = false) SupportTopic topic,
                                      @RequestParam(required = false) String email) {
 
-        log.info("Loading support requests list - page: {}, size: {}, sortBy: {}, sortDir: {}",
-                page, size, sortBy, sortDir);
 
         // Создание Pageable с сортировкой
         Sort sort = sortDir.equalsIgnoreCase("desc") ?
@@ -81,7 +76,6 @@ public class SupportRequestAdminController {
 
     @GetMapping("/{id}")
     public String supportRequestDetail(Model model, @PathVariable Long id) {
-        log.info("Loading support request detail for ID: {}", id);
 
         try {
             SupportRequestResponseDto dto = supportRequestService.getById(id);

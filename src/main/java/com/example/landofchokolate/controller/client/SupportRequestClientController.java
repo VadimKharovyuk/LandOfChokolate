@@ -39,9 +39,6 @@ public class SupportRequestClientController {
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
 
-        log.info("Processing support request creation for email: {}", createSupportRequestDto.getEmail());
-
-        // ДОБАВЛЕНО: проверка ошибок валидации
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors in support request: {}", bindingResult.getAllErrors());
 
