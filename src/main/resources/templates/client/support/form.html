@@ -1,0 +1,1195 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Служба поддержки - Land of Chocolate</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
+<!--            min-height: 100vh;-->
+<!--            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--        }-->
+
+<!--        .support-container {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            border-radius: 20px;-->
+<!--            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);-->
+<!--            backdrop-filter: blur(10px);-->
+<!--            margin: 2rem auto;-->
+<!--            max-width: 800px;-->
+<!--        }-->
+
+<!--        .header-section {-->
+<!--            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);-->
+<!--            color: white;-->
+<!--            border-radius: 20px 20px 0 0;-->
+<!--            padding: 2rem;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .form-section {-->
+<!--            padding: 2rem;-->
+<!--        }-->
+
+<!--        .form-label {-->
+<!--            font-weight: 600;-->
+<!--            color: #333;-->
+<!--            margin-bottom: 0.5rem;-->
+<!--        }-->
+
+<!--        .form-control, .form-select {-->
+<!--            border: 2px solid #e9ecef;-->
+<!--            border-radius: 10px;-->
+<!--            padding: 0.75rem 1rem;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .form-control:focus, .form-select:focus {-->
+<!--            border-color: #4CAF50;-->
+<!--            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);-->
+<!--        }-->
+
+<!--        .btn-submit {-->
+<!--            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);-->
+<!--            border: none;-->
+<!--            border-radius: 25px;-->
+<!--            padding: 0.75rem 2rem;-->
+<!--            font-weight: 600;-->
+<!--            color: white;-->
+<!--            transition: all 0.3s ease;-->
+<!--            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);-->
+<!--        }-->
+
+<!--        .btn-submit:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .is-invalid {-->
+<!--            border-color: #dc3545;-->
+<!--        }-->
+
+<!--        .invalid-feedback {-->
+<!--            display: block;-->
+<!--            font-size: 0.875rem;-->
+<!--            color: #dc3545;-->
+<!--            margin-top: 0.25rem;-->
+<!--        }-->
+
+<!--        .success-alert {-->
+<!--            animation: slideInDown 0.5s ease-out;-->
+<!--        }-->
+
+<!--        .error-alert {-->
+<!--            animation: shake 0.5s ease-in-out;-->
+<!--        }-->
+
+<!--        @keyframes slideInDown {-->
+<!--            from {-->
+<!--                opacity: 0;-->
+<!--                transform: translateY(-30px);-->
+<!--            }-->
+<!--            to {-->
+<!--                opacity: 1;-->
+<!--                transform: translateY(0);-->
+<!--            }-->
+<!--        }-->
+
+<!--        @keyframes shake {-->
+<!--            0%, 100% { transform: translateX(0); }-->
+<!--            25% { transform: translateX(-5px); }-->
+<!--            75% { transform: translateX(5px); }-->
+<!--        }-->
+
+<!--        .chocolate-icon {-->
+<!--            font-size: 3rem;-->
+<!--            margin-bottom: 1rem;-->
+<!--            opacity: 0.9;-->
+<!--        }-->
+
+<!--        .topic-icon {-->
+<!--            margin-right: 0.5rem;-->
+<!--        }-->
+
+<!--        .char-counter {-->
+<!--            font-size: 0.875rem;-->
+<!--            color: #6c757d;-->
+<!--            text-align: right;-->
+<!--            margin-top: 0.25rem;-->
+<!--        }-->
+
+<!--        .required-asterisk {-->
+<!--            color: #dc3545;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <div class="support-container">-->
+<!--        &lt;!&ndash; Header Section &ndash;&gt;-->
+<!--        <div class="header-section">-->
+<!--            <div class="chocolate-icon">-->
+<!--                <i class="fas fa-heart"></i>-->
+<!--            </div>-->
+<!--            <h1 class="mb-2">-->
+<!--                <i class="fas fa-headset"></i>-->
+<!--                Служба поддержки-->
+<!--            </h1>-->
+<!--            <p class="mb-0 lead">-->
+<!--                Мы здесь, чтобы помочь вам! Опишите вашу проблему, и мы свяжемся с вами в ближайшее время.-->
+<!--            </p>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Form Section &ndash;&gt;-->
+<!--        <div class="form-section">-->
+<!--            &lt;!&ndash; Success Message &ndash;&gt;-->
+<!--            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show success-alert" role="alert">-->
+<!--                <div class="d-flex align-items-center">-->
+<!--                    <div class="me-3">-->
+<!--                        <i class="fas fa-check-circle fa-2x text-success"></i>-->
+<!--                    </div>-->
+<!--                    <div class="flex-grow-1">-->
+<!--                        <h5 class="alert-heading mb-1">-->
+<!--                            <i class="fas fa-thumbs-up"></i>-->
+<!--                            Ваш тикет успешно отправлен!-->
+<!--                        </h5>-->
+<!--                        <p class="mb-2" th:text="${successMessage}"></p>-->
+<!--                        <small class="text-muted">-->
+<!--                            <i class="fas fa-clock"></i>-->
+<!--                            Спасибо за обращение! Наша команда поддержки ответит вам в течение 24 часов.-->
+<!--                        </small>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Error Message &ndash;&gt;-->
+<!--            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show error-alert" role="alert">-->
+<!--                <div class="d-flex align-items-center">-->
+<!--                    <div class="me-3">-->
+<!--                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>-->
+<!--                    </div>-->
+<!--                    <div class="flex-grow-1">-->
+<!--                        <h5 class="alert-heading mb-1">Произошла ошибка</h5>-->
+<!--                        <p class="mb-0" th:text="${errorMessage}"></p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Support Form &ndash;&gt;-->
+<!--            <form th:action="@{/support/create}" th:object="${support}" method="post" novalidate>-->
+<!--                <div class="row">-->
+<!--                    &lt;!&ndash; Email Field &ndash;&gt;-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="email" class="form-label">-->
+<!--                            <i class="fas fa-envelope topic-icon"></i>-->
+<!--                            Email адрес-->
+<!--                            <span class="required-asterisk">*</span>-->
+<!--                        </label>-->
+<!--                        <input type="email"-->
+<!--                               th:field="*{email}"-->
+<!--                               id="email"-->
+<!--                               class="form-control"-->
+<!--                               th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'"-->
+<!--                               placeholder="example@email.com"-->
+<!--                               required>-->
+<!--                        <div th:if="${#fields.hasErrors('email')}"-->
+<!--                             th:errors="*{email}"-->
+<!--                             class="invalid-feedback"></div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Phone Field &ndash;&gt;-->
+<!--                    <div class="col-md-6 mb-3">-->
+<!--                        <label for="phoneNumber" class="form-label">-->
+<!--                            <i class="fas fa-phone topic-icon"></i>-->
+<!--                            Номер телефона-->
+<!--                        </label>-->
+<!--                        <input type="tel"-->
+<!--                               th:field="*{phoneNumber}"-->
+<!--                               id="phoneNumber"-->
+<!--                               class="form-control"-->
+<!--                               th:class="${#fields.hasErrors('phoneNumber')} ? 'form-control is-invalid' : 'form-control'"-->
+<!--                               placeholder="+7 (900) 123-45-67"-->
+<!--                               maxlength="13">-->
+<!--                        <div class="form-text">-->
+<!--                            <i class="fas fa-info-circle"></i>-->
+<!--                            От 6 до 13 символов (необязательно)-->
+<!--                        </div>-->
+<!--                        <div th:if="${#fields.hasErrors('phoneNumber')}"-->
+<!--                             th:errors="*{phoneNumber}"-->
+<!--                             class="invalid-feedback"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Topic Field &ndash;&gt;-->
+<!--                <div class="mb-3">-->
+<!--                    <label for="topic" class="form-label">-->
+<!--                        <i class="fas fa-tags topic-icon"></i>-->
+<!--                        Тема обращения-->
+<!--                        <span class="required-asterisk">*</span>-->
+<!--                    </label>-->
+<!--                    <select th:field="*{topic}"-->
+<!--                            id="topic"-->
+<!--                            class="form-select"-->
+<!--                            th:class="${#fields.hasErrors('topic')} ? 'form-select is-invalid' : 'form-select'"-->
+<!--                            required>-->
+<!--                        <option value="">&#45;&#45; Выберите тему обращения &#45;&#45;</option>-->
+<!--                        <option th:each="topicOption : ${supportTopics}"-->
+<!--                                th:value="${topicOption}"-->
+<!--                                th:text="${topicOption}"></option>-->
+<!--                    </select>-->
+<!--                    <div th:if="${#fields.hasErrors('topic')}"-->
+<!--                         th:errors="*{topic}"-->
+<!--                         class="invalid-feedback"></div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Message Field &ndash;&gt;-->
+<!--                <div class="mb-4">-->
+<!--                    <label for="message" class="form-label">-->
+<!--                        <i class="fas fa-comment-alt topic-icon"></i>-->
+<!--                        Подробное описание проблемы-->
+<!--                        <span class="required-asterisk">*</span>-->
+<!--                    </label>-->
+<!--                    <textarea th:field="*{message}"-->
+<!--                              id="message"-->
+<!--                              class="form-control"-->
+<!--                              th:class="${#fields.hasErrors('message')} ? 'form-control is-invalid' : 'form-control'"-->
+<!--                              rows="5"-->
+<!--                              placeholder="Опишите вашу проблему максимально подробно. Это поможет нам быстрее найти решение..."-->
+<!--                              maxlength="1000"-->
+<!--                              required-->
+<!--                              onkeyup="updateCharCounter()"></textarea>-->
+<!--                    <div class="char-counter">-->
+<!--                        <span id="charCount">0</span>/1000 символов-->
+<!--                    </div>-->
+<!--                    <div class="form-text">-->
+<!--                        <i class="fas fa-lightbulb"></i>-->
+<!--                        Минимум 6 символов. Чем подробнее описание, тем быстрее мы сможем помочь!-->
+<!--                    </div>-->
+<!--                    <div th:if="${#fields.hasErrors('message')}"-->
+<!--                         th:errors="*{message}"-->
+<!--                         class="invalid-feedback"></div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Submit Button &ndash;&gt;-->
+<!--                <div class="text-center">-->
+<!--                    <button type="submit" class="btn btn-submit btn-lg">-->
+<!--                        <i class="fas fa-paper-plane me-2"></i>-->
+<!--                        Отправить запрос-->
+<!--                    </button>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Help Text &ndash;&gt;-->
+<!--                <div class="mt-4 text-center">-->
+<!--                    <small class="text-muted">-->
+<!--                        <i class="fas fa-shield-alt"></i>-->
+<!--                        Ваши данные защищены и будут использованы только для обработки обращения.-->
+<!--                    </small>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--<script>-->
+<!--    // Character counter for message field-->
+<!--    function updateCharCounter() {-->
+<!--        const messageField = document.getElementById('message');-->
+<!--        const charCount = document.getElementById('charCount');-->
+<!--        const currentLength = messageField.value.length;-->
+
+<!--        charCount.textContent = currentLength;-->
+
+<!--        // Change color based on character count-->
+<!--        if (currentLength < 6) {-->
+<!--            charCount.style.color = '#dc3545'; // Red-->
+<!--        } else if (currentLength > 900) {-->
+<!--            charCount.style.color = '#fd7e14'; // Orange-->
+<!--        } else {-->
+<!--            charCount.style.color = '#28a745'; // Green-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Initialize character counter on page load-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        updateCharCounter();-->
+
+<!--        // Auto-hide success/error alerts after 10 seconds-->
+<!--        const alerts = document.querySelectorAll('.alert');-->
+<!--        alerts.forEach(function(alert) {-->
+<!--            setTimeout(function() {-->
+<!--                const bsAlert = new bootstrap.Alert(alert);-->
+<!--                bsAlert.close();-->
+<!--            }, 10000);-->
+<!--        });-->
+<!--    });-->
+
+<!--    // Form validation enhancement-->
+<!--    document.querySelector('form').addEventListener('submit', function(e) {-->
+<!--        const submitBtn = this.querySelector('button[type="submit"]');-->
+<!--        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Отправляем...';-->
+<!--        submitBtn.disabled = true;-->
+<!--    });-->
+
+<!--    // Phone number formatting (optional)-->
+<!--    document.getElementById('phoneNumber').addEventListener('input', function(e) {-->
+<!--        let value = e.target.value.replace(/\D/g, '');-->
+<!--        if (value.startsWith('7') || value.startsWith('8')) {-->
+<!--            value = '+7' + value.substring(1);-->
+<!--        } else if (value.length > 0) {-->
+<!--            value = '+' + value;-->
+<!--        }-->
+<!--        e.target.value = value;-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Служба підтримки - Land of Chocolate</title>
+    <meta name="description" content="Зв'язатися зі службою підтримки Land of Chocolate. Допоможемо вирішити будь-які питання щодо замовлень, доставки та товарів.">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
+    <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --primary-medium: #5A5A5A;
+            --primary-light: #FAFAFA;
+            --accent-gold: #D4AF37;
+            --accent-warm: #F5F5F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #757575;
+            --border-subtle: #E8E8E8;
+            --shadow-soft: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.08);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: #FFFFFF;
+            letter-spacing: -0.01em;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Основной контент с отступом от навигации */
+        .main-content {
+            margin-top: 80px;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumb-container {
+            padding: 2rem 0 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Header Section */
+        .support-header {
+            padding: 3rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .support-icon {
+            font-size: 3.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .support-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .support-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Success/Error Messages */
+        .alert-custom {
+            border: none;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px var(--shadow-soft);
+            border-left: 4px solid;
+        }
+
+        .alert-success-custom {
+            background: #f8fff9;
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .alert-error-custom {
+            background: #fff5f5;
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-icon {
+            font-size: 2rem;
+        }
+
+        .alert-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .alert-content {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .alert-footer {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form Section */
+        .support-form-section {
+            padding: 4rem 0;
+        }
+
+        .form-container {
+            background: #FFFFFF;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px var(--shadow-soft);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-label i {
+            color: var(--text-secondary);
+            width: 16px;
+        }
+
+        .required-asterisk {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: #FFFFFF;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(42, 42, 42, 0.1);
+            outline: none;
+        }
+
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .form-control.is-invalid:focus, .form-select.is-invalid:focus {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: var(--danger-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Topic Icons */
+        .topic-option {
+            position: relative;
+        }
+
+        /* Character Counter */
+        .char-counter {
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .char-counter.warning {
+            color: var(--warning-color);
+        }
+
+        .char-counter.danger {
+            color: var(--danger-color);
+        }
+
+        .char-counter.success {
+            color: var(--success-color);
+        }
+
+        /* Submit Button */
+        .form-actions {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .btn-submit {
+            background: var(--text-primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 6px;
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--primary-medium);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+
+        .btn-submit:disabled {
+            background: var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Help Section */
+        .form-help {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .help-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-warm);
+            border-radius: 8px;
+        }
+
+        .help-icon {
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .help-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .help-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            padding: 1.5rem;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-icon {
+            font-size: 1.25rem;
+        }
+
+        .notification-icon.success {
+            color: var(--success-color);
+        }
+
+        .notification-icon.error {
+            color: var(--danger-color);
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .notification-message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1.5rem;
+            }
+
+            .support-header {
+                padding: 2rem 0;
+            }
+
+            .support-title {
+                font-size: 2.5rem;
+            }
+
+            .support-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .form-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.75rem;
+            }
+
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-submit {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .support-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент -->
+<div class="main-content">
+    <div class="main-container">
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumb-container" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Головна</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Служба підтримки</li>
+            </ol>
+        </nav>
+
+        <!-- Header Section -->
+        <header class="support-header">
+            <div class="support-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h1 class="support-title">Служба підтримки</h1>
+            <p class="support-subtitle">
+                Ми тут, щоб допомогти вам! Опишіть вашу проблему, і ми зв'яжемося з вами найближчим часом.
+            </p>
+        </header>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${successMessage}" class="alert-custom alert-success-custom">
+            <div class="alert-header">
+                <i class="fas fa-check-circle alert-icon" style="color: var(--success-color);"></i>
+                <h3 class="alert-title">Ваш тікет успішно відправлено!</h3>
+            </div>
+            <div class="alert-content" th:text="${successMessage}"></div>
+            <div class="alert-footer">
+                <i class="fas fa-clock"></i>
+                <span>Дякуємо за звернення! Наша команда підтримки відповість вам протягом 24 годин.</span>
+            </div>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert-custom alert-error-custom">
+            <div class="alert-header">
+                <i class="fas fa-exclamation-triangle alert-icon" style="color: var(--danger-color);"></i>
+                <h3 class="alert-title">Сталася помилка</h3>
+            </div>
+            <div class="alert-content" th:text="${errorMessage}"></div>
+        </div>
+
+        <!-- Form Section -->
+        <section class="support-form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 class="form-title">Форма звернення</h2>
+                    <p class="form-description">
+                        Заповніть форму нижче, і ми зв'яжемося з вами якнайшвидше
+                    </p>
+                </div>
+
+                <form th:action="@{/support/create}" th:object="${support}" method="post" novalidate>
+                    <div class="row">
+                        <!-- Email Field -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email адреса
+                                    <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="email"
+                                       th:field="*{email}"
+                                       id="email"
+                                       class="form-control"
+                                       th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'"
+                                       placeholder="example@email.com"
+                                       required>
+                                <div th:if="${#fields.hasErrors('email')}"
+                                     th:errors="*{email}"
+                                     class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <!-- Phone Field -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phoneNumber" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Номер телефону
+                                </label>
+                                <input type="tel"
+                                       th:field="*{phoneNumber}"
+                                       id="phoneNumber"
+                                       class="form-control"
+                                       th:class="${#fields.hasErrors('phoneNumber')} ? 'form-control is-invalid' : 'form-control'"
+                                       placeholder="+380 (XX) XXX-XX-XX"
+                                       maxlength="13">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Від 6 до 13 символів (необов'язково)
+                                </div>
+                                <div th:if="${#fields.hasErrors('phoneNumber')}"
+                                     th:errors="*{phoneNumber}"
+                                     class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Topic Field -->
+                    <div class="form-group">
+                        <label for="topic" class="form-label">
+                            <i class="fas fa-tags"></i>
+                            Тема звернення
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <select th:field="*{topic}"
+                                id="topic"
+                                class="form-select"
+                                th:class="${#fields.hasErrors('topic')} ? 'form-select is-invalid' : 'form-select'"
+                                required>
+                            <option value="">-- Оберіть тему звернення --</option>
+                            <option th:each="topicOption : ${supportTopics}"
+                                    th:value="${topicOption}"
+                                    th:text="${topicOption.description}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('topic')}"
+                             th:errors="*{topic}"
+                             class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Message Field -->
+                    <div class="form-group">
+                        <label for="message" class="form-label">
+                            <i class="fas fa-comment-alt"></i>
+                            Детальний опис проблеми
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <textarea th:field="*{message}"
+                                  id="message"
+                                  class="form-control"
+                                  th:class="${#fields.hasErrors('message')} ? 'form-control is-invalid' : 'form-control'"
+                                  rows="6"
+                                  placeholder="Опишіть вашу проблему максимально детально. Це допоможе нам швидше знайти рішення..."
+                                  maxlength="1000"
+                                  required
+                                  onkeyup="updateCharCounter()"></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span>/1000 символів
+                        </div>
+                        <div class="form-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Мінімум 6 символів. Чим детальніший опис, тим швидше ми зможемо допомогти!
+                        </div>
+                        <div th:if="${#fields.hasErrors('message')}"
+                             th:errors="*{message}"
+                             class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            Відправити запит
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Help Section -->
+                <div class="form-help">
+                    <div class="help-grid">
+                        <div class="help-item">
+                            <div class="help-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="help-title">Безпека даних</div>
+                            <div class="help-text">
+                                Ваші дані захищені та будуть використані лише для обробки звернення.
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <div class="help-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="help-title">Швидка відповідь</div>
+                            <div class="help-text">
+                                Зазвичай ми відповідаємо протягом 24 годин в робочі дні.
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <div class="help-icon">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <div class="help-title">Професійна підтримка</div>
+                            <div class="help-text">
+                                Наша команда експертів готова допомогти з будь-якими питаннями.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Character counter for message field
+    function updateCharCounter() {
+        const messageField = document.getElementById('message');
+        const charCount = document.getElementById('charCount');
+        const counter = document.querySelector('.char-counter');
+        const currentLength = messageField.value.length;
+
+        charCount.textContent = currentLength;
+
+        // Remove all classes
+        counter.classList.remove('success', 'warning', 'danger');
+
+        // Add appropriate class based on character count
+        if (currentLength < 6) {
+            counter.classList.add('danger');
+        } else if (currentLength > 900) {
+            counter.classList.add('warning');
+        } else {
+            counter.classList.add('success');
+        }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'success', title = null) {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+
+        const iconClass = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+        const defaultTitle = type === 'success' ? 'Успіх' : 'Помилка';
+
+        notification.innerHTML = `
+            <div class="notification-header">
+                <i class="fas fa-${iconClass} notification-icon ${type}"></i>
+                <div class="notification-title">${title || defaultTitle}</div>
+            </div>
+            <div class="notification-message">${message}</div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 400);
+            }
+        }, 5000);
+    }
+
+    // Form validation enhancement
+    function enhanceFormValidation() {
+        const form = document.querySelector('form');
+        const submitBtn = form.querySelector('.btn-submit');
+
+        form.addEventListener('submit', function(e) {
+            // Change button state
+            const originalContent = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Відправляємо...';
+            submitBtn.disabled = true;
+
+            // If there are client-side validation errors, restore button
+            setTimeout(() => {
+                if (form.querySelector('.is-invalid')) {
+                    submitBtn.innerHTML = originalContent;
+                    submitBtn.disabled = false;
+                }
+            }, 100);
+        });
+    }
+
+    // Phone number formatting
+    function formatPhoneNumber() {
+        const phoneField = document.getElementById('phoneNumber');
+
+        phoneField.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+
+            if (value.startsWith('380')) {
+                value = '+380' + value.substring(3);
+            } else if (value.startsWith('80')) {
+                value = '+3' + value;
+            } else if (value.startsWith('0')) {
+                value = '+38' + value;
+            } else if (value.length > 0 && !value.startsWith('38')) {
+                value = '+38' + value;
+            }
+
+            // Limit length
+            if (value.length > 13) {
+                value = value.substring(0, 13);
+            }
+
+            e.target.value = value;
+        });
+    }
+
+    // Auto-hide alerts
+    function autoHideAlerts() {
+        const alerts = document.querySelectorAll('.alert-custom');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                alert.style.transition = 'all 0.3s ease';
+                setTimeout(() => alert.remove(), 300);
+            }, 8000);
+        });
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCharCounter();
+        enhanceFormValidation();
+        formatPhoneNumber();
+        autoHideAlerts();
+
+        // Focus first field if no alerts
+        if (!document.querySelector('.alert-custom')) {
+            document.getElementById('email').focus();
+        }
+    });
+</script>
+
+</body>
+</html>

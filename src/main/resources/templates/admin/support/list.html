@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Адміністрування - Запити підтримки</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .sort-link {
+      color: #333;
+      text-decoration: none;
+    }
+    .sort-link:hover {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .delete-btn {
+      border: none;
+      background: none;
+      color: #dc3545;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      color: #c82333;
+    }
+    .alert-dismissible {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h2><i class="fas fa-headset"></i> Запросы поддержки</h2>
+
+      <!-- Сообщения об успехе/ошибке -->
+      <div th:if="${param.deleted}" class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> Запрос успешно удален!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+      <div th:if="${param.error == 'delete'}" class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-circle"></i> Ошибка при удалении запроса!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+      <!-- Фильтры и сортировка -->
+      <form th:action="@{/admin/support}" method="get" class="mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-filter"></i> Фильтры</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <label for="topic" class="form-label">Тема обращения:</label>
+                <select name="topic" id="topic" class="form-select">
+                  <option value="">Все темы</option>
+                  <option th:each="topic : ${supportTopics}"
+                          th:value="${topic}"
+                          th:text="${topic}"
+                          th:selected="${topic == currentTopic}"></option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="text" name="email" id="email" th:value="${currentEmail}"
+                       placeholder="Email" class="form-control" />
+              </div>
+              <div class="col-md-2">
+                <label for="size" class="form-label">Записей на странице:</label>
+                <select name="size" id="size" class="form-select">
+                  <option th:each="pageSize : ${pageSizes}"
+                          th:value="${pageSize}"
+                          th:text="${pageSize}"
+                          th:selected="${pageSize == currentSize}"></option>
+                </select>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-search"></i> Фильтр
+                </button>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <a th:href="@{/admin/support}" class="btn btn-outline-secondary">
+                  <i class="fas fa-times"></i> Сбросить
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Таблица с данными -->
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Список запросов</h5>
+          <span class="badge bg-primary" th:text="${metadata.totalElements} + ' записей'"></span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+              <thead class="table-dark">
+              <tr>
+                <th>
+                  <a th:href="@{/admin/support(sortBy='id', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+                     class="sort-link text-white">
+                    ID <i class="fas fa-sort"></i>
+                  </a>
+                </th>
+                <th>
+                  <a th:href="@{/admin/support(sortBy='email', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+                     class="sort-link text-white">
+                    Email <i class="fas fa-sort"></i>
+                  </a>
+                </th>
+                <th>
+                  <a th:href="@{/admin/support(sortBy='topic', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+                     class="sort-link text-white">
+                    Тема <i class="fas fa-sort"></i>
+                  </a>
+                </th>
+                <th>Сообщение</th>
+                <th>
+                  <a th:href="@{/admin/support(sortBy='createdAt', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+                     class="sort-link text-white">
+                    Дата создания <i class="fas fa-sort"></i>
+                  </a>
+                </th>
+                <th width="200">Действия</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="request : ${content}" th:id="'row-' + ${request.id}">
+                <td>
+                  <span class="badge bg-secondary" th:text="'#' + ${request.id}"></span>
+                </td>
+                <td th:text="${request.email}"></td>
+                <td>
+                  <span class="badge bg-info" th:text="${request.topic}"></span>
+                </td>
+                <td>
+                  <span th:text="${#strings.abbreviate(request.message, 50)}"></span>
+                </td>
+                <td>
+                  <small th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></small>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <a th:href="@{/admin/support/{id}(id=${request.id})}"
+                       class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i> Просмотр
+                    </a>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-danger"
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#deleteModal-' + ${request.id}">
+                      <i class="fas fa-trash"></i> Удалить
+                    </button>
+                  </div>
+
+                  <!-- Модальное окно подтверждения удаления -->
+                  <div class="modal fade" th:id="'deleteModal-' + ${request.id}" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">
+                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                            Подтверждение удаления
+                          </h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p>Вы уверены, что хотите удалить запрос поддержки?</p>
+                          <div class="alert alert-info">
+                            <strong>ID:</strong> <span th:text="${request.id}"></span><br>
+                            <strong>Email:</strong> <span th:text="${request.email}"></span><br>
+                            <strong>Тема:</strong> <span th:text="${request.topic}"></span><br>
+                            <strong>Дата:</strong> <span th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                          </div>
+                          <p class="text-danger">
+                            <i class="fas fa-warning"></i>
+                            <strong>Внимание:</strong> Это действие необратимо!
+                          </p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Отмена
+                          </button>
+                          <form th:action="@{/admin/support/{id}/delete(id=${request.id})}"
+                                method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">
+                              <i class="fas fa-trash"></i> Удалить
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Сообщение когда нет данных -->
+              <tr th:if="${#lists.isEmpty(content)}">
+                <td colspan="6" class="text-center py-4">
+                  <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                  <h5 class="text-muted">Запросы не найдены</h5>
+                  <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Пагинация -->
+      <nav th:if="${metadata.totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <!-- Первая страница -->
+          <li class="page-item" th:class="${metadata.first ? 'page-item disabled' : 'page-item'}">
+            <a class="page-link"
+               th:href="@{/admin/support(page=0, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+              <i class="fas fa-angle-double-left"></i>
+            </a>
+          </li>
+
+          <!-- Предыдущая страница -->
+          <li class="page-item" th:class="${metadata.hasPrevious ? 'page-item' : 'page-item disabled'}">
+            <a class="page-link"
+               th:href="@{/admin/support(page=${metadata.page - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+              <i class="fas fa-angle-left"></i>
+            </a>
+          </li>
+
+          <!-- Номера страниц (показываем только ближайшие) -->
+          <th:block th:with="startPage=${metadata.page > 2 ? metadata.page - 2 : 0},
+                                       endPage=${metadata.page + 2 < metadata.totalPages - 1 ? metadata.page + 2 : metadata.totalPages - 1}">
+            <li class="page-item"
+                th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+                th:class="${pageNum == metadata.page ? 'page-item active' : 'page-item'}">
+              <a class="page-link"
+                 th:href="@{/admin/support(page=${pageNum}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                         topic=${currentTopic}, email=${currentEmail})}"
+                 th:text="${pageNum + 1}"></a>
+            </li>
+          </th:block>
+
+          <!-- Следующая страница -->
+          <li class="page-item" th:class="${metadata.hasNext ? 'page-item' : 'page-item disabled'}">
+            <a class="page-link"
+               th:href="@{/admin/support(page=${metadata.page + 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+              <i class="fas fa-angle-right"></i>
+            </a>
+          </li>
+
+          <!-- Последняя страница -->
+          <li class="page-item" th:class="${metadata.last ? 'page-item disabled' : 'page-item'}">
+            <a class="page-link"
+               th:href="@{/admin/support(page=${metadata.totalPages - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+              <i class="fas fa-angle-double-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Информация о пагинации -->
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <small class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            Показано <strong th:text="${content.size()}"></strong> из <strong th:text="${metadata.totalElements}"></strong> записей
+          </small>
+        </div>
+        <div class="col-md-6 text-end">
+          <small class="text-muted">
+            Страница <strong th:text="${metadata.page + 1}"></strong> из <strong th:text="${metadata.totalPages}"></strong>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

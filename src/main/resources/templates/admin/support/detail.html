@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Деталі запиту підтримки - Land of Chocolate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .detail-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .detail-body {
+            padding: 2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid #007bff;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #212529;
+        }
+
+        .topic-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 20px;
+            color: #1976d2;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .status-new {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+
+        .message-section {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .message-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .message-content {
+            line-height: 1.6;
+            font-size: 1rem;
+            color: #495057;
+            white-space: pre-wrap;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .breadcrumb-custom {
+            background: none;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-custom .breadcrumb-item {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .breadcrumb-custom .breadcrumb-item a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .breadcrumb-custom .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: white;
+        }
+
+        .detail-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .print-button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+        }
+
+        @media print {
+            .action-buttons, .print-button {
+                display: none;
+            }
+
+            .detail-header {
+                background: #6c757d !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .detail-body {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .detail-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div class="detail-header">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-custom">
+                <li class="breadcrumb-item">
+                    <a href="/admin">
+                        <i class="fas fa-home"></i> Адміністрування
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/admin/support">
+                        <i class="fas fa-headset"></i> Запити підтримки
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="fas fa-eye"></i> Деталі запиту
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Title -->
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-ticket-alt"></i>
+                    Запит підтримки #<span th:text="${supportRequest.id}">123</span>
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Детальна інформація про звернення до служби підтримки
+                </p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="status-badge status-new">
+                    <i class="fas fa-clock"></i>
+                    Новий запит
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <!-- Quick Stats -->
+    <div class="detail-stats">
+        <div class="stat-card">
+            <div class="stat-icon text-primary">
+                <i class="fas fa-hashtag"></i>
+            </div>
+            <div class="stat-label">ID Запиту</div>
+            <div class="stat-value" th:text="'#' + ${supportRequest.id}">#123</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon text-info">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-label">Дата створення</div>
+            <div class="stat-value" th:text="${#temporals.format(supportRequest.createdAt, 'dd.MM.yyyy')}">24.07.2025</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon text-warning">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-label">Час створення</div>
+            <div class="stat-value" th:text="${#temporals.format(supportRequest.createdAt, 'HH:mm')}">14:30</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon text-success">
+                <i class="fas fa-tags"></i>
+            </div>
+            <div class="stat-label">Категорія</div>
+            <div class="stat-value" th:text="${supportRequest.topic.description}">Проблема із замовленням</div>
+        </div>
+    </div>
+
+    <!-- Main Details -->
+    <div class="detail-container">
+        <div class="detail-body">
+            <h3 class="mb-4">
+                <i class="fas fa-info-circle text-primary"></i>
+                Основна інформація
+            </h3>
+
+            <div class="info-grid">
+                <!-- Email -->
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="fas fa-envelope text-primary"></i>
+                        Email адреса
+                    </div>
+                    <div class="info-value">
+                        <a th:href="'mailto:' + ${supportRequest.email}"
+                           th:text="${supportRequest.email}"
+                           class="text-decoration-none">
+                            user@example.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="info-card" th:if="${supportRequest.phoneNumber != null and !supportRequest.phoneNumber.isEmpty()}">
+                    <div class="info-label">
+                        <i class="fas fa-phone text-success"></i>
+                        Номер телефону
+                    </div>
+                    <div class="info-value">
+                        <a th:href="'tel:' + ${supportRequest.phoneNumber}"
+                           th:text="${supportRequest.phoneNumber}"
+                           class="text-decoration-none">
+                            +380 (XX) XXX-XX-XX
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Topic -->
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="fas fa-tags text-info"></i>
+                        Тема звернення
+                    </div>
+                    <div class="info-value">
+                        <div class="topic-badge">
+                            <i class="fas fa-tag"></i>
+                            <span th:text="${supportRequest.topic.description}">Проблема із замовленням</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Created Date -->
+                <div class="info-card">
+                    <div class="info-label">
+                        <i class="fas fa-calendar-plus text-warning"></i>
+                        Дата та час створення
+                    </div>
+                    <div class="info-value">
+                            <span th:text="${#temporals.format(supportRequest.createdAt, 'dd MMMM yyyy, HH:mm')}">
+                                24 липня 2025, 14:30
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Section -->
+    <div class="message-section">
+        <div class="message-header">
+            <div class="message-icon">
+                <i class="fas fa-comment-alt"></i>
+            </div>
+            <div>
+                <h4 class="mb-1">Повідомлення від користувача</h4>
+                <small class="text-muted">
+                    Детальний опис проблеми або питання
+                </small>
+            </div>
+        </div>
+
+        <div class="message-content" th:text="${supportRequest.message}">
+            Тут буде відображено повідомлення від користувача з детальним описом проблеми або питання, яке потребує вирішення від служби підтримки.
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="/admin/support" class="btn-custom btn-back">
+            <i class="fas fa-arrow-left"></i>
+            Повернутися до списку
+        </a>
+
+        <button type="button"
+                class="btn-custom btn-delete"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal">
+            <i class="fas fa-trash"></i>
+            Видалити запит
+        </button>
+    </div>
+</div>
+
+<!-- Reply Modal -->
+<div class="modal fade" id="replyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-reply text-primary"></i>
+                    Відповідь на запит підтримки
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-info-circle"></i> Інформація:</strong>
+                        Відповідь буде надіслана на email: <strong th:text="${supportRequest.email}">user@example.com</strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="replySubject" class="form-label">Тема листа:</label>
+                        <input type="text" class="form-control" id="replySubject"
+                               th:value="'Відповідь на ваш запит #' + ${supportRequest.id}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="replyMessage" class="form-label">Повідомлення:</label>
+                        <textarea class="form-control" id="replyMessage" rows="6"
+                                  placeholder="Введіть вашу відповідь..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Скасувати
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Надіслати відповідь
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    Підтвердження видалення
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити цей запит підтримки?</p>
+                <div class="alert alert-warning">
+                    <strong>ID:</strong> <span th:text="${supportRequest.id}">123</span><br>
+                    <strong>Email:</strong> <span th:text="${supportRequest.email}">user@example.com</span><br>
+                    <strong>Тема:</strong> <span th:text="${supportRequest.topic.description}">Проблема із замовленням</span><br>
+                    <strong>Дата:</strong> <span th:text="${#temporals.format(supportRequest.createdAt, 'dd.MM.yyyy HH:mm')}">24.07.2025 14:30</span>
+                </div>
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Увага:</strong> Ця дія необоротна!
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Скасувати
+                </button>
+                <form th:action="@{/admin/support/{id}/delete(id=${supportRequest.id})}"
+                      method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Видалити
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Button -->
+<button class="print-button" onclick="window.print()" title="Роздрукувати">
+    <i class="fas fa-print"></i>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Auto-hide alerts
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                if (alert.parentNode) {
+                    alert.style.transition = 'opacity 0.3s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 10000);
+        });
+    });
+
+    // Print functionality
+    function printPage() {
+        window.print();
+    }
+
+    // Copy email to clipboard
+    function copyEmail(email) {
+        navigator.clipboard.writeText(email).then(function() {
+            // Show toast notification
+            showToast('Email скопійовано до буферу обміну');
+        });
+    }
+
+    // Simple toast notification
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.textContent = message;
+        toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 6px;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+</script>
+</body>
+</html>
