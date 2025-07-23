@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,23 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final BrandService brandService;
+
+
+
+    @GetMapping("/click")
+    public String click(Model model,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        PagedResponse<ProductListClickDto> clickDtoPagedResponse =
+                productService.getProductsClick(pageable);
+
+        model.addAttribute("clickDtoPagedResponse", clickDtoPagedResponse);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("currentSize", size);
+        return "admin/product/product-click";
+    }
 
     @GetMapping
     public String productCreateForm(Model model) {
@@ -296,15 +314,6 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/click")
-    public String click(Model model, Pageable pageable) {
-        // Убираем дублирующий параметр size, используем pageable
-        PagedResponse<ProductListClickDto> clickDtoPagedResponse =
-                productService.getProductsClick(pageable);
-
-        model.addAttribute("clickDtoPagedResponse", clickDtoPagedResponse);
-        return "admin/product/product-click";
-    }
 
 
 //    // Добавить в контроллер кнопку или вызвать один раз:

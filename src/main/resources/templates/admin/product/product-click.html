@@ -1,458 +1,769 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Статистика кликов по продуктам</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика кликов по продуктам</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
+    <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --primary-medium: #5A5A5A;
+            --primary-light: #FAFAFA;
+            --accent-gold: #D4AF37;
+            --accent-warm: #F5F5F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #757575;
+            --border-subtle: #E8E8E8;
+            --shadow-soft: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.08);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-      text-align: center;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FFFFFF;
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 20px;
+        }
 
-    .header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
 
-    .header p {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    .stats-summary {
-      display: flex;
-      justify-content: space-around;
-      padding: 20px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #dee2e6;
-    }
+        /* Card Styles */
+        .card {
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: white;
+        }
 
-    .stat-item {
-      text-align: center;
-      padding: 15px;
-    }
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: none;
+        }
 
-    .stat-number {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #667eea;
-      display: block;
-    }
+        .card-header h1, .card-header h4, .card-header h5 {
+            margin: 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+        }
 
-    .stat-label {
-      color: #6c757d;
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
+        .card-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
 
-    .table-container {
-      overflow-x: auto;
-      padding: 0;
-    }
+        .card-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
 
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0;
-    }
+        .card-body {
+            padding: 2rem;
+        }
 
-    .table thead {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .table th,
-    .table td {
-      padding: 15px 12px;
-      text-align: left;
-      border-bottom: 1px solid #dee2e6;
-    }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-    .table th {
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
 
-    .table tbody tr {
-      transition: all 0.3s ease;
-    }
+        .stat-content h6 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
 
-    .table tbody tr:hover {
-      background-color: #f8f9fa;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+        .stat-content .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            display: block;
+            margin: 0;
+        }
 
-    .table tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            padding: 0;
+        }
 
-    .product-name {
-      font-weight: 600;
-      color: #495057;
-    }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
 
-    .product-image {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
-      object-fit: cover;
-      border: 2px solid #dee2e6;
-    }
+        .table th {
+            background: var(--accent-warm);
+            border-bottom: 2px solid var(--border-subtle);
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
 
-    .price {
-      font-weight: 600;
-      color: #28a745;
-      font-size: 1.1rem;
-    }
+        .table td {
+            padding: 1.5rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-subtle);
+        }
 
-    .click-count {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: bold;
-      display: inline-block;
-      min-width: 60px;
-      text-align: center;
-    }
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
 
-    .stock-quantity {
-      padding: 6px 12px;
-      border-radius: 15px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+        .table tbody tr:hover {
+            background-color: var(--accent-warm);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-medium);
+        }
 
-    .stock-high {
-      background-color: #d4edda;
-      color: #155724;
-    }
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    .stock-medium {
-      background-color: #fff3cd;
-      color: #856404;
-    }
+        .product-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
 
-    .stock-low {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
+        .product-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--border-subtle);
+        }
 
-    .pagination-container {
-      padding: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f8f9fa;
-    }
+        .product-placeholder {
+            width: 70px;
+            height: 70px;
+            background: var(--accent-warm);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-subtle);
+        }
 
-    .pagination {
-      display: flex;
-      list-style: none;
-      gap: 8px;
-      align-items: center;
-    }
+        .price {
+            font-weight: 600;
+            color: var(--success-color);
+            font-size: 1.1rem;
+        }
 
-    .pagination li {
-      display: inline-block;
-    }
+        .click-count {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
 
-    .pagination a,
-    .pagination span {
-      display: inline-block;
-      padding: 12px 16px;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-    }
+        .stock-quantity {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
 
-    .pagination a {
-      background: white;
-      color: #667eea;
-      border-color: #dee2e6;
-    }
+        .stock-high {
+            background-color: #d4edda;
+            color: #155724;
+        }
 
-    .pagination a:hover {
-      background: #667eea;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-    }
+        .stock-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
 
-    .pagination .active a,
-    .pagination .active span {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-color: #667eea;
-    }
+        .stock-low {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
 
-    .pagination .disabled a {
-      background: #f8f9fa;
-      color: #6c757d;
-      cursor: not-allowed;
-      border-color: #dee2e6;
-    }
+        /* Pagination */
+        .pagination-container {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--primary-light);
+        }
 
-    .pagination .disabled a:hover {
-      background: #f8f9fa;
-      color: #6c757d;
-      transform: none;
-      box-shadow: none;
-    }
+        .pagination {
+            display: flex;
+            list-style: none;
+            gap: 8px;
+            align-items: center;
+        }
 
-    .page-info {
-      margin: 0 20px;
-      color: #6c757d;
-      font-size: 0.9rem;
-    }
+        .pagination li {
+            display: inline-block;
+        }
 
-    .no-data {
-      text-align: center;
-      padding: 60px 20px;
-      color: #6c757d;
-    }
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 12px 16px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
 
-    .no-data i {
-      font-size: 4rem;
-      margin-bottom: 20px;
-      opacity: 0.5;
-    }
+        .pagination a {
+            background: white;
+            color: var(--primary-dark);
+            border-color: var(--border-subtle);
+        }
 
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 2rem;
-      }
+        .pagination a:hover {
+            background: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
 
-      .stats-summary {
-        flex-direction: column;
-        gap: 10px;
-      }
+        .pagination .active a,
+        .pagination .active span {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+            color: white;
+            border-color: var(--primary-dark);
+        }
 
-      .table th,
-      .table td {
-        padding: 10px 8px;
-        font-size: 0.9rem;
-      }
+        .pagination .disabled a {
+            background: var(--primary-light);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            border-color: var(--border-subtle);
+        }
 
-      .pagination a,
-      .pagination span {
-        padding: 8px 12px;
-        font-size: 0.9rem;
-      }
+        .pagination .disabled a:hover {
+            background: var(--primary-light);
+            color: var(--text-secondary);
+            transform: none;
+            box-shadow: none;
+        }
 
-      .container {
-        margin: 10px;
-        border-radius: 10px;
-      }
-    }
+        .page-info {
+            margin: 0 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
 
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 40px;
-    }
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
 
-    .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #667eea;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
+        .no-data i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            color: var(--text-secondary);
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+        .no-data h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Action Links */
+        .action-link {
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-link:hover {
+            color: var(--accent-gold);
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .card-header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-summary {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+
+            .pagination a,
+            .pagination span {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .product-image, .product-placeholder {
+                width: 50px;
+                height: 50px;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .stats-summary {
+                gap: 0.75rem;
+            }
+
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>📊 Статистика кликов</h1>
-    <p>Анализ популярности продуктов</p>
-  </div>
-
-  <!-- Сводная статистика -->
-  <div class="stats-summary" th:if="${clickDtoPagedResponse.content.size() > 0}">
-    <div class="stat-item">
-      <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.totalElements}">0</span>
-      <div class="stat-label">Всего продуктов</div>
+<div class="container py-5">
+    <!-- Header Card -->
+    <div class="card">
+        <div class="card-header text-center">
+            <h1 class="d-flex align-items-center justify-content-center gap-2 mb-0">
+                <i class="bi bi-bar-chart-line"></i>
+                Статистика кликов
+            </h1>
+            <p>Анализ популярности продуктов</p>
+        </div>
     </div>
-    <div class="stat-item">
-      <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.totalPages}">0</span>
-      <div class="stat-label">Всего страниц</div>
+
+    <!-- Stats Summary Card -->
+    <div class="card" th:if="${clickDtoPagedResponse.content.size() > 0}">
+        <div class="card-header bg-light text-dark">
+            <h5 class="d-flex align-items-center gap-2 mb-0">
+                <i class="bi bi-graph-up"></i>
+                Общая статистика
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h6>Всего продуктов</h6>
+                        <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.totalElements}">0</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="bi bi-files"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h6>Всего страниц</h6>
+                        <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.totalPages}">0</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h6>Текущая страница</h6>
+                        <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.page + 1}">1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="stat-item">
-      <span class="stat-number" th:text="${clickDtoPagedResponse.metadata.page + 1}">1</span>
-      <div class="stat-label">Текущая страница</div>
+
+    <!-- Products Table Card -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="d-flex align-items-center gap-2 mb-0">
+                <i class="bi bi-list-ul"></i>
+                Список продуктов
+            </h5>
+        </div>
+        <div class="card-body p-0" th:if="${clickDtoPagedResponse.content.size() > 0}">
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Товар</th>
+                            <th class="text-end">Цена</th>
+                            <th class="text-center">Клики</th>
+                            <th class="text-center">В наличии</th>
+                            <th class="text-center">Действия</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${clickDtoPagedResponse.content}">
+                            <td>
+                                <small class="text-muted">ID: <span th:text="${product.id}">1</span></small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img th:if="${product.imageUrl}"
+                                         th:src="${product.imageUrl}"
+                                         th:alt="${product.name}"
+                                         class="product-image">
+                                    <div th:unless="${product.imageUrl}"
+                                         class="product-placeholder">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="product-name mb-1" th:text="${product.name}">Название продукта</h6>
+                                        <small th:if="${product.slug}"
+                                               class="text-muted"
+                                               th:text="'/' + ${product.slug}">slug</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <span class="price" th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' ₽'">150.00 ₽</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="click-count" th:text="${product.clickCount}">25</span>
+                            </td>
+                            <td class="text-center">
+                                        <span th:class="${product.stockQuantity > 50} ? 'stock-quantity stock-high' :
+                                                       (${product.stockQuantity > 10} ? 'stock-quantity stock-medium' : 'stock-quantity stock-low')"
+                                              th:text="${product.stockQuantity}">100</span>
+                            </td>
+                            <td class="text-center">
+                                <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                                   class="action-link">
+                                    <i class="bi bi-eye"></i>
+                                    Просмотр
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container" th:if="${clickDtoPagedResponse.metadata.totalPages > 1}">
+                <nav>
+                    <ul class="pagination">
+                        <!-- Предыдущая страница -->
+                        <li th:class="${!clickDtoPagedResponse.metadata.hasPrevious} ? 'disabled' : ''">
+                            <a th:href="${clickDtoPagedResponse.metadata.hasPrevious} ?
+                                           @{/admin/product/click(page=${clickDtoPagedResponse.metadata.page - 1}, size=${clickDtoPagedResponse.metadata.size})} : '#'"
+                               th:class="${!clickDtoPagedResponse.metadata.hasPrevious} ? 'disabled' : ''">
+                                <i class="bi bi-chevron-left"></i> Предыдущая
+                            </a>
+                        </li>
+
+                        <!-- Номера страниц -->
+                        <li th:each="i : ${#numbers.sequence(
+                                T(java.lang.Math).max(0, clickDtoPagedResponse.metadata.page - 2),
+                                T(java.lang.Math).min(clickDtoPagedResponse.metadata.totalPages - 1, clickDtoPagedResponse.metadata.page + 2)
+                            )}" th:class="${i == clickDtoPagedResponse.metadata.page} ? 'active' : ''">
+                            <a th:href="@{/admin/product/click(page=${i}, size=${clickDtoPagedResponse.metadata.size})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+
+                        <!-- Следующая страница -->
+                        <li th:class="${!clickDtoPagedResponse.metadata.hasNext} ? 'disabled' : ''">
+                            <a th:href="${clickDtoPagedResponse.metadata.hasNext} ?
+                                           @{/admin/product/click(page=${clickDtoPagedResponse.metadata.page + 1}, size=${clickDtoPagedResponse.metadata.size})} : '#'"
+                               th:class="${!clickDtoPagedResponse.metadata.hasNext} ? 'disabled' : ''">
+                                Следующая <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Информация о текущей странице -->
+                    <div class="page-info">
+                        Страница <span th:text="${clickDtoPagedResponse.metadata.page + 1}">1</span>
+                        из <span th:text="${clickDtoPagedResponse.metadata.totalPages}">5</span>
+                        (всего элементов: <span th:text="${clickDtoPagedResponse.metadata.totalElements}">100</span>)
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Сообщение об отсутствии данных -->
+        <div class="card-body" th:if="${clickDtoPagedResponse.content.size() == 0}">
+            <div class="no-data">
+                <i class="bi bi-bar-chart-line"></i>
+                <h3>Нет данных для отображения</h3>
+                <p>Статистика кликов пока не собрана</p>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <div class="table-container">
-    <table class="table" th:if="${clickDtoPagedResponse.content.size() > 0}">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Изображение</th>
-        <th>Название продукта</th>
-        <th>Цена</th>
-        <th>Клики</th>
-        <th>В наличии</th>
-        <th>Действия</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="product : ${clickDtoPagedResponse.content}">
-        <td th:text="${product.id}">1</td>
-        <td>
-          <img th:if="${product.imageUrl}"
-               th:src="${product.imageUrl}"
-               th:alt="${product.name}"
-               class="product-image">
-          <div th:unless="${product.imageUrl}"
-               class="product-image"
-               style="background: #dee2e6; display: flex; align-items: center; justify-content: center; color: #6c757d;">
-            📦
-          </div>
-        </td>
-        <td>
-          <div class="product-name" th:text="${product.name}">Название продукта</div>
-          <small th:if="${product.slug}"
-                 style="color: #6c757d;"
-                 th:text="'/' + ${product.slug}">slug</small>
-        </td>
-        <td>
-          <span class="price" th:text="${product.price} + ' ₽'">150.00 ₽</span>
-        </td>
-        <td>
-          <span class="click-count" th:text="${product.clickCount}">25</span>
-        </td>
-        <td>
-                            <span th:class="${product.stockQuantity > 50} ? 'stock-quantity stock-high' :
-                                           (${product.stockQuantity > 10} ? 'stock-quantity stock-medium' : 'stock-quantity stock-low')"
-                                  th:text="${product.stockQuantity}">100</span>
-        </td>
-        <td>
-          <a th:href="@{'/admin/product/view/' + ${product.id}}"
-             style="color: #667eea; text-decoration: none; font-weight: 500;">
-            👁️ Просмотр
-          </a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <!-- Сообщение об отсутствии данных -->
-    <div class="no-data" th:if="${clickDtoPagedResponse.content.size() == 0}">
-      <i>📊</i>
-      <h3>Нет данных для отображения</h3>
-      <p>Статистика кликов пока не собрана</p>
-    </div>
-  </div>
-
-  <!-- Пагинация -->
-  <div class="pagination-container" th:if="${clickDtoPagedResponse.metadata.totalPages > 1}">
-    <nav>
-      <ul class="pagination">
-        <!-- Предыдущая страница -->
-        <li th:class="${!clickDtoPagedResponse.metadata.hasPrevious} ? 'disabled' : ''">
-          <a th:href="${clickDtoPagedResponse.metadata.hasPrevious} ?
-                                   @{/admin/products/click(page=${clickDtoPagedResponse.metadata.page - 1})} : '#'"
-             th:class="${!clickDtoPagedResponse.metadata.hasPrevious} ? 'disabled' : ''">
-            ← Предыдущая
-          </a>
-        </li>
-
-        <!-- Номера страниц -->
-        <li th:each="i : ${#numbers.sequence(
-                        T(java.lang.Math).max(0, clickDtoPagedResponse.metadata.page - 2),
-                        T(java.lang.Math).min(clickDtoPagedResponse.metadata.totalPages - 1, clickDtoPagedResponse.metadata.page + 2)
-                    )}" th:class="${i == clickDtoPagedResponse.metadata.page} ? 'active' : ''">
-          <a th:href="@{/admin/products/click(page=${i})}"
-             th:text="${i + 1}">1</a>
-        </li>
-
-        <!-- Следующая страница -->
-        <li th:class="${!clickDtoPagedResponse.metadata.hasNext} ? 'disabled' : ''">
-          <a th:href="${clickDtoPagedResponse.metadata.hasNext} ?
-                                   @{/admin/products/click(page=${clickDtoPagedResponse.metadata.page + 1})} : '#'"
-             th:class="${!clickDtoPagedResponse.metadata.hasNext} ? 'disabled' : ''">
-            Следующая →
-          </a>
-        </li>
-      </ul>
-
-      <!-- Информация о текущей странице -->
-      <div class="page-info">
-        Страница <span th:text="${clickDtoPagedResponse.metadata.page + 1}">1</span>
-        из <span th:text="${clickDtoPagedResponse.metadata.totalPages}">5</span>
-        (всего элементов: <span th:text="${clickDtoPagedResponse.metadata.totalElements}">100</span>)
-      </div>
-    </nav>
-  </div>
 </div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 <script>
-  // Добавляем интерактивность
-  document.addEventListener('DOMContentLoaded', function() {
-    // Анимация появления строк таблицы
-    const rows = document.querySelectorAll('.table tbody tr');
-    rows.forEach((row, index) => {
-      row.style.opacity = '0';
-      row.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        row.style.transition = 'all 0.5s ease';
-        row.style.opacity = '1';
-        row.style.transform = 'translateY(0)';
-      }, index * 100);
+    // Добавляем интерактивность
+    document.addEventListener('DOMContentLoaded', function() {
+        // Анимация появления строк таблицы
+        const rows = document.querySelectorAll('.table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                row.style.transition = 'all 0.5s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Подсветка строк с высокими кликами
+        const clickCounts = document.querySelectorAll('.click-count');
+        if (clickCounts.length > 0) {
+            const maxClicks = Math.max(...Array.from(clickCounts).map(el => parseInt(el.textContent)));
+
+            clickCounts.forEach(el => {
+                const clicks = parseInt(el.textContent);
+                if (clicks === maxClicks && clicks > 0) {
+                    el.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+                    el.parentElement.parentElement.style.borderLeft = '4px solid #dc3545';
+                    el.parentElement.parentElement.style.background = 'rgba(220, 53, 69, 0.05)';
+                }
+            });
+        }
+
+        // Добавляем тултипы для элементов с данными
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(el => {
+            el.setAttribute('title', 'Общее количество: ' + el.textContent);
+        });
+
+        // Анимация счетчиков
+        const animateCounters = () => {
+            statNumbers.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                const increment = target / 50;
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 30);
+            });
+        };
+
+        // Запускаем анимацию счетчиков после загрузки
+        setTimeout(animateCounters, 500);
+
+        // Добавляем эффект пульсации для активных элементов
+        const activeElements = document.querySelectorAll('.click-count, .stat-number');
+        activeElements.forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+
+            el.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Улучшенная анимация для карточек статистики
+        const statItems = document.querySelectorAll('.stat-item');
+        statItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-30px)';
+
+            setTimeout(() => {
+                item.style.transition = 'all 0.6s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, index * 200);
+        });
+
+        // Добавляем клавиатурную навигацию
+        document.addEventListener('keydown', function(e) {
+            const currentPage = parseInt(document.querySelector('.pagination .active a')?.textContent || '1');
+            const totalPages = parseInt(document.querySelector('.page-info span:nth-child(2)')?.textContent || '1');
+
+            if (e.key === 'ArrowLeft' && currentPage > 1) {
+                window.location.href = `/admin/products/click?page=${currentPage - 2}`;
+            } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+                window.location.href = `/admin/products/click?page=${currentPage}`;
+            }
+        });
+
+        // Добавляем функционал поиска по таблице (опционально)
+        const addSearchFunctionality = () => {
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Поиск по названию продукта...';
+            searchInput.className = 'form-control mb-3';
+            searchInput.style.maxWidth = '300px';
+
+            const tableContainer = document.querySelector('.table-container');
+            if (tableContainer && document.querySelector('.table tbody tr')) {
+                tableContainer.parentNode.insertBefore(searchInput, tableContainer);
+
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('.table tbody tr');
+
+                    rows.forEach(row => {
+                        const productName = row.querySelector('.product-name')?.textContent.toLowerCase() || '';
+                        if (productName.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        };
+
+        // Добавляем поиск только если есть данные
+        if (document.querySelectorAll('.table tbody tr').length > 5) {
+            addSearchFunctionality();
+        }
     });
 
-    // Подсветка строк с высокими кликами
-    const clickCounts = document.querySelectorAll('.click-count');
-    const maxClicks = Math.max(...Array.from(clickCounts).map(el => parseInt(el.textContent)));
+    // Функция для экспорта данных (опционально)
+    function exportToCSV() {
+        const rows = Array.from(document.querySelectorAll('.table tbody tr'));
+        const csvContent = [
+            ['ID', 'Название', 'Цена', 'Клики', 'В наличии'].join(','),
+            ...rows.map(row => {
+                const cells = Array.from(row.querySelectorAll('td'));
+                return [
+                    cells[0]?.textContent.replace('ID: ', '').trim(),
+                    cells[1]?.querySelector('.product-name')?.textContent.trim(),
+                    cells[2]?.textContent.replace(' ₽', '').trim(),
+                    cells[3]?.textContent.trim(),
+                    cells[4]?.textContent.trim()
+                ].join(',');
+            })
+        ].join('\n');
 
-    clickCounts.forEach(el => {
-      const clicks = parseInt(el.textContent);
-      if (clicks === maxClicks && clicks > 0) {
-        el.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)';
-        el.parentElement.parentElement.style.borderLeft = '4px solid #ff6b6b';
-      }
-    });
-  });
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'click-statistics.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Добавляем кнопку экспорта (если нужно)
+    if (document.querySelectorAll('.table tbody tr').length > 0) {
+        setTimeout(() => {
+            const exportBtn = document.createElement('button');
+            exportBtn.innerHTML = '<i class="bi bi-download"></i> Экспорт CSV';
+            exportBtn.className = 'btn btn-outline-primary btn-sm ms-auto';
+            exportBtn.onclick = exportToCSV;
+
+            const cardHeader = document.querySelector('.card:last-of-type .card-header');
+            if (cardHeader) {
+                cardHeader.style.display = 'flex';
+                cardHeader.style.justifyContent = 'space-between';
+                cardHeader.style.alignItems = 'center';
+                cardHeader.appendChild(exportBtn);
+            }
+        }, 1000);
+    }
 </script>
 </body>
 </html>

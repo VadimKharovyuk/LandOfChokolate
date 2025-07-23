@@ -1,4 +1,4 @@
-package com.example.landofchokolate.controller;
+package com.example.landofchokolate.controller.client;
 import com.example.landofchokolate.dto.brend.BrandClientDto;
 import com.example.landofchokolate.dto.category.CategoryPublicDto;
 import com.example.landofchokolate.dto.product.ProductListRecommendationDto;
