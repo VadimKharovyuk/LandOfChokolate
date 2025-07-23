@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Про нас - Land of Chocolate</title>
+  <meta name="description" content="Дізнайтеся більше про Land of Chocolate - найкращий магазин солодощів з багаторічним досвідом та любов'ю до наших клієнтів.">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/about/aboutPage.css}">
+
+</head>
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент -->
+<div class="main-content">
+  <div class="main-container">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-container" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Головна</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Про нас</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="main-container">
+      <div class="hero-content">
+        <div class="hero-icon">
+          <i class="fas fa-heart"></i>
+        </div>
+        <h1 class="hero-title">Land of Chocolate</h1>
+        <p class="hero-subtitle">
+          Ваш найкращий магазин солодощів з багаторічним досвідом та любов'ю до кожного клієнта
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">15+</span>
+            <span class="stat-label">Років досвіду</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50,000+</span>
+            <span class="stat-label">Задоволених клієнтів</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">1,000+</span>
+            <span class="stat-label">Видів солодощів</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="main-container">
+      <div class="section-header">
+        <h2 class="section-title">Наша історія</h2>
+        <p class="section-subtitle">
+          Від маленької ідеї до найкращого магазину солодощів в Україні
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-content">
+          <p class="about-text">
+            <strong>Land of Chocolate</strong> — це не просто магазин солодощів, це місце, де народжуються мрії та здійснюються найсолодші бажання. Протягом багатьох років ми з любов'ю відбираємо найкращі солодощі з усього світу, щоб принести радість у ваш дім.
+          </p>
+
+          <div class="about-highlight">
+            <p><strong>Наша місія:</strong> Дарувати радість та солодкі моменти кожному клієнту, пропонуючи тільки найвищу якість продукції за найкращими цінами.</p>
+          </div>
+
+          <p class="about-text">
+            Ми віримо, що солодощі — це не просто їжа, це емоції, спогади та моменти щастя. Тому ми ретельно відбираємо кожен продукт, працюємо тільки з перевіреними постачальниками та завжди ставимо наших клієнтів на перше місце.
+          </p>
+        </div>
+
+        <div class="about-image">
+
+          <img src="/images/IMG_1721.JPG" alt="Наш магазин Land of Chocolate">
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="values-section">
+    <div class="main-container">
+      <div class="section-header">
+        <h2 class="section-title">Наші цінності</h2>
+        <p class="section-subtitle">
+          Принципи, якими ми керуємося щодня
+        </p>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3 class="value-title">Любов до клієнтів</h3>
+          <p class="value-text">
+            Кожен наш клієнт — це частина нашої родини. Ми цінуємо довіру, яку ви нам надаєте, і завжди прагнемо перевершити ваші очікування.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-award"></i>
+          </div>
+          <h3 class="value-title">Найвища якість</h3>
+          <p class="value-text">
+            Ми працюємо тільки з найкращими брендами та постачальниками, гарантуючи свіжість та неперевершену якість кожного продукту.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3 class="value-title">Чесність і надійність</h3>
+          <p class="value-text">
+            Прозорі ціни, чесне обслуговування та надійна доставка — основа нашої репутації та довіри клієнтів.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h3 class="value-title">Інновації</h3>
+          <p class="value-text">
+            Ми постійно розширюємо асортимент, впроваджуємо новітні технології та шукаємо способи зробити ваші покупки ще зручнішими.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-shipping-fast"></i>
+          </div>
+          <h3 class="value-title">Швидка доставка</h3>
+          <p class="value-text">
+            Розуміємо, як важливо отримати солодощі швидко. Тому ми забезпечуємо оперативну доставку по всій Україні.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3 class="value-title">Світовий асортимент</h3>
+          <p class="value-text">
+            Від українських традиційних солодощів до вишуканих делікатесів з усього світу — у нас є все для справжніх поціновувачів.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story Timeline -->
+  <section class="story-section">
+    <div class="main-container">
+      <div class="section-header">
+        <h2 class="section-title">Наш шлях до успіху</h2>
+        <p class="section-subtitle">
+          Історія розвитку від першого дня до сьогодення
+        </p>
+      </div>
+
+      <div class="story-timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2008</div>
+            <h3 class="timeline-title">Народження ідеї</h3>
+            <p class="timeline-text">
+              Все почалося з простої мрії — створити місце, де люди зможуть знайти найсмачніші солодощі та відчути справжню радість.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2010</div>
+            <h3 class="timeline-title">Перший магазин</h3>
+            <p class="timeline-text">
+              Відкриття першого невеликого магазинчику з асортиментом у 100 найменувань. Перші клієнти та перші задоволені усмішки.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2015</div>
+            <h3 class="timeline-title">Розширення асортименту</h3>
+            <p class="timeline-text">
+              Партнерство з відомими світовими брендами дозволило нам збільшити асортимент до 500+ найменувань та стати регіональним лідером.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2020</div>
+            <h3 class="timeline-title">Цифрова трансформація</h3>
+            <p class="timeline-text">
+              Запуск інтернет-магазину та системи доставки, що дозволило нам бути поруч з клієнтами навіть у складні часи пандемії.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">2024</div>
+            <h3 class="timeline-title">Лідери ринку</h3>
+            <p class="timeline-text">
+              Сьогодні ми — найкращий магазин солодощів з асортиментом 1000+ товарів, доставкою по всій Україні та 50,000+ задоволених клієнтів.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section">
+    <div class="main-container">
+      <div class="section-header">
+        <h2 class="section-title">Наша команда</h2>
+        <p class="section-subtitle">
+          Люди, які роблять Land of Chocolate особливим
+        </p>
+      </div>
+
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-image">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div class="team-info">
+            <h3 class="team-name">Евген Гуня</h3>
+            <div class="team-role">Засновник і керівник</div>
+            <p class="team-description">
+              15 років досвіду в кондитерській індустрії. Ідейний натхненник та людина, яка зробила Land of Chocolate реальністю.
+            </p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-image">
+            <i class="fas fa-user-friends"></i>
+          </div>
+          <div class="team-info">
+            <h3 class="team-name">Марія Коваленко</h3>
+            <div class="team-role">Менеджер з якості</div>
+            <p class="team-description">
+              Відповідає за відбір найкращих постачальників та контроль якості продукції. Завдяки їй ми гарантуємо свіжість кожного товару.
+            </p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-image">
+            <i class="fas fa-headset"></i>
+          </div>
+          <div class="team-info">
+            <h3 class="team-name">Вадим Харовюк</h3>
+            <div class="team-role">Керівник служби підтримки</div>
+            <p class="team-description">
+              Завжди готовий допомогти нашим клієнтам. Вадим та його команда забезпечують найвищий рівень сервісу 24/7.
+            </p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-image">
+            <i class="fas fa-shipping-fast"></i>
+          </div>
+          <div class="team-info">
+            <h3 class="team-name">Анна Сидорова</h3>
+            <div class="team-role">Логістика та доставка</div>
+            <p class="team-description">
+              Організовує швидку та надійну доставку по всій Україні. Завдяки Анні ваші солодощі завжди приходять вчасно.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="about-section">
+    <div class="main-container">
+      <div class="section-header">
+        <h2 class="section-title">Чому обирають нас?</h2>
+        <p class="section-subtitle">
+          Переваги, які роблять нас найкращим вибором
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-image">
+
+          <img src="/images/about.jpg" alt="Наша продукція">
+
+        </div>
+
+        <div class="about-content">
+          <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem; margin-bottom: 1.5rem; color: var(--chocolate-brown);">
+            <i class="fas fa-star" style="color: var(--accent-gold);"></i>
+            Найкращий магазин солодощів
+          </h3>
+
+          <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--accent-gold); margin-bottom: 0.5rem;">
+              <i class="fas fa-check-circle"></i> Унікальний асортимент
+            </h4>
+            <p>Понад 1000 найменувань солодощів від провідних світових брендів та ексклюзивні новинки, які ви не знайдете в інших місцях.</p>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--accent-gold); margin-bottom: 0.5rem;">
+              <i class="fas fa-check-circle"></i> Конкурентні ціни
+            </h4>
+            <p>Прямі партнерські відносини з виробниками дозволяють нам пропонувати найкращі ціни без втрати якості.</p>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--accent-gold); margin-bottom: 0.5rem;">
+              <i class="fas fa-check-circle"></i> Персональний підхід
+            </h4>
+            <p>Кожен клієнт для нас особливий. Ми запам'ятовуємо ваші уподобання та завжди готові порадити щось нове.</p>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <h4 style="color: var(--accent-gold); margin-bottom: 0.5rem;">
+              <i class="fas fa-check-circle"></i> Гарантія свіжості
+            </h4>
+            <p>Жоден продукт не залишається на полиці довше необхідного. Ми гарантуємо свіжість та найкращі терміни придатності.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certificates Section -->
+  <section class="values-section">
+    <div class="main-container">
+      <div class="section-header">
+        <h2 class="section-title">Наші досягнення</h2>
+        <p class="section-subtitle">
+          Нагороди та сертифікати, які підтверджують нашу якість
+        </p>
+      </div>
+
+      <div class="values-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <h3 class="value-title">ISO 9001:2015</h3>
+          <p class="value-text">
+            Міжнародний сертифікат системи управління якістю, що гарантує найвищі стандарти обслуговування.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h3 class="value-title">Найкращий роздрібний магазин 2023</h3>
+          <p class="value-text">
+            Нагорода від Української асоціації роздрібної торгівлі за інновації в обслуговуванні клієнтів.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-medal"></i>
+          </div>
+          <h3 class="value-title">Вибір споживачів 2024</h3>
+          <p class="value-text">
+            За результатами незалежного опитування визнані найкращим магазином солодощів в регіоні.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h3 class="value-title">Eco-friendly сертифікат</h3>
+          <p class="value-text">
+            Підтвердження нашої відповідальності за навколишнє середовище та підтримка екологічних ініціатив.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="main-container">
+      <h2 class="cta-title">Готові спробувати найкращі солодощі?</h2>
+      <p class="cta-text">
+        Приєднуйтесь до тисяч задоволених клієнтів та відкрийте для себе світ неперевершених смаків
+      </p>
+      <div class="cta-buttons">
+        <a href="/categories" class="btn-cta btn-primary-cta">
+          <i class="fas fa-shopping-cart"></i>
+          Почати покупки
+        </a>
+        <a href="/support" class="btn-cta btn-secondary-cta">
+          <i class="fas fa-phone"></i>
+          Зв'язатися з нами
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/about/AboutPage.js"></script>
+
+</body>
+</html>
