@@ -35,6 +35,6 @@ public class HomeController {
         model.addAttribute("recommendations", recommendations);
 
 
-        return "homeV1";
+        return "homePage";
     }
 }
