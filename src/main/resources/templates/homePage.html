@@ -877,6 +877,66 @@
 
 
 
+<!-- Products Section -->
+<section class="preview-section" style="background: var(--primary-light); padding: 80px 0;">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-subtitle">Наші вироби</p>
+            <h2 class="section-title">Рекомендовані товари</h2>
+            <p class="section-description">
+                Кожен виріб — це результат багаторічної майстерності та пристрасті до створення
+                незабутніх смакових вражень.
+            </p>
+        </div>
+
+        <div class="product-grid">
+            <!-- Перебираем все рекомендованные продукты -->
+            <div th:each="product : ${recommendations}" class="product-card">
+                <div class="product-image">
+                    <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                    <button class="favorite-btn" onclick="toggleFavorite(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div th:if="${product.inStock}" class="stock-badge">В наявності</div>
+                    <div th:if="${!product.inStock}" class="stock-badge out-of-stock">Під замовлення</div>
+                    <div th:if="${product.lowStock}" class="stock-badge low-stock">Закінчується</div>
+                </div>
+                <div class="product-content">
+                    <p class="product-category" th:text="${product.categoryName}">Категорія</p>
+                    <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>
+                    <!-- Если нужно добавить описание, его нужно будет добавить в DTO -->
+                    <p class="product-description">
+                        <span th:if="${product.brandName}" th:text="${product.brandName}">Бренд</span>
+                    </p>
+                    <div class="product-footer">
+                        <div class="product-price" th:text="'цiна ' + ${#numbers.formatDecimal(product.price, 1, 'COMMA', 0, 'POINT')} + ' ₴'"> 0 ₴</div>
+                    </div>
+                    <button th:if="${product.inStock}"
+                            class="add-to-cart"
+                            th:attr="data-product-id=${product.id}"
+                            data-add-to-cart="true">
+                        До кошика
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка "Посмотреть больше" -->
+        <div class="section-footer">
+            <a href="/product/all" class="view-more-btn">
+                Переглянути всі товари
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<script src="/js/add-to-cart-button.js"></script>
+<script src="/js/wishlist/toggleFavorite.js"></script>
+
+
+
 
 <!-- Brands Section -->
 <section class="preview-section" id="brands">
@@ -1054,69 +1114,6 @@
         }
     }
 </style>
-
-
-
-
-
-<!-- Products Section -->
-<section class="preview-section" style="background: var(--primary-light); padding: 80px 0;">
-    <div class="container">
-        <div class="section-header">
-            <p class="section-subtitle">Наші вироби</p>
-            <h2 class="section-title">Рекомендовані товари</h2>
-            <p class="section-description">
-                Кожен виріб — це результат багаторічної майстерності та пристрасті до створення
-                незабутніх смакових вражень.
-            </p>
-        </div>
-
-        <div class="product-grid">
-            <!-- Перебираем все рекомендованные продукты -->
-            <div th:each="product : ${recommendations}" class="product-card">
-                <div class="product-image">
-                    <img th:src="${product.imageUrl}" th:alt="${product.name}">
-                    <button class="favorite-btn" onclick="toggleFavorite(this)">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <div th:if="${product.inStock}" class="stock-badge">В наявності</div>
-                    <div th:if="${!product.inStock}" class="stock-badge out-of-stock">Під замовлення</div>
-                    <div th:if="${product.lowStock}" class="stock-badge low-stock">Закінчується</div>
-                </div>
-                <div class="product-content">
-                    <p class="product-category" th:text="${product.categoryName}">Категорія</p>
-                    <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>
-                    <!-- Если нужно добавить описание, его нужно будет добавить в DTO -->
-                    <p class="product-description">
-                        <span th:if="${product.brandName}" th:text="${product.brandName}">Бренд</span>
-                    </p>
-                    <div class="product-footer">
-                        <div class="product-price" th:text="'цiна ' + ${#numbers.formatDecimal(product.price, 1, 'COMMA', 0, 'POINT')} + ' ₴'"> 0 ₴</div>
-                    </div>
-                    <button th:if="${product.inStock}"
-                            class="add-to-cart"
-                            th:attr="data-product-id=${product.id}"
-                            data-add-to-cart="true">
-                        До кошика
-                    </button>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- Кнопка "Посмотреть больше" -->
-        <div class="section-footer">
-            <a href="/product/all" class="view-more-btn">
-                Переглянути всі товари
-                <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-<script src="/js/add-to-cart-button.js"></script>
-<script src="/js/wishlist/toggleFavorite.js"></script>
-
 
 
 
@@ -1466,7 +1463,7 @@
                     <h4 class="footer-section-title">Меню</h4>
                     <ul class="footer-links">
                         <li><a href="#home"><i class="fas fa-home"></i> Головна</a></li>
-                        <li><a href="#catalog"><i class="fas fa-th-large"></i> Каталог</a></li>
+                        <li><a href="/categories"><i class="fas fa-th-large"></i> Каталог</a></li>
                         <li><a href="#about"><i class="fas fa-heart"></i> Про нас</a></li>
                         <li><a href="#contact"><i class="fas fa-envelope"></i> Контакти</a></li>
                         <li><a href="#delivery"><i class="fas fa-truck"></i> Доставка</a></li>
@@ -1589,54 +1586,9 @@
         observer.observe(card);
     });
 
-    // Функция добавления в избранное
-    function toggleFavorite(button) {
-        const icon = button.querySelector('i');
-        button.classList.toggle('active');
 
-        if (button.classList.contains('active')) {
-            icon.className = 'fas fa-heart';
-            // Анимация добавления
-            button.style.transform = 'scale(1.3)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 200);
-        } else {
-            icon.className = 'far fa-heart';
-        }
-    }
 
-    // Функция добавления в корзину
-    function addToCart(button) {
-        const productCard = button.closest('.product-card');
-        const productTitle = productCard.querySelector('.product-title').textContent;
 
-        // Анимация кнопки
-        const originalText = button.innerHTML;
-        button.innerHTML = 'Добавлено!';
-        button.style.background = '#f1a680';
-        button.style.color = '#fff';
-
-        // Обновляем счетчик корзины
-        const cartBadge = document.querySelector('.cart-badge');
-        let currentCount = parseInt(cartBadge.textContent);
-        cartBadge.textContent = currentCount + 1;
-
-        // Анимация значка корзины
-        cartBadge.style.transform = 'scale(1.5)';
-        setTimeout(() => {
-            cartBadge.style.transform = 'scale(1)';
-        }, 300);
-
-        // Возвращаем кнопку в исходное состояние
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.style.background = '';
-            button.style.color = '';
-        }, 2000);
-
-        console.log(`Товар "${productTitle}" добавлен в корзину`);
-    }
 </script>
 </body>
 </html>
