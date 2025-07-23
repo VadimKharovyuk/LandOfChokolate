@@ -27,12 +27,6 @@ public class ClientProductServiceImpl implements ClientProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductListResponseDto getAllProducts(Pageable pageable) {
-        return getAllProductsWithFilters(pageable, null);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public ProductListResponseDto getAllProductsWithFilters(Pageable pageable,
                                                             String searchName,
                                                             BigDecimal minPrice,
@@ -41,17 +35,25 @@ public class ClientProductServiceImpl implements ClientProductService {
                                                             Long brandId,
                                                             String stockStatus) {
 
-        // Создаем объект фильтров
+        // Создаем объект фильтров с очисткой пустых строк
         ProductFilterDto filters = ProductFilterDto.builder()
-                .searchName(searchName)
+                .searchName(cleanString(searchName))
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .categoryId(categoryId)
                 .brandId(brandId)
-                .stockStatus(stockStatus)
+                .stockStatus(cleanString(stockStatus))
                 .build();
 
         return getAllProductsWithFilters(pageable, filters);
+    }
+
+    // Вспомогательный метод для очистки строк
+    private String cleanString(String str) {
+        if (str == null || str.trim().isEmpty()) {
+            return null;
+        }
+        return str.trim();
     }
 
     // Приватный метод для обработки фильтрации
@@ -88,7 +90,12 @@ public class ClientProductServiceImpl implements ClientProductService {
 
     // Приватный метод для выбора правильного метода репозитория
     private Page<ProductListDto> getFilteredProducts(Pageable pageable, ProductFilterDto filters) {
-        if (filters == null || !hasAnyFilters(filters)) {
+        boolean hasFilters = hasAnyFilters(filters);
+
+        log.debug("Filter analysis: {}", filters);
+        log.debug("Has any filters: {}", hasFilters);
+
+        if (!hasFilters) {
             // Без фильтров - используем обычный метод
             log.debug("No filters applied, using standard query");
             return productRepository.findAllProductListDto(pageable);
@@ -99,14 +106,24 @@ public class ClientProductServiceImpl implements ClientProductService {
         }
     }
 
-    // Приватный метод для проверки наличия фильтров
+    // ИСПРАВЛЕННЫЙ метод для проверки наличия фильтров
     private boolean hasAnyFilters(ProductFilterDto filters) {
-        return (filters.getSearchName() != null && !filters.getSearchName().trim().isEmpty()) ||
-                filters.getMinPrice() != null ||
-                filters.getMaxPrice() != null ||
-                filters.getCategoryId() != null ||
-                filters.getBrandId() != null ||
-                (filters.getStockStatus() != null && !filters.getStockStatus().trim().isEmpty());
+        boolean hasSearchName = filters.getSearchName() != null;
+        boolean hasMinPrice = filters.getMinPrice() != null;
+        boolean hasMaxPrice = filters.getMaxPrice() != null;
+        boolean hasCategoryId = filters.getCategoryId() != null;
+        boolean hasBrandId = filters.getBrandId() != null;
+        boolean hasStockStatus = filters.getStockStatus() != null;
+
+        log.debug("Filter check: searchName={} ({}), minPrice={}, maxPrice={}, categoryId={}, brandId={}, stockStatus={} ({})",
+                hasSearchName, filters.getSearchName(),
+                hasMinPrice, hasMaxPrice, hasCategoryId, hasBrandId,
+                hasStockStatus, filters.getStockStatus());
+
+        boolean result = hasSearchName || hasMinPrice || hasMaxPrice || hasCategoryId || hasBrandId || hasStockStatus;
+        log.debug("Final result - has any filters: {}", result);
+
+        return result;
     }
 
     // Вспомогательный метод для генерации списка номеров страниц
@@ -147,4 +164,6 @@ public class ClientProductServiceImpl implements ClientProductService {
 
         return pageNumbers;
     }
+
+
 }

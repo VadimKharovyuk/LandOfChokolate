@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -33,22 +34,6 @@ public class ClientProductController {
     private final CategoryService categoryService;
     private final BrandService brandService;
     private final ProductService productService;
-
-
-
-    @GetMapping("/{slug}")
-    public String getProductDetail(@PathVariable String slug, Model model) {
-
-        ProductDetailDto product = productService.getProductBySlug(slug);
-        model.addAttribute("product", product);
-
-        ///похожие товары
-        List<RelatedProductDto> relatedProducts = productService.getRelatedProducts(slug, 8);
-        model.addAttribute("relatedProducts", relatedProducts);
-
-        return "client/products/detail";
-    }
-
 
 
     @GetMapping("/all")
@@ -65,58 +50,125 @@ public class ClientProductController {
             @RequestParam(required = false) String stockStatus,
             Model model) {
 
-        log.info("Getting products page: {}, filters: searchName={}, minPrice={}, maxPrice={}",
-                page, searchName, minPrice, maxPrice);
+        log.info("Getting products page: {}, sortBy: {}, sortDirection: {}, filters: searchName={}, minPrice={}, maxPrice={}, category={}, brand={}, stockStatus={}",
+                page, sortBy, sortDirection, searchName, minPrice, maxPrice, category, brand, stockStatus);
 
-        // Создаем объект сортировки
-        Sort sort = sortDirection.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
+        // ИСПРАВЛЕНО: Создаем объект сортировки правильно
+        Sort sort;
+        try {
+            if ("desc".equalsIgnoreCase(sortDirection)) {
+                sort = Sort.by(Sort.Direction.DESC, sortBy);
+            } else {
+                sort = Sort.by(Sort.Direction.ASC, sortBy);
+            }
+            log.debug("Created sort: {}", sort);
+        } catch (Exception e) {
+            log.warn("Error creating sort with sortBy={}, sortDirection={}. Using default sort.", sortBy, sortDirection, e);
+            sort = Sort.by("name").ascending();
+        }
 
-        // Создаем объект Pageable
-        Pageable pageable = PageRequest.of(page, 20, sort);
+        // Создаем объект Pageable с правильным размером
+        Pageable pageable = PageRequest.of(page, 6, sort);
+        log.debug("Created pageable: {}", pageable);
 
-        // Получаем данные через сервис с фильтрами
-        ProductListResponseDto response = clientProductService.getAllProductsWithFilters(
-                pageable, searchName, minPrice, maxPrice, category, brand, stockStatus);
+        try {
+            // Получаем данные через сервис с фильтрами
+            ProductListResponseDto response = clientProductService.getAllProductsWithFilters(
+                    pageable, searchName, minPrice, maxPrice, category, brand, stockStatus);
 
+            log.info("Found {} products on page {}", response.getTotalCount(), page);
 
-        //для фильтра категорий
-        List<CategoryResponseDto> cat = categoryService.getAllCategories();
-        model.addAttribute("categories", cat);
+            //для фильтра категорий
+            List<CategoryResponseDto> cat = categoryService.getAllCategories();
+            model.addAttribute("categories", cat);
 
-        // Данные для фильтров
-        List<BrandProjection> brandInfos = brandService.getBrandsForFilters();
-        model.addAttribute("brands", brandInfos);
+            // Данные для фильтров
+            List<BrandProjection> brandInfos = brandService.getBrandsForFilters();
+            model.addAttribute("brands", brandInfos);
 
-        // Добавляем данные в модель
-        model.addAttribute("products", response.getProducts());
-        model.addAttribute("totalCount", response.getTotalCount());
-        model.addAttribute("hasNext", response.getHasNext());
-        model.addAttribute("hasPrevious", response.getHasPrevious());
-        model.addAttribute("currentPage", response.getCurrentPage());
-        model.addAttribute("pageSize", response.getPageSize());
-        model.addAttribute("totalPages", response.getTotalPages());
-        model.addAttribute("nextPage", response.getNextPage());
-        model.addAttribute("previousPage", response.getPreviousPage());
-        model.addAttribute("pageNumbers", response.getPageNumbers());
+            // Добавляем данные в модель
+            model.addAttribute("products", response.getProducts());
+            model.addAttribute("totalCount", response.getTotalCount());
+            model.addAttribute("hasNext", response.getHasNext());
+            model.addAttribute("hasPrevious", response.getHasPrevious());
+            model.addAttribute("currentPage", response.getCurrentPage());
+            model.addAttribute("pageSize", response.getPageSize());
+            model.addAttribute("totalPages", response.getTotalPages());
+            model.addAttribute("nextPage", response.getNextPage());
+            model.addAttribute("previousPage", response.getPreviousPage());
+            model.addAttribute("pageNumbers", response.getPageNumbers());
 
-        // Сортировка
-        model.addAttribute("sortBy", sortBy);
-        model.addAttribute("sortDirection", sortDirection);
+            // Сортировка
+            model.addAttribute("sortBy", sortBy);
+            model.addAttribute("sortDirection", sortDirection);
 
-        // Фильтры (для сохранения состояния в форме)
-        model.addAttribute("searchName", searchName);
-        model.addAttribute("minPrice", minPrice);
-        model.addAttribute("maxPrice", maxPrice);
-        model.addAttribute("category", category);
-        model.addAttribute("brand", brand);
-        model.addAttribute("stockStatus", stockStatus);
+            // Фильтры (для сохранения состояния в форме)
+            model.addAttribute("searchName", searchName);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("category", category);
+            model.addAttribute("brand", brand);
+            model.addAttribute("stockStatus", stockStatus);
 
-        model.addAttribute("cartCount", 0);
-        model.addAttribute("favoritesCount", 0);
+            model.addAttribute("cartCount", 0);
+            model.addAttribute("favoritesCount", 0);
+
+        } catch (Exception e) {
+            log.error("Error getting products", e);
+
+            // В случае ошибки показываем пустой результат
+            model.addAttribute("products", Collections.emptyList());
+            model.addAttribute("totalCount", 0);
+            model.addAttribute("hasNext", false);
+            model.addAttribute("hasPrevious", false);
+            model.addAttribute("currentPage", 1);
+            model.addAttribute("pageSize", 6);
+            model.addAttribute("totalPages", 0);
+            model.addAttribute("pageNumbers", Collections.emptyList());
+
+            // Сохраняем параметры
+            model.addAttribute("sortBy", sortBy);
+            model.addAttribute("sortDirection", sortDirection);
+            model.addAttribute("searchName", searchName);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("category", category);
+            model.addAttribute("brand", brand);
+            model.addAttribute("stockStatus", stockStatus);
+
+            // Загружаем категории и бренды для фильтров
+            try {
+                List<CategoryResponseDto> cat = categoryService.getAllCategories();
+                model.addAttribute("categories", cat);
+                List<BrandProjection> brandInfos = brandService.getBrandsForFilters();
+                model.addAttribute("brands", brandInfos);
+            } catch (Exception ex) {
+                log.error("Error loading categories/brands", ex);
+                model.addAttribute("categories", Collections.emptyList());
+                model.addAttribute("brands", Collections.emptyList());
+            }
+
+            model.addAttribute("cartCount", 0);
+            model.addAttribute("favoritesCount", 0);
+        }
 
         return "client/products/list";
     }
+
+
+
+    @GetMapping("/{slug}")
+    public String getProductDetail(@PathVariable String slug, Model model) {
+
+        ProductDetailDto product = productService.getProductBySlug(slug);
+        model.addAttribute("product", product);
+
+        ///похожие товары
+        List<RelatedProductDto> relatedProducts = productService.getRelatedProducts(slug, 8);
+        model.addAttribute("relatedProducts", relatedProducts);
+
+        return "client/products/detail";
+    }
+
 
 }

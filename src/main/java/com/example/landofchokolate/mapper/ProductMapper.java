@@ -97,7 +97,7 @@ public class ProductMapper {
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
         dto.setSlug(product.getSlug());
-        dto.setIsRecommendation(product.getIsRecommendation());
+
 
 
 

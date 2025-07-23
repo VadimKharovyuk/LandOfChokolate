@@ -7,10 +7,6 @@ import java.math.BigDecimal;
 
 public interface ClientProductService {
 
-    /**
-     * Получить все товары без фильтров
-     */
-    ProductListResponseDto getAllProducts(Pageable pageable);
 
     /**
      * Получить товары с фильтрами

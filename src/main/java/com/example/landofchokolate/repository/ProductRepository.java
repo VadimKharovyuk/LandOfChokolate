@@ -93,7 +93,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // Исправленный запрос без фильтров
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
             "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " +
-            "p.isRecommendation, " + // ← Добавили недостающее поле
             "c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
             "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " +
@@ -103,9 +102,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<ProductListDto> findAllProductListDto(Pageable pageable);
 
     // Исправленный запрос с правильным порядком полей
+
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
-            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, " +
-            "p.slug, p.isRecommendation, " +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " +
             "c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
             "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " +
