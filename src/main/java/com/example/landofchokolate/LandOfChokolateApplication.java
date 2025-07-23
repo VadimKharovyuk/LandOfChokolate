@@ -19,8 +19,6 @@ public class LandOfChokolateApplication {
     /// add   private String metaTitle;
 ///     private String metaDescription; by product / brand
 
-    ///add  recomentProduct
-
 
     /// fix Пошук замовлень номер тлф
 
