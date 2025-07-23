@@ -102,6 +102,9 @@ public interface ProductService {
 
     List<RelatedProductDto> getRelatedProducts(String slug, int limit);
 
+
+    List<ProductListRecommendationDto> getProductListRecommendations( int limit);
+
     /**
      * Внутренний класс для статистики
      */

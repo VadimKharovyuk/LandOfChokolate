@@ -22,9 +22,6 @@ public class LandOfChokolateApplication {
     ///add  recomentProduct
 
 
-    ///сломаолся фильтер список продуктов
-
-
     /// fix Пошук замовлень номер тлф
 
 

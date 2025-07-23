@@ -1059,13 +1059,12 @@
 
 
 
-
 <!-- Products Section -->
 <section class="preview-section" style="background: var(--primary-light); padding: 80px 0;">
     <div class="container">
         <div class="section-header">
             <p class="section-subtitle">Наші вироби</p>
-            <h2 class="section-title">Вибрані творіння</h2>
+            <h2 class="section-title">Рекомендовані товари</h2>
             <p class="section-description">
                 Кожен виріб — це результат багаторічної майстерності та пристрасті до створення
                 незабутніх смакових вражень.
@@ -1073,79 +1072,51 @@
         </div>
 
         <div class="product-grid">
-            <div class="product-card">
+            <!-- Перебираем все рекомендованные продукты -->
+            <div th:each="product : ${recommendations}" class="product-card">
                 <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Шоколадний велюр">
+                    <img th:src="${product.imageUrl}" th:alt="${product.name}">
                     <button class="favorite-btn" onclick="toggleFavorite(this)">
                         <i class="far fa-heart"></i>
                     </button>
-                    <div class="stock-badge">В наявності</div>
+                    <div th:if="${product.inStock}" class="stock-badge">В наявності</div>
+                    <div th:if="${!product.inStock}" class="stock-badge out-of-stock">Під замовлення</div>
+                    <div th:if="${product.lowStock}" class="stock-badge low-stock">Закінчується</div>
                 </div>
                 <div class="product-content">
-                    <p class="product-category">Торти</p>
-                    <h3 class="product-title">Шоколадний велюр</h3>
+                    <p class="product-category" th:text="${product.categoryName}">Категорія</p>
+                    <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>
+                    <!-- Если нужно добавить описание, его нужно будет добавить в DTO -->
                     <p class="product-description">
-                        Ніжний бісквіт з шоколадним мусом і дзеркальною глазур’ю
+                        <span th:if="${product.brandName}" th:text="${product.brandName}">Бренд</span>
                     </p>
                     <div class="product-footer">
-                        <div class="product-price">від 2 500 ₴</div>
+                        <div class="product-price" th:text="'цiна ' + ${#numbers.formatDecimal(product.price, 1, 'COMMA', 0, 'POINT')} + ' ₴'"> 0 ₴</div>
                     </div>
-                    <button class="add-to-cart" onclick="addToCart(this)">До кошика</button>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">
-                    <div class="product-image" style="background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;"></div>
-                    <button class="favorite-btn" onclick="toggleFavorite(this)">
-                        <i class="far fa-heart"></i>
+                    <button th:if="${product.inStock}"
+                            class="add-to-cart"
+                            th:attr="data-product-id=${product.id}"
+                            data-add-to-cart="true">
+                        До кошика
                     </button>
-                    <div class="stock-badge">В наявності</div>
-                </div>
-                <div class="product-content">
-                    <p class="product-category">Десерти</p>
-                    <h3 class="product-title">Преміум еклери</h3>
-                    <p class="product-description">
-                        Ніжні та повітряні еклери, наповнені ароматним кремом із бельгійського шоколаду
-                    </p>
-                    <div class="product-footer">
-                        <div class="product-price">від 180 ₴/шт</div>
-                    </div>
-                    <button class="add-to-cart" onclick="addToCart(this)">До кошика</button>
-                </div>
-            </div>
 
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1549920014-8eeab5d1c8c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Трюфелі ручної роботи">
-                    <button class="favorite-btn active" onclick="toggleFavorite(this)">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                    <div class="stock-badge out-of-stock">Під замовлення</div>
-                </div>
-                <div class="product-content">
-                    <p class="product-category">Цукерки</p>
-                    <h3 class="product-title">Трюфелі ручної роботи</h3>
-                    <p class="product-description">
-                        Вишукані трюфелі з унікальними начинками та декором
-                    </p>
-                    <div class="product-footer">
-                        <div class="product-price">від 120 ₴/шт</div>
-                    </div>
-                    <button class="add-to-cart" onclick="addToCart(this)">До кошика</button>
                 </div>
             </div>
         </div>
 
         <!-- Кнопка "Посмотреть больше" -->
         <div class="section-footer">
-            <a href="#products" class="view-more-btn">
+            <a href="/product/all" class="view-more-btn">
                 Переглянути всі товари
                 <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </div>
 </section>
+
+<script src="/js/add-to-cart-button.js"></script>
+<script src="/js/wishlist/toggleFavorite.js"></script>
+
 
 
 

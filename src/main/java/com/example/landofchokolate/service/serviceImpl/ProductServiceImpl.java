@@ -394,6 +394,14 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
+    public List<ProductListRecommendationDto> getProductListRecommendations( int limit) {
+        return productRepository.findAllRecommendationProducts()
+                .stream()
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Приватный метод для обработки загрузки изображения
      */

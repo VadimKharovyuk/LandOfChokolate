@@ -3,6 +3,7 @@ package com.example.landofchokolate.repository;
 import com.example.landofchokolate.dto.product.ProductDetailDto;
 import com.example.landofchokolate.dto.product.ProductFilterDto;
 import com.example.landofchokolate.dto.product.ProductListDto;
+import com.example.landofchokolate.dto.product.ProductListRecommendationDto;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.model.Product;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -159,4 +161,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     Page<Product> findByBrandSlugAndIsActiveTrue(String slug, Pageable pageable);
+
+
+
+    /// для главной страницы реклмендац продукты
+    @Query("SELECT new com.example.landofchokolate.dto.product.ProductListRecommendationDto(" +
+            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " +
+            "c.name, b.name, " +
+            "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
+            "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity < 10 THEN true ELSE false END) " +
+            "FROM Product p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.brand b " +
+            "WHERE p.isActive = true " +
+            "AND p.isRecommendation = true " +
+            "ORDER BY p.clickCount DESC, p.createdAt DESC")
+    List<ProductListRecommendationDto> findAllRecommendationProducts();
 }

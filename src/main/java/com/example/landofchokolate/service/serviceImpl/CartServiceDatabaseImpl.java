@@ -475,7 +475,7 @@ public class CartServiceDatabaseImpl implements CartService {
             Cookie cookie = new Cookie(CART_COOKIE_NAME, cartUuid);
             cookie.setMaxAge(cookieMaxAge);
             cookie.setPath("/");
-            cookie.setHttpOnly(false); // JavaScript должен читать
+            cookie.setHttpOnly(false);
             cookie.setSecure(false);   // для localhost
 
             response.addCookie(cookie);

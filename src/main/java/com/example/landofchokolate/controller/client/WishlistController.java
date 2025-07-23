@@ -25,21 +25,6 @@ public class WishlistController {
     private final WishlistService wishlistService;
     private final WishlistRepository wishlistRepository;
 
-    @GetMapping
-    public String wishlistPage(HttpSession session, Model model) {
-        try {
-            WishlistDto wishlist = wishlistService.getWishlistDto(session);
-            model.addAttribute("wishlist", wishlist);
-            model.addAttribute("pageTitle", "Избранное");
-            return "client/wishlist/wishlist";
-        } catch (Exception e) {
-            log.error("Ошибка при загрузке страницы избранного", e);
-            model.addAttribute("error", "Произошла ошибка при загрузке избранного");
-            return "error/error";
-        }
-    }
-
-
     /**
      * API: Добавить товар в избранное
      */
@@ -72,6 +57,23 @@ public class WishlistController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @GetMapping
+    public String wishlistPage(HttpSession session, Model model) {
+        try {
+            WishlistDto wishlist = wishlistService.getWishlistDto(session);
+            model.addAttribute("wishlist", wishlist);
+            model.addAttribute("pageTitle", "Избранное");
+            return "client/wishlist/wishlist";
+        } catch (Exception e) {
+            log.error("Ошибка при загрузке страницы избранного", e);
+            model.addAttribute("error", "Произошла ошибка при загрузке избранного");
+            return "error/error";
+        }
+    }
+
+
+
 
     /**
      * API: Удалить товар из избранного
