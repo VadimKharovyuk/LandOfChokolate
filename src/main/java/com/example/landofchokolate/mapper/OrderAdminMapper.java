@@ -1,6 +1,9 @@
 package com.example.landofchokolate.mapper;
+
 import com.example.landofchokolate.dto.order.OrderAdminListDTO;
 import com.example.landofchokolate.enums.OrderStatus;
+import com.example.landofchokolate.enums.PaymentStatus;
+import com.example.landofchokolate.enums.PaymentType;
 import com.example.landofchokolate.model.Order;
 import com.example.landofchokolate.model.Payment;
 import org.springframework.stereotype.Component;
@@ -54,15 +57,13 @@ public class OrderAdminMapper {
             return "Не вказано";
         }
 
-        // Если у вас есть поле paymentMethod в модели Payment
-        // return payment.getPaymentMethod();
+        // Используем реальное поле type из модели Payment
+        PaymentType paymentType = payment.getType();
+        if (paymentType != null) {
+            return paymentType.getDescription();
+        }
 
-        // Или если вы определяете способ оплаты по другим полям в Payment
-        // Например, если есть поле paymentType или similar:
-        // return getPaymentMethodDisplayName(payment.getPaymentType());
-
-        // Пока что возвращаем заглушку, замените на вашу логику
-        return "IBAN";
+        return "Не вказано";
     }
 
     /**
@@ -75,20 +76,30 @@ public class OrderAdminMapper {
             return determinePaymentStatusByOrderStatus(order.getStatus());
         }
 
-        // Если у вас есть поле status в модели Payment
-        // return payment.getStatus().getDescription();
+        // Используем реальное поле status из модели Payment (если есть)
+        if (payment.getStatus() != null) {
+            return getPaymentStatusDisplayName(payment.getStatus());
+        }
 
-        // Или логика на основе других полей Payment
-        // if (payment.isPaid()) {
-        //     return "Оплачено";
-        // } else if (payment.isFailed()) {
-        //     return "Помилка оплати";
-        // } else {
-        //     return "В очікуванні";
-        // }
-
-        // Пока что определяем статус оплаты на основе статуса заказа
+        // Fallback - определяем статус по статусу заказа
         return determinePaymentStatusByOrderStatus(order.getStatus());
+    }
+
+    /**
+     * Получить отображаемое название статуса оплаты
+     */
+    private String getPaymentStatusDisplayName(PaymentStatus paymentStatus) {
+        if (paymentStatus == null) {
+            return "Невідомо";
+        }
+
+        return switch (paymentStatus) {
+            case PENDING -> "Очікує оплати";
+            case FAILED -> "Помилка оплати";
+            case CANCELLED -> "Скасовано";
+            case REFUNDED -> "Повернено";
+            default -> paymentStatus.name();
+        };
     }
 
     /**
@@ -108,6 +119,4 @@ public class OrderAdminMapper {
             default -> "Невідомо";
         };
     }
-
-
 }

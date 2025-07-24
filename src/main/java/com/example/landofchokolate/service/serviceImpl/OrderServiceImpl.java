@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final OrderItemRepository orderItemRepository;
     private final CartService cartService;
     private final ProductRepository productRepository;
 
