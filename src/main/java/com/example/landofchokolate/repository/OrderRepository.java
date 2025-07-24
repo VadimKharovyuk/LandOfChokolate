@@ -1,6 +1,9 @@
 package com.example.landofchokolate.repository;
 
 import com.example.landofchokolate.model.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +25,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "LEFT JOIN FETCH o.payment " +
             "WHERE o.id = :id")
     Optional<Order> findByIdWithItems(@Param("id") Long id);
+
+
+    Page<Order> findAll(Specification<Order> spec, Pageable pageable);
 }
