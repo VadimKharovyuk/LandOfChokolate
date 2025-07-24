@@ -49,10 +49,11 @@
                         Статус замовлення
                     </a>
                 </li>
+
                 <li class="nav-item-luxury">
                     <a th:href="@{/wishlist}"
                        class="nav-link-luxury position-relative"
-                       th:classappend="${currentURI == '/favorites' ? 'active' : ''}">
+                       th:classappend="${currentURI == '/wishlist' ? 'active' : ''}">
                         <i class="fas fa-heart nav-icon"></i>
                         Вибране
                         <span class="favorites-badge" th:text="${favoritesCount ?: 0}">0</span>
@@ -65,17 +66,7 @@
                        th:classappend="${currentURI == '/cart' ? 'active' : ''}">
                         <i class="fas fa-shopping-bag nav-icon"></i>
                         Кошик
-
-                        <!-- Блок с количеством -->
-                        <div class="cart-info" th:if="${cartCount > 0}">
-                            <span class="cart-badge" th:text="${cartCount}">0</span>
-                            <span class="cart-total" th:text="${cartTotal} + ' грн'">0 грн</span>
-                        </div>
-
-                        <!-- Блок для пустой корзины -->
-                        <div class="cart-info empty" th:if="${cartCount == 0}">
-                            <span class="cart-badge">0</span>
-                        </div>
+                        <span class="cart-badge" th:text="${cartCount ?: 0}">0</span>
                     </a>
                 </li>
 
@@ -85,10 +76,21 @@
 <!--                       th:classappend="${currentURI == '/cart' ? 'active' : ''}">-->
 <!--                        <i class="fas fa-shopping-bag nav-icon"></i>-->
 <!--                        Кошик-->
-<!--&lt;!&ndash;                        <span class="cart-badge" th:text="${cartCount ?: 0}">0</span>&ndash;&gt;-->
-<!--                        <span  class="card-badge" th:text="${cartTotal} + ' грн'">0 грн</span>-->
+
+<!--                        &lt;!&ndash; Блок с количеством &ndash;&gt;-->
+<!--                        <div class="cart-info" th:if="${cartCount > 0}">-->
+<!--                            <span class="cart-badge" th:text="${cartCount}">0</span>-->
+<!--                            <span class="cart-total" th:text="${cartTotal} + ' грн'">0 грн</span>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Блок для пустой корзины &ndash;&gt;-->
+<!--                        <div class="cart-info empty" th:if="${cartCount == 0}">-->
+<!--                            <span class="cart-badge">0</span>-->
+<!--                        </div>-->
 <!--                    </a>-->
 <!--                </li>-->
+
+
 
             </ul>
 
