@@ -2,6 +2,7 @@ package com.example.landofchokolate.dto.order;
 
 import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.enums.OrderStatus;
+import com.example.landofchokolate.enums.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

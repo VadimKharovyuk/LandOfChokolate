@@ -1,5 +1,6 @@
 package com.example.landofchokolate.mapper;
 import com.example.landofchokolate.dto.order.OrderAdminListDTO;
+import com.example.landofchokolate.enums.OrderStatus;
 import com.example.landofchokolate.model.Order;
 import com.example.landofchokolate.model.Payment;
 import org.springframework.stereotype.Component;
@@ -93,7 +94,7 @@ public class OrderAdminMapper {
     /**
      * Определить статус оплаты на основе статуса заказа
      */
-    private String determinePaymentStatusByOrderStatus(com.example.landofchokolate.enums.OrderStatus orderStatus) {
+    private String determinePaymentStatusByOrderStatus(OrderStatus orderStatus) {
         if (orderStatus == null) {
             return "Невідомо";
         }
@@ -108,22 +109,5 @@ public class OrderAdminMapper {
         };
     }
 
-    /**
-     * Получить отображаемое название способа оплаты (если нужно)
-     */
-    private String getPaymentMethodDisplayName(String paymentType) {
-        if (paymentType == null) {
-            return "Не вказано";
-        }
 
-        return switch (paymentType.toUpperCase()) {
-            case "IBAN" -> "Банківський переказ (IBAN)";
-            case "CASH" -> "Готівка при отриманні";
-            case "CARD" -> "Банківська картка";
-            case "QRCODE" -> "QR-код оплата";
-            case "PRIVATBANK" -> "ПриватБанк";
-            case "MONOBANK" -> "МоноБанк";
-            default -> paymentType;
-        };
-    }
 }
