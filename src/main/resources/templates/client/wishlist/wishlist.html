@@ -554,8 +554,8 @@
         <!-- Хлебные крошки -->
         <nav class="breadcrumb-container" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Главная</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Избранное</li>
+                <li class="breadcrumb-item"><a href="/">Головна</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Вибране</li>
             </ol>
         </nav>
 
@@ -563,10 +563,10 @@
         <header class="wishlist-header">
             <h1 class="wishlist-title">
                 <i class="fas fa-heart" style="color: var(--wishlist-color);"></i>
-                Избранное
+                Вибране
             </h1>
             <p class="wishlist-subtitle" th:if="${!wishlist.isEmpty}">
-                У вас <span th:text="${wishlist.totalItems}">3</span> товара в избранном
+                У вас <span th:text="${wishlist.totalItems}">3</span> товарів у вибраному
             </p>
         </header>
 
@@ -576,7 +576,7 @@
                 <!-- Список товаров -->
                 <div class="wishlist-items">
                     <div class="wishlist-items-header">
-                        <h2 class="wishlist-items-title">Ваши избранные товары</h2>
+                        <h2 class="wishlist-items-title">Ваші улюблені товари</h2>
                         <span class="wishlist-count" th:text="${wishlist.totalItems}">3</span>
                     </div>
 
@@ -596,11 +596,11 @@
                             </div>
                         </div>
 
-                        <!-- Детали товара -->
+                        <!-- Деталі товару -->
                         <div class="wishlist-item-details">
                             <h3 class="wishlist-item-title">
                                 <a th:href="@{'/product/' + ${item.product.slug}}" th:text="${item.product.name}">
-                                    Название товара
+                                    Назва товару
                                 </a>
                             </h3>
 
@@ -610,15 +610,15 @@
 
                             <div class="wishlist-item-info">
                                 <div class="wishlist-item-stock">
-                                    <span th:if="${item.product.available}" class="status-available">
-                                        <i class="fas fa-check-circle"></i> В наличии
-                                    </span>
+            <span th:if="${item.product.available}" class="status-available">
+                <i class="fas fa-check-circle"></i> В наявності
+            </span>
                                     <span th:if="${!item.product.active}" class="status-unavailable">
-                                        <i class="fas fa-times-circle"></i> Недоступен
-                                    </span>
+                <i class="fas fa-times-circle"></i> Недоступний
+            </span>
                                     <span th:if="${item.product.active and !item.product.inStock}" class="status-out-of-stock">
-                                        <i class="fas fa-exclamation-triangle"></i> Нет в наличии
-                                    </span>
+                <i class="fas fa-exclamation-triangle"></i> Немає в наявності
+            </span>
                                 </div>
 
                                 <div class="wishlist-item-added">
@@ -636,7 +636,7 @@
                                     th:title="${item.product.available ? 'Добавить в корзину' : 'Товар недоступен'}"
                                     onclick="addToCartFromWishlist(this)">
                                 <i class="fas fa-shopping-cart"></i>
-                                <span th:text="${item.product.available ? 'В корзину' : 'Недоступен'}">В корзину</span>
+                                <span th:text="${item.product.available ? 'До кошика' : 'Недоступний'}">До кошика</span>
                             </button>
 
                             <button class="btn-remove-wishlist"
@@ -651,42 +651,42 @@
 
                 <!-- Итоги избранного -->
                 <div class="wishlist-summary">
-                    <h3 class="wishlist-summary-title">Информация</h3>
+                    <h3 class="wishlist-summary-title">Інформація</h3>
 
                     <div class="summary-row">
-                        <span class="summary-label">Товаров в избранном:</span>
+                        <span class="summary-label">Товарів у вибраному:</span>
                         <span class="summary-value" th:text="${wishlist.totalItems}">3</span>
                     </div>
 
                     <div class="summary-row">
                         <span class="summary-label">Доступно для покупки:</span>
                         <span class="summary-value">
-                            <th:block th:with="availableCount=0">
-                                <th:block th:each="item : ${wishlist.items}">
-                                    <th:block th:if="${item.product.available}" th:with="availableCount=${availableCount + 1}"></th:block>
-                                </th:block>
-                                <span th:text="${availableCount}">0</span>
-                            </th:block>
-                        </span>
+            <th:block th:with="availableCount=0">
+                <th:block th:each="item : ${wishlist.items}">
+                    <th:block th:if="${item.product.available}" th:with="availableCount=${availableCount + 1}"></th:block>
+                </th:block>
+                <span th:text="${availableCount}">0</span>
+            </th:block>
+        </span>
                     </div>
 
                     <div class="summary-row">
-                        <span class="summary-label">Общая стоимость:</span>
+                        <span class="summary-label">Загальна вартість:</span>
                         <span class="summary-value">
-                            <th:block th:with="totalPrice=0">
-                                <th:block th:each="item : ${wishlist.items}">
-                                    <th:block th:if="${item.product.available}"
-                                              th:with="totalPrice=${totalPrice + item.product.currentPrice}"></th:block>
-                                </th:block>
-                                <span th:text="${totalPrice + ' грн'}">0 грн</span>
-                            </th:block>
-                        </span>
+            <th:block th:with="totalPrice=0">
+                <th:block th:each="item : ${wishlist.items}">
+                    <th:block th:if="${item.product.available}"
+                              th:with="totalPrice=${totalPrice + item.product.currentPrice}"></th:block>
+                </th:block>
+                <span th:text="${totalPrice + ' грн'}">0 грн</span>
+            </th:block>
+        </span>
                     </div>
 
                     <div class="wishlist-actions">
                         <button class="btn-clear-wishlist" onclick="clearWishlist()">
                             <i class="fas fa-trash"></i>
-                            Очистить избранное
+                            Очистити вибране
                         </button>
                     </div>
                 </div>
@@ -696,24 +696,24 @@
             <div class="continue-shopping">
                 <a href="/categories" class="btn-continue">
                     <i class="fas fa-arrow-left"></i>
-                    Продолжить покупки
+                    Продовжити покупки
                 </a>
             </div>
         </section>
 
-        <!-- Пустое избранное -->
+        <!-- Порожнє вибране -->
         <section class="empty-wishlist" th:if="${wishlist.isEmpty}">
             <div class="empty-icon">
                 <i class="fas fa-heart"></i>
             </div>
-            <h2 class="empty-title">Ваше избранное пусто</h2>
+            <h2 class="empty-title">Ваше вибране порожнє</h2>
             <p class="empty-description">
-                Добавляйте товары в избранное, чтобы не потерять их из виду.
-                Все понравившиеся шоколадные изделия будут храниться здесь!
+                Додавайте товари у вибране, щоб не втратити їх з поля зору.
+                Усі улюблені шоколадні вироби зберігатимуться тут!
             </p>
             <a href="/categories" class="back-button">
                 <i class="fas fa-arrow-left"></i>
-                Начать покупки
+                Розпочати покупки
             </a>
         </section>
     </div>

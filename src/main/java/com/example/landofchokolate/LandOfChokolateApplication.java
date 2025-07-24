@@ -19,7 +19,7 @@ public class LandOfChokolateApplication {
     /// add   private String metaTitle;
 ///     private String metaDescription; by product / brand
 
-
+/// Избранное -> Информация исправить Общая стоимость:
 
 
 
