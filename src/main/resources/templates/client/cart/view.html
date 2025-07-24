@@ -522,16 +522,16 @@
     <!-- Хлебные крошки -->
     <nav class="breadcrumb-container" aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Главная</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Корзина</li>
+        <li class="breadcrumb-item"><a href="/">Головна</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Кошик</li>
       </ol>
     </nav>
 
-    <!-- Заголовок корзины -->
+    <!-- Заголовок кошика -->
     <header class="cart-header">
-      <h1 class="cart-title">Корзина покупок</h1>
+      <h1 class="cart-title">Кошик покупок</h1>
       <p class="cart-subtitle" th:if="${!cart.isEmpty()}">
-        У вас <span th:text="${cartItemCount}">3</span> товара в корзине
+        У вас <span th:text="${cartItemCount}">3</span> товарів у кошику
       </p>
     </header>
 
@@ -541,7 +541,7 @@
         <!-- Список товаров -->
         <div class="cart-items">
           <div class="cart-items-header">
-            <h2 class="cart-items-title">Ваши товары</h2>
+            <h2 class="cart-items-title">Ваші товари</h2>
           </div>
 
           <div class="cart-item"
@@ -561,22 +561,22 @@
 
             <!-- Детали товара -->
             <div class="cart-item-details">
-              <h3 class="cart-item-title" th:text="${item.product.name}">Название товара</h3>
+              <h3 class="cart-item-title" th:text="${item.product.name}">Назва товару</h3>
 
               <div class="cart-item-price-info">
                 <span class="cart-item-current-price" th:text="${item.priceAtTime} + ' грн'">150 грн</span>
                 <span th:if="${item.priceChanged}" class="price-changed">
-                  (цена изменилась: <span th:text="${item.product.currentPrice} + ' грн'">160 грн</span>)
-                </span>
+            (ціна змінилася: <span th:text="${item.product.currentPrice} + ' грн'">160 грн</span>)
+        </span>
               </div>
 
               <div class="cart-item-stock">
-                <span th:if="${item.isInStock()}" class="text-success">
-                  <i class="fas fa-check-circle"></i> В наличии
-                </span>
+        <span th:if="${item.isInStock()}" class="text-success">
+            <i class="fas fa-check-circle"></i> В наявності
+        </span>
                 <span th:if="${!item.isInStock()}" class="text-danger">
-                  <i class="fas fa-exclamation-triangle"></i> Нет в наличии
-                </span>
+            <i class="fas fa-exclamation-triangle"></i> Немає в наявності
+        </span>
               </div>
             </div>
 
@@ -623,47 +623,48 @@
 
         <!-- Итоги корзины -->
         <div class="cart-summary">
-          <h3 class="cart-summary-title">Итого</h3>
+          <h3 class="cart-summary-title">Разом</h3>
 
           <div class="summary-row">
-            <span class="summary-label">Товаров:</span>
+            <span class="summary-label">Товарів:</span>
             <span class="summary-value" th:text="${cartItemCount}">3</span>
           </div>
 
           <div class="summary-row">
-            <span class="summary-label">Подытог:</span>
+            <span class="summary-label">Підсумок:</span>
             <span class="summary-value" data-cart-total th:text="${cartTotal} + ' грн'">450 грн</span>
           </div>
 
           <div class="summary-row">
             <span class="summary-label">Доставка:</span>
-            <span class="summary-value">Рассчитается при оформлении</span>
+            <span class="summary-value">Розрахується при оформленні</span>
           </div>
 
           <div class="summary-row summary-total">
-            <span class="summary-label">Всего:</span>
+            <span class="summary-label">Всього:</span>
             <span class="summary-value" th:text="${cartTotal} + ' грн'">450 грн</span>
           </div>
 
           <div class="cart-actions">
             <a href="/order" class="btn-checkout">
               <i class="fas fa-credit-card"></i>
-              Оформить заказ
+              Оформити замовлення
             </a>
 
             <button class="btn-clear" onclick="clearCart()">
               <i class="fas fa-trash"></i>
-              Очистить корзину
+              Очистити кошик
             </button>
           </div>
         </div>
+
       </div>
 
       <!-- Продолжить покупки -->
       <div class="continue-shopping">
         <a href="/categories" class="btn-continue">
           <i class="fas fa-arrow-left"></i>
-          Продолжить покупки
+          Продовжити покупки
         </a>
       </div>
     </section>
@@ -673,16 +674,17 @@
       <div class="empty-icon">
         <i class="fas fa-shopping-cart"></i>
       </div>
-      <h2 class="empty-title">Ваша корзина пуста</h2>
+      <h2 class="empty-title">Ваш кошик порожній</h2>
       <p class="empty-description">
-        Добавьте товары в корзину, чтобы продолжить покупки.
-        У нас есть множество вкусных шоколадных изделий!
+        Додайте товари до кошика, щоб продовжити покупки.
+        У нас є багато смачних шоколадних виробів!
       </p>
       <a href="/categories" class="back-button">
         <i class="fas fa-arrow-left"></i>
-        Начать покупки
+        Розпочати покупки
       </a>
     </section>
+
   </div>
 </div>
 
