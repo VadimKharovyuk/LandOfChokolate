@@ -1,8 +1,6 @@
 package com.example.landofchokolate.service;
-
 import com.example.landofchokolate.dto.order.OrderAdminListDTO;
 import com.example.landofchokolate.dto.product.PagedResponse;
-import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.enums.OrderStatus;
 import org.springframework.data.domain.Pageable;
 
@@ -19,10 +17,6 @@ public interface AdminOrderService {
      */
     PagedResponse<OrderAdminListDTO> getAllOrdersForAdmin(Pageable pageable);
 
-    /**
-     * Получить все заказы с пагинацией и сортировкой
-     */
-    PagedResponse<OrderAdminListDTO> getAllOrdersForAdmin(int page, int size, String sortBy, String sortDir);
 
 
     /**

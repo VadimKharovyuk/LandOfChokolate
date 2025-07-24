@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Замовлення #<span th:text="${order.id}"></span> - Land of Chocolate</title>
+    <meta name="description" content="Детальна інформація про замовлення - Land of Chocolate">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+
+    <style>
+        :root {
+            --primary-dark: #2C2C2C;
+            --primary-medium: #5A5A5A;
+            --primary-light: #FAFAFA;
+            --accent-gold: #D4AF37;
+            --accent-warm: #F5F5F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #757575;
+            --border-subtle: #E8E8E8;
+            --shadow-soft: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.08);
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: #FFFFFF;
+            letter-spacing: -0.01em;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Основной контент с отступом от навигации */
+        .main-content {
+            margin-top: 80px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumb-container {
+            padding: 2rem 0 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Header Section */
+        .order-header {
+            padding: 3rem 0 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .order-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .order-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .order-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Alert Messages */
+        .alert-custom {
+            border: none;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px var(--shadow-soft);
+            border-left: 4px solid;
+        }
+
+        .alert-success-custom {
+            background: #f8fff9;
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .alert-error-custom {
+            background: #fff5f5;
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+
+        /* Main Section */
+        .order-section {
+            padding: 3rem 0;
+        }
+
+        .order-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .order-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px var(--shadow-soft);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+        }
+
+        /* Order Info */
+        .order-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .order-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: var(--text-primary);
+            text-align: right;
+        }
+
+        .info-icon {
+            width: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .badge-primary { background: #007bff; color: white; }
+        .badge-success { background: #28a745; color: white; }
+        .badge-warning { background: #ffc107; color: #212529; }
+        .badge-danger { background: #dc3545; color: white; }
+        .badge-info { background: #17a2b8; color: white; }
+        .badge-secondary { background: #6c757d; color: white; }
+
+        /* Customer Info */
+        .customer-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .customer-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .customer-contact {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .customer-contact a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .customer-contact a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Status Update Form */
+        .status-update-form {
+            background: var(--accent-warm);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .form-select-custom {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: white;
+            color: var(--text-primary);
+        }
+
+        .form-select-custom:focus {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(42, 42, 42, 0.1);
+            outline: none;
+        }
+
+        .btn-custom {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary-custom {
+            background: var(--text-primary);
+            color: #FFFFFF;
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--primary-medium);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--primary-light);
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+
+        .btn-danger-custom {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger-custom:hover {
+            background: #c82333;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* Payment Info */
+        .payment-info {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .payment-status {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .order-header {
+                padding: 2rem 0 1rem;
+            }
+
+            .order-title {
+                font-size: 2rem;
+            }
+
+            .order-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .order-card {
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-custom {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент -->
+<div class="main-content">
+    <div class="main-container">
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumb-container" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Адмін панель</a></li>
+                <li class="breadcrumb-item"><a href="/admin/orders">Замовлення</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Замовлення #<span th:text="${order.id}"></span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Header Section -->
+        <header class="order-header">
+            <div class="order-icon">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <h1 class="order-title serif-font">
+                Замовлення #<span th:text="${order.id}"></span>
+            </h1>
+            <p class="order-subtitle">
+                Створено <span th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy')} + ' о ' + ${#temporals.format(order.createdAt, 'HH:mm')}"></span>
+            </p>
+        </header>
+
+        <!-- Alert Messages -->
+        <div th:if="${successMessage}" class="alert-custom alert-success-custom">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert-custom alert-error-custom">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Main Section -->
+        <section class="order-section">
+            <div class="order-container">
+                <!-- Order Details -->
+                <div class="order-card">
+                    <div class="card-header">
+                        <i class="card-icon fas fa-info-circle"></i>
+                        <h2 class="card-title">Деталі замовлення</h2>
+                    </div>
+
+                    <div class="order-info-item">
+                        <div class="info-label">
+                            <i class="info-icon fas fa-hashtag"></i>
+                            Номер замовлення:
+                        </div>
+                        <div class="info-value">
+                            <strong th:text="'#' + ${order.id}"></strong>
+                        </div>
+                    </div>
+
+                    <div class="order-info-item">
+                        <div class="info-label">
+                            <i class="info-icon fas fa-flag"></i>
+                            Поточний статус:
+                        </div>
+                        <div class="info-value">
+                                <span class="status-badge"
+                                      th:classappend="${order.statusBadgeClass}"
+                                      th:text="${order.statusDisplayName}"></span>
+                        </div>
+                    </div>
+
+                    <div class="order-info-item">
+                        <div class="info-label">
+                            <i class="info-icon fas fa-coins"></i>
+                            Загальна сума:
+                        </div>
+                        <div class="info-value">
+                            <strong th:text="${order.formattedAmount}" style="color: var(--success-color); font-size: 1.1rem;"></strong>
+                        </div>
+                    </div>
+
+                    <div class="order-info-item">
+                        <div class="info-label">
+                            <i class="info-icon" th:class="${order.deliveryMethodIcon}"></i>
+                            Спосіб доставки:
+                        </div>
+                        <div class="info-value">
+                                <span class="status-badge"
+                                      th:classappend="${order.deliveryMethodBadgeClass}"
+                                      th:text="${order.deliveryMethodDisplayName}"></span>
+                        </div>
+                    </div>
+
+                    <div class="order-info-item">
+                        <div class="info-label">
+                            <i class="info-icon fas fa-box"></i>
+                            Кількість товарів:
+                        </div>
+                        <div class="info-value">
+                            <span th:text="${order.itemsCount} + ' шт.'"></span>
+                        </div>
+                    </div>
+
+                    <div class="order-info-item">
+                        <div class="info-label">
+                            <i class="info-icon fas fa-calendar-plus"></i>
+                            Дата створення:
+                        </div>
+                        <div class="info-value">
+                            <div th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}"></div>
+                        </div>
+                    </div>
+
+                    <div class="order-info-item" th:if="${order.updatedAt != null}">
+                        <div class="info-label">
+                            <i class="info-icon fas fa-calendar-check"></i>
+                            Останнє оновлення:
+                        </div>
+                        <div class="info-value">
+                            <div th:text="${#temporals.format(order.updatedAt, 'dd.MM.yyyy HH:mm')}"></div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div class="payment-info">
+                        <div class="payment-method">
+                            <i class="fas fa-credit-card"></i>
+                            Спосіб оплати: <span th:text="${order.paymentMethod}"></span>
+                        </div>
+                        <div class="payment-status">
+                            Статус оплати: <span th:text="${order.paymentStatus}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="order-card">
+                    <div class="card-header">
+                        <i class="card-icon fas fa-user"></i>
+                        <h2 class="card-title">Інформація про клієнта</h2>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="customer-avatar">
+                            <span th:text="${#strings.substring(order.customerName, 0, 1).toUpperCase()}"></span>
+                        </div>
+                        <div class="customer-name" th:text="${order.customerName}"></div>
+
+                        <div class="customer-contact">
+                            <i class="fas fa-envelope"></i>
+                            <a th:href="'mailto:' + ${order.email}" th:text="${order.email}"></a>
+                        </div>
+
+                        <div class="customer-contact" th:if="${order.phoneNumber}">
+                            <i class="fas fa-phone"></i>
+                            <a th:href="'tel:' + ${order.phoneNumber}" th:text="${order.phoneNumber}"></a>
+                        </div>
+                    </div>
+
+                    <!-- Status Update Form -->
+                    <div class="status-update-form">
+                        <form th:action="@{'/admin/orders/' + ${order.id} + '/update-status'}" method="post">
+                            <div class="form-group">
+                                <label for="statusSelect" class="form-label">
+                                    <i class="fas fa-edit me-2"></i>
+                                    Змінити статус замовлення:
+                                </label>
+                                <select id="statusSelect" name="status" class="form-select-custom" required>
+                                    <option value="">-- Оберіть новий статус --</option>
+                                    <option th:each="status : ${allStatuses}"
+                                            th:value="${status}"
+                                            th:text="${status.description}"
+                                            th:selected="${status == order.status}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-custom btn-primary-custom">
+                                <i class="fas fa-save"></i>
+                                Оновити статус
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/admin/orders" class="btn-custom btn-outline-custom">
+                    <i class="fas fa-arrow-left"></i>
+                    Повернутися до списку
+                </a>
+
+                <button type="button"
+                        class="btn-custom btn-danger-custom"
+                        onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i>
+                    Видалити замовлення
+                </button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Подтверждение удаления заказа
+    function confirmDelete() {
+        if (confirm('Ви впевнені, що хочете видалити це замовлення? Цю дію неможливо скасувати.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/orders/[[${order.id}]]/delete`;
+
+            // Добавляем CSRF токен если используется
+            const csrfToken = document.querySelector('meta[name="_csrf"]');
+            if (csrfToken) {
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_csrf';
+                csrfInput.value = csrfToken.content;
+                form.appendChild(csrfInput);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Предупреждение при изменении статуса
+    document.getElementById('statusSelect').addEventListener('change', function() {
+        const currentStatus = '[[${order.status}]]';
+        const newStatus = this.value;
+
+        if (newStatus === 'CANCELLED' && currentStatus !== 'CANCELLED') {
+            if (!confirm('Ви впевнені, що хочете скасувати це замовлення?')) {
+                this.value = currentStatus;
+            }
+        }
+    });
+</script>
+</body>
+</html>

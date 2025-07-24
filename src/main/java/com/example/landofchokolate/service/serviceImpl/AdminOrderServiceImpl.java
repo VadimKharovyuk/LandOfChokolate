@@ -58,17 +58,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         return new PagedResponse<>(orderDTOs, orderPage);
     }
 
-    @Override
-    public PagedResponse<OrderAdminListDTO> getAllOrdersForAdmin(int page, int size, String sortBy, String sortDir) {
-        log.debug("Getting all orders for admin - page: {}, size: {}, sortBy: {}, sortDir: {}",
-                page, size, sortBy, sortDir);
-
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        return getAllOrdersForAdmin(pageable);
-    }
-
 
     @Override
     @Transactional
