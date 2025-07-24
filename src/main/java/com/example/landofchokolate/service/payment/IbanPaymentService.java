@@ -4,7 +4,7 @@ import com.example.landofchokolate.enums.PaymentType;
 import com.example.landofchokolate.model.Order;
 import com.example.landofchokolate.model.Payment;
 import com.example.landofchokolate.repository.PaymentRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,17 +16,12 @@ public class IbanPaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    /**
-     * Создать IBAN платеж (просто сохраняем выбор пользователя)
-     */
     @Transactional
     public Payment createIbanPayment(Order order) {
-        log.info("Creating IBAN payment for order: {}", order.getId());
 
         // Проверяем, нет ли уже платежа для этого заказа
         Payment existingPayment = paymentRepository.findByOrderId(order.getId()).orElse(null);
         if (existingPayment != null) {
-            log.info("Payment already exists for order: {}", order.getId());
             return existingPayment;
         }
 
@@ -39,7 +34,6 @@ public class IbanPaymentService {
                 .build();
 
         Payment savedPayment = paymentRepository.save(payment);
-        log.info("IBAN payment created with id: {} for order: {}", savedPayment.getId(), order.getId());
 
         return savedPayment;
     }
@@ -60,10 +54,10 @@ public class IbanPaymentService {
     /**
      * DTO для банковских реквизитов
      */
-    @lombok.Data
-    @lombok.Builder
-    @lombok.AllArgsConstructor
-    @lombok.NoArgsConstructor
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class IbanDetails {
         private String iban;
         private String recipientName;
