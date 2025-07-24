@@ -96,4 +96,17 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         return orderAdminMapper.toAdminListDTO(savedOrder);
     }
 
+    @Override
+    public Long getTotalOrdersCount() {
+        log.debug("Getting total orders count");
+        return orderRepository.count();
+    }
+
+    @Override
+    public Long getTodayOrdersCount() {
+        LocalDateTime startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+        return orderRepository.countByCreatedAtAfter(startOfDay);
+    }
+
+
 }

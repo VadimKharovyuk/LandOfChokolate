@@ -28,4 +28,12 @@ public interface AdminOrderService {
      * Обновить статус заказа
      */
     OrderAdminListDTO updateOrderStatus(Long orderId, OrderStatus newStatus);
+
+    Long getTotalOrdersCount();
+
+
+    /**
+     * Получить количество заказов за сегодня
+     */
+    Long getTodayOrdersCount();
 }

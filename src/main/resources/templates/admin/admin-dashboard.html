@@ -249,6 +249,47 @@
             📈 Средняя цена: <strong th:text="${averagePrice != null ? #numbers.formatDecimal(averagePrice, 0, 2) + ' грн.' : '0 грн.'}">0 грн.</strong>
         </div>
     </a>
+
+
+    <a href="/admin/orders" class="card card-statistics" role="button" aria-label="Перейти к управлению заказами">
+        <div class="card-header-section">
+        <span class="card-icon">
+            🛒
+        </span>
+            <div class="card-badge">
+                <span class="badge-text">📊 Статистика</span>
+            </div>
+        </div>
+
+        <div class="card-content">
+            <div class="card-title">📦 Замовлення клієнтів</div>
+
+            <div class="card-stats-grid">
+                <div class="stats-item">
+                    <span class="stats-number" th:text="${totalOrders ?: 0}">0</span>
+                    <span class="stats-label">📈 всього замовлень</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-number today" th:text="${todayOrder ?: 0}">0</span>
+                    <span class="stats-label">🆕 сьогодні</span>
+                </div>
+            </div>
+
+            <div class="card-description">
+                ✨ Переглядайте та керуйте всіма замовленнями клієнтів
+            </div>
+
+            <div class="card-features">
+                <span class="feature-item">🔍 Пошук</span>
+                <span class="feature-item">📝 Редагування</span>
+                <span class="feature-item">📊 Аналітика</span>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <span class="action-text">Перейти до управління →</span>
+        </div>
+    </a>
 </div>
 
 <!-- Быстрые действия -->
