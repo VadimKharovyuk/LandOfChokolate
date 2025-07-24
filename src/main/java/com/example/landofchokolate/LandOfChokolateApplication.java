@@ -23,8 +23,5 @@ public class LandOfChokolateApplication {
     /// fix Пошук замовлень номер тлф
 
 
-    ///      * Определить статус оплаты на основе статуса заказа
-    ///      */ --> OrderAdminMapper
-
 
 }

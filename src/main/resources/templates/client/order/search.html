@@ -675,7 +675,7 @@
                      placeholder="06684200051"
                      required>
               <div class="form-text">
-                Введіть номер телефону без символів: 06684200051
+                Введіть номер телефону  в форматi +3806684200051
               </div>
             </div>
             <div class="col-md-4">
@@ -893,14 +893,21 @@
       }, index * 100);
     });
 
-    // Форматирование номера телефона при вводе
+    // 1. Если нужно разрешить только цифры и знак "+" в начале:
     phoneInput?.addEventListener('input', function(e) {
-      // Убираем все не-цифры
-      let value = e.target.value.replace(/\D/g, '');
+      let value = e.target.value;
 
-      // Ограничиваем длину
-      if (value.length > 12) {
-        value = value.substring(0, 12);
+      // Убираем все, кроме цифр и "+" в начале
+      value = value.replace(/[^\d+]/g, '');
+
+      // Убираем "+" если он не в начале
+      if (value.indexOf('+') > 0) {
+        value = value.replace(/\+/g, '');
+      }
+
+      // Оставляем только один "+" в начале
+      if (value.startsWith('+')) {
+        value = '+' + value.substring(1).replace(/\+/g, '');
       }
 
       e.target.value = value;
