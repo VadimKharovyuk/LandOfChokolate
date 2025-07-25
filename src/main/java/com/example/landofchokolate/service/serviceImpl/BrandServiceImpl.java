@@ -349,11 +349,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@CacheConfig(cacheNames = {"brandById", "brandBySlug", "allBrands", "brandFilters", "brandProducts", "brandLimit"})
+@CacheConfig(
+        cacheManager = "brandCacheManager",  // Указываем конкретный CacheManager
+        cacheNames = {"brandById", "brandBySlug", "allBrands", "brandFilters", "brandProducts", "brandLimit"}
+)
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;

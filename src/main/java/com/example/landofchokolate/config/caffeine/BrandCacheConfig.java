@@ -1,10 +1,10 @@
+// BrandCacheConfig.java
 package com.example.landofchokolate.config.caffeine;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Duration;
 
 @Configuration
-@EnableCaching
 @Slf4j
 public class BrandCacheConfig {
 
-    @Bean
-    public CacheManager cacheManager() {
+    @Bean("brandCacheManager")
+    public CacheManager brandCacheManager() {  // Изменили название метода!
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
 
         // Кеш для брендов по ID - долгоживущий
@@ -31,7 +30,7 @@ public class BrandCacheConfig {
                 .build();
         cacheManager.registerCustomCache("brandById", brandByIdCache);
 
-        // Кеш для брендов по slug - тоже долгоживущий
+        // Кеш для брендов по slug
         Cache<Object, Object> brandBySlugCache = Caffeine.newBuilder()
                 .maximumSize(500)
                 .expireAfterWrite(Duration.ofHours(6))
@@ -42,9 +41,9 @@ public class BrandCacheConfig {
                 .build();
         cacheManager.registerCustomCache("brandBySlug", brandBySlugCache);
 
-        // Кеш для списка всех брендов - среднее время жизни
+        // Кеш для списка всех брендов
         Cache<Object, Object> allBrandsCache = Caffeine.newBuilder()
-                .maximumSize(50)   // Мало записей, но тяжелые
+                .maximumSize(50)
                 .expireAfterWrite(Duration.ofMinutes(30))
                 .recordStats()
                 .evictionListener((key, value, cause) ->
@@ -52,7 +51,7 @@ public class BrandCacheConfig {
                 .build();
         cacheManager.registerCustomCache("allBrands", allBrandsCache);
 
-        // Кеш для фильтров брендов - быстро обновляемый
+        // Кеш для фильтров брендов
         Cache<Object, Object> brandFiltersCache = Caffeine.newBuilder()
                 .maximumSize(10)
                 .expireAfterWrite(Duration.ofMinutes(15))
@@ -62,9 +61,9 @@ public class BrandCacheConfig {
                 .build();
         cacheManager.registerCustomCache("brandFilters", brandFiltersCache);
 
-        // Кеш для продуктов бренда - страничная навигация
+        // Кеш для продуктов бренда
         Cache<Object, Object> brandProductsCache = Caffeine.newBuilder()
-                .maximumSize(200)  // Много страниц разных брендов
+                .maximumSize(200)
                 .expireAfterWrite(Duration.ofMinutes(20))
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .recordStats()
@@ -73,15 +72,18 @@ public class BrandCacheConfig {
                 .build();
         cacheManager.registerCustomCache("brandProducts", brandProductsCache);
 
-        // Кеш для лимитированных списков брендов (например, топ-10)
+        // Кеш для лимитированных списков брендов
         Cache<Object, Object> brandLimitCache = Caffeine.newBuilder()
-                .maximumSize(20)   // Разные лимиты
+                .maximumSize(20)
                 .expireAfterWrite(Duration.ofMinutes(45))
                 .recordStats()
                 .evictionListener((key, value, cause) ->
                         log.info("BrandLimit cache eviction: key={}, cause={}", key, cause))
                 .build();
         cacheManager.registerCustomCache("brandLimit", brandLimitCache);
+
+        log.info("Brand cache manager configured with {} caches",
+                cacheManager.getCacheNames().size());
 
         return cacheManager;
     }
