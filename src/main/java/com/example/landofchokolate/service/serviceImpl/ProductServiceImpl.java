@@ -869,7 +869,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "productBySlug", key = "#slug")
+    @Cacheable(value = "productBySlug", key = "'v2_' + #slug")
     public ProductDetailDto getProductBySlug(String slug) {
         log.info("Fetching product by slug: {}", slug);
 
@@ -902,7 +902,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "relatedProducts", key = "#slug + '_' + #limit")
+    @Cacheable(value = "relatedProducts", key = "'v2_' + #slug + '_' + #limit")
     public List<RelatedProductDto> getRelatedProducts(String slug, int limit) {
         log.info("Fetching related products for slug: {}, limit: {}", slug, limit);
 
