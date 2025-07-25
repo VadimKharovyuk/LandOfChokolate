@@ -15,6 +15,7 @@ public class BrandResponseDto {
     private String description;
 
     private String imageUrl;
+    private String slug ;
 
 
     private LocalDateTime createdAt;
