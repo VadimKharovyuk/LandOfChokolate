@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест мобильной навигации</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+        /* CSS Variables */
+        :root {
+            --primary-dark: #2c3e50;
+            --accent-gold: #c9a96e;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: #f8f8f8;
+            min-height: 100vh;
+            padding-bottom: 90px; /* Отступ для навигации */
+        }
+
+        /* Контент для тестирования */
+        .content {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        /* МОБИЛЬНАЯ НАВИГАЦИЯ СНИЗУ - ОСНОВНЫЕ СТИЛИ */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(248, 248, 248, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid var(--accent-gold);
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+        }
+
+        .mobile-bottom-nav-list {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        .mobile-bottom-nav-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .mobile-bottom-nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            padding: 10px 5px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .mobile-bottom-nav-link:hover,
+        .mobile-bottom-nav-link.active {
+            color: var(--accent-gold);
+            background: rgba(201, 169, 110, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .mobile-bottom-nav-icon {
+            font-size: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-bottom-nav-text {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .mobile-nav-badge {
+            position: absolute;
+            top: 3px;
+            right: 10px;
+            background: var(--accent-gold);
+            color: white;
+            border-radius: 12px;
+            min-width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .mobile-nav-badge.favorites {
+            background: #e74c3c;
+        }
+
+        /* Дебаг информация */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 10000;
+        }
+
+        /* Для больших экранов скрываем */
+        @media (min-width: 992px) {
+            .mobile-bottom-nav {
+                display: none;
+            }
+            body {
+                padding-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Дебаг информация -->
+<div class="debug-info" id="debugInfo">
+    Ширина экрана: <span id="screenWidth"></span>px<br>
+    User Agent: <span id="userAgent"></span>
+</div>
+
+<!-- Контент -->
+<div class="content">
+    <div class="section">
+        <h1>🍫 Тест мобильной навигации</h1>
+        <p><strong>Проверяем работу нижней навигации на мобильных устройствах.</strong></p>
+        <p>Если вы видите эту страницу на мобильном устройстве, внизу экрана должна быть навигационная панель с 5 иконками.</p>
+    </div>
+
+    <div class="section">
+        <h2>🔍 Что проверить:</h2>
+        <p>✅ Навигация должна быть зафиксирована внизу экрана</p>
+        <p>✅ Должно быть 5 кнопок: Головна, Товари, Категорії, Вибране, Кошик</p>
+        <p>✅ При нажатии кнопки должны реагировать</p>
+        <p>✅ Бейджи должны быть видны на Вибране (3) и Кошик (2)</p>
+    </div>
+
+    <div class="section">
+        <h2>📱 Информация об устройстве:</h2>
+        <p>Ваш экран: <span id="screenInfo"></span></p>
+        <p>Тип устройства: <span id="deviceType"></span></p>
+    </div>
+
+    <!-- Дополнительный контент для тестирования скролла -->
+    <div class="section">
+        <h2>📜 Контент для скролла</h2>
+        <p>Этот раздел помогает проверить, что навигация остается на месте при скролле.</p>
+    </div>
+
+    <div class="section">
+        <p>Еще контент...</p>
+    </div>
+
+    <div class="section">
+        <p>И еще...</p>
+    </div>
+
+    <div class="section">
+        <p>Последний блок контента</p>
+    </div>
+</div>
+
+<!-- МОБИЛЬНАЯ НАВИГАЦИЯ СНИЗУ -->
+<div class="mobile-bottom-nav" id="mobileBottomNav">
+    <ul class="mobile-bottom-nav-list">
+        <li class="mobile-bottom-nav-item">
+            <a href="/" class="mobile-bottom-nav-link active">
+                <i class="fas fa-home mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-text">Головна</span>
+            </a>
+        </li>
+        <li class="mobile-bottom-nav-item">
+            <a href="/products" class="mobile-bottom-nav-link">
+                <i class="fas fa-th-large mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-text">Товари</span>
+            </a>
+        </li>
+        <li class="mobile-bottom-nav-item">
+            <a href="/categories" class="mobile-bottom-nav-link">
+                <i class="fas fa-list mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-text">Категорії</span>
+            </a>
+        </li>
+        <li class="mobile-bottom-nav-item">
+            <a href="/wishlist" class="mobile-bottom-nav-link">
+                <i class="fas fa-heart mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-text">Вибране</span>
+                <span class="mobile-nav-badge favorites">3</span>
+            </a>
+        </li>
+        <li class="mobile-bottom-nav-item">
+            <a href="/cart" class="mobile-bottom-nav-link">
+                <i class="fas fa-shopping-bag mobile-bottom-nav-icon"></i>
+                <span class="mobile-bottom-nav-text">Кошик</span>
+                <span class="mobile-nav-badge">2</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Дебаг информация
+        const screenWidth = window.innerWidth;
+        const userAgent = navigator.userAgent.substring(0, 50) + '...';
+
+        document.getElementById('screenWidth').textContent = screenWidth;
+        document.getElementById('userAgent').textContent = userAgent;
+
+        // Определяем тип устройства
+        let deviceType = 'Desktop';
+        if (screenWidth <= 768) {
+            deviceType = 'Mobile';
+        } else if (screenWidth <= 1024) {
+            deviceType = 'Tablet';
+        }
+
+        document.getElementById('screenInfo').textContent = `${screenWidth}x${window.innerHeight}`;
+        document.getElementById('deviceType').textContent = deviceType;
+
+        // Проверяем видимость навигации
+        const nav = document.getElementById('mobileBottomNav');
+        const computedStyle = window.getComputedStyle(nav);
+
+        console.log('Навигация отображается:', computedStyle.display);
+        console.log('Позиция:', computedStyle.position);
+        console.log('Bottom:', computedStyle.bottom);
+        console.log('Z-index:', computedStyle.zIndex);
+
+        // Анимации для навигации
+        const navLinks = document.querySelectorAll('.mobile-bottom-nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Предотвращаем переход
+
+                // Убираем active у всех
+                navLinks.forEach(l => l.classList.remove('active'));
+                // Добавляем active к текущему
+                this.classList.add('active');
+
+                // Анимация клика
+                this.style.transform = 'translateY(-2px) scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-2px) scale(1)';
+                }, 150);
+
+                console.log('Клик по:', this.querySelector('.mobile-bottom-nav-text').textContent);
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- Mobile Bottom Navigation Fragment -->
+<div class="mobile-bottom-nav" id="mobileBottomNav" th:fragment="mobile-bottom-navigation">
+  <ul class="mobile-bottom-nav-list">
+    <li class="mobile-bottom-nav-item">
+      <a th:href="@{/}"
+         class="mobile-bottom-nav-link"
+         th:classappend="${currentURI == '/' ? 'active' : ''}">
+        <i class="fas fa-home mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Головна</span>
+      </a>
+    </li>
+    <li class="mobile-bottom-nav-item">
+      <a th:href="@{/product/all}"
+         class="mobile-bottom-nav-link"
+         th:classappend="${#strings.startsWith(currentURI, '/product/all') ? 'active' : ''}">
+        <i class="fas fa-th-large mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Товари</span>
+      </a>
+    </li>
+    <li class="mobile-bottom-nav-item">
+      <a th:href="@{/categories}"
+         class="mobile-bottom-nav-link"
+         th:classappend="${currentURI == '/categories' ? 'active' : ''}">
+        <i class="fas fa-list mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Категорії</span>
+      </a>
+    </li>
+    <li class="mobile-bottom-nav-item">
+      <a th:href="@{/wishlist}"
+         class="mobile-bottom-nav-link"
+         th:classappend="${currentURI == '/wishlist' ? 'active' : ''}">
+        <i class="fas fa-heart mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Вибране</span>
+        <span class="mobile-nav-badge favorites"
+              th:if="${favoritesCount > 0}"
+              th:text="${favoritesCount}">0</span>
+      </a>
+    </li>
+    <li class="mobile-bottom-nav-item">
+      <a th:href="@{/cart}"
+         class="mobile-bottom-nav-link"
+         th:classappend="${currentURI == '/cart' ? 'active' : ''}">
+        <i class="fas fa-shopping-bag mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Кошик</span>
+        <span class="mobile-nav-badge"
+              th:if="${cartCount > 0}"
+              th:text="${cartCount}">0</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Mobile Bottom Navigation JavaScript -->
+<script th:fragment="mobile-bottom-navigation-script">
+  document.addEventListener('DOMContentLoaded', function() {
+    // Bottom navigation animations and interactions
+    const bottomNavLinks = document.querySelectorAll('.mobile-bottom-nav-link');
+
+    if (bottomNavLinks.length > 0) {
+      bottomNavLinks.forEach(link => {
+        // Тактильная обратная связь при клике
+        link.addEventListener('click', function() {
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'scale(1)';
+          }, 150);
+        });
+
+        // Анимация иконок при наведении (для устройств с курсором)
+        const icon = link.querySelector('.mobile-bottom-nav-icon');
+        if (icon) {
+          link.addEventListener('mouseenter', function() {
+            if (window.innerWidth <= 991) { // Только на мобильных
+              icon.style.transform = 'translateY(-2px) scale(1.1)';
+            }
+          });
+
+          link.addEventListener('mouseleave', function() {
+            if (window.innerWidth <= 991) {
+              icon.style.transform = 'translateY(0) scale(1)';
+            }
+          });
+        }
+      });
+    }
+
+    // Автоскрытие навигации при скролле (опционально)
+    let lastScrollTop = 0;
+    const bottomNav = document.getElementById('mobileBottomNav');
+
+    if (bottomNav && window.innerWidth <= 991) {
+      window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          // Скролл вниз - скрываем навигацию
+          bottomNav.style.transform = 'translateY(100%)';
+        } else {
+          // Скролл вверх - показываем навигацию
+          bottomNav.style.transform = 'translateY(0)';
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      }, { passive: true });
+    }
+
+    // Обновление счетчиков (если нужно динамически)
+    function updateBottomNavBadges(cartCount, favoritesCount) {
+      const cartBadge = document.querySelector('.mobile-bottom-nav .mobile-nav-badge:not(.favorites)');
+      const favoritesBadge = document.querySelector('.mobile-bottom-nav .mobile-nav-badge.favorites');
+
+      if (cartBadge) {
+        if (cartCount > 0) {
+          cartBadge.textContent = cartCount;
+          cartBadge.style.display = 'flex';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+
+      if (favoritesBadge) {
+        if (favoritesCount > 0) {
+          favoritesBadge.textContent = favoritesCount;
+          favoritesBadge.style.display = 'flex';
+        } else {
+          favoritesBadge.style.display = 'none';
+        }
+      }
+    }
+
+    // Экспортируем функцию для использования в других скриптах
+    window.updateBottomNavBadges = updateBottomNavBadges;
+  });
+</script>
+
+</body>
+</html>

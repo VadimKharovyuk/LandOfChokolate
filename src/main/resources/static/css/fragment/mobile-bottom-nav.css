@@ -1,0 +1,289 @@
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION STYLES
+   Отдельный CSS файл для мобильной навигации снизу
+   ========================================================================== */
+
+/* CSS Variables (если не определены в основном файле) */
+:root {
+    --primary-dark: #2c3e50;
+    --accent-gold: #c9a96e;
+    --white: #ffffff;
+    --mobile-nav-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Базовые стили для body (отступ снизу на мобильных) */
+@media screen and (max-width: 991px) {
+    body {
+        padding-bottom: 85px !important;
+    }
+}
+
+/* ==========================================================================
+   МОБИЛЬНАЯ НАВИГАЦИЯ СНИЗУ
+   ========================================================================== */
+
+.mobile-bottom-nav {
+    /* Позиционирование */
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+
+    /* Внешний вид */
+    background: rgba(248, 248, 248, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    border-top: 1px solid rgba(201, 169, 110, 0.3) !important;
+    box-shadow: 0 -3px 20px rgba(0, 0, 0, 0.12) !important;
+
+    /* Z-index и отображение */
+    z-index: 9999 !important;
+    display: none !important;
+
+    /* Отступы */
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+
+    /* Анимации */
+    transform: translateY(0) !important;
+    transition: var(--mobile-nav-transition) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Список навигации */
+.mobile-bottom-nav-list {
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 5px !important;
+    width: 100% !important;
+}
+
+/* Элементы навигации */
+.mobile-bottom-nav-item {
+    flex: 1 !important;
+    text-align: center !important;
+    display: block !important;
+    max-width: 80px !important;
+}
+
+/* Ссылки навигации */
+.mobile-bottom-nav-link {
+    /* Отображение */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+
+    /* Стили текста */
+    color: var(--primary-dark) !important;
+    text-decoration: none !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.2px !important;
+
+    /* Отступы и форма */
+    padding: 8px 4px !important;
+    border-radius: 12px !important;
+
+    /* Позиционирование и анимации */
+    position: relative !important;
+    transition: var(--mobile-nav-transition) !important;
+    transform-origin: center !important;
+
+    /* Интерактивность */
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Состояния ссылок */
+.mobile-bottom-nav-link:hover,
+.mobile-bottom-nav-link.active {
+    color: var(--accent-gold) !important;
+    background: rgba(201, 169, 110, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
+}
+
+.mobile-bottom-nav-link.active .mobile-bottom-nav-icon {
+    transform: translateY(-1px) scale(1.05) !important;
+}
+
+/* Иконки навигации */
+.mobile-bottom-nav-icon {
+    font-size: 20px !important;
+    transition: var(--mobile-nav-transition) !important;
+    transform-origin: center !important;
+    opacity: 0.85 !important;
+    display: block !important;
+}
+
+.mobile-bottom-nav-link:hover .mobile-bottom-nav-icon {
+    opacity: 1 !important;
+    transform: translateY(-2px) scale(1.1) !important;
+}
+
+/* Текст навигации */
+.mobile-bottom-nav-text {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.3px !important;
+    font-weight: 600 !important;
+    display: block !important;
+    margin-top: 2px !important;
+}
+
+/* Бейджи (счетчики) */
+.mobile-nav-badge {
+    /* Позиционирование */
+    position: absolute !important;
+    top: 2px !important;
+    right: 8px !important;
+
+    /* Внешний вид */
+    background: var(--accent-gold) !important;
+    color: var(--white) !important;
+    border-radius: 10px !important;
+
+    /* Размеры */
+    min-width: 18px !important;
+    height: 18px !important;
+
+    /* Текст */
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    font-family: 'Cormorant Garamond', serif !important;
+
+    /* Отображение */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 4px !important;
+
+    /* Эффекты */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.mobile-nav-badge.favorites {
+    background: #e74c3c !important;
+}
+
+/* Анимация появления */
+@keyframes slideUpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   МЕДИА ЗАПРОСЫ
+   ========================================================================== */
+
+/* Показываем на мобильных устройствах */
+@media screen and (max-width: 991px) {
+    .mobile-bottom-nav {
+        display: block !important;
+        animation: slideUpFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+}
+
+/* Скрываем на планшетах и десктопах */
+@media screen and (min-width: 992px) {
+    .mobile-bottom-nav {
+        display: none !important;
+    }
+
+    body {
+        padding-bottom: 0 !important;
+    }
+}
+
+/* Дополнительные настройки для маленьких экранов */
+@media screen and (max-width: 576px) {
+    .mobile-bottom-nav-text {
+        font-size: 9px !important;
+    }
+
+    .mobile-bottom-nav-icon {
+        font-size: 18px !important;
+    }
+
+    .mobile-nav-badge {
+        min-width: 16px !important;
+        height: 16px !important;
+        font-size: 9px !important;
+        top: 1px !important;
+        right: 6px !important;
+    }
+
+    .mobile-bottom-nav-link {
+        padding: 6px 2px !important;
+    }
+}
+
+/* Настройки для очень широких мобильных экранов */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .mobile-bottom-nav-item {
+        max-width: 100px !important;
+    }
+
+    .mobile-bottom-nav-icon {
+        font-size: 22px !important;
+    }
+
+    .mobile-bottom-nav-text {
+        font-size: 11px !important;
+    }
+}
+
+/* ==========================================================================
+   ДОПОЛНИТЕЛЬНЫЕ УЛУЧШЕНИЯ
+   ========================================================================== */
+
+/* Обработка landscape ориентации */
+@media screen and (max-width: 991px) and (orientation: landscape) and (max-height: 500px) {
+    .mobile-bottom-nav {
+        padding: 6px 0 6px !important;
+    }
+
+    .mobile-bottom-nav-link {
+        padding: 6px 4px !important;
+        gap: 2px !important;
+    }
+
+    .mobile-bottom-nav-icon {
+        font-size: 16px !important;
+    }
+
+    .mobile-bottom-nav-text {
+        font-size: 8px !important;
+    }
+}
+
+/* Темная тема (если нужно) */
+@media (prefers-color-scheme: dark) {
+    .mobile-bottom-nav {
+        background: rgba(44, 62, 80, 0.95) !important;
+        border-top-color: rgba(201, 169, 110, 0.4) !important;
+    }
+
+    .mobile-bottom-nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .mobile-bottom-nav-link:hover,
+    .mobile-bottom-nav-link.active {
+        color: var(--accent-gold) !important;
+        background: rgba(201, 169, 110, 0.2) !important;
+    }
+}

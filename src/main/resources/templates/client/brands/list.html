@@ -16,6 +16,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
   <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
   <style>
     :root {
@@ -521,6 +522,11 @@
     </main>
   </div>
 </div>
+
+<script th:src="@{/js/scrollTopButton.js}"></script>
+<!-- Мобильная навигация снизу  -->
+<div th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation}"></div>
+<script th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation-script}"></script>
 
 <!-- Подвал -->
 <div th:insert="~{admin/fragments/footer :: footer}"></div>
