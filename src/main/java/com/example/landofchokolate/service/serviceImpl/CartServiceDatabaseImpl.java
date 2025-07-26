@@ -427,9 +427,10 @@ public class CartServiceDatabaseImpl implements CartService {
             }
         }
 
-        Cart emptyCart = createEmptyCart();
-        updateCartInSession(session, emptyCart);
-        return emptyCart;
+        // ИСПРАВЛЕНИЕ: Создаем НАСТОЯЩУЮ корзину вместо пустой заглушки
+        Cart newCart = createNewCart(); // Эта корзина сохраняется в БД!
+        updateCartInSession(session, newCart);
+        return newCart;
     }
 
     // Вспомогательные методы
@@ -578,11 +579,12 @@ public class CartServiceDatabaseImpl implements CartService {
         return cart.getExpiresAt() != null && LocalDateTime.now().isAfter(cart.getExpiresAt());
     }
 
-    private Cart createEmptyCart() {
-        Cart cart = new Cart();
-        cart.setCartUuid("");
-        cart.setStatus(CartStatus.ACTIVE);
-        cart.setItems(new ArrayList<>());
-        return cart;
-    }
+//    private Cart createEmptyCart() {
+//        Cart cart = new Cart();
+//        cart.setCartUuid("");
+//        cart.setStatus(CartStatus.ACTIVE);
+//        cart.setItems(new ArrayList<>());
+//        return cart;
+//    }
+
 }
