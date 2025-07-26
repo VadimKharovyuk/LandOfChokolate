@@ -384,6 +384,7 @@ public class CategoryServiceImpl implements CategoryService {
                     @CacheEvict(value = "allCategories", allEntries = true),
                     @CacheEvict(value = "publicCategories", allEntries = true),
                     @CacheEvict(value = "topCategories", allEntries = true),
+                    @CacheEvict(value = "navigationCategories", allEntries = true),
                     @CacheEvict(value = "categoriesByName", allEntries = true)
             }
     )
@@ -422,6 +423,7 @@ public class CategoryServiceImpl implements CategoryService {
                     @CacheEvict(value = "publicCategories", allEntries = true),
                     @CacheEvict(value = "topCategories", allEntries = true),
                     @CacheEvict(value = "categoriesByName", allEntries = true),
+                    @CacheEvict(value = "navigationCategories", allEntries = true),
                     @CacheEvict(value = "categoryEditData", key = "#id")
             }
     )
@@ -458,6 +460,7 @@ public class CategoryServiceImpl implements CategoryService {
             @CacheEvict(value = "publicCategories", allEntries = true),
             @CacheEvict(value = "topCategories", allEntries = true),
             @CacheEvict(value = "categoriesByName", allEntries = true),
+            @CacheEvict(value = "navigationCategories", allEntries = true),
             @CacheEvict(value = "categoryEditData", key = "#id")
     })
     public void deleteCategory(Long id) {
@@ -592,14 +595,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+
     /**
      * Получает список категорий для отображения в мобильной навигации
      * @param limit максимальное количество категорий
      * @return список DTO категорий для навигации (никогда не null и не пустой)
      */
-    @Override
+    @Cacheable(
+            value = "navigationCategories",
+            key = "#limit",
+            cacheManager = "categoryCacheManager",
+            unless = "#result == null or #result.isEmpty()"
+    )
     public List<CategoryNavDto> getNavigationCategories(int limit) {
         try {
+            log.debug("Загрузка навигационных категорий из базы данных (limit: {})", limit);
+
             List<Category> categories = categoryRepository.findActiveCategories(limit);
 
             // Если нет категорий в БД, возвращаем дефолтные
@@ -616,6 +627,7 @@ public class CategoryServiceImpl implements CategoryService {
                 return getDefaultNavigationCategories();
             }
 
+            log.debug("Загружено {} навигационных категорий", result.size());
             return result;
 
         } catch (Exception e) {

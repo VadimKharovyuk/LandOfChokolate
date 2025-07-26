@@ -85,6 +85,19 @@ public class CategoryCacheConfig {
                 .build();
         cacheManager.registerCustomCache("categoriesByName", categoriesByNameCache);
 
+
+        // НОВЫЙ: Кеш для навигационных категорий
+        Cache<Object, Object> navigationCategoriesCache = Caffeine.newBuilder()
+                .maximumSize(5) // Максимум 5 разных лимитов (обычно будет 1-2)
+                .expireAfterWrite(Duration.ofMinutes(15)) // Обновляем каждые 15 минут
+                .expireAfterAccess(Duration.ofMinutes(10)) // Если не используется 10 минут - удаляем
+                .recordStats()
+                .evictionListener((key, value, cause) ->
+                        log.info("NavigationCategories cache eviction: key={}, cause={}", key, cause))
+                .build();
+        cacheManager.registerCustomCache("navigationCategories", navigationCategoriesCache);
+
+
         // Кеш для данных редактирования категории
         Cache<Object, Object> categoryEditDataCache = Caffeine.newBuilder()
                 .maximumSize(50)
