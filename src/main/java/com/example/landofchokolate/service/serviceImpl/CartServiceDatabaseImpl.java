@@ -396,6 +396,7 @@ public class CartServiceDatabaseImpl implements CartService {
         return newCart;
     }
 
+
     @Transactional(readOnly = true)
     protected Cart getCartReadOnly(HttpSession session) {
         Cart cachedCart = getCartFromSession(session);
@@ -418,11 +419,53 @@ public class CartServiceDatabaseImpl implements CartService {
             }
         }
 
-        // ИСПРАВЛЕНИЕ: Создаем НАСТОЯЩУЮ корзину вместо пустой заглушки
-        Cart newCart = createNewCart(); // Эта корзина сохраняется в БД!
-        updateCartInSession(session, newCart);
-        return newCart;
+        // ИСПРАВЛЕНИЕ: НЕ создаем корзину в read-only методе!
+        // Возвращаем пустую корзину только в памяти
+        return createEmptyCartInMemory();
     }
+    // ДОБАВЬТЕ ЭТОТ НОВЫЙ МЕТОД:
+    private Cart createEmptyCartInMemory() {
+        Cart cart = new Cart();
+        cart.setCartUuid(""); // Пустой UUID для индикации временной корзины
+        cart.setStatus(CartStatus.ACTIVE);
+        cart.setItems(new ArrayList<>());
+
+        LocalDateTime now = LocalDateTime.now();
+        cart.setCreatedAt(now);
+        cart.setUpdatedAt(now);
+        cart.setLastActivityAt(now);
+        cart.setExpiresAt(now.plusDays(cartExpirationDays));
+
+        log.debug("Создана временная пустая корзина (только в памяти)");
+        return cart;
+    }
+//    @Transactional(readOnly = true)
+//    protected Cart getCartReadOnly(HttpSession session) {
+//        Cart cachedCart = getCartFromSession(session);
+//        if (cachedCart != null && !isCartExpired(cachedCart)) {
+//            if (isCartFullyLoaded(cachedCart)) {
+//                return cachedCart;
+//            }
+//        }
+//
+//        String cartUuid = getCartUuidFromCookie();
+//        if (cartUuid != null) {
+//            Optional<Cart> cartOpt = cartRepository.findByCartUuidAndStatusWithItems(cartUuid, CartStatus.ACTIVE);
+//            if (cartOpt.isPresent()) {
+//                Cart cart = cartOpt.get();
+//                if (!isCartExpired(cart)) {
+//                    initializeCartData(cart);
+//                    updateCartInSession(session, cart);
+//                    return cart;
+//                }
+//            }
+//        }
+//
+//        // ИСПРАВЛЕНИЕ: Создаем НАСТОЯЩУЮ корзину вместо пустой заглушки
+//        Cart newCart = createNewCart(); // Эта корзина сохраняется в БД!
+//        updateCartInSession(session, newCart);
+//        return newCart;
+//    }
 
     // Вспомогательные методы
     private void updateCartActivity(Cart cart) {
@@ -469,8 +512,9 @@ public class CartServiceDatabaseImpl implements CartService {
     private void updateCartInSession(HttpSession session, Cart cart) {
         log.debug("updateCartInSession: входящий cart UUID='{}'", cart.getCartUuid());
 
+        // НЕ сохраняем корзины с пустым UUID в сессию
         if (cart.getCartUuid() == null || cart.getCartUuid().trim().isEmpty()) {
-            log.error("ПОПЫТКА СОХРАНИТЬ КОРЗИНУ С ПУСТЫМ UUID В СЕССИЮ!");
+            log.debug("Пропускаем сохранение временной корзины в сессию");
             return;
         }
 
