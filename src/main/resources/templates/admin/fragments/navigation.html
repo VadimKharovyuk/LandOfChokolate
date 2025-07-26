@@ -11,7 +11,7 @@
         <div class="d-flex justify-content-between align-items-center w-100">
             <!-- Brand -->
             <a th:href="@{/}" class="navbar-brand-luxury">
-                <img src="/images/IMG_1721.JPG" alt="Land of Chocolate" class="brand-logo">
+                <img src="/images/Logo.jpeg" alt="Land of Chocolate" class="brand-logo">
                 Країна шоколаду
             </a>
 
@@ -70,28 +70,6 @@
                     </a>
                 </li>
 
-<!--                <li class="nav-item-luxury">-->
-<!--                    <a th:href="@{/cart}"-->
-<!--                       class="nav-link-luxury position-relative"-->
-<!--                       th:classappend="${currentURI == '/cart' ? 'active' : ''}">-->
-<!--                        <i class="fas fa-shopping-bag nav-icon"></i>-->
-<!--                        Кошик-->
-
-<!--                        &lt;!&ndash; Блок с количеством &ndash;&gt;-->
-<!--                        <div class="cart-info" th:if="${cartCount > 0}">-->
-<!--                            <span class="cart-badge" th:text="${cartCount}">0</span>-->
-<!--                            <span class="cart-total" th:text="${cartTotal} + ' грн'">0 грн</span>-->
-<!--                        </div>-->
-
-<!--                        &lt;!&ndash; Блок для пустой корзины &ndash;&gt;-->
-<!--                        <div class="cart-info empty" th:if="${cartCount == 0}">-->
-<!--                            <span class="cart-badge">0</span>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </li>-->
-
-
-
             </ul>
 
             <!-- Mobile Toggle Button -->
@@ -123,6 +101,14 @@
                         Категорії
                     </a>
                 </li>
+
+                <li class="mobile-nav-item">
+                    <a th:href="@{/brands}" class="mobile-nav-link">
+                        <i class="fas fa-heart nav-icon"></i>
+                        Бренди
+                    </a>
+                </li>
+
                 <li class="mobile-nav-item">
                     <a th:href="@{/order/info}" class="mobile-nav-link">
                         <i class="fas fa-envelope nav-icon"></i>
