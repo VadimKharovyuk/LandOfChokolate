@@ -287,3 +287,339 @@
         background: rgba(201, 169, 110, 0.2) !important;
     }
 }
+
+
+
+/* ==========================================================================
+   ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ - ДОБАВЬТЕ В ВАШ CSS ФАЙЛ
+   ========================================================================== */
+
+.mobile-categories-item {
+    position: relative !important;
+}
+
+.mobile-categories-dropdown {
+    position: absolute !important;
+    bottom: 100% !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateY(-10px) !important;
+    background: rgba(248, 248, 248, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(201, 169, 110, 0.3) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.15) !important;
+    z-index: 10000 !important;
+
+    /* УВЕЛИЧЕННЫЕ РАЗМЕРЫ */
+    min-width: 280px !important;
+    max-width: 350px !important;
+    width: 85vw !important; /* 85% от ширины экрана */
+    max-width: min(350px, 85vw) !important; /* Не больше 350px или 85% экрана */
+
+    /* По умолчанию скрыто */
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateX(-50%) translateY(-5px) scale(0.9) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.mobile-categories-dropdown.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(-50%) translateY(-10px) scale(1) !important;
+}
+
+.mobile-categories-list {
+    padding: 16px 12px !important; /* Увеличили отступы */
+    max-height: 350px !important; /* Увеличили максимальную высоту */
+    overflow-y: auto !important;
+}
+
+.mobile-category-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important; /* Увеличили промежуток между элементами */
+    padding: 16px 20px !important; /* Увеличили внутренние отступы */
+    color: var(--primary-dark, #2c3e50) !important;
+    text-decoration: none !important;
+    border-radius: 14px !important; /* Увеличили скругление */
+    transition: all 0.3s ease !important;
+    font-size: 16px !important; /* Увеличили размер шрифта */
+    font-weight: 500 !important;
+    margin-bottom: 6px !important; /* Увеличили отступ между ссылками */
+    position: relative !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    min-height: 50px !important; /* Минимальная высота для удобства тапа */
+}
+
+.mobile-category-link:hover,
+.mobile-category-link.active {
+    background: rgba(201, 169, 110, 0.15) !important;
+    color: var(--accent-gold, #c9a96e) !important;
+    transform: translateX(6px) !important; /* Увеличили смещение при hover */
+}
+
+.mobile-category-icon {
+    font-size: 20px !important; /* Увеличили размер иконки */
+    width: 24px !important; /* Увеличили ширину для иконки */
+    text-align: center !important;
+    opacity: 0.8 !important;
+    transition: all 0.3s ease !important;
+}
+
+.mobile-category-link:hover .mobile-category-icon,
+.mobile-category-link.active .mobile-category-icon {
+    opacity: 1 !important;
+    transform: scale(1.15) !important; /* Немного увеличили масштаб */
+}
+
+.mobile-category-name {
+    flex: 1 !important;
+    letter-spacing: 0.3px !important;
+    line-height: 1.3 !important; /* Добавили межстрочный интервал */
+}
+
+/* Стрелка-указатель снизу выпадающего меню */
+.mobile-categories-dropdown::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    border: 10px solid transparent !important; /* Увеличили размер стрелки */
+    border-top-color: rgba(248, 248, 248, 0.98) !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+}
+
+/* Анимация появления элементов списка */
+.mobile-categories-dropdown.show .mobile-category-link {
+    animation: fadeInUp 0.3s ease forwards !important;
+}
+
+.mobile-categories-dropdown.show .mobile-category-link:nth-child(1) { animation-delay: 0s !important; }
+.mobile-categories-dropdown.show .mobile-category-link:nth-child(2) { animation-delay: 0.05s !important; }
+.mobile-categories-dropdown.show .mobile-category-link:nth-child(3) { animation-delay: 0.1s !important; }
+.mobile-categories-dropdown.show .mobile-category-link:nth-child(4) { animation-delay: 0.15s !important; }
+.mobile-categories-dropdown.show .mobile-category-link:nth-child(5) { animation-delay: 0.2s !important; }
+.mobile-categories-dropdown.show .mobile-category-link:nth-child(6) { animation-delay: 0.25s !important; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Настройки скроллбара - тоже увеличили */
+.mobile-categories-list::-webkit-scrollbar {
+    width: 6px !important; /* Увеличили ширину скроллбара */
+}
+
+.mobile-categories-list::-webkit-scrollbar-track {
+    background: rgba(201, 169, 110, 0.1) !important;
+    border-radius: 3px !important;
+}
+
+.mobile-categories-list::-webkit-scrollbar-thumb {
+    background: rgba(201, 169, 110, 0.5) !important;
+    border-radius: 3px !important;
+}
+
+.mobile-categories-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 169, 110, 0.7) !important;
+}
+
+/* Адаптация для маленьких экранов */
+@media screen and (max-width: 576px) {
+    .mobile-categories-dropdown {
+        min-width: 260px !important; /* Увеличили минимум для маленьких экранов */
+        max-width: 320px !important;
+        width: 90vw !important; /* 90% экрана на маленьких устройствах */
+        max-width: min(320px, 90vw) !important;
+    }
+
+    .mobile-category-link {
+        padding: 14px 16px !important; /* Немного меньше, но все равно больше оригинала */
+        font-size: 15px !important;
+        min-height: 48px !important;
+    }
+
+    .mobile-category-icon {
+        font-size: 18px !important;
+        width: 22px !important;
+    }
+
+    .mobile-categories-list {
+        padding: 14px 10px !important;
+        max-height: 320px !important;
+    }
+}
+
+/* Для очень широких экранов (планшеты в landscape) */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .mobile-categories-dropdown {
+        min-width: 320px !important;
+        max-width: 400px !important;
+        width: 70vw !important;
+        max-width: min(400px, 70vw) !important;
+    }
+
+    .mobile-category-link {
+        padding: 18px 24px !important;
+        font-size: 17px !important;
+        min-height: 54px !important;
+    }
+
+    .mobile-category-icon {
+        font-size: 22px !important;
+        width: 26px !important;
+    }
+}
+
+/* ==========================================================================
+   СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - ДОБАВЬТЕ В КОНЕЦ ФАЙЛА
+   ========================================================================== */
+
+/* Основные стили кнопки категорий */
+.mobile-categories-trigger {
+    /* Убираем стандартные стили кнопки */
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer !important;
+
+    /* Наследуем стили от mobile-bottom-nav-link */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+    color: var(--primary-dark, #2c3e50) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    padding: 8px 4px !important;
+    transition: var(--mobile-nav-transition) !important;
+    position: relative !important;
+    border-radius: 12px !important;
+    transform-origin: center !important;
+
+    /* Обнуляем отступы кнопки */
+    margin: 0 !important;
+
+    /* Размеры как у других элементов */
+    width: 100% !important;
+    min-height: auto !important;
+
+    /* Убираем системные стили кнопки */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+
+    /* Убираем выделение текста */
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Активное состояние и hover для кнопки категорий */
+.mobile-categories-trigger:hover,
+.mobile-categories-trigger.active,
+.mobile-categories-trigger.dropdown-open {
+    color: var(--accent-gold, #c9a96e) !important;
+    background: rgba(201, 169, 110, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
+}
+
+/* Иконка в кнопке категорий */
+.mobile-categories-trigger .mobile-bottom-nav-icon {
+    font-size: 20px !important;
+    transition: var(--mobile-nav-transition) !important;
+    transform-origin: center !important;
+    opacity: 0.85 !important;
+}
+
+.mobile-categories-trigger:hover .mobile-bottom-nav-icon,
+.mobile-categories-trigger.active .mobile-bottom-nav-icon,
+.mobile-categories-trigger.dropdown-open .mobile-bottom-nav-icon {
+    opacity: 1 !important;
+    transform: translateY(-1px) scale(1.05) !important;
+}
+
+/* Текст в кнопке категорий */
+.mobile-categories-trigger .mobile-bottom-nav-text {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.3px !important;
+    font-weight: 600 !important;
+}
+
+/* Стрелка для кнопки категорий */
+.mobile-categories-trigger .mobile-categories-arrow {
+    position: absolute !important;
+    top: 6px !important;
+    right: 2px !important;
+    font-size: 10px !important;
+    opacity: 0.7 !important;
+    transition: all 0.3s ease !important;
+    pointer-events: none !important; /* Отключаем события для стрелки */
+    z-index: 10 !important;
+}
+
+/* Состояние когда выпадающее меню открыто */
+.mobile-categories-trigger.dropdown-open .mobile-categories-arrow {
+    opacity: 1 !important;
+    transform: rotate(180deg) !important;
+}
+
+/* Убираем focus outline для кнопки */
+.mobile-categories-trigger:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.3) !important;
+}
+
+/* Активное нажатие кнопки */
+.mobile-categories-trigger:active {
+    transform: scale(0.95) !important;
+}
+
+/* Дополнительные стили для WebKit браузеров */
+.mobile-categories-trigger::-webkit-focus-ring {
+    outline: none !important;
+}
+
+/* Адаптация для маленьких экранов */
+@media screen and (max-width: 576px) {
+    .mobile-categories-trigger .mobile-bottom-nav-text {
+        font-size: 9px !important;
+    }
+
+    .mobile-categories-trigger .mobile-bottom-nav-icon {
+        font-size: 18px !important;
+    }
+
+    .mobile-categories-trigger .mobile-categories-arrow {
+        font-size: 9px !important;
+        top: 5px !important;
+        right: 1px !important;
+    }
+}
+
+/* Дополнительные стили для улучшения доступности */
+.mobile-categories-trigger[aria-expanded="true"] {
+    color: var(--accent-gold, #c9a96e) !important;
+    background: rgba(201, 169, 110, 0.15) !important;
+}
+
+/* Анимация для плавного перехода между состояниями */
+.mobile-categories-trigger * {
+    transition: var(--mobile-nav-transition) !important;
+}
+

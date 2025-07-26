@@ -1,9 +1,6 @@
 package com.example.landofchokolate.mapper;
 
-import com.example.landofchokolate.dto.category.CategoryEditData;
-import com.example.landofchokolate.dto.category.CategoryPublicDto;
-import com.example.landofchokolate.dto.category.CategoryResponseDto;
-import com.example.landofchokolate.dto.category.CreateCategoryDto;
+import com.example.landofchokolate.dto.category.*;
 import com.example.landofchokolate.model.Category;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -195,6 +193,49 @@ public class CategoryMapper {
                 category.getId(), category.getName(), category.getImageUrl() != null);
 
         return editData;
+    }
+
+
+    /**
+     * Конвертирует Category в CategoryNavDto для мобильной навигации
+     * @param category объект категории из базы данных
+     * @return DTO для отображения в навигации
+     */
+    public CategoryNavDto convertToCategoryNavDto(Category category) {
+        if (category == null) {
+            return null;
+        }
+
+        CategoryNavDto dto = new CategoryNavDto();
+        dto.setId(category.getId());
+        dto.setName(category.getName());
+        dto.setSlug(category.getSlug());
+
+        // Обработка изображения
+        String imageUrl = category.getImageUrl();
+        if (imageUrl == null || imageUrl.trim().isEmpty()) {
+            // Устанавливаем дефолтное изображение, если не задано
+            imageUrl = "/images/categories/default-category.jpg";
+        }
+        dto.setImageUrl(imageUrl);
+
+        return dto;
+    }
+
+    /**
+     * Конвертирует список Category в список CategoryNavDto
+     * @param categories список категорий
+     * @return список DTO для навигации
+     */
+    public List<CategoryNavDto> convertToCategoryNavDtoList(List<Category> categories) {
+        if (categories == null || categories.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return categories.stream()
+                .map(this::convertToCategoryNavDto)
+                .filter(Objects::nonNull) // Фильтруем null значения
+                .collect(Collectors.toList());
     }
 }
 

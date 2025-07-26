@@ -1,6 +1,8 @@
 package com.example.landofchokolate.config;
 
+import com.example.landofchokolate.dto.category.CategoryNavDto;
 import com.example.landofchokolate.service.CartService;
+import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.WishlistService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @ControllerAdvice
@@ -17,6 +20,17 @@ import java.math.BigDecimal;
 public class NavigationControllerAdvice {
     private final CartService cartService;
     private final WishlistService wishlistService;
+    private final CategoryService categoryService;
+
+
+    /**
+     * Добавляет список категорий для мобильной навигации во все представления
+     */
+    @ModelAttribute("navigationCategories")
+    public List<CategoryNavDto> addNavigationCategories() {
+        return categoryService.getNavigationCategories(5);
+    }
+
 
     @ModelAttribute("currentURI")
     public String getCurrentURI(HttpServletRequest request) {
@@ -70,6 +84,8 @@ public class NavigationControllerAdvice {
      }
         return 0;
     }
+
+
 
 
 }

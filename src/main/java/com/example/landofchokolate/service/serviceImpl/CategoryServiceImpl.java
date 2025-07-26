@@ -591,6 +591,51 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found: " + slug));
     }
 
+
+    /**
+     * Получает список категорий для отображения в мобильной навигации
+     * @param limit максимальное количество категорий
+     * @return список DTO категорий для навигации (никогда не null и не пустой)
+     */
+    @Override
+    public List<CategoryNavDto> getNavigationCategories(int limit) {
+        try {
+            List<Category> categories = categoryRepository.findActiveCategories(limit);
+
+            // Если нет категорий в БД, возвращаем дефолтные
+            if (categories == null || categories.isEmpty()) {
+                log.warn("Не найдено активных категорий в базе данных, возвращаем дефолтные");
+                return getDefaultNavigationCategories();
+            }
+
+            List<CategoryNavDto> result = categoryMapper.convertToCategoryNavDtoList(categories);
+
+            // Если маппер вернул пустой список, тоже возвращаем дефолтные
+            if (result == null || result.isEmpty()) {
+                log.warn("Маппер вернул пустой список, возвращаем дефолтные категории");
+                return getDefaultNavigationCategories();
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            log.error("Ошибка при получении категорий для навигации", e);
+            return getDefaultNavigationCategories();
+        }
+    }
+
+    /**
+     * Возвращает дефолтные категории - гарантирует, что навигация всегда работает
+     */
+    private List<CategoryNavDto> getDefaultNavigationCategories() {
+        return List.of(
+                new CategoryNavDto(1L, "Молочний шоколад", "milk-chocolate", "/images/categories/milk.jpg"),
+                new CategoryNavDto(2L, "Чорний шоколад", "dark-chocolate", "/images/categories/dark.jpg"),
+                new CategoryNavDto(3L, "Білий шоколад", "white-chocolate", "/images/categories/white.jpg"),
+                new CategoryNavDto(4L, "Цукерки", "candies", "/images/categories/candies.jpg")
+        );
+    }
+
     @Override
     @Transactional
     @CacheEvict(value = {"categoryBySlug", "allCategories", "publicCategories", "topCategories"}, allEntries = true)

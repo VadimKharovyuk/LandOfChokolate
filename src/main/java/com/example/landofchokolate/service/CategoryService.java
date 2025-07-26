@@ -54,4 +54,9 @@ public interface CategoryService {
 
 
     Category findBySlug(String categorySlug);
+
+    /**
+     * Добавляет список категорий для мобильной навигации во все представления
+     */
+    List<CategoryNavDto> getNavigationCategories(int i);
 }
