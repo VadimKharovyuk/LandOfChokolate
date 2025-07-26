@@ -30,15 +30,15 @@ public class MemoryMonitoringService {
         this.mBeanServer = ManagementFactory.getPlatformMBeanServer();
     }
 
-//    /**
-//     * Логирование статистики памяти каждые 5 минут
-//     */
-//    @Scheduled(fixedRate = 300000) // 5 минут = 300000 мс
-//    public void logMemoryStatistics() {
-//        logJVMMemoryUsage();
-//        logSessionStatistics();
-//        logGarbageCollectionInfo();
-//    }
+    /**
+     * Логирование статистики памяти каждые 5 минут
+     */
+    @Scheduled(fixedRate = 300000) // 5 минут = 300000 мс
+    public void logMemoryStatistics() {
+        logJVMMemoryUsage();
+        logSessionStatistics();
+        logGarbageCollectionInfo();
+    }
 
 //    /**
 //     * Логирование статистики памяти каждую минуту (можно отключить в продакшене)

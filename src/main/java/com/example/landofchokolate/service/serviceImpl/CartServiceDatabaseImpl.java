@@ -64,8 +64,6 @@ public class CartServiceDatabaseImpl implements CartService {
         // КРИТИЧНО: Получаем или создаем UUID ПЕРЕД любыми операциями
         String cartUuid = getOrCreateCartUuid(session);
 
-        log.info("Добавляем продукт {} (количество: {}) в корзину {}",
-                productId, quantity, cartUuid);
 
         // Загружаем продукт
         Product product = productRepository.findById(productId)
@@ -82,7 +80,7 @@ public class CartServiceDatabaseImpl implements CartService {
 
         // Получаем или создаем корзину
         Cart cart = getOrCreateCart(session);
-        log.info("Используем корзину: ID={}, UUID='{}'", cart.getId(), cart.getCartUuid());
+
 
         // Остальная логика без изменений...
         Optional<CartItem> existingItem = cart.getItems().stream()
@@ -102,11 +100,9 @@ public class CartServiceDatabaseImpl implements CartService {
             item.setUpdatedAt(LocalDateTime.now());
             item.setProduct(product);
 
-            log.info("Обновлено количество товара {} до {}", productId, newQuantity);
         } else {
             CartItem newItem = createCartItem(cart, product, quantity);
             cart.getItems().add(newItem);
-            log.info("Добавлен новый товар {} в корзину", productId);
         }
 
         // Обновляем и сохраняем корзину
@@ -119,7 +115,6 @@ public class CartServiceDatabaseImpl implements CartService {
         // Обновляем корзину в сессии с дополнительной проверкой
         updateCartInSessionSafe(session, cart);
 
-        log.info("Товар {} успешно добавлен в корзину {}", productId, cart.getCartUuid());
     }
 
     /**
@@ -267,7 +262,6 @@ public class CartServiceDatabaseImpl implements CartService {
 
     @Transactional
     protected Cart createNewCart() {
-        log.info("=== СОЗДАНИЕ НОВОЙ КОРЗИНЫ - НАЧАЛО ===");
 
         // Пытаемся создать UUID несколько раз в случае неудачи
         String newCartUuid = null;
@@ -329,7 +323,6 @@ public class CartServiceDatabaseImpl implements CartService {
         }
 
         try {
-            log.info("Сохраняем корзину в БД с UUID: '{}'", cart.getCartUuid());
             Cart savedCart = cartRepository.save(cart);
 
             // Финальная проверка
@@ -340,7 +333,6 @@ public class CartServiceDatabaseImpl implements CartService {
             // Устанавливаем cookie
             setCartCookie(savedCart.getCartUuid());
 
-            log.info("Корзина успешно создана: ID={}, UUID='{}'", savedCart.getId(), savedCart.getCartUuid());
             return savedCart;
 
         } catch (Exception e) {
@@ -350,7 +342,6 @@ public class CartServiceDatabaseImpl implements CartService {
     }
     @Transactional
     protected Cart getOrCreateCart(HttpSession session) {
-        log.debug("=== ПОЛУЧЕНИЕ ИЛИ СОЗДАНИЕ КОРЗИНЫ ===");
 
         // Сначала проверяем сессию
         Cart cachedCart = getCartFromSession(session);
