@@ -623,15 +623,15 @@
             <p class="mb-4 text-center serif-font" style="font-size: 1.1rem;">Оберіть зручний спосіб оплати</p>
 
             <div class="payment-methods">
-                <!-- QR Code Payment -->
-                <div class="payment-method" onclick="selectPayment('QRCODE')">
-                    <div class="payment-icon qr">
-                        <i class="bi bi-qr-code"></i>
-                    </div>
-                    <h5 class="payment-title">QR-код</h5>
-                    <p class="payment-description">Оплата за QR-кодом через мобільний додаток банку</p>
-                    <span class="payment-feature instant">Миттєва оплата</span>
-                </div>
+<!--                &lt;!&ndash; QR Code Payment &ndash;&gt;-->
+<!--                <div class="payment-method" onclick="selectPayment('QRCODE')">-->
+<!--                    <div class="payment-icon qr">-->
+<!--                        <i class="bi bi-qr-code"></i>-->
+<!--                    </div>-->
+<!--                    <h5 class="payment-title">QR-код</h5>-->
+<!--                    <p class="payment-description">Оплата за QR-кодом через мобільний додаток банку</p>-->
+<!--                    <span class="payment-feature instant">Миттєва оплата</span>-->
+<!--                </div>-->
 
                 <!-- IBAN Payment -->
                 <div class="payment-method" onclick="selectPayment('IBAN')">
@@ -653,15 +653,15 @@
                     <span class="payment-feature instant">Миттєва оплата</span>
                 </div>
 
-                <!-- MonoBank -->
-                <div class="payment-method" onclick="selectPayment('MONOBANK')">
-                    <div class="payment-icon monobank">
-                        <i class="bi bi-phone"></i>
-                    </div>
-                    <h5 class="payment-title">MonoBank</h5>
-                    <p class="payment-description">Оплата за посиланням через мобільний додаток</p>
-                    <span class="payment-feature instant">Миттєва оплата</span>
-                </div>
+<!--                &lt;!&ndash; MonoBank &ndash;&gt;-->
+<!--                <div class="payment-method" onclick="selectPayment('MONOBANK')">-->
+<!--                    <div class="payment-icon monobank">-->
+<!--                        <i class="bi bi-phone"></i>-->
+<!--                    </div>-->
+<!--                    <h5 class="payment-title">MonoBank</h5>-->
+<!--                    <p class="payment-description">Оплата за посиланням через мобільний додаток</p>-->
+<!--                    <span class="payment-feature instant">Миттєва оплата</span>-->
+<!--                </div>-->
 
                 <!-- Cash on Pickup -->
                 <div class="payment-method" th:if="${orderDTO.deliveryMethod.name() == 'PICKUP'}" onclick="selectPayment('CASH_ON_PICKUP')">
