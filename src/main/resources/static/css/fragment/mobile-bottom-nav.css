@@ -484,6 +484,10 @@
    СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - ДОБАВЬТЕ В КОНЕЦ ФАЙЛА
    ========================================================================== */
 
+/* ==========================================================================
+   ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - ВСЕГДА ПОДСВЕЧЕНА
+   ========================================================================== */
+
 /* Основные стили кнопки категорий */
 .mobile-categories-trigger {
     /* Убираем стандартные стили кнопки */
@@ -497,7 +501,12 @@
     flex-direction: column !important;
     align-items: center !important;
     gap: 4px !important;
-    color: var(--primary-dark, #2c3e50) !important;
+
+    /* ИЗМЕНИЛИ: Всегда используем активный цвет */
+    color: var(--accent-gold, #c9a96e) !important;
+    background: rgba(201, 169, 110, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
+
     text-decoration: none !important;
     font-weight: 500 !important;
     font-size: 11px !important;
@@ -529,28 +538,48 @@
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Активное состояние и hover для кнопки категорий */
-.mobile-categories-trigger:hover,
-.mobile-categories-trigger.active,
-.mobile-categories-trigger.dropdown-open {
+/* Hover состояние - еще больше подсвечиваем */
+.mobile-categories-trigger:hover {
     color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.15) !important;
-    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
+    background: rgba(201, 169, 110, 0.25) !important; /* Увеличиваем интенсивность */
+    box-shadow: 0 3px 12px rgba(201, 169, 110, 0.3) !important; /* Усиливаем тень */
+    transform: translateY(-1px) !important; /* Небольшой подъем */
 }
 
-/* Иконка в кнопке категорий */
+/* Активное состояние страницы категорий */
+.mobile-categories-trigger.active {
+    color: var(--accent-gold, #c9a96e) !important;
+    background: rgba(201, 169, 110, 0.2) !important;
+    box-shadow: 0 2px 10px rgba(201, 169, 110, 0.25) !important;
+}
+
+/* Состояние открытого выпадающего меню */
+.mobile-categories-trigger.dropdown-open {
+    color: var(--accent-gold, #c9a96e) !important;
+    background: rgba(201, 169, 110, 0.3) !important; /* Самая яркая подсветка */
+    box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Иконка в кнопке категорий - ВСЕГДА АКТИВНАЯ */
 .mobile-categories-trigger .mobile-bottom-nav-icon {
     font-size: 20px !important;
     transition: var(--mobile-nav-transition) !important;
     transform-origin: center !important;
-    opacity: 0.85 !important;
+    opacity: 1 !important; /* ИЗМЕНИЛИ: всегда полная непрозрачность */
+    transform: translateY(-1px) scale(1.05) !important; /* ИЗМЕНИЛИ: всегда слегка приподнята и увеличена */
 }
 
-.mobile-categories-trigger:hover .mobile-bottom-nav-icon,
-.mobile-categories-trigger.active .mobile-bottom-nav-icon,
+/* При hover иконка становится еще активнее */
+.mobile-categories-trigger:hover .mobile-bottom-nav-icon {
+    opacity: 1 !important;
+    transform: translateY(-2px) scale(1.1) !important; /* Еще больше поднимаем */
+}
+
+/* При открытом меню иконка максимально активна */
 .mobile-categories-trigger.dropdown-open .mobile-bottom-nav-icon {
     opacity: 1 !important;
-    transform: translateY(-1px) scale(1.05) !important;
+    transform: translateY(-1px) scale(1.08) !important;
 }
 
 /* Текст в кнопке категорий */
@@ -561,16 +590,21 @@
     font-weight: 600 !important;
 }
 
-/* Стрелка для кнопки категорий */
+/* Стрелка для кнопки категорий - ВСЕГДА ВИДНА */
 .mobile-categories-trigger .mobile-categories-arrow {
     position: absolute !important;
     top: 6px !important;
     right: 2px !important;
     font-size: 10px !important;
-    opacity: 0.7 !important;
+    opacity: 0.9 !important; /* ИЗМЕНИЛИ: всегда хорошо видна */
     transition: all 0.3s ease !important;
-    pointer-events: none !important; /* Отключаем события для стрелки */
+    pointer-events: none !important;
     z-index: 10 !important;
+}
+
+/* При hover стрелка становится полностью видимой */
+.mobile-categories-trigger:hover .mobile-categories-arrow {
+    opacity: 1 !important;
 }
 
 /* Состояние когда выпадающее меню открыто */
@@ -582,7 +616,7 @@
 /* Убираем focus outline для кнопки */
 .mobile-categories-trigger:focus {
     outline: none !important;
-    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.3) !important;
+    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.5) !important; /* Увеличили интенсивность */
 }
 
 /* Активное нажатие кнопки */
@@ -615,11 +649,14 @@
 /* Дополнительные стили для улучшения доступности */
 .mobile-categories-trigger[aria-expanded="true"] {
     color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.15) !important;
+    background: rgba(201, 169, 110, 0.3) !important;
 }
 
 /* Анимация для плавного перехода между состояниями */
 .mobile-categories-trigger * {
     transition: var(--mobile-nav-transition) !important;
 }
+
+
+
 
