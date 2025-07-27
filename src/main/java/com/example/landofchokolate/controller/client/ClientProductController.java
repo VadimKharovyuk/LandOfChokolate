@@ -36,20 +36,6 @@ public class ClientProductController {
     private final ProductService productService;
 
 
-    @GetMapping("/{slug}")
-    public String getProductDetail(@PathVariable String slug, Model model) {
-
-        ProductDetailDto product = productService.getProductBySlug(slug);
-        model.addAttribute("product", product);
-
-        ///похожие товары
-        List<RelatedProductDto> relatedProducts = productService.getRelatedProducts(slug, 8);
-        model.addAttribute("relatedProducts", relatedProducts);
-
-        return "client/products/detail";
-    }
-
-
     @GetMapping("/all")
     public String allProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -165,7 +151,18 @@ public class ClientProductController {
     }
 
 
+    @GetMapping("/{slug}")
+    public String getProductDetail(@PathVariable String slug, Model model) {
 
+        ProductDetailDto product = productService.getProductBySlug(slug);
+        model.addAttribute("product", product);
+
+        ///похожие товары
+        List<RelatedProductDto> relatedProducts = productService.getRelatedProducts(slug, 8);
+        model.addAttribute("relatedProducts", relatedProducts);
+
+        return "client/products/detail";
+    }
 
 
 

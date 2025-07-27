@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог товарів - Land of Chocolate</title>
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -72,16 +74,63 @@
             align-items: start;
         }
 
+        /* Mobile Filter Toggle */
+        .mobile-filter-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mobile-filter-toggle:hover {
+            background: var(--background-warm);
+            transform: translateY(-1px);
+        }
+
+        .filter-toggle-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-toggle-text {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-toggle-icon {
+            transition: var(--transition);
+            color: var(--secondary-color);
+        }
+
+        .filters-sidebar.collapsed .filter-toggle-icon {
+            transform: rotate(180deg);
+        }
+
         /* Sidebar */
         .filters-sidebar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 32px 28px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-card);
             border: 1px solid rgba(255, 255, 255, 0.2);
             position: sticky;
             top: 80px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .filters-content {
+            padding: 32px 28px;
         }
 
         .filters-title {
@@ -479,38 +528,175 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .main-container {
+                padding: 0 16px;
+            }
+
+            .page-header {
+                padding: 24px 24px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            /* Показываем мобильную кнопку фильтров */
+            .mobile-filter-toggle {
+                display: block;
+            }
+
             .content-wrapper {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 0;
             }
 
             .filters-sidebar {
                 position: static;
+                margin-bottom: 20px;
+                order: -1;
+            }
+
+            /* Скрываем содержимое фильтров по умолчанию на мобильных */
+            .filters-sidebar.collapsed .filters-content {
+                display: none;
+            }
+
+            .filters-sidebar:not(.collapsed) .filters-content {
+                display: block;
             }
 
             .products-header {
                 flex-direction: column;
                 gap: 16px;
                 align-items: stretch;
+                padding: 20px 24px;
             }
 
             .products-info {
                 flex-direction: column;
                 gap: 8px;
+                font-size: 0.85rem;
             }
 
+            .sort-controls {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+
+            .sort-controls label {
+                text-align: center;
+            }
+
+            .sort-controls select {
+                width: 100%;
+            }
+
+            /* 2 товара в ряд на мобильных */
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                padding: 20px 16px;
+            }
+
+            .product-card {
+                min-width: 0;
+            }
+
+            .product-info {
+                padding: 16px 12px 8px;
+            }
+
+            .product-name {
+                font-size: 1rem;
+                line-height: 1.2;
+            }
+
+            .product-price {
+                font-size: 1.2rem;
+            }
+
+            .product-stock {
+                font-size: 0.75rem;
+                margin-bottom: 12px;
+            }
+
+            .product-meta {
+                flex-direction: column;
+                gap: 4px;
+                margin-bottom: 12px;
+            }
+
+            .product-category, .product-brand {
+                font-size: 0.7rem;
+                padding: 2px 8px;
+                text-align: center;
+            }
+
+            .product-actions-bottom {
+                padding: 0 12px 16px;
+            }
+
+            .add-to-cart-btn {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+
+            .btn-text {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .btn-text span {
+                font-size: 0.75rem;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .pagination {
+                padding: 24px 16px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .pagination a, .pagination span {
+                padding: 8px 12px;
+                font-size: 0.85rem;
             }
         }
 
         @media (max-width: 480px) {
             .products-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 16px 12px;
             }
 
-            .filter-buttons {
-                flex-direction: column;
+            .product-info {
+                padding: 12px 8px 6px;
+            }
+
+            .product-name {
+                font-size: 0.9rem;
+            }
+
+            .product-price {
+                font-size: 1.1rem;
+            }
+
+            .product-actions-bottom {
+                padding: 0 8px 12px;
+            }
+
+            .add-to-cart-btn {
+                padding: 8px;
+                font-size: 0.75rem;
+            }
+
+            .btn-text span {
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -520,95 +706,109 @@
 <div th:insert="~{admin/fragments/navigation :: navigation}"></div>
 
 <div class="main-container">
+    <br>
     <!-- Page Header -->
     <div class="page-header">
         <h1>Каталог товарів</h1>
     </div>
 
+    <!-- Mobile Filter Toggle -->
+    <div class="mobile-filter-toggle" onclick="toggleFilters()">
+        <div class="filter-toggle-content">
+            <div class="filter-toggle-text">
+                <i class="fas fa-filter"></i>
+                Фільтри
+            </div>
+            <i class="fas fa-chevron-down filter-toggle-icon"></i>
+        </div>
+    </div>
+
     <!-- Content Wrapper -->
     <div class="content-wrapper">
         <!-- Filters Sidebar -->
-        <aside class="filters-sidebar">
-            <h3 class="filters-title">Фільтри</h3>
+        <aside class="filters-sidebar collapsed" id="filtersSidebar">
+            <div class="filters-content">
+                <h3 class="filters-title">Фільтри</h3>
 
-            <!-- ИСПРАВЛЕННАЯ ФОРМА с правильными атрибутами -->
-            <form id="filtersForm" action="/product/all" method="GET">
+                <!-- ИСПРАВЛЕННАЯ ФОРМА с правильными атрибутами -->
+                <form id="filtersForm" action="/product/all" method="GET">
 
-                <!-- Search by Name -->
-                <div class="filter-section">
-                    <label class="filter-label" for="searchName">Пошук за назвою</label>
-                    <input type="text"
-                           id="searchName"
-                           name="searchName"
-                           class="filter-input"
-                           placeholder="Введіть назву товару..."
-                           th:value="${searchName ?: ''}">
-                </div>
-
-                <!-- Price Range -->
-                <div class="filter-section">
-                    <label class="filter-label">Діапазон цін (₴)</label>
-                    <div class="price-range">
-                        <input type="number"
-                               id="minPrice"
-                               name="minPrice"
-                               class="price-input"
-                               placeholder="Від"
-                               min="0"
-                               step="0.01"
-                               th:value="${minPrice ?: ''}">
-                        <input type="number"
-                               id="maxPrice"
-                               name="maxPrice"
-                               class="price-input"
-                               placeholder="До"
-                               min="0"
-                               step="0.01"
-                               th:value="${maxPrice ?: ''}">
+                    <!-- Search by Name -->
+                    <div class="filter-section">
+                        <label class="filter-label" for="searchName">Пошук за назвою</label>
+                        <input type="text"
+                               id="searchName"
+                               name="searchName"
+                               class="filter-input"
+                               placeholder="Введіть назву товару..."
+                               th:value="${searchName ?: ''}">
                     </div>
-                </div>
 
-                <!-- Category Filter -->
-                <div class="filter-section">
-                    <label class="filter-label" for="categoryFilter">Категорія</label>
-                    <select id="categoryFilter" name="category" class="filter-input">
-                        <option value="">Всі категорії</option>
-                        <option th:each="cat : ${categories}"
-                                th:value="${cat.id}"
-                                th:text="${cat.name}"
-                                th:selected="${category == cat.id}"></option>
-                    </select>
-                </div>
+                    <!-- Price Range -->
+                    <div class="filter-section">
+                        <label class="filter-label">Діапазон цін (₴)</label>
+                        <div class="price-range">
+                            <input type="number"
+                                   id="minPrice"
+                                   name="minPrice"
+                                   class="price-input"
+                                   placeholder="Від"
+                                   min="0"
+                                   step="0.01"
+                                   th:value="${minPrice ?: ''}">
+                            <input type="number"
+                                   id="maxPrice"
+                                   name="maxPrice"
+                                   class="price-input"
+                                   placeholder="До"
+                                   min="0"
+                                   step="0.01"
+                                   th:value="${maxPrice ?: ''}">
+                        </div>
+                    </div>
 
-                <!-- Brand Filter -->
-                <div class="filter-section">
-                    <label class="filter-label" for="brandFilter">Бренд</label>
-                    <select id="brandFilter" name="brand" class="filter-input">
-                        <option value="">Всі бренди</option>
-                        <option th:each="brandItem : ${brands}"
-                                th:value="${brandItem.id}"
-                                th:text="${brandItem.name}"
-                                th:selected="${brand != null && brand == brandItem.id}"></option>
-                    </select>
-                </div>
+                    <!-- Category Filter -->
+                    <div class="filter-section">
+                        <label class="filter-label" for="categoryFilter">Категорія</label>
+                        <select id="categoryFilter" name="category" class="filter-input">
+                            <option value="">Всі категорії</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.id}"
+                                    th:text="${cat.name}"
+                                    th:selected="${category == cat.id}"></option>
+                        </select>
+                    </div>
 
-                <!-- Stock Status -->
-                <div class="filter-section">
-                    <label class="filter-label" for="stockStatus">Наявність</label>
-                    <select id="stockStatus" name="stockStatus" class="filter-input">
-                        <option value="">Всі товари</option>
-                        <option value="in-stock" th:selected="${stockStatus == 'in-stock'}">В наявності</option>
-                        <option value="low-stock" th:selected="${stockStatus == 'low-stock'}">Мало на складі</option>
-                        <option value="out-of-stock" th:selected="${stockStatus == 'out-of-stock'}">Немає в наявності</option>
-                    </select>
-                </div>
+                    <!-- Brand Filter -->
+                    <div class="filter-section">
+                        <label class="filter-label" for="brandFilter">Бренд</label>
+                        <select id="brandFilter" name="brand" class="filter-input">
+                            <option value="">Всі бренди</option>
+                            <option th:each="brandItem : ${brands}"
+                                    th:value="${brandItem.id}"
+                                    th:text="${brandItem.name}"
+                                    th:selected="${brand != null && brand == brandItem.id}"></option>
+                        </select>
+                    </div>
 
-                <!-- Filter Buttons -->
-                <div class="filter-buttons">
-                    <button type="submit" class="btn btn-primary">Застосувати</button>
-                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистити</button>
-                </div>
-            </form>
+                    <!-- Stock Status -->
+                    <div class="filter-section">
+                        <label class="filter-label" for="stockStatus">Наявність</label>
+                        <select id="stockStatus" name="stockStatus" class="filter-input">
+                            <option value="">Всі товари</option>
+                            <option value="in-stock" th:selected="${stockStatus == 'in-stock'}">В наявності</option>
+                            <option value="low-stock" th:selected="${stockStatus == 'low-stock'}">Мало на складі</option>
+                            <option value="out-of-stock" th:selected="${stockStatus == 'out-of-stock'}">Немає в наявності</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter Buttons -->
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-primary">Застосувати</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearFilters()">Очистити</button>
+                    </div>
+                </form>
+            </div>
         </aside>
 
         <!-- Main Products Content -->
@@ -753,10 +953,37 @@
 
 <!-- Toast Notification -->
 <div id="toast" class="toast"></div>
+
+<!-- Подвал -->
+<div th:insert="~{admin/fragments/footer :: footer}"></div>
+<script th:src="@{/js/scrollTopButton.js}"></script>
+
+<!-- Мобильная навигация снизу  -->
+<div th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation}"></div>
+<script th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation-script}"></script>
+
+
+<!-- JavaScript -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <script th:src="@{/js/add-to-cart-button.js}"></script>
 
 <script>
+    // Функция для переключения фильтров на мобильных
+    function toggleFilters() {
+        const sidebar = document.getElementById('filtersSidebar');
+        sidebar.classList.toggle('collapsed');
+    }
+
+    // Проверяем размер экрана при загрузке
+    function checkScreenSize() {
+        const sidebar = document.getElementById('filtersSidebar');
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('collapsed');
+        } else {
+            sidebar.classList.remove('collapsed');
+        }
+    }
+
     // ИСПРАВЛЕННЫЙ JavaScript - убираем дублирование параметров
     function applySorting() {
         const sortBy = document.getElementById('sortBy').value;
@@ -814,6 +1041,12 @@
 
     // Инициализация
     document.addEventListener('DOMContentLoaded', function() {
+        // Проверяем размер экрана при загрузке
+        checkScreenSize();
+
+        // Слушаем изменение размера окна
+        window.addEventListener('resize', checkScreenSize);
+
         // Обработчик отправки формы
         document.getElementById('filtersForm').addEventListener('submit', function(e) {
             e.preventDefault();
