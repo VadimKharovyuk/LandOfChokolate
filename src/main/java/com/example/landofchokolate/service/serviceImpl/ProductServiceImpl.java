@@ -755,8 +755,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     @Cacheable(value = "productStats", key = "'out_of_stock'")
     public List<ProductListDto> getOutOfStockProducts() {
-        log.info("Fetching out of stock products");
-
         List<Product> products = productRepository.findByStockQuantity(0);
         return productMapper.toListDtoList(products);
     }
@@ -770,7 +768,6 @@ public class ProductServiceImpl implements ProductService {
             }
     )
     public ProductResponseDto updateStock(Long productId, Integer newQuantity) {
-        log.info("Updating stock for product ID: {} to quantity: {}", productId, newQuantity);
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
@@ -794,7 +791,6 @@ public class ProductServiceImpl implements ProductService {
             }
     )
     public ProductResponseDto increaseStock(Long productId, Integer quantity) {
-        log.info("Increasing stock for product ID: {} by quantity: {}", productId, quantity);
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
@@ -818,7 +814,6 @@ public class ProductServiceImpl implements ProductService {
             }
     )
     public ProductResponseDto decreaseStock(Long productId, Integer quantity) {
-        log.info("Decreasing stock for product ID: {} by quantity: {}", productId, quantity);
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
@@ -842,7 +837,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     @Cacheable(value = "productStats", key = "'statistics'")
     public ProductStatistics getProductStatistics() {
-        log.info("Calculating product statistics");
 
         long totalProducts = productRepository.count();
         long inStockProducts = productRepository.countByStockQuantityGreaterThan(0);
@@ -862,8 +856,6 @@ public class ProductServiceImpl implements ProductService {
     @Cacheable(value = "productsByCategory",
             key = "#id + '_page_' + #page + '_' + #size")
     public Page<Product> getProductsByCategoryPage(Long id, int page, int size) {
-        log.info("Fetching products by category page: categoryId={}, page={}, size={}", id, page, size);
-
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return productRepository.findByCategoryIdAndIsActiveTrue(id, pageable);
     }
@@ -871,7 +863,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Cacheable(value = "productBySlug", key = "'v2_' + #slug")
     public ProductDetailDto getProductBySlug(String slug) {
-        log.info("Fetching product by slug: {}", slug);
 
         Product product = productRepository.findBySlug(slug)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with slug: " + slug));
@@ -886,25 +877,21 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @CacheEvict(value = {"productBySlug", "allProducts", "searchProducts"}, allEntries = true)
     public void generateMissingSlugForAllProducts() {
-        log.info("Generating missing slugs for products");
 
         List<Product> productsWithoutSlug = productRepository.findBySlugIsNull();
-        log.info("Found {} products without slug", productsWithoutSlug.size());
 
         for (Product product : productsWithoutSlug) {
             String slug = slugService.generateUniqueSlugForProduct(product.getName());
             product.setSlug(slug);
             productRepository.save(product);
-            log.debug("Generated slug '{}' for product '{}'", slug, product.getName());
+
         }
 
-        log.info("Slug generation completed for {} products", productsWithoutSlug.size());
     }
 
     @Override
     @Cacheable(value = "relatedProducts", key = "'v2_' + #slug + '_' + #limit")
     public List<RelatedProductDto> getRelatedProducts(String slug, int limit) {
-        log.info("Fetching related products for slug: {}, limit: {}", slug, limit);
 
         try {
             // Находим текущий товар
@@ -939,7 +926,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Cacheable(value = "popularProducts", key = "'recommendations_' + #limit")
     public List<ProductListRecommendationDto> getProductListRecommendations(int limit) {
-        log.info("Fetching product recommendations with limit: {}", limit);
 
         return productRepository.findAllRecommendationProducts()
                 .stream()
@@ -951,7 +937,6 @@ public class ProductServiceImpl implements ProductService {
     @Cacheable(value = "productStats",
             key = "'clicks_page_' + #pageable.pageNumber + '_' + #pageable.pageSize")
     public PagedResponse<ProductListClickDto> getProductsClick(Pageable pageable) {
-        log.info("Fetching products by clicks: page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
 
         // Сортировка по количеству кликов (по убыванию)
         Pageable sortedPageable = PageRequest.of(
@@ -977,7 +962,6 @@ public class ProductServiceImpl implements ProductService {
     public void incrementClickCount(Long productId) {
         try {
             productRepository.incrementClickCount(productId);
-            log.debug("Incremented click count for product with id: {}", productId);
         } catch (Exception e) {
             log.error("Failed to increment click count for product id: {}", productId, e);
         }
