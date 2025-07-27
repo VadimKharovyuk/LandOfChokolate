@@ -984,7 +984,9 @@
             <!-- Перебираем все рекомендованные продукты -->
             <div th:each="product : ${recommendations}" class="product-card">
                 <div class="product-image">
-                    <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                    <a th:href="@{/product/{slug}(slug=${product.slug})}" class="image-link">
+                        <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                    </a>
                     <button class="favorite-btn" onclick="toggleFavorite(this)">
                         <i class="far fa-heart"></i>
                     </button>
@@ -1567,8 +1569,7 @@
                     <ul class="footer-links">
                         <li><a href="#cakes"><i class="fas fa-birthday-cake"></i> Торти</a></li>
                         <li><a href="#desserts"><i class="fas fa-cookie"></i> Десерти</a></li>
-                        <li><a href="#chocolates"><i class="fas fa-heart"></i> Цукерки</a></li>
-                        <li><a href="#custom"><i class="fas fa-star"></i> На замовлення</a></li>
+                        <li><a href="/categories/tsukerki"><i class="fas fa-heart"></i> Цукерки</a></li>
                         <li><a href="#gifts"><i class="fas fa-gift"></i> Подарунки</a></li>
                     </ul>
                 </div>
