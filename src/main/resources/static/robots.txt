@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Разрешаем индексацию всех страниц
+Allow: /images/
+Allow: /css/
+Allow: /js/
+
+# Блокируем служебные файлы (если есть)
+Disallow: /admin/
+Disallow: /.git/
+Disallow: /node_modules/
+
+# Указываем карту сайта
+Sitemap: https://landofchokolate.onrender.com/sitemap.xml
+
+# Время задержки между запросами (в секундах)
+Crawl-delay: 1
