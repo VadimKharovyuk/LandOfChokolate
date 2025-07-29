@@ -283,131 +283,6 @@
             font-weight: 400;
         }
 
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
-        }
-
-        /* Navigation Styles */
-        .navbar-luxury {
-            background: rgba(248, 248, 248, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(201, 169, 110, 0.1);
-            padding: 20px 0;
-            transition: var(--transition);
-        }
-
-        .navbar-luxury.scrolled {
-            padding: 15px 0;
-            background: rgba(248, 248, 248, 0.98);
-            box-shadow: var(--shadow-light);
-        }
-
-        .navbar-brand-luxury {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 600;
-            color: var(--primary-dark) !important;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-            transition: var(--transition);
-        }
-
-        .brand-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand-luxury:hover {
-            color: var(--accent-gold) !important;
-        }
-
-        .nav-luxury {
-            display: flex;
-            align-items: center;
-            gap: 48px;
-            list-style: none;
-        }
-
-        .nav-item-luxury {
-            position: relative;
-        }
-
-        .nav-link-luxury {
-            color: var(--primary-dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            letter-spacing: 0.3px;
-            padding: 8px 0;
-            position: relative;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-link-luxury::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-gold), #d4af37);
-            transition: var(--transition);
-        }
-
-        .nav-link-luxury:hover {
-            color: var(--accent-gold);
-        }
-
-        .nav-link-luxury:hover::after {
-            width: 100%;
-        }
-
-        .nav-icon {
-            font-size: 14px;
-            opacity: 0.8;
-            transition: var(--transition);
-        }
-
-        .nav-link-luxury:hover .nav-icon {
-            opacity: 1;
-            transform: translateY(-1px);
-        }
-
-        .cart-badge, .favorites-badge {
-            background: var(--accent-gold);
-            color: var(--white);
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-        }
-
-        .favorites-badge {
-            background: #e74c3c;
-        }
-
-        .navbar-toggler-luxury {
-            border: none;
-            padding: 8px;
-            background: transparent;
-            color: var(--primary-dark);
-        }
 
         /* Hero Section - Исправленный фон */
         .hero-luxury {
@@ -930,6 +805,18 @@
             .hero-image {
                 background-size: contain;
                 background-position: center;
+            }
+        }
+        /* Отступы для мобильных устройств */
+        @media (max-width: 768px) {
+            .hero-buttons {
+                padding: 0 15px; /* Боковые отступы */
+                margin-top: 20px; /* Отступ сверху если нужно */
+            }
+
+            .hero-buttons .btn-luxury {
+                margin: 5px 0; /* Вертикальные отступы между кнопками */
+                padding: 12px 20px; /* Внутренние отступы кнопок */
             }
         }
     </style>
