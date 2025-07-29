@@ -28,15 +28,7 @@
       </a>
     </li>
 
-<!--    &lt;!&ndash; Bredn &ndash;&gt;-->
-<!--    <li class="mobile-bottom-nav-item">-->
-<!--      <a th:href="@{/brands}"-->
-<!--         class="mobile-bottom-nav-link"-->
-<!--         th:classappend="${#strings.startsWith(currentURI, '/brands') ? 'active' : ''}">-->
-<!--        <i class="fas fa-th-large mobile-bottom-nav-icon"></i>-->
-<!--        <span class="mobile-bottom-nav-text">Бренди</span>-->
-<!--      </a>-->
-<!--    </li>-->
+
 
     <!-- Категории с выпадающим меню -->
     <li class="mobile-bottom-nav-item mobile-categories-item">
@@ -76,16 +68,14 @@
       </div>
     </li>
 
-    <!-- Избранное -->
+
+    <!-- ПОИСК (простая ссылка) -->
     <li class="mobile-bottom-nav-item">
-      <a th:href="@{/wishlist}"
+      <a th:href="@{/search}"
          class="mobile-bottom-nav-link"
-         th:classappend="${currentURI == '/wishlist' ? 'active' : ''}">
-        <i class="fas fa-heart mobile-bottom-nav-icon"></i>
-        <span class="mobile-bottom-nav-text">Вибране</span>
-        <span class="mobile-nav-badge favorites"
-              th:if="${favoritesCount > 0}"
-              th:text="${favoritesCount}">0</span>
+         th:classappend="${currentURI == '/search' ? 'active' : ''}">
+        <i class="fas fa-search mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Пошук</span>
       </a>
     </li>
 

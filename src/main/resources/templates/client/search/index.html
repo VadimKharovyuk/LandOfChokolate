@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пошук товарів - Шоколадна країна</title>
+  <meta name="description" content="Знайдіть ваші улюблені товари швидко та легко">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
+
+  <style>
+    /* ИСПРАВЛЕНИЕ: Отступ для навигации и мобильной навигации */
+    body {
+      padding-top: 80px !important; /* Отступ сверху для навигации */
+      padding-bottom: 80px !important; /* Отступ снизу для мобильной навигации */
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+    }
+
+    /* Luxury Minimalism Design */
+    .search-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    /* Hero Section */
+    .search-hero {
+      text-align: center;
+      margin-bottom: 80px;
+      position: relative;
+    }
+
+    .search-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, #d4a574, #f4e4bc);
+      border-radius: 2px;
+    }
+
+    .search-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem !important;
+      font-weight: 300;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+
+    .search-title i {
+      color: #d4a574;
+      margin-right: 15px;
+      font-size: 0.8em;
+    }
+
+    .search-subtitle {
+      font-family: 'Inter', sans-serif;
+      color: #6c757d;
+      font-size: 1.2rem !important;
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Premium Search Form */
+    .premium-search-form {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 50px;
+      margin-bottom: 60px;
+      box-shadow:
+              0 20px 60px rgba(0, 0, 0, 0.1),
+              0 8px 32px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .premium-search-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.3), transparent);
+    }
+
+    .search-input-container {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .premium-search-input {
+      width: 100%;
+      padding: 20px 25px 20px 60px;
+      border: 2px solid transparent;
+      border-radius: 50px;
+      font-size: 18px !important;
+      font-weight: 400;
+      background: #f8f9fa;
+      color: #2c3e50;
+      outline: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .premium-search-input:focus {
+      background: white;
+      border-color: #d4a574;
+      box-shadow:
+              inset 0 2px 10px rgba(0, 0, 0, 0.05),
+              0 0 0 4px rgba(212, 165, 116, 0.1),
+              0 8px 32px rgba(212, 165, 116, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d4a574;
+      font-size: 18px;
+      z-index: 2;
+    }
+
+    .premium-search-btn {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #d4a574, #c19650);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-size: 16px !important;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+    }
+
+    .premium-search-btn:hover {
+      background: linear-gradient(135deg, #c19650, #b8944a);
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 6px 20px rgba(212, 165, 116, 0.4);
+    }
+
+    .premium-search-btn:active {
+      transform: translateY(-50%) scale(0.98);
+    }
+
+    /* Results Section */
+    .results-section {
+      margin-top: 60px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding: 0 15px;
+    }
+
+    .results-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem !important;
+      font-weight: 400;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    .results-count {
+      color: #6c757d;
+      font-size: 1rem !important;
+      font-weight: 400;
+      background: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Premium Product Grid */
+    .premium-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .premium-product-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      box-shadow:
+              0 8px 32px rgba(0, 0, 0, 0.08),
+              0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .premium-product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #d4a574, #f4e4bc);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .premium-product-card:hover {
+      transform: translateY(-8px);
+      box-shadow:
+              0 20px 60px rgba(0, 0, 0, 0.12),
+              0 8px 32px rgba(0, 0, 0, 0.08);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .premium-product-card:hover::before {
+      opacity: 1;
+    }
+
+    .premium-product-image {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      transition: transform 0.4s ease;
+    }
+
+    .premium-product-card:hover .premium-product-image {
+      transform: scale(1.05);
+    }
+
+    .premium-product-info {
+      padding: 30px 25px;
+      position: relative;
+    }
+
+    .premium-product-category {
+      color: #d4a574;
+      font-size: 0.85rem !important;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .premium-product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem !important;
+      font-weight: 500;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      color: #2c3e50;
+    }
+
+    .premium-product-brand {
+      color: #6c757d;
+      font-size: 0.95rem !important;
+      font-weight: 400;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .premium-product-price {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.4rem !important;
+      font-weight: 700;
+      color: #d4a574;
+      margin-bottom: 15px;
+    }
+
+    .premium-product-stock {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .premium-stock-status {
+      padding: 6px 16px;
+      border-radius: 25px;
+      font-size: 0.8rem !important;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .premium-stock-in {
+      background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      color: #155724;
+    }
+
+    .premium-stock-low {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      color: #856404;
+    }
+
+    .premium-stock-out {
+      background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+      color: #721c24;
+    }
+
+    .premium-stock-quantity {
+      color: #6c757d;
+      font-size: 0.9rem !important;
+      font-weight: 500;
+    }
+
+    /* Premium Empty States */
+    .premium-no-results {
+      text-align: center;
+      padding: 80px 40px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      margin: 40px 0;
+    }
+
+    .premium-no-results-icon {
+      font-size: 5rem !important;
+      color: #d4a574;
+      margin-bottom: 30px;
+      opacity: 0.7;
+    }
+
+    .premium-no-results-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem !important;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-weight: 400;
+    }
+
+    .premium-no-results-text {
+      color: #6c757d;
+      font-size: 1.1rem !important;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 70px !important;
+        padding-bottom: 100px !important;
+      }
+
+      .search-container {
+        padding: 30px 15px 120px;
+      }
+
+      .search-hero {
+        margin-bottom: 50px;
+      }
+
+      .search-title {
+        font-size: 2.5rem !important;
+      }
+
+      .search-subtitle {
+        font-size: 1.1rem !important;
+      }
+
+      .premium-search-form {
+        padding: 30px 20px;
+        border-radius: 20px;
+      }
+
+      .premium-search-input {
+        font-size: 16px !important;
+        padding: 18px 22px 18px 55px;
+      }
+
+      .premium-search-btn {
+        padding: 12px 20px;
+        font-size: 14px !important;
+      }
+
+      .premium-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .premium-product-card {
+        border-radius: 16px;
+      }
+
+      .premium-product-image {
+        height: 180px;
+      }
+
+      .premium-product-info {
+        padding: 20px 18px;
+      }
+
+      .premium-product-name {
+        font-size: 1.1rem !important;
+      }
+
+      .premium-product-price {
+        font-size: 1.2rem !important;
+      }
+
+      .results-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .results-title {
+        font-size: 1.8rem !important;
+      }
+
+      .premium-no-results {
+        padding: 60px 25px;
+      }
+
+      .premium-no-results-icon {
+        font-size: 4rem !important;
+      }
+
+      .premium-no-results-title {
+        font-size: 1.6rem !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .premium-products-grid {
+        gap: 15px;
+      }
+
+      .premium-product-image {
+        height: 150px;
+      }
+
+      .premium-product-info {
+        padding: 15px;
+      }
+
+      .premium-product-name {
+        font-size: 1rem !important;
+      }
+
+      .premium-product-price {
+        font-size: 1.1rem !important;
+      }
+    }
+
+    /* Navigation Protection */
+    .mobile-bottom-nav {
+      z-index: 9999 !important;
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+    }
+
+    /* Animation Keyframes */
+    @keyframes luxuryFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-luxury {
+      animation: luxuryFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Floating Elements */
+    .search-hero::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      right: 10%;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(244, 228, 188, 0.1));
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+
+<body>
+<!-- Навигация -->
+<div th:insert="~{admin/fragments/navigation :: navigation}"></div>
+
+<!-- Основной контент -->
+<div class="main-content">
+  <div class="main-container">
+    <div class="search-container">
+      <!-- Hero Section -->
+      <div class="search-hero">
+        <h1 class="search-title">
+          <i class="fas fa-search"></i>
+          Пошук товарів
+        </h1>
+        <p class="search-subtitle">Відкрийте для себе світ преміальних товарів з елегантним пошуком</p>
+      </div>
+
+      <!-- Premium Search Form -->
+      <div class="premium-search-form">
+        <form method="GET" th:action="@{/search}">
+          <div class="search-input-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text"
+                   name="searchTerm"
+                   class="premium-search-input"
+                   th:value="${param.searchTerm}"
+                   placeholder="Введіть назву товару..."
+                   autocomplete="off"
+                   autofocus>
+            <button type="submit" class="premium-search-btn">
+              <i class="fas fa-arrow-right"></i>
+              Знайти
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section" th:if="${param.searchTerm}">
+
+        <!-- Results Header -->
+        <div class="results-header" th:if="${productListDtos != null}">
+          <h2 class="results-title">Результати пошуку</h2>
+          <div class="results-count">
+            <i class="fas fa-tag" style="margin-right: 8px; color: #d4a574;"></i>
+            Знайдено: [[${#lists.size(productListDtos)}]] товар(ів)
+            <span th:if="${param.searchTerm}">
+              за запитом "<strong>[[${param.searchTerm}]]</strong>"
+            </span>
+          </div>
+        </div>
+
+        <!-- Premium Products Grid -->
+        <div class="premium-products-grid" th:if="${productListDtos != null and #lists.size(productListDtos) > 0}">
+          <a th:each="product : ${productListDtos}"
+             th:href="@{'/product/' + ${product.slug}}"
+             class="premium-product-card animate-luxury">
+
+            <!-- Product Image -->
+            <img th:src="${product.imageUrl}"
+                 th:alt="${product.name}"
+                 class="premium-product-image"
+                 onerror="this.src='/images/no-image.jpg'">
+
+            <!-- Product Info -->
+            <div class="premium-product-info">
+              <!-- Category -->
+              <div class="premium-product-category" th:text="${product.categoryName}">Категорія</div>
+
+              <!-- Name -->
+              <h3 class="premium-product-name" th:text="${product.name}">Назва товару</h3>
+
+              <!-- Brand -->
+              <div class="premium-product-brand" th:if="${product.brandName}" th:text="${product.brandName}">Бренд</div>
+
+              <!-- Price -->
+              <div class="premium-product-price" th:text="${product.price} + ' грн'">0 грн</div>
+
+              <!-- Stock Status -->
+              <div class="premium-product-stock">
+                <span class="premium-stock-status"
+                      th:classappend="${product.inStock ? (product.lowStock ? 'premium-stock-low' : 'premium-stock-in') : 'premium-stock-out'}">
+                  <i class="fas"
+                     th:classappend="${product.inStock ? (product.lowStock ? 'fa-exclamation-triangle' : 'fa-check') : 'fa-times'}"
+                     style="margin-right: 5px;"></i>
+                  <span th:text="${product.inStock ? (product.lowStock ? 'Мало' : 'В наявності') : 'Немає'}">Статус</span>
+                </span>
+
+
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Empty Results -->
+        <div class="premium-no-results" th:if="${productListDtos != null and #lists.size(productListDtos) == 0}">
+          <div class="premium-no-results-icon">
+            <i class="fas fa-search-minus"></i>
+          </div>
+          <h3 class="premium-no-results-title">Нічого не знайдено</h3>
+          <p class="premium-no-results-text">
+            За запитом "<strong>[[${param.searchTerm}]]</strong>" товари не знайдені.<br>
+            Спробуйте змінити пошуковий запит або перевірте правопис.
+          </p>
+        </div>
+      </div>
+
+      <!-- Welcome State -->
+      <div class="premium-no-results" th:unless="${param.searchTerm}">
+        <div class="premium-no-results-icon">
+          <i class="fas fa-compass"></i>
+        </div>
+        <h3 class="premium-no-results-title">Розпочніть пошук</h3>
+        <p class="premium-no-results-text">
+          Введіть назву товару в поле вище, щоб знайти потрібні вам товари.<br>
+          <em>Наприклад: "шоколад", "цукерки", "тортики"</em>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript библиотеки -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/scrollTopButton.js}"></script>
+
+<!-- Мобильная навигация снизу  -->
+<div th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation}"></div>
+<script th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation-script}"></script>
+
+<!-- JavaScript -->
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+
+<!-- Enhanced UX JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.premium-search-input');
+    const searchForm = document.querySelector('form');
+    const searchBtn = document.querySelector('.premium-search-btn');
+
+    // Auto-focus on desktop
+    if (searchInput && window.innerWidth > 768) {
+      searchInput.focus();
+    }
+
+    // Enhanced search button animation
+    if (searchBtn) {
+      searchBtn.addEventListener('click', function() {
+        if (searchInput.value.trim()) {
+          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+          this.style.background = 'linear-gradient(135deg, #b8944a, #a8874a)';
+        }
+      });
+    }
+
+    // Smooth form interactions
+    if (searchInput) {
+      searchInput.addEventListener('focus', function() {
+        this.parentElement.style.transform = 'scale(1.02)';
+      });
+
+      searchInput.addEventListener('blur', function() {
+        this.parentElement.style.transform = 'scale(1)';
+      });
+
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchForm.submit();
+        }
+      });
+    }
+
+    // Staggered animation for product cards
+    const productCards = document.querySelectorAll('.premium-product-card');
+    productCards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    productCards.forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(30px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+
+    // Add subtle parallax effect to hero
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const hero = document.querySelector('.search-hero');
+      if (hero) {
+        hero.style.transform = `translateY(${scrolled * 0.1}px)`;
+      }
+    });
+  });
+</script>
+</body>
+</html>
