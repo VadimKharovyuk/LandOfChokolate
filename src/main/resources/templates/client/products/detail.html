@@ -784,10 +784,6 @@
                             <i class="fas fa-image"></i>
                         </div>
 
-                        <!--                        &lt;!&ndash; Бейдж наличия &ndash;&gt;-->
-                        <!--                        <div class="stock-badge" th:classappend="${product.stockBadgeClass}">-->
-                        <!--                            <span th:text="${product.stockMessage}">В наличии: 12</span>-->
-                        <!--                        </div>-->
                     </div>
                 </div>
 
@@ -804,7 +800,7 @@
                     <!-- Цена -->
                     <div class="product-price" th:text="${product.price} + ' грн'">150 грн</div>
 
-                    <!-- Информация о наличии -->
+                    <!-- Інформація про наявність -->
                     <div class="product-stock-info"
                          th:classappend="${product.stockStatus == 'low-stock'} ? 'low-stock' : (${product.stockStatus == 'out-of-stock'} ? 'out-of-stock' : '')">
                         <div class="stock-text">
@@ -836,7 +832,7 @@
                                 th:data-product-id="${product.id}"
                                 data-cart-action="add">
                             <i class="fas fa-shopping-cart"></i>
-                            <span th:text="${product.inStock} ? 'Добавить в корзину' : 'Нет в наличии'">Додати до кошика</span>
+                            <span th:text="${product.inStock} ?  'Додати до кошика' : 'Немає в наявності'">Додати до кошика</span>
                         </button>
 
                         <!-- Обновленная кнопка избранного -->
@@ -943,9 +939,8 @@
                                 th:data-product-id="${relatedProduct.id}"
                                 data-cart-action="add">
                             <i class="fas fa-shopping-cart"></i>
-                            <span th:text="${relatedProduct.inStock} ? 'В корзину' : 'Немає в наявності'">В корзину</span>
+                            <span th:text="${relatedProduct.inStock} ? 'До кошика' : 'Немає в наявності'">До кошика</span>
                         </button>
-
 
 <!--                        <button class="btn-related-favorite"-->
 <!--                                th:onclick="'toggleFavorite(' + ${relatedProduct.id} + ')'"-->
@@ -994,7 +989,7 @@
 
             <div class="view-all-container" th:if="${product.category != null}">
                 <a th:href="@{/categories/{slug}(slug=${product.category.slug})}" class="btn-view-all">
-                    <span>Смотреть все товары категории</span>
+                    <span>Дивитися всі товари категорії</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
