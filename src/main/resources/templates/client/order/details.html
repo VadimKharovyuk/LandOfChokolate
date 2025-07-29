@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заказ №<span th:text="${orderDTO.id}">1</span> - Land of Chocolate</title>
+    <title th:text="'Замовлення №' + ${orderDTO.id} + ' - Land of Chocolate'">Замовлення №1 - Land of Chocolate</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -456,8 +456,8 @@
         <div class="success-icon">
             <i class="bi bi-check-circle-fill"></i>
         </div>
-        <h4 class="serif-font mb-2">Заказ успешно создан!</h4>
-        <p class="mb-0">Номер вашего заказа: <strong th:text="${orderDTO.id}">1</strong></p>
+        <h4 class="serif-font mb-2">Замовлення успішно створено!</h4>
+        <p class="mb-0">Номер вашого замовлення: <strong th:text="${orderDTO.id}">1</strong></p>
     </div>
 
     <!-- Order Header -->
