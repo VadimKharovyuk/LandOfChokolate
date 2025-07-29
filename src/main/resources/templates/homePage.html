@@ -1257,6 +1257,7 @@
 </section>
 
 <!-- Additional styles for brands -->
+<!-- Additional styles for brands -->
 <style>
     .brand-card {
         position: relative;
@@ -1320,6 +1321,98 @@
         margin-top: 3rem;
     }
 
+    /* ИСПРАВЛЕНИЕ: Карточки товаров с выравниванием кнопок */
+    .product-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* Занимаем всю доступную высоту */
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .product-image {
+        position: relative;
+        flex-shrink: 0; /* Изображение не сжимается */
+    }
+
+    .product-content {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* Контент растягивается на доступное место */
+        padding: 1.5rem;
+    }
+
+    .product-category {
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+
+    .product-title {
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        line-height: 1.4;
+        color: #2c3e50;
+    }
+
+    .product-description {
+        margin-bottom: 1rem;
+        color: #6c757d;
+        font-size: 0.9rem;
+        flex-grow: 1; /* Описание растягивается, заполняя доступное место */
+    }
+
+    .product-footer {
+        margin-top: auto; /* Прижимаем футер к низу */
+        margin-bottom: 1rem;
+    }
+
+    .product-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #c9a96e;
+        margin-bottom: 0;
+    }
+
+    /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Кнопки на одном уровне */
+    .add-to-cart {
+        width: 100%;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #c9a96e 0%, #b8944a 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: auto; /* Прижимаем кнопку к низу контейнера */
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .add-to-cart:hover {
+        background: linear-gradient(135deg, #b8944a 0%, #a8874a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+    }
+
+    .add-to-cart:active {
+        transform: translateY(0);
+    }
+
     /* Responsive grid */
     @media (max-width: 992px) {
         .product-grid {
@@ -1330,10 +1423,34 @@
 
     @media (max-width: 576px) {
         .product-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
+
+        .product-content {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+        }
+
+        .add-to-cart {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
     }
+
     .empty-brands-message {
         display: flex;
         justify-content: center;
