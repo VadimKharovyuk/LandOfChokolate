@@ -16,7 +16,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Custom CSS -->
   <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
-  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+<!--  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
+  <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
   <link rel="stylesheet" th:href="@{/css/card/cart-styles.css}">
   <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
@@ -690,7 +691,8 @@
 </div>
 
 <!-- Подвал -->
-<div th:insert="~{admin/fragments/footer :: footer}"></div>
+<!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
+<footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 
 <script th:src="@{/js/scrollTopButton.js}"></script>
 <!-- Мобильная навигация снизу  -->

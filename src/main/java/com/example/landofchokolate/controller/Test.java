@@ -10,6 +10,6 @@ public class Test {
 
     @GetMapping
     public String test() {
-        return "test";
+        return "TestV1";
     }
 }

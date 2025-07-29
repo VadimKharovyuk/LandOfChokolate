@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог товарів - Land of Chocolate</title>
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
-    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
+    <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -955,7 +956,8 @@
 <div id="toast" class="toast"></div>
 
 <!-- Подвал -->
-<div th:insert="~{admin/fragments/footer :: footer}"></div>
+<!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
+<footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 <script th:src="@{/js/scrollTopButton.js}"></script>
 
 <!-- Мобильная навигация снизу  -->

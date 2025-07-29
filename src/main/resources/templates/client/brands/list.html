@@ -14,7 +14,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Custom CSS -->
-  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
+<!--  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">-->
+  <link rel="stylesheet" th:href="@{/css/fragments/footer-light.css}">
   <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">
   <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
@@ -530,7 +531,10 @@
 <script th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation-script}"></script>
 
 <!-- Подвал -->
-<div th:insert="~{admin/fragments/footer :: footer}"></div>
+<!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
+<footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
+
+
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 
 <!-- Bootstrap JS -->

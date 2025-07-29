@@ -162,6 +162,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/fragments/footer-light.css}">
 </head>
 <body>
 <!-- Дебаг информация -->
@@ -248,6 +249,8 @@
         </li>
     </ul>
 </div>
+
+<div th:insert="~{admin/fragments/fototerLigth :: footer}"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

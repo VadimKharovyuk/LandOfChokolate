@@ -250,10 +250,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/footer.css}">-->
     <link rel="stylesheet" th:href="@{/css/store-location-section.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
 </head>
     <style>
         :root {
@@ -1628,144 +1629,8 @@
 </script>
 
 
+<footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 
-<!-- Footer Section -->
-<footer class="footer-luxury">
-    <div class="container">
-        <div class="footer-content">
-            <!-- Newsletter Section -->
-            <div class="newsletter-section">
-                <h3 class="newsletter-title">Підписка на новини</h3>
-                <p class="newsletter-subtitle">
-                    Будьте першими, хто дізнається про нові десерти, спеціальні пропозиції та ексклюзивні рецепти
-                </p>
-
-                <form class="newsletter-form" id="newsletterForm">
-                    <div class="email-input-group">
-                        <input
-                                type="email"
-                                class="email-input"
-                                id="emailInput"
-                                placeholder="Введіть ваш email..."
-                                required
-                        >
-                        <button type="submit" class="subscribe-btn" id="subscribeBtn">
-                            <span class="btn-text">Підписатися</span>
-                            <div class="loading-spinner"></div>
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-
-                    <div class="message-container">
-                        <div class="message success" id="successMessage">
-                            <i class="fas fa-check-circle"></i>
-                            Дякуємо! Ви успішно підписалися на нашу розсилку.
-                        </div>
-                        <div class="message error" id="errorMessage">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span id="errorText">Сталася помилка. Спробуйте ще раз.</span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Social Media Section -->
-            <div class="social-section">
-                <h3 class="social-title">Слідкуйте за нами</h3>
-                <div class="social-links">
-                    <a href="https://www.instagram.com/landofchocolate" class="social-link instagram" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://t.me/landofchocolate" class="social-link telegram" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                    <a href="https://www.tiktok.com/@landofchocolate" class="social-link tiktok" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-tiktok"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Footer Main Content -->
-            <div class="row">
-                <!-- Brand Section -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="footer-brand">
-                        <div class="footer-logo">
-                            <img src="/images/IMG_1721.JPG" alt="Land of Chocolate">
-                            <span class="footer-brand-name">Країна шоколаду</span>
-                        </div>
-                        <p class="footer-brand-description">
-                            Створюємо неповторні десерти та шоколадні композиції для особливих моментів.
-                            Кожен виріб — це мистецтво смаку та естетики.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h4 class="footer-section-title">Меню</h4>
-                    <ul class="footer-links">
-                        <li><a href="#home"><i class="fas fa-home"></i> Головна</a></li>
-                        <li><a href="/categories"><i class="fas fa-th-large"></i> Каталог</a></li>
-                        <li><a href="/about"><i class="fas fa-heart"></i> Про нас</a></li>
-                        <li><a href="/support"><i class="fas fa-envelope"></i> Служба підтримки</a></li>
-                        <li><a href="#delivery"><i class="fas fa-truck"></i> Доставка</a></li>
-                    </ul>
-                </div>
-
-                <!-- Products -->
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h4 class="footer-section-title">Продукція</h4>
-                    <ul class="footer-links">
-                        <li><a href="#cakes"><i class="fas fa-birthday-cake"></i> Торти</a></li>
-                        <li><a href="#desserts"><i class="fas fa-cookie"></i> Десерти</a></li>
-                        <li><a href="/categories/tsukerki"><i class="fas fa-heart"></i> Цукерки</a></li>
-                        <li><a href="#gifts"><i class="fas fa-gift"></i> Подарунки</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact Info -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <h4 class="footer-section-title">Контакти</h4>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>вул. Шоколадна, 25<br>м. Київ, 01001</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <a href="tel:+380671234567">+38 (067) 123-45-67</a>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <a href="mailto:info@landofchocolate.com">info@landofchocolate.com</a>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-clock"></i>
-                            <span>Пн-Нд: 08:00 - 22:00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer Bottom -->
-    <div class="footer-bottom">
-        <div class="container">
-            <div class="footer-bottom-content">
-                <div class="footer-copyright">
-                    © 2025 Країна шоколаду. Всі права захищені.
-                </div>
-                <div class="footer-links-bottom">
-                    <a href="#privacy">Політика конфіденційності</a>
-                    <a href="#terms">Умови використання</a>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
 
 <script th:src="@{/js/scrollTopButton.js}"></script>
 <!-- Мобильная навигация снизу  -->
