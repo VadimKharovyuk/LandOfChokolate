@@ -661,9 +661,9 @@
     <!-- Хлебные крошки -->
     <nav class="breadcrumb-container" aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Главная</a></li>
-        <li class="breadcrumb-item"><a href="/categories">Категории</a></li>
-        <li class="breadcrumb-item active" aria-current="page" th:text="${category.name}">Категория</li>
+        <li class="breadcrumb-item"><a href="/">Головна</a></li>
+        <li class="breadcrumb-item"><a href="/categories">Категорії</a></li>
+        <li class="breadcrumb-item active" aria-current="page" th:text="${category.name}">Категорія</li>
       </ol>
     </nav>
 
@@ -674,11 +674,11 @@
 <!--           th:alt="${category.name}"-->
 <!--           class="category-image-header">-->
 
-      <h1 class="category-title" th:text="${category.name}">Название категории</h1>
+      <h1 class="category-title" th:text="${category.name}">Назва категорії</h1>
 
       <p class="category-description" th:if="${category.shortDescription != null and !category.shortDescription.isEmpty()}"
          th:text="${category.shortDescription}">
-        Описание категории
+        Опис категорії
       </p>
     </header>
 
@@ -688,19 +688,9 @@
       <div class="section-meta">
         <div class="products-count">
           Показано <span class="count-value" th:text="${#lists.size(products)}">12</span>
-          из <span class="count-value" th:text="${totalProducts ?: #lists.size(products)}">24</span> товаров
+          з <span class="count-value" th:text="${totalProducts ?: #lists.size(products)}">24</span> товарів
         </div>
 
-        <div class="sort-options">
-          <a href="#" class="sort-btn active">
-            <i class="fas fa-sort-alpha-down"></i>
-            По названию
-          </a>
-          <a href="#" class="sort-btn">
-            <i class="fas fa-sort-numeric-down"></i>
-            По цене
-          </a>
-        </div>
       </div>
 
       <!-- Сетка продуктов -->
@@ -722,35 +712,34 @@
             <!-- Бейдж наличия -->
             <div class="stock-badge"
                  th:classappend="${product.stockQuantity == 0} ? 'badge-out-of-stock' : (${product.stockQuantity <= 5} ? 'badge-low-stock' : 'badge-in-stock')">
-              <span th:if="${product.stockQuantity > 0}" th:text="'В наличии: ' + ${product.stockQuantity}">В наличии: 12</span>
-              <span th:if="${product.stockQuantity == 0}">Нет в наличии</span>
+              <span th:if="${product.stockQuantity > 0}" th:text="'В наявності: ' + ${product.stockQuantity}">В наявності: 12</span>
+              <span th:if="${product.stockQuantity == 0}">Немає в наявності</span>
             </div>
 
             <!-- Оверлей для товаров не в наличии -->
             <div class="out-of-stock-overlay">
-              <div class="out-of-stock-text">Нет в наличии</div>
+              <div class="out-of-stock-text">Немає в наявності</div>
             </div>
           </div>
 
           <!-- Контент продукта -->
           <div class="product-content">
-            <h3 class="product-title" th:text="${product.name}">Название продукта</h3>
-
+            <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>
             <div class="product-price" th:text="${product.price} + ' грн'">150 грн</div>
 
             <div class="product-stock" th:if="${product.stockQuantity > 0}">
               <span th:if="${product.stockQuantity > 5}" class="text-success">
-                <i class="fas fa-check-circle"></i> В наличии
+              <i class="fas fa-check-circle"></i> В наявності
               </span>
               <span th:if="${product.stockQuantity <= 5 and product.stockQuantity > 0}" class="text-warning">
-                <i class="fas fa-exclamation-triangle"></i> Осталось мало
+             <i class="fas fa-exclamation-triangle"></i> Залишилось мало
               </span>
             </div>
 
             <div class="product-actions">
               <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn-view">
                 <i class="fas fa-eye"></i>
-                Подробнее
+                Детальніше
               </a>
 
               <button class="btn-add-to-cart"
@@ -759,7 +748,7 @@
                       data-cart-action="add">
                 <i class="fas fa-shopping-cart"></i>
                 <span th:text="${product.stockQuantity > 0} ? 'В корзину' : 'Нет в наличии'">
-    В корзину
+   До кошика
   </span>
               </button>
 
@@ -775,14 +764,14 @@
       <div class="empty-icon">
         <i class="fas fa-box-open"></i>
       </div>
-      <h2 class="empty-title">В этой категории пока нет товаров</h2>
+      <h2 class="empty-title">У цій категорії поки немає товарів</h2>
       <p class="empty-description">
-        Мы работаем над пополнением ассортимента.
-        Попробуйте посмотреть другие категории или вернитесь позже.
+        Ми працюємо над поповненням асортименту.
+        Спробуйте переглянути інші категорії або поверніться пізніше.
       </p>
       <a href="/categories" class="back-button">
         <i class="fas fa-arrow-left"></i>
-        Все категории
+        Всі категорії
       </a>
     </section>
 
@@ -796,7 +785,7 @@
           <a class="page-link"
              th:href="@{/categories/{slug}(slug=${category.slug}, page=${currentPage - 1})}">
             <i class="fas fa-chevron-left"></i>
-            Предыдущая
+            Попередня
           </a>
         </li>
 
@@ -813,7 +802,7 @@
         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
           <a class="page-link"
              th:href="@{/categories/{slug}(slug=${category.slug}, page=${currentPage + 1})}">
-            Следующая
+            Наступна
             <i class="fas fa-chevron-right"></i>
           </a>
         </li>

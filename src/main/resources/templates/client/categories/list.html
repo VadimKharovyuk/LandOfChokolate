@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Категории - Land of Chocolate</title>
+    <title>Категорії - Land of Chocolate</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -397,16 +397,16 @@
             <div class="stat-inline">
                 <span>Показано</span>
                 <span class="stat-value" th:text="${categoryList.categories.size()}">12</span>
-                <span>из</span>
+                <span>з</span>
                 <span class="stat-value" th:text="${categoryList.totalCount}">48</span>
             </div>
 
             <div class="stat-separator" th:if="${categoryList.totalPages > 1}"></div>
 
             <div class="stat-inline" th:if="${categoryList.totalPages > 1}">
-                <span>Страница</span>
+                <span>Сторінка</span>
                 <span class="stat-value" th:text="${categoryList.displayCurrentPage}">1</span>
-                <span>из</span>
+                <span>з</span>
                 <span class="stat-value" th:text="${categoryList.totalPages}">4</span>
             </div>
         </div>
@@ -433,15 +433,15 @@
                     <!-- Product Count Badge -->
                     <div th:if="${category.productsCount != null and category.productsCount > 0}"
                          class="category-badge">
-                        <span th:text="${category.productsCount}">12</span> товаров
+                        <span th:text="${category.productsCount}">12</span> товарів
                     </div>
                 </div>
 
                 <!-- Content -->
                 <div class="category-content">
-                    <h3 class="category-title" th:text="${category.name}">Десерты</h3>
+                    <h3 class="category-title" th:text="${category.name}">Десерти</h3>
                     <p class="category-description" th:text="${category.shortDescription}">
-                        Нежные и воздушные эклеры, наполненные ароматным кремом из бельгийского шоколада
+                        Ніжні та повітряні еклери, наповнені ароматним кремом із бельгійського шоколаду
                     </p>
 
                     <!-- Meta Information -->
@@ -452,7 +452,7 @@
                             </span>
                         <span class="meta-item" th:if="${category.createdAt == null}">
                                 <i class="fas fa-star meta-icon"></i>
-                                Новая категория
+                             Нова категорія
                             </span>
                     </div>
 
@@ -462,7 +462,7 @@
                             <span th:text="${category.priceRange}">от 50 до 200 грн</span>
                         </div>
                         <div th:if="${category.minPrice == null}" class="price-unavailable">
-                            Товары появятся скоро
+                            Товари з’являться незабаром
                         </div>
                     </div>
                 </div>
@@ -475,10 +475,10 @@
         <div class="empty-icon">
             <i class="fas fa-search"></i>
         </div>
-        <h2 class="empty-title">Категории не найдены</h2>
+        <h2 class="empty-title">Категорії не знайдено</h2>
         <p class="empty-description">
-            В данный момент нет доступных категорий для отображения.
-            Мы работаем над пополнением ассортимента.
+            Наразі немає доступних категорій для відображення.
+            Ми працюємо над поповненням асортименту.
         </p>
     </section>
 
@@ -491,7 +491,7 @@
             <li class="page-item" th:classappend="${!categoryList.hasPrevious} ? 'disabled'">
                 <a class="page-link"
                    th:href="${categoryList.hasPrevious} ? @{/categories(page=${categoryList.previousPage}, size=${categoryList.pageSize})} : '#'">
-                    Предыдущая
+                    Попередня
                 </a>
             </li>
 
@@ -508,7 +508,7 @@
             <li class="page-item" th:classappend="${!categoryList.hasNext} ? 'disabled'">
                 <a class="page-link"
                    th:href="${categoryList.hasNext} ? @{/categories(page=${categoryList.nextPage}, size=${categoryList.pageSize})} : '#'">
-                    Следующая
+                    Наступна
                 </a>
             </li>
         </ul>
