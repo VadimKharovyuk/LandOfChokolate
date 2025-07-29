@@ -11,10 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -142,5 +139,120 @@ public class LoadTestController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+
+    // Добавьте эти методы в ваш LoadTestController
+
+    @PostMapping("/load-test/homepage/{users}")
+    public ResponseEntity<String> testHomePage(@PathVariable int users) {
+        // Валидация количества пользователей
+        if (users <= 0 || users > 200) {
+            return ResponseEntity.badRequest()
+                    .body("Количество пользователей должно быть от 1 до 200");
+        }
+
+        ExecutorService executor = Executors.newFixedThreadPool(Math.min(users, 50));
+        final String HOMEPAGE_URL = "https://landofchokolate.onrender.com/";
+
+        log.info("Запуск нагрузочного теста главной страницы для {} пользователей", users);
+
+        for (int i = 0; i < users; i++) {
+            final int userId = i + 1;
+            executor.submit(() -> {
+                try {
+                    // Настройка заголовков для реалистичного запроса
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.set("User-Agent", "Mozilla/5.0 (LoadTest-Client-" + userId + ")");
+                    headers.set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                    headers.set("Accept-Language", "uk,en;q=0.5");
+                    headers.set("Accept-Encoding", "gzip, deflate");
+                    headers.set("Connection", "keep-alive");
+
+                    HttpEntity<String> entity = new HttpEntity<>(headers);
+
+                    long startTime = System.currentTimeMillis();
+
+                    ResponseEntity<String> response = restTemplate.exchange(
+                            HOMEPAGE_URL,
+                            HttpMethod.GET,
+                            entity,
+                            String.class
+                    );
+
+                    long responseTime = System.currentTimeMillis() - startTime;
+
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        log.info("Пользователь {} - Успешно загрузил главную страницу за {} мс",
+                                userId, responseTime);
+                    } else {
+                        log.error("Пользователь {} - Ошибка загрузки: {}",
+                                userId, response.getStatusCode());
+                    }
+
+                    // Небольшая задержка между запросами для имитации реального поведения
+                    Thread.sleep(100 + (int)(Math.random() * 200)); // 100-300ms
+
+                } catch (Exception e) {
+                    log.error("Пользователь {} - Ошибка при загрузке главной страницы: {}",
+                            userId, e.getMessage());
+                }
+            });
+        }
+
+        // Корректное завершение executor
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
+                executor.shutdownNow();
+                log.warn("Тест был принудительно остановлен по таймауту");
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+
+        return ResponseEntity.ok("Нагрузочный тест главной страницы запущен для " + users + " пользователей");
+    }
+
+    // Быстрые методы для часто используемых значений
+    @PostMapping("/load-test/homepage-50")
+    public ResponseEntity<String> testHomePage50() {
+        return testHomePage(50);
+    }
+
+    @PostMapping("/load-test/homepage-60")
+    public ResponseEntity<String> testHomePage60() {
+        return testHomePage(60);
+    }
+
+    @PostMapping("/load-test/homepage-80")
+    public ResponseEntity<String> testHomePage80() {
+        return testHomePage(80);
+    }
+
+    // Метод для получения статистики нагрузки
+    @GetMapping("/load-test/stats")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLoadTestStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        // Получаем информацию о системе
+        Runtime runtime = Runtime.getRuntime();
+        long totalMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        long usedMemory = totalMemory - freeMemory;
+
+        stats.put("timestamp", System.currentTimeMillis());
+        stats.put("memory", Map.of(
+                "total_mb", totalMemory / 1024 / 1024,
+                "used_mb", usedMemory / 1024 / 1024,
+                "free_mb", freeMemory / 1024 / 1024,
+                "usage_percent", (usedMemory * 100) / totalMemory
+        ));
+
+        stats.put("available_processors", runtime.availableProcessors());
+
+        return ResponseEntity.ok(stats);
     }
 }
