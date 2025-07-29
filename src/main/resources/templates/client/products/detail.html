@@ -760,10 +760,10 @@
         <!-- Breadcrumbs -->
         <nav class="breadcrumb-container" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Главная</a></li>
-                <li class="breadcrumb-item"><a href="/categories">Категории</a></li>
+                <li class="breadcrumb-item"><a href="/">Головна</a></li>
+                <li class="breadcrumb-item"><a href="/categories">Категорії</a></li>
                 <li class="breadcrumb-item" th:if="${product.category != null}">
-                    <a th:href="@{/categories/{slug}(slug=${product.category.slug})}" th:text="${product.category.name}">Категория</a>
+                    <a th:href="@{/categories/{slug}(slug=${product.category.slug})}" th:text="${product.category.name}">Категорія</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Товар</li>
             </ol>
@@ -799,7 +799,7 @@
                     </div>
 
                     <!-- Название -->
-                    <h1 class="product-title" th:text="${product.name}">Название товара</h1>
+                    <h1 class="product-title" th:text="${product.name}">Назва товару</h1>
 
                     <!-- Цена -->
                     <div class="product-price" th:text="${product.price} + ' грн'">150 грн</div>
@@ -809,7 +809,7 @@
                          th:classappend="${product.stockStatus == 'low-stock'} ? 'low-stock' : (${product.stockStatus == 'out-of-stock'} ? 'out-of-stock' : '')">
                         <div class="stock-text">
                             <i th:class="${product.stockStatus == 'in-stock'} ? 'fas fa-check-circle success' : (${product.stockStatus == 'low-stock'} ? 'fas fa-exclamation-triangle warning' : 'fas fa-times-circle danger')"></i>
-                            <span th:text="${product.stockMessage}">В наличии: 12</span>
+                            <span th:text="${product.stockMessage}">В наявності: 12</span>
                         </div>
                     </div>
 
@@ -836,13 +836,13 @@
                                 th:data-product-id="${product.id}"
                                 data-cart-action="add">
                             <i class="fas fa-shopping-cart"></i>
-                            <span th:text="${product.inStock} ? 'Добавить в корзину' : 'Нет в наличии'">Добавить в корзину</span>
+                            <span th:text="${product.inStock} ? 'Добавить в корзину' : 'Нет в наличии'">Додати до кошика</span>
                         </button>
 
                         <!-- Обновленная кнопка избранного -->
                         <button class="btn-favorite"
                                 th:data-product-id="${product.id}"
-                                th:title="'Добавить товар ' + ${product.name} + ' в избранное'">
+                                th:title="'Додати товар ' + ${product.name} + ' до обраного'">
                             <i class="far fa-heart"></i>
                             <div class="spinner"></div>
                         </button>
@@ -929,7 +929,7 @@
                         </div>
 
                         <div class="related-content">
-                            <h3 class="related-title" th:text="${relatedProduct.name}">Название товара</h3>
+                            <h3 class="related-title" th:text="${relatedProduct.name}">Назва товару</h3>
                             <div class="related-price" th:text="${relatedProduct.price} + ' грн'">150 грн</div>
                         </div>
                     </a>
