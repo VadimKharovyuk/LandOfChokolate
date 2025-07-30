@@ -12,7 +12,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,8 +77,37 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    // НОВЫЙ ОБРАБОТЧИК для статических ресурсов
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Void> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+
+        // Игнорируем тихо favicon.ico и другие служебные файлы
+        if (requestURI.endsWith("/favicon.ico") ||
+                requestURI.endsWith("/robots.txt") ||
+                requestURI.endsWith("/sitemap.xml") ||
+                requestURI.contains("/static/") ||
+                requestURI.contains("/assets/")) {
+            // Возвращаем 404 без логирования
+            return ResponseEntity.notFound().build();
+        }
+
+        // Логируем только реальные проблемы с ресурсами
+        log.warn("Статический ресурс не найден: {} (URI: {})", ex.getMessage(), requestURI);
+        return ResponseEntity.notFound().build();
+    }
+
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+
+        // Игнорируем ошибки для служебных файлов
+        if (requestURI.endsWith("/favicon.ico") ||
+                requestURI.endsWith("/robots.txt") ||
+                requestURI.contains("/static/")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
         log.error("Внутренняя ошибка сервера: {}", e.getMessage(), e);
 
         ErrorResponse error = ErrorResponse.builder()
@@ -90,8 +121,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
-        log.error("Неожиданная ошибка: {}", e.getMessage(), e);
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String errorMessage = e.getMessage();
+
+        // Игнорируем ошибки favicon.ico и других служебных файлов
+        if (requestURI.endsWith("/favicon.ico") ||
+                requestURI.endsWith("/robots.txt") ||
+                requestURI.contains("/static/") ||
+                (errorMessage != null && errorMessage.contains("favicon.ico"))) {
+            // Тихо возвращаем 404 без логирования
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        log.error("Неожиданная ошибка: {} (URI: {})", errorMessage, requestURI, e);
 
         ErrorResponse error = ErrorResponse.builder()
                 .message("Сталася неочікувана помилка. Спробуйте ще раз.")

@@ -5,21 +5,21 @@
 
 const CartRemove = {
     /**
-     * Удалить товар из корзины
+     * Видалити товар з кошика
      */
     async removeProduct(productId, showConfirm = true) {
-        // Подтверждение удаления
-        if (showConfirm && !confirm('Удалить товар из корзины?')) {
+        // Підтвердження видалення
+        if (showConfirm && !confirm('Видалити товар з кошика?')) {
             return;
         }
 
         if (!productId) {
-            console.error('ID товара не указан');
+            console.error('ID товару не вказано');
             return;
         }
 
         try {
-            // Показать загрузку на элементе товара
+            // Показати завантаження на елементі товару
             this.showItemLoading(productId, true);
 
             const formData = new FormData();
@@ -33,28 +33,28 @@ const CartRemove = {
             const data = await response.json();
 
             if (data.success) {
-                // Удалить элемент из DOM
+                // Видалити елемент з DOM
                 this.removeItemFromDOM(productId);
 
-                // Обновить счетчики корзины
+                // Оновити лічильники кошика
                 this.updateCartCounters(data.cartItemCount, data.cartTotal);
 
-                // Показать пустую корзину если нужно
+                // Показати порожній кошик, якщо потрібно
                 if (data.isEmpty) {
                     this.showEmptyCart();
                 }
 
-                // Показать уведомление
-                this.showNotification('Товар удален из корзины', 'success');
+                // Показати сповіщення
+                this.showNotification('Товар видалено з кошика', 'success');
 
-                console.log('Товар удален из корзины:', productId);
+                console.log('Товар видалено з кошика:', productId);
             } else {
-                this.showNotification(data.message || 'Ошибка при удалении товара', 'error');
+                this.showNotification(data.message || 'Помилка при видаленні товару', 'error');
             }
 
         } catch (error) {
-            console.error('Ошибка удаления товара:', error);
-            this.showNotification('Ошибка соединения с сервером', 'error');
+            console.error('Помилка видалення товару:', error);
+            this.showNotification('Помилка з’єднання з сервером', 'error');
         } finally {
             this.showItemLoading(productId, false);
         }
@@ -141,14 +141,14 @@ const CartRemove = {
                 <div class="empty-icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
-                <h2 class="empty-title">Ваша корзина пуста</h2>
-                <p class="empty-description">
-                    Добавьте товары в корзину, чтобы продолжить покупки.
-                    У нас есть множество вкусных шоколадных изделий!
-                </p>
+               <h2 class="empty-title">Ваш кошик порожній</h2>
+               <p class="empty-description">
+                Додайте товари до кошика, щоб продовжити покупки.
+                У нас є багато смачних шоколадних виробів!
+                 </p>
                 <a href="/categories" class="back-button">
                     <i class="fas fa-arrow-left"></i>
-                    Начать покупки
+                     Розпочати покупки
                 </a>
             `;
 
