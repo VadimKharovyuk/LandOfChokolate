@@ -1,5 +1,281 @@
 
-/* Navigation Styles */
+/*!* Navigation Styles *!*/
+
+/*!* Google Fonts *!*/
+/*@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');*/
+
+/*!* CSS Variables *!*/
+/*:root {*/
+/*    --primary-dark: #2c3e50;*/
+/*    --accent-gold: #c9a96e;*/
+/*    --white: #ffffff;*/
+/*    --transition: all 0.3s ease;*/
+/*    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*!* Navigation Styles *!*/
+/*.container {*/
+/*    width: 100%;*/
+/*    max-width: 1200px;*/
+/*    margin: 0 auto;*/
+/*    padding: 0 15px;*/
+/*}*/
+
+
+/*!* Flexbox utilities *!*/
+/*.d-flex {*/
+/*    display: flex !important;*/
+/*}*/
+
+/*.justify-content-between {*/
+/*    justify-content: space-between !important;*/
+/*}*/
+
+/*.align-items-center {*/
+/*    align-items: center !important;*/
+/*}*/
+
+/*.w-100 {*/
+/*    width: 100% !important;*/
+/*}*/
+
+/*!* Display utilities *!*/
+/*.d-none {*/
+/*    display: none !important;*/
+/*}*/
+
+/*.d-lg-none {*/
+/*    display: none !important;*/
+/*}*/
+
+/*@media (min-width: 992px) {*/
+/*    .d-lg-flex {*/
+/*        display: flex !important;*/
+/*    }*/
+/*    .d-lg-none {*/
+/*        display: none !important;*/
+/*    }*/
+/*}*/
+
+/*@media (max-width: 991.98px) {*/
+/*    .d-lg-flex {*/
+/*        display: none !important;*/
+/*    }*/
+/*    .d-lg-none {*/
+/*        display: block !important;*/
+/*    }*/
+/*}*/
+
+/*!* Position utilities *!*/
+/*.position-relative {*/
+/*    position: relative !important;*/
+/*}*/
+
+/*.fixed-top {*/
+/*    position: fixed !important;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    left: 0;*/
+/*    z-index: 1030;*/
+/*}*/
+
+/*!* Navigation Styles - ваши существующие стили остаются без изменений *!*/
+/*.navbar-luxury {*/
+/*    background: rgba(248, 248, 248, 0.95);*/
+/*    backdrop-filter: blur(20px);*/
+/*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
+/*    padding: 20px 0;*/
+/*    transition: var(--transition);*/
+/*    width: 100%; !* Добавьте эту строку *!*/
+/*}*/
+/*.navbar-luxury {*/
+/*    background: rgba(248, 248, 248, 0.95);*/
+/*    backdrop-filter: blur(20px);*/
+/*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
+/*    padding: 20px 0;*/
+/*    transition: var(--transition);*/
+/*}*/
+
+/*.navbar-luxury.scrolled {*/
+/*    padding: 15px 0;*/
+/*    background: rgba(248, 248, 248, 0.98);*/
+/*    box-shadow: var(--shadow-light);*/
+/*}*/
+
+/*.navbar-brand-luxury {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 12px;*/
+/*    font-family: 'Cormorant Garamond', serif;*/
+/*    font-size: 28px;*/
+/*    font-weight: 600;*/
+/*    color: var(--primary-dark) !important;*/
+/*    text-decoration: none;*/
+/*    letter-spacing: -0.5px;*/
+/*    transition: var(--transition);*/
+/*}*/
+
+/*.brand-logo {*/
+/*    width: 40px;*/
+/*    height: 40px;*/
+/*    border-radius: 8px;*/
+/*    object-fit: cover;*/
+/*    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.navbar-brand-luxury:hover {*/
+/*    color: var(--accent-gold) !important;*/
+/*}*/
+
+/*.nav-luxury {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 48px;*/
+/*    list-style: none;*/
+/*}*/
+
+/*.nav-item-luxury {*/
+/*    position: relative;*/
+/*}*/
+
+/*.nav-link-luxury {*/
+/*    color: var(--primary-dark);*/
+/*    text-decoration: none;*/
+/*    font-weight: 500;*/
+/*    font-size: 15px;*/
+/*    letter-spacing: 0.3px;*/
+/*    padding: 8px 0;*/
+/*    position: relative;*/
+/*    transition: var(--transition);*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 8px;*/
+/*}*/
+
+/*.nav-link-luxury::after {*/
+/*    content: '';*/
+/*    position: absolute;*/
+/*    bottom: -2px;*/
+/*    left: 0;*/
+/*    width: 0;*/
+/*    height: 2px;*/
+/*    background: linear-gradient(90deg, var(--accent-gold), #d4af37);*/
+/*    transition: var(--transition);*/
+/*}*/
+
+/*.nav-link-luxury:hover {*/
+/*    color: var(--accent-gold);*/
+/*}*/
+
+/*.nav-link-luxury:hover::after {*/
+/*    width: 100%;*/
+/*}*/
+
+/*.nav-link-luxury.active {*/
+/*    color: var(--accent-gold);*/
+/*}*/
+
+/*.nav-link-luxury.active::after {*/
+/*    width: 100%;*/
+/*}*/
+
+/*.nav-icon {*/
+/*    font-size: 14px;*/
+/*    opacity: 0.8;*/
+/*    transition: var(--transition);*/
+/*}*/
+
+/*.nav-link-luxury:hover .nav-icon {*/
+/*    opacity: 1;*/
+/*    transform: translateY(-1px);*/
+/*}*/
+
+/*.cart-badge, .favorites-badge {*/
+/*    background: var(--accent-gold);*/
+/*    color: var(--white);*/
+/*    border-radius: 50%;*/
+/*    width: 18px;*/
+/*    height: 18px;*/
+/*    font-size: 11px;*/
+/*    font-weight: 600;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    position: absolute;*/
+/*    top: -8px;*/
+/*    right: -8px;*/
+/*}*/
+
+/*.favorites-badge {*/
+/*    background: #e74c3c;*/
+/*}*/
+
+/*.navbar-toggler-luxury {*/
+/*    border: none;*/
+/*    padding: 8px;*/
+/*    background: transparent;*/
+/*    color: var(--primary-dark);*/
+/*}*/
+
+/*!* Mobile Navigation *!*/
+/*.mobile-nav {*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    top: 80px;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*    background: rgba(248, 248, 248, 0.98);*/
+/*    backdrop-filter: blur(20px);*/
+/*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
+/*    z-index: 1000;*/
+/*    padding: 20px 0;*/
+/*}*/
+
+/*.mobile-nav.show {*/
+/*    display: block;*/
+/*}*/
+
+/*.mobile-nav-list {*/
+/*    list-style: none;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+
+/*.mobile-nav-item {*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.mobile-nav-link {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 12px;*/
+/*    color: var(--primary-dark);*/
+/*    text-decoration: none;*/
+/*    font-weight: 500;*/
+/*    font-size: 16px;*/
+/*    padding: 12px 0;*/
+/*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
+/*    transition: var(--transition);*/
+/*}*/
+
+/*.mobile-nav-link:hover {*/
+/*    color: var(--accent-gold);*/
+/*}*/
+
+/*@media (max-width: 991px) {*/
+/*    .nav-luxury {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
+
+/*@media (min-width: 992px) {*/
+/*    .navbar-toggler-luxury {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
+
+
+/* Navigation Styles - Оптимизированная версия */
 
 /* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
@@ -11,6 +287,7 @@
     --white: #ffffff;
     --transition: all 0.3s ease;
     --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --nav-height: 80px; /* Фиксированная высота навигации */
 }
 
 /* Navigation Styles */
@@ -20,7 +297,6 @@
     margin: 0 auto;
     padding: 0 15px;
 }
-
 
 /* Flexbox utilities */
 .d-flex {
@@ -79,27 +355,30 @@
     z-index: 1030;
 }
 
-/* Navigation Styles - ваши существующие стили остаются без изменений */
+/* ОСНОВНЫЕ ИСПРАВЛЕНИЯ */
+
 .navbar-luxury {
     background: rgba(248, 248, 248, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(201, 169, 110, 0.1);
-    padding: 20px 0;
+    height: var(--nav-height); /* Фиксированная высота */
+    display: flex;
+    align-items: center; /* Центрирование по вертикали */
     transition: var(--transition);
-    width: 100%; /* Добавьте эту строку */
-}
-.navbar-luxury {
-    background: rgba(248, 248, 248, 0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(201, 169, 110, 0.1);
-    padding: 20px 0;
-    transition: var(--transition);
+    width: 100%;
+    padding: 0; /* Убираем вертикальные отступы */
 }
 
 .navbar-luxury.scrolled {
-    padding: 15px 0;
+    height: 70px; /* Немного меньше при скролле */
     background: rgba(248, 248, 248, 0.98);
     box-shadow: var(--shadow-light);
+}
+
+.navbar-luxury .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .navbar-brand-luxury {
@@ -113,6 +392,7 @@
     text-decoration: none;
     letter-spacing: -0.5px;
     transition: var(--transition);
+    flex-shrink: 0; /* Не сжимается */
 }
 
 .brand-logo {
@@ -127,36 +407,46 @@
     color: var(--accent-gold) !important;
 }
 
+/* ОПТИМИЗИРОВАННАЯ НАВИГАЦИЯ */
 .nav-luxury {
     display: flex;
     align-items: center;
-    gap: 48px;
+    gap: 32px; /* Уменьшили с 48px для компактности */
     list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    flex-wrap: nowrap; /* Не переносим элементы */
 }
 
 .nav-item-luxury {
     position: relative;
+    flex-shrink: 0; /* Не сжимаем элементы */
 }
 
 .nav-link-luxury {
     color: var(--primary-dark);
     text-decoration: none;
     font-weight: 500;
-    font-size: 15px;
+    font-size: 14px; /* Немного уменьшили шрифт */
     letter-spacing: 0.3px;
-    padding: 8px 0;
+    height: 100%;
     position: relative;
     transition: var(--transition);
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px; /* Уменьшили отступ между иконкой и текстом */
+    padding: 0 8px; /* Горизонтальные отступы для кликабельной области */
+    white-space: nowrap; /* Текст в одну строку */
 }
 
 .nav-link-luxury::after {
     content: '';
     position: absolute;
-    bottom: -2px;
-    left: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
     height: 2px;
     background: linear-gradient(90deg, var(--accent-gold), #d4af37);
@@ -168,7 +458,7 @@
 }
 
 .nav-link-luxury:hover::after {
-    width: 100%;
+    width: 80%; /* Не на всю ширину, а 80% */
 }
 
 .nav-link-luxury.active {
@@ -176,13 +466,14 @@
 }
 
 .nav-link-luxury.active::after {
-    width: 100%;
+    width: 80%;
 }
 
 .nav-icon {
     font-size: 14px;
     opacity: 0.8;
     transition: var(--transition);
+    flex-shrink: 0;
 }
 
 .nav-link-luxury:hover .nav-icon {
@@ -190,20 +481,22 @@
     transform: translateY(-1px);
 }
 
+/* BADGES */
 .cart-badge, .favorites-badge {
     background: var(--accent-gold);
     color: var(--white);
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
+    width: 16px; /* Немного меньше */
+    height: 16px;
+    font-size: 10px;
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 8px; /* Скорректировали позицию */
+    right: -6px;
+    line-height: 1;
 }
 
 .favorites-badge {
@@ -215,13 +508,14 @@
     padding: 8px;
     background: transparent;
     color: var(--primary-dark);
+    font-size: 18px;
 }
 
 /* Mobile Navigation */
 .mobile-nav {
     display: none;
     position: fixed;
-    top: 80px;
+    top: var(--nav-height);
     left: 0;
     right: 0;
     background: rgba(248, 248, 248, 0.98);
@@ -229,6 +523,8 @@
     border-bottom: 1px solid rgba(201, 169, 110, 0.1);
     z-index: 1000;
     padding: 20px 0;
+    max-height: calc(100vh - var(--nav-height));
+    overflow-y: auto;
 }
 
 .mobile-nav.show {
@@ -262,14 +558,64 @@
     color: var(--accent-gold);
 }
 
+/* АДАПТИВНЫЕ СТИЛИ */
+@media (max-width: 1199px) {
+    .nav-luxury {
+        gap: 24px; /* Еще меньше на средних экранах */
+    }
+
+    .nav-link-luxury {
+        font-size: 13px;
+        gap: 4px;
+    }
+}
+
 @media (max-width: 991px) {
     .nav-luxury {
         display: none;
+    }
+
+    :root {
+        --nav-height: 70px; /* Меньше на мобильных */
     }
 }
 
 @media (min-width: 992px) {
     .navbar-toggler-luxury {
         display: none;
+    }
+}
+
+/* ДОПОЛНИТЕЛЬНЫЕ ОПТИМИЗАЦИИ */
+
+/* Если нужно еще больше места, можно скрыть текст у некоторых пунктов на маленьких экранах */
+@media (max-width: 1399px) {
+    .nav-link-luxury .nav-text {
+        display: none;
+    }
+
+    .nav-link-luxury {
+        gap: 0;
+        padding: 0 12px;
+    }
+
+    .nav-icon {
+        font-size: 16px;
+    }
+
+    /* Показываем текст при hover */
+    .nav-link-luxury:hover::before {
+        content: attr(data-text);
+        position: absolute;
+        bottom: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-dark);
+        color: var(--white);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
     }
 }

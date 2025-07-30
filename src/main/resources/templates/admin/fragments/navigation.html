@@ -1,3 +1,203 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Navigation Fragment &ndash;&gt;-->
+<!--<nav class="navbar-luxury fixed-top" id="mainNav" th:fragment="navigation">-->
+<!--    <div class="container">-->
+<!--        <div class="d-flex justify-content-between align-items-center w-100">-->
+<!--            &lt;!&ndash; Brand &ndash;&gt;-->
+<!--            <a th:href="@{/}" class="navbar-brand-luxury">-->
+<!--                <img src="/images/Logo.jpeg" alt="Land of Chocolate" class="brand-logo">-->
+<!--                Країна шоколаду-->
+<!--            </a>-->
+
+<!--            &lt;!&ndash; Desktop Navigation &ndash;&gt;-->
+<!--            <ul class="nav-luxury d-none d-lg-flex">-->
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/}"-->
+<!--                       class="nav-link-luxury"-->
+<!--                       th:classappend="${currentURI == '/' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-home nav-icon"></i>-->
+<!--                        Головна-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/product/all}"-->
+<!--                       class="nav-link-luxury"-->
+<!--                       th:classappend="${#strings.startsWith(currentURI, '/product/all') ? 'active' : ''}">-->
+<!--                        <i class="fas fa-th-large nav-icon"></i>-->
+<!--                         Товари-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/categories}"-->
+<!--                       class="nav-link-luxury"-->
+<!--                       th:classappend="${currentURI == '/categories' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-heart nav-icon"></i>-->
+<!--                        Категорії-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/order/info}"-->
+<!--                       class="nav-link-luxury"-->
+<!--                       th:classappend="${currentURI == '/order/info' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-box"></i>-->
+<!--                        Статус замовлення-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/search}"-->
+<!--                       class="nav-link-luxury position-relative"-->
+<!--                       th:classappend="${currentURI == '/search' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-search nav-icon"></i>-->
+<!--                        Пошук-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/wishlist}"-->
+<!--                       class="nav-link-luxury position-relative"-->
+<!--                       th:classappend="${currentURI == '/wishlist' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-heart nav-icon"></i>-->
+<!--                        Вибране-->
+<!--                        <span class="favorites-badge" th:text="${favoritesCount ?: 0}">0</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--                <li class="nav-item-luxury">-->
+<!--                    <a th:href="@{/cart}"-->
+<!--                       class="nav-link-luxury position-relative"-->
+<!--                       th:classappend="${currentURI == '/cart' ? 'active' : ''}">-->
+<!--                        <i class="fas fa-shopping-bag nav-icon"></i>-->
+<!--                        Кошик-->
+<!--                        <span class="cart-badge" th:text="${cartCount ?: 0}">0</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--            </ul>-->
+
+<!--            &lt;!&ndash; Mobile Toggle Button &ndash;&gt;-->
+<!--            <button class="navbar-toggler-luxury d-lg-none" type="button" id="navToggler">-->
+<!--                <i class="fas fa-bars"></i>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Mobile Navigation &ndash;&gt;-->
+<!--    <div class="mobile-nav" id="mobileNav">-->
+<!--        <div class="container">-->
+<!--            <ul class="mobile-nav-list">-->
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-home nav-icon"></i>-->
+<!--                        Головна-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/product/all}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-th-large nav-icon"></i>-->
+<!--                        Товари-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/categories}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-heart nav-icon"></i>-->
+<!--                        Категорії-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/brands}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-heart nav-icon"></i>-->
+<!--                        Бренди-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/order/info}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-envelope nav-icon"></i>-->
+<!--                        Статус замовлення-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/wishlist}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-heart nav-icon"></i>-->
+<!--                        Вибране <span th:text="'(' + ${favoritesCount ?: 0} + ')'"></span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="mobile-nav-item">-->
+<!--                    <a th:href="@{/cart}" class="mobile-nav-link">-->
+<!--                        <i class="fas fa-shopping-bag nav-icon"></i>-->
+<!--                        Кошик <span th:text="'(' + ${cartCount ?: 0} + ')'"></span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<script th:fragment="navigation-script">-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        const navToggler = document.getElementById('navToggler');-->
+<!--        const mobileNav = document.getElementById('mobileNav');-->
+<!--        const mainNav = document.getElementById('mainNav');-->
+
+<!--        // Mobile navigation toggle-->
+<!--        if (navToggler && mobileNav) {-->
+<!--            navToggler.addEventListener('click', function() {-->
+<!--                mobileNav.classList.toggle('show');-->
+
+<!--                // Change icon-->
+<!--                const icon = navToggler.querySelector('i');-->
+<!--                if (mobileNav.classList.contains('show')) {-->
+<!--                    icon.className = 'fas fa-times';-->
+<!--                } else {-->
+<!--                    icon.className = 'fas fa-bars';-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Navbar scroll effect-->
+<!--        if (mainNav) {-->
+<!--            window.addEventListener('scroll', function() {-->
+<!--                if (window.scrollY > 50) {-->
+<!--                    mainNav.classList.add('scrolled');-->
+<!--                } else {-->
+<!--                    mainNav.classList.remove('scrolled');-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Close mobile nav when clicking on links-->
+<!--        const mobileLinks = document.querySelectorAll('.mobile-nav-link');-->
+<!--        mobileLinks.forEach(link => {-->
+<!--            link.addEventListener('click', function() {-->
+<!--                mobileNav.classList.remove('show');-->
+<!--                const icon = navToggler.querySelector('i');-->
+<!--                icon.className = 'fas fa-bars';-->
+<!--            });-->
+<!--        });-->
+
+<!--        // Close mobile nav when clicking outside-->
+<!--        document.addEventListener('click', function(event) {-->
+<!--            if (!navToggler.contains(event.target) && !mobileNav.contains(event.target)) {-->
+<!--                mobileNav.classList.remove('show');-->
+<!--                const icon = navToggler.querySelector('i');-->
+<!--                icon.className = 'fas fa-bars';-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -20,65 +220,68 @@
                 <li class="nav-item-luxury">
                     <a th:href="@{/}"
                        class="nav-link-luxury"
-                       th:classappend="${currentURI == '/' ? 'active' : ''}">
+                       th:classappend="${currentURI == '/' ? 'active' : ''}"
+                       data-text="Головна">
                         <i class="fas fa-home nav-icon"></i>
-                        Головна
+                        <span class="nav-text">Головна</span>
                     </a>
                 </li>
                 <li class="nav-item-luxury">
                     <a th:href="@{/product/all}"
                        class="nav-link-luxury"
-                       th:classappend="${#strings.startsWith(currentURI, '/product/all') ? 'active' : ''}">
+                       th:classappend="${#strings.startsWith(currentURI, '/product/all') ? 'active' : ''}"
+                       data-text="Товари">
                         <i class="fas fa-th-large nav-icon"></i>
-                         Товари
+                        <span class="nav-text">Товари</span>
                     </a>
                 </li>
                 <li class="nav-item-luxury">
                     <a th:href="@{/categories}"
                        class="nav-link-luxury"
-                       th:classappend="${currentURI == '/categories' ? 'active' : ''}">
-                        <i class="fas fa-heart nav-icon"></i>
-                        Категорії
+                       th:classappend="${currentURI == '/categories' ? 'active' : ''}"
+                       data-text="Категорії">
+                        <i class="fas fa-list nav-icon"></i>
+                        <span class="nav-text">Категорії</span>
                     </a>
                 </li>
                 <li class="nav-item-luxury">
                     <a th:href="@{/order/info}"
                        class="nav-link-luxury"
-                       th:classappend="${currentURI == '/order/info' ? 'active' : ''}">
-                        <i class="fas fa-box"></i>
-                        Статус замовлення
+                       th:classappend="${currentURI == '/order/info' ? 'active' : ''}"
+                       data-text="Статус замовлення">
+                        <i class="fas fa-box nav-icon"></i>
+                        <span class="nav-text">Статус</span>
                     </a>
                 </li>
-
-<!--                <li class="nav-item-luxury">-->
-<!--                    <a th:href="@{/search}"-->
-<!--                       class="nav-link-luxury position-relative"-->
-<!--                       th:classappend="${currentURI == '/search' ? 'active' : ''}">-->
-<!--                        <i class="fas fa-search nav-icon"></i>-->
-<!--                        Пошук-->
-<!--                    </a>-->
-<!--                </li>-->
-
+                <li class="nav-item-luxury">
+                    <a th:href="@{/search}"
+                       class="nav-link-luxury position-relative"
+                       th:classappend="${currentURI == '/search' ? 'active' : ''}"
+                       data-text="Пошук">
+                        <i class="fas fa-search nav-icon"></i>
+                        <span class="nav-text">Пошук</span>
+                    </a>
+                </li>
                 <li class="nav-item-luxury">
                     <a th:href="@{/wishlist}"
                        class="nav-link-luxury position-relative"
-                       th:classappend="${currentURI == '/wishlist' ? 'active' : ''}">
+                       th:classappend="${currentURI == '/wishlist' ? 'active' : ''}"
+                       data-text="Вибране">
                         <i class="fas fa-heart nav-icon"></i>
-                        Вибране
+                        <span class="nav-text">Вибране</span>
                         <span class="favorites-badge" th:text="${favoritesCount ?: 0}">0</span>
                     </a>
                 </li>
-
                 <li class="nav-item-luxury">
                     <a th:href="@{/cart}"
                        class="nav-link-luxury position-relative"
-                       th:classappend="${currentURI == '/cart' ? 'active' : ''}">
+                       th:classappend="${currentURI == '/cart' ? 'active' : ''}"
+                       data-text="Кошик">
                         <i class="fas fa-shopping-bag nav-icon"></i>
-                        Кошик
+                        <span class="nav-text">Кошик</span>
                         <span class="cart-badge" th:text="${cartCount ?: 0}">0</span>
                     </a>
                 </li>
-
             </ul>
 
             <!-- Mobile Toggle Button -->
@@ -106,22 +309,26 @@
                 </li>
                 <li class="mobile-nav-item">
                     <a th:href="@{/categories}" class="mobile-nav-link">
-                        <i class="fas fa-heart nav-icon"></i>
+                        <i class="fas fa-list nav-icon"></i>
                         Категорії
                     </a>
                 </li>
-
                 <li class="mobile-nav-item">
                     <a th:href="@{/brands}" class="mobile-nav-link">
-                        <i class="fas fa-heart nav-icon"></i>
+                        <i class="fas fa-tags nav-icon"></i>
                         Бренди
                     </a>
                 </li>
-
                 <li class="mobile-nav-item">
                     <a th:href="@{/order/info}" class="mobile-nav-link">
-                        <i class="fas fa-envelope nav-icon"></i>
+                        <i class="fas fa-box nav-icon"></i>
                         Статус замовлення
+                    </a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a th:href="@{/search}" class="mobile-nav-link">
+                        <i class="fas fa-search nav-icon"></i>
+                        Пошук
                     </a>
                 </li>
                 <li class="mobile-nav-item">
@@ -177,18 +384,22 @@
         const mobileLinks = document.querySelectorAll('.mobile-nav-link');
         mobileLinks.forEach(link => {
             link.addEventListener('click', function() {
-                mobileNav.classList.remove('show');
-                const icon = navToggler.querySelector('i');
-                icon.className = 'fas fa-bars';
+                if (mobileNav) {
+                    mobileNav.classList.remove('show');
+                    const icon = navToggler.querySelector('i');
+                    if (icon) icon.className = 'fas fa-bars';
+                }
             });
         });
 
         // Close mobile nav when clicking outside
         document.addEventListener('click', function(event) {
-            if (!navToggler.contains(event.target) && !mobileNav.contains(event.target)) {
+            if (navToggler && mobileNav &&
+                !navToggler.contains(event.target) &&
+                !mobileNav.contains(event.target)) {
                 mobileNav.classList.remove('show');
                 const icon = navToggler.querySelector('i');
-                icon.className = 'fas fa-bars';
+                if (icon) icon.className = 'fas fa-bars';
             }
         });
     });
