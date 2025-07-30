@@ -500,32 +500,6 @@
             color: var(--primary-color);
         }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-hover);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: var(--transition);
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success {
-            background: #27ae60;
-        }
-
-        .toast.error {
-            background: #e74c3c;
-        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -700,6 +674,7 @@
                 font-size: 0.7rem;
             }
         }
+
     </style>
 </head>
 <body>
@@ -816,11 +791,7 @@
         <main class="products-content">
             <!-- Products Header -->
             <div class="products-header">
-                <div class="products-info">
-                    <span>Знайдено: <strong th:text="${totalCount ?: 0}">0</strong> товарів</span>
-                    <span>Сторінка: <strong th:text="${currentPage ?: 1}">1</strong></span>
-                    <span>На сторінці: <strong th:text="${pageSize ?: 6}">6</strong></span>
-                </div>
+
 
                 <div class="sort-controls">
                     <label>Сортування:</label>
@@ -884,6 +855,7 @@
                         </button>
                     </div>
                 </div>
+
             </div>
 
             <!-- No Products Message -->
@@ -952,8 +924,6 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
-<div id="toast" class="toast"></div>
 
 <!-- Подвал -->
 <!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
