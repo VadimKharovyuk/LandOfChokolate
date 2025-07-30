@@ -1,16 +1,21 @@
 
-/*!* Navigation Styles *!*/
+/*!* Navigation Styles - Оптимизированная версия *!*/
 
 /*!* Google Fonts *!*/
 /*@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');*/
 
 /*!* CSS Variables *!*/
 /*:root {*/
-/*    --primary-dark: #2c3e50;*/
-/*    --accent-gold: #c9a96e;*/
+/*    --primary-dark: #8B4B6B; !* Темно-розовый *!*/
+/*    --accent-rose: #E8A5C0; !* Основной светло-розовый *!*/
+/*    --accent-light: #F5D5E0; !* Очень светлый розовый *!*/
+/*    --accent-soft: #D4A5B8; !* Мягкий розовый *!*/
 /*    --white: #ffffff;*/
+/*    --cream: #FDF9F5; !* Кремовый фон *!*/
 /*    --transition: all 0.3s ease;*/
-/*    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);*/
+/*    --shadow-light: 0 2px 10px rgba(139, 75, 107, 0.15);*/
+/*    --shadow-rose: 0 4px 15px rgba(232, 165, 192, 0.25);*/
+/*    --nav-height: 80px; !* Фиксированная высота навигации *!*/
 /*}*/
 
 /*!* Navigation Styles *!*/
@@ -20,7 +25,6 @@
 /*    margin: 0 auto;*/
 /*    padding: 0 15px;*/
 /*}*/
-
 
 /*!* Flexbox utilities *!*/
 /*.d-flex {*/
@@ -79,27 +83,30 @@
 /*    z-index: 1030;*/
 /*}*/
 
-/*!* Navigation Styles - ваши существующие стили остаются без изменений *!*/
+/*!* ОСНОВНЫЕ ИСПРАВЛЕНИЯ *!*/
+
 /*.navbar-luxury {*/
 /*    background: rgba(248, 248, 248, 0.95);*/
 /*    backdrop-filter: blur(20px);*/
 /*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
-/*    padding: 20px 0;*/
+/*    height: var(--nav-height); !* Фиксированная высота *!*/
+/*    display: flex;*/
+/*    align-items: center; !* Центрирование по вертикали *!*/
 /*    transition: var(--transition);*/
-/*    width: 100%; !* Добавьте эту строку *!*/
-/*}*/
-/*.navbar-luxury {*/
-/*    background: rgba(248, 248, 248, 0.95);*/
-/*    backdrop-filter: blur(20px);*/
-/*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
-/*    padding: 20px 0;*/
-/*    transition: var(--transition);*/
+/*    width: 100%;*/
+/*    padding: 0; !* Убираем вертикальные отступы *!*/
 /*}*/
 
 /*.navbar-luxury.scrolled {*/
-/*    padding: 15px 0;*/
+/*    height: 70px; !* Немного меньше при скролле *!*/
 /*    background: rgba(248, 248, 248, 0.98);*/
 /*    box-shadow: var(--shadow-light);*/
+/*}*/
+
+/*.navbar-luxury .container {*/
+/*    height: 100%;*/
+/*    display: flex;*/
+/*    align-items: center;*/
 /*}*/
 
 /*.navbar-brand-luxury {*/
@@ -113,6 +120,7 @@
 /*    text-decoration: none;*/
 /*    letter-spacing: -0.5px;*/
 /*    transition: var(--transition);*/
+/*    flex-shrink: 0; !* Не сжимается *!*/
 /*}*/
 
 /*.brand-logo {*/
@@ -127,36 +135,46 @@
 /*    color: var(--accent-gold) !important;*/
 /*}*/
 
+/*!* ОПТИМИЗИРОВАННАЯ НАВИГАЦИЯ *!*/
 /*.nav-luxury {*/
 /*    display: flex;*/
 /*    align-items: center;*/
-/*    gap: 48px;*/
+/*    gap: 32px; !* Уменьшили с 48px для компактности *!*/
 /*    list-style: none;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    height: 100%;*/
+/*    flex-wrap: nowrap; !* Не переносим элементы *!*/
 /*}*/
 
 /*.nav-item-luxury {*/
 /*    position: relative;*/
+/*    flex-shrink: 0; !* Не сжимаем элементы *!*/
 /*}*/
 
 /*.nav-link-luxury {*/
 /*    color: var(--primary-dark);*/
 /*    text-decoration: none;*/
 /*    font-weight: 500;*/
-/*    font-size: 15px;*/
+/*    font-size: 14px; !* Немного уменьшили шрифт *!*/
 /*    letter-spacing: 0.3px;*/
-/*    padding: 8px 0;*/
+/*    height: 100%;*/
 /*    position: relative;*/
 /*    transition: var(--transition);*/
 /*    display: flex;*/
 /*    align-items: center;*/
-/*    gap: 8px;*/
+/*    justify-content: center;*/
+/*    gap: 6px; !* Уменьшили отступ между иконкой и текстом *!*/
+/*    padding: 0 8px; !* Горизонтальные отступы для кликабельной области *!*/
+/*    white-space: nowrap; !* Текст в одну строку *!*/
 /*}*/
 
 /*.nav-link-luxury::after {*/
 /*    content: '';*/
 /*    position: absolute;*/
-/*    bottom: -2px;*/
-/*    left: 0;*/
+/*    bottom: 0;*/
+/*    left: 50%;*/
+/*    transform: translateX(-50%);*/
 /*    width: 0;*/
 /*    height: 2px;*/
 /*    background: linear-gradient(90deg, var(--accent-gold), #d4af37);*/
@@ -168,7 +186,7 @@
 /*}*/
 
 /*.nav-link-luxury:hover::after {*/
-/*    width: 100%;*/
+/*    width: 80%; !* Не на всю ширину, а 80% *!*/
 /*}*/
 
 /*.nav-link-luxury.active {*/
@@ -176,13 +194,14 @@
 /*}*/
 
 /*.nav-link-luxury.active::after {*/
-/*    width: 100%;*/
+/*    width: 80%;*/
 /*}*/
 
 /*.nav-icon {*/
 /*    font-size: 14px;*/
 /*    opacity: 0.8;*/
 /*    transition: var(--transition);*/
+/*    flex-shrink: 0;*/
 /*}*/
 
 /*.nav-link-luxury:hover .nav-icon {*/
@@ -190,24 +209,99 @@
 /*    transform: translateY(-1px);*/
 /*}*/
 
+/*!* BADGES *!*/
+/*!* Исправленные стили для badges - добавьте к вашему CSS *!*/
+
+/*!* BADGES - ИСПРАВЛЕННОЕ ПОЗИЦИОНИРОВАНИЕ *!*/
 /*.cart-badge, .favorites-badge {*/
-/*    background: var(--accent-gold);*/
+/*    background: linear-gradient(135deg, #E8A5C0, #D4A5B8); !* Розовые градиенты *!*/
 /*    color: var(--white);*/
 /*    border-radius: 50%;*/
-/*    width: 18px;*/
-/*    height: 18px;*/
+/*    width: 20px; !* Увеличили размер *!*/
+/*    height: 20px;*/
 /*    font-size: 11px;*/
 /*    font-weight: 600;*/
 /*    display: flex;*/
 /*    align-items: center;*/
 /*    justify-content: center;*/
 /*    position: absolute;*/
-/*    top: -8px;*/
-/*    right: -8px;*/
+/*    top: -2px; !* Поднимаем выше *!*/
+/*    right: -10px; !* Сдвигаем правее *!*/
+/*    line-height: 1;*/
+/*    box-shadow: 0 2px 8px rgba(232, 165, 192, 0.4);*/
+/*    border: 2px solid var(--white);*/
+/*    animation: pulse 2s infinite;*/
+/*    z-index: 10; !* Поверх других элементов *!*/
+/*    min-width: 20px; !* Минимальная ширина для больших чисел *!*/
 /*}*/
 
 /*.favorites-badge {*/
-/*    background: #e74c3c;*/
+/*    background: linear-gradient(135deg, #FF6B9D, #FF8FB3); !* Более яркий розовый для избранного *!*/
+/*}*/
+
+/*!* Анимация pulse *!*/
+/*@keyframes pulse {*/
+/*    0%, 100% { transform: scale(1); }*/
+/*    50% { transform: scale(1.05); }*/
+/*}*/
+
+/*!* Для больших чисел (двузначные) *!*/
+/*.cart-badge:has-text,*/
+/*.favorites-badge:has-text {*/
+/*    min-width: 24px;*/
+/*    padding: 0 2px;*/
+/*    border-radius: 12px; !* Овальная форма для длинных чисел *!*/
+/*}*/
+
+/*!* Дополнительные исправления для родительских элементов *!*/
+/*.nav-link-luxury.position-relative {*/
+/*    overflow: visible; !* Убеждаемся что badge виден *!*/
+/*    padding-right: 12px; !* Добавляем отступ справа для badge *!*/
+/*}*/
+
+/*!* Специальные стили для элементов с badge *!*/
+/*.nav-link-luxury:has(.cart-badge),*/
+/*.nav-link-luxury:has(.favorites-badge) {*/
+/*    padding-right: 16px; !* Больше места справа *!*/
+/*}*/
+
+/*!* Адаптивные исправления *!*/
+/*@media (max-width: 1399px) {*/
+/*    !* На маленьких экранах когда только иконки *!*/
+/*    .cart-badge, .favorites-badge {*/
+/*        top: -4px;*/
+/*        right: -6px;*/
+/*        width: 18px;*/
+/*        height: 18px;*/
+/*        font-size: 10px;*/
+/*    }*/
+
+/*    .nav-link-luxury.position-relative {*/
+/*        padding-right: 8px;*/
+/*    }*/
+/*}*/
+
+/*@media (max-width: 1199px) {*/
+/*    .cart-badge, .favorites-badge {*/
+/*        top: -3px;*/
+/*        right: -4px;*/
+/*        width: 16px;*/
+/*        height: 16px;*/
+/*        font-size: 9px;*/
+/*    }*/
+/*}*/
+
+/*!* Если число больше 99, показываем 99+ *!*/
+/*.cart-badge[data-count]:after,*/
+/*.favorites-badge[data-count]:after {*/
+/*    content: attr(data-count);*/
+/*}*/
+
+/*!* Добавляем небольшое свечение при hover *!*/
+/*.nav-link-luxury:hover .cart-badge,*/
+/*.nav-link-luxury:hover .favorites-badge {*/
+/*    box-shadow: 0 4px 12px rgba(232, 165, 192, 0.6);*/
+/*    transform: scale(1.1);*/
 /*}*/
 
 /*.navbar-toggler-luxury {*/
@@ -215,13 +309,14 @@
 /*    padding: 8px;*/
 /*    background: transparent;*/
 /*    color: var(--primary-dark);*/
+/*    font-size: 18px;*/
 /*}*/
 
 /*!* Mobile Navigation *!*/
 /*.mobile-nav {*/
 /*    display: none;*/
 /*    position: fixed;*/
-/*    top: 80px;*/
+/*    top: var(--nav-height);*/
 /*    left: 0;*/
 /*    right: 0;*/
 /*    background: rgba(248, 248, 248, 0.98);*/
@@ -229,6 +324,8 @@
 /*    border-bottom: 1px solid rgba(201, 169, 110, 0.1);*/
 /*    z-index: 1000;*/
 /*    padding: 20px 0;*/
+/*    max-height: calc(100vh - var(--nav-height));*/
+/*    overflow-y: auto;*/
 /*}*/
 
 /*.mobile-nav.show {*/
@@ -262,9 +359,25 @@
 /*    color: var(--accent-gold);*/
 /*}*/
 
+/*!* АДАПТИВНЫЕ СТИЛИ *!*/
+/*@media (max-width: 1199px) {*/
+/*    .nav-luxury {*/
+/*        gap: 24px; !* Еще меньше на средних экранах *!*/
+/*    }*/
+
+/*    .nav-link-luxury {*/
+/*        font-size: 13px;*/
+/*        gap: 4px;*/
+/*    }*/
+/*}*/
+
 /*@media (max-width: 991px) {*/
 /*    .nav-luxury {*/
 /*        display: none;*/
+/*    }*/
+
+/*    :root {*/
+/*        --nav-height: 70px; !* Меньше на мобильных *!*/
 /*    }*/
 /*}*/
 
@@ -274,19 +387,54 @@
 /*    }*/
 /*}*/
 
+/*!* ДОПОЛНИТЕЛЬНЫЕ ОПТИМИЗАЦИИ *!*/
 
-/* Navigation Styles - Оптимизированная версия */
+/*!* Если нужно еще больше места, можно скрыть текст у некоторых пунктов на маленьких экранах *!*/
+/*@media (max-width: 1399px) {*/
+/*    .nav-link-luxury .nav-text {*/
+/*        display: none;*/
+/*    }*/
+
+/*    .nav-link-luxury {*/
+/*        gap: 0;*/
+/*        padding: 0 12px;*/
+/*    }*/
+
+/*    .nav-icon {*/
+/*        font-size: 16px;*/
+/*    }*/
+
+/*    !* Показываем текст при hover *!*/
+/*    .nav-link-luxury:hover::before {*/
+/*        content: attr(data-text);*/
+/*        position: absolute;*/
+/*        bottom: -30px;*/
+/*        left: 50%;*/
+/*        transform: translateX(-50%);*/
+/*        background: var(--primary-dark);*/
+/*        color: var(--white);*/
+/*        padding: 4px 8px;*/
+/*        border-radius: 4px;*/
+/*        font-size: 12px;*/
+/*        white-space: nowrap;*/
+/*        z-index: 1000;*/
+/*    }*/
+/*}*/
 
 /* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 /* CSS Variables */
 :root {
-    --primary-dark: #2c3e50;
-    --accent-gold: #c9a96e;
+    --primary-dark: #D4A5B8; /* Темно-розовый */
+    --accent-rose: #D4A5B8; /* Основной светло-розовый */
+    --accent-light: #D4A5B8; /* Очень светлый розовый */
+    --accent-soft: #D4A5B8; /* Мягкий розовый */
     --white: #ffffff;
+    --cream: #FDF9F5; /* Кремовый фон */
     --transition: all 0.3s ease;
-    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-light: 0 2px 10px rgba(139, 75, 107, 0.15);
+    --shadow-rose: 0 4px 15px rgba(232, 165, 192, 0.25);
     --nav-height: 80px; /* Фиксированная высота навигации */
 }
 
@@ -355,24 +503,26 @@
     z-index: 1030;
 }
 
-/* ОСНОВНЫЕ ИСПРАВЛЕНИЯ */
+/* СВЕТЛО-РОЗОВЫЙ КОНТЕЙНЕР НАВИГАЦИИ */
 
 .navbar-luxury {
-    background: rgba(248, 248, 248, 0.95);
+    background: rgba(245, 213, 224, 0.95); /* Светло-розовый фон */
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+    border-bottom: 2px solid rgba(232, 165, 192, 0.4); /* Розовая граница */
     height: var(--nav-height); /* Фиксированная высота */
     display: flex;
     align-items: center; /* Центрирование по вертикали */
     transition: var(--transition);
     width: 100%;
     padding: 0; /* Убираем вертикальные отступы */
+    box-shadow: var(--shadow-rose); /* Розовая тень */
 }
 
 .navbar-luxury.scrolled {
     height: 70px; /* Немного меньше при скролле */
-    background: rgba(248, 248, 248, 0.98);
+    background: rgba(245, 213, 224, 0.98); /* Светло-розовый при скролле */
     box-shadow: var(--shadow-light);
+    border-bottom-color: rgba(232, 165, 192, 0.6);
 }
 
 .navbar-luxury .container {
@@ -393,18 +543,21 @@
     letter-spacing: -0.5px;
     transition: var(--transition);
     flex-shrink: 0; /* Не сжимается */
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5); /* Белая тень для контраста */
 }
 
 .brand-logo {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 12px; /* Более округлые углы */
     object-fit: cover;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(232, 165, 192, 0.4); /* Розовая тень */
+    border: 2px solid var(--white); /* Белая рамка для контраста */
 }
 
 .navbar-brand-luxury:hover {
-    color: var(--accent-gold) !important;
+    color: var(--accent-rose) !important;
+    transform: translateY(-1px); /* Легкое поднятие при hover */
 }
 
 /* ОПТИМИЗИРОВАННАЯ НАВИГАЦИЯ */
@@ -439,34 +592,19 @@
     gap: 6px; /* Уменьшили отступ между иконкой и текстом */
     padding: 0 8px; /* Горизонтальные отступы для кликабельной области */
     white-space: nowrap; /* Текст в одну строку */
-}
-
-.nav-link-luxury::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-gold), #d4af37);
-    transition: var(--transition);
+    border-radius: 8px; /* Округлые углы */
 }
 
 .nav-link-luxury:hover {
-    color: var(--accent-gold);
-}
-
-.nav-link-luxury:hover::after {
-    width: 80%; /* Не на всю ширину, а 80% */
+    color: var(--primary-dark);
+    background: var(--accent-light); /* Светло-розовая заливка при hover */
+    transform: translateY(-1px);
 }
 
 .nav-link-luxury.active {
-    color: var(--accent-gold);
-}
-
-.nav-link-luxury.active::after {
-    width: 80%;
+    color: var(--primary-dark);
+    background: var(--accent-rose); /* Розовая заливка для активного */
+    color: var(--white); /* Белый текст на розовом фоне */
 }
 
 .nav-icon {
@@ -474,41 +612,94 @@
     opacity: 0.8;
     transition: var(--transition);
     flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3)); /* Белая тень для иконок */
 }
 
 .nav-link-luxury:hover .nav-icon {
     opacity: 1;
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.1); /* Увеличение при hover */
+    color: var(--primary-dark); /* Темно-розовый цвет иконки при hover */
+}
+
+/* Для активного состояния */
+.nav-link-luxury.active .nav-icon {
+    color: var(--white); /* Белые иконки на розовом фоне */
 }
 
 /* BADGES */
 .cart-badge, .favorites-badge {
-    background: var(--accent-gold);
+    background: linear-gradient(135deg, #E8A5C0, #D4A5B8); /* Розовые градиенты */
     color: var(--white);
     border-radius: 50%;
-    width: 16px; /* Немного меньше */
-    height: 16px;
-    font-size: 10px;
+    width: 20px; /* Увеличили размер */
+    height: 20px;
+    font-size: 11px;
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 8px; /* Скорректировали позицию */
-    right: -6px;
+    top: -2px; /* Поднимаем выше */
+    right: -10px; /* Сдвигаем правее */
     line-height: 1;
+    box-shadow: 0 2px 8px rgba(232, 165, 192, 0.4);
+    border: 2px solid var(--white);
+    animation: pulse 2s infinite;
+    z-index: 10; /* Поверх других элементов */
+    min-width: 20px; /* Минимальная ширина для больших чисел */
 }
 
 .favorites-badge {
-    background: #e74c3c;
+    background: linear-gradient(135deg, #FF6B9D, #FF8FB3); /* Более яркий розовый для избранного */
+}
+
+/* Анимация pulse */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Для больших чисел (двузначные) */
+.cart-badge:has-text,
+.favorites-badge:has-text {
+    min-width: 24px;
+    padding: 0 2px;
+    border-radius: 12px; /* Овальная форма для длинных чисел */
+}
+
+/* Дополнительные исправления для родительских элементов */
+.nav-link-luxury.position-relative {
+    overflow: visible; /* Убеждаемся что badge виден */
+    padding-right: 12px; /* Добавляем отступ справа для badge */
+}
+
+/* Специальные стили для элементов с badge */
+.nav-link-luxury:has(.cart-badge),
+.nav-link-luxury:has(.favorites-badge) {
+    padding-right: 16px; /* Больше места справа */
+}
+
+/* Добавляем небольшое свечение при hover */
+.nav-link-luxury:hover .cart-badge,
+.nav-link-luxury:hover .favorites-badge {
+    box-shadow: 0 4px 12px rgba(232, 165, 192, 0.6);
+    transform: scale(1.1);
 }
 
 .navbar-toggler-luxury {
-    border: none;
-    padding: 8px;
-    background: transparent;
+    border: 2px solid var(--white); /* Белая рамка */
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.3); /* Белый полупрозрачный фон */
     color: var(--primary-dark);
     font-size: 18px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.navbar-toggler-luxury:hover {
+    background: rgba(255, 255, 255, 0.5); /* Белее при hover */
+    color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 /* Mobile Navigation */
@@ -518,13 +709,14 @@
     top: var(--nav-height);
     left: 0;
     right: 0;
-    background: rgba(248, 248, 248, 0.98);
+    background: rgba(245, 213, 224, 0.98); /* Светло-розовый фон */
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+    border-bottom: 2px solid rgba(232, 165, 192, 0.4);
     z-index: 1000;
     padding: 20px 0;
     max-height: calc(100vh - var(--nav-height));
     overflow-y: auto;
+    box-shadow: var(--shadow-rose);
 }
 
 .mobile-nav.show {
@@ -550,15 +742,35 @@
     font-weight: 500;
     font-size: 16px;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Белая граница */
     transition: var(--transition);
+    border-radius: 8px;
+    margin: 4px 0;
 }
 
 .mobile-nav-link:hover {
-    color: var(--accent-gold);
+    color: var(--accent-rose);
+    background: rgba(255, 255, 255, 0.3); /* Белый полупрозрачный фон при hover */
+    padding-left: 12px;
+    transform: translateX(8px);
 }
 
 /* АДАПТИВНЫЕ СТИЛИ */
+@media (max-width: 1399px) {
+    /* На маленьких экранах когда только иконки */
+    .cart-badge, .favorites-badge {
+        top: -4px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    .nav-link-luxury.position-relative {
+        padding-right: 8px;
+    }
+}
+
 @media (max-width: 1199px) {
     .nav-luxury {
         gap: 24px; /* Еще меньше на средних экранах */
@@ -567,6 +779,14 @@
     .nav-link-luxury {
         font-size: 13px;
         gap: 4px;
+    }
+
+    .cart-badge, .favorites-badge {
+        top: -3px;
+        right: -4px;
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
     }
 }
 
@@ -607,15 +827,33 @@
     .nav-link-luxury:hover::before {
         content: attr(data-text);
         position: absolute;
-        bottom: -30px;
+        bottom: -35px;
         left: 50%;
         transform: translateX(-50%);
         background: var(--primary-dark);
         color: var(--white);
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 6px 10px;
+        border-radius: 6px;
         font-size: 12px;
         white-space: nowrap;
         z-index: 1000;
+        box-shadow: 0 4px 12px rgba(139, 75, 107, 0.3);
+        border: 1px solid var(--accent-light);
+    }
+
+    /* Стрелочка для tooltip */
+    .nav-link-luxury:hover::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid var(--primary-dark);
+        z-index: 1001;
+        display: block; /* Показываем стрелочку */
     }
 }

@@ -319,13 +319,18 @@ body {
     box-shadow: 0 8px 20px var(--shadow-light);
 }
 
+/*.brand-name {*/
+/*    font-size: 2rem;*/
+/*    font-weight: 700;*/
+/*    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 100%);*/
+/*    -webkit-background-clip: text;*/
+/*    -webkit-text-fill-color: transparent;*/
+/*    background-clip: text;*/
+/*}*/
 .brand-name {
     font-size: 2rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #000; /* Чёрный цвет */
 }
 
 .brand-description {
