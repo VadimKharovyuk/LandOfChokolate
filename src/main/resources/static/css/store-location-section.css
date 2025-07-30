@@ -353,88 +353,177 @@
     line-height: 1.6;
 }
 
-/* Responsive */
+/* Responsive - ОПТИМИЗИРОВАНО ДЛЯ МОБИЛЬНЫХ */
 @media (max-width: 991px) {
+    .store-location-section {
+        padding: 60px 0; /* Уменьшили отступы */
+    }
+
+    .location-content {
+        margin-top: 40px; /* Уменьшили отступ */
+    }
+
     .store-info {
         padding-right: 0;
-        margin-bottom: 40px;
+        margin-bottom: 30px; /* Уменьшили отступ между секциями */
     }
 
     .map-container {
-        height: 400px;
+        height: 350px; /* Уменьшили высоту карты */
+    }
+
+    .additional-info {
+        margin-top: 40px; /* Уменьшили отступ */
+        padding-top: 30px; /* Уменьшили отступ */
     }
 }
 
 @media (max-width: 768px) {
     .store-location-section {
-        padding: 80px 0;
+        padding: 40px 0; /* Минимальные отступы на мобильных */
+    }
+
+    .location-content {
+        margin-top: 20px; /* Минимальный отступ */
     }
 
     .store-card {
-        padding: 40px 30px;
+        padding: 25px 20px; /* Компактный внутренний отступ */
+        border-radius: 12px; /* Меньший радиус */
+    }
+
+    .store-icon {
+        width: 60px; /* Меньший размер иконки */
+        height: 60px;
+        margin-bottom: 20px; /* Уменьшили отступ */
+    }
+
+    .store-icon i {
+        font-size: 24px; /* Меньший размер иконки */
+    }
+
+    .store-title {
+        font-size: 24px; /* Меньший размер заголовка */
+        margin-bottom: 15px; /* Уменьшили отступ */
+    }
+
+    .store-description {
+        font-size: 14px; /* Меньший размер текста */
+        margin-bottom: 25px; /* Уменьшили отступ */
+    }
+
+    .contact-details {
+        margin-bottom: 25px; /* Уменьшили отступ */
     }
 
     .contact-item {
         flex-direction: column;
         text-align: center;
         align-items: center;
+        margin-bottom: 15px; /* Уменьшили отступ между элементами */
+        padding: 10px 0; /* Уменьшили внутренний отступ */
     }
 
     .contact-icon {
         margin-right: 0;
-        margin-bottom: 15px;
+        margin-bottom: 10px; /* Уменьшили отступ */
+        width: 35px; /* Меньший размер */
+        height: 35px;
+    }
+
+    .contact-icon i {
+        font-size: 14px; /* Меньший размер иконки */
     }
 
     .store-actions {
         justify-content: center;
+        gap: 10px; /* Уменьшили отступ между кнопками */
     }
 
     .btn-store {
         flex: 1;
         justify-content: center;
-        min-width: 140px;
+        min-width: 120px; /* Уменьшили минимальную ширину */
+        padding: 10px 16px; /* Уменьшили отступы кнопок */
+        font-size: 12px; /* Меньший размер текста */
+    }
+
+    .map-container {
+        height: 280px; /* Еще меньше высота карты */
+        border-radius: 12px; /* Меньший радиус */
+        margin-bottom: 20px; /* Добавили отступ снизу */
     }
 
     .map-features {
-        flex-direction: column;
-        gap: 8px;
+        display: none; /* Скрываем фичи карты на мобильных */
     }
 
     .map-overlay {
         position: relative;
         top: auto;
         left: auto;
-        margin: 20px;
-        margin-bottom: -60px;
+        margin: 10px; /* Уменьшили отступы */
+        margin-bottom: -30px; /* Уменьшили отрицательный отступ */
         z-index: 15;
+        padding: 12px 16px; /* Уменьшили внутренние отступы */
     }
 
     .additional-info {
-        margin-top: 60px;
-        padding-top: 40px;
+        margin-top: 25px; /* Минимальный отступ */
+        padding-top: 25px; /* Минимальный отступ */
     }
 
     .info-card {
-        margin-bottom: 30px;
+        margin-bottom: 15px; /* Уменьшили отступ между карточками */
+        padding: 25px 15px; /* Уменьшили внутренние отступы */
+    }
+
+    .info-icon {
+        width: 50px; /* Меньший размер иконки */
+        height: 50px;
+        margin-bottom: 15px; /* Уменьшили отступ */
+    }
+
+    .info-icon i {
+        font-size: 20px; /* Меньший размер иконки */
+    }
+
+    .info-card h4 {
+        font-size: 16px; /* Меньший размер заголовка */
+        margin-bottom: 10px; /* Уменьшили отступ */
+    }
+
+    .info-card p {
+        font-size: 13px; /* Меньший размер текста */
     }
 }
 
 @media (max-width: 576px) {
+    .store-location-section {
+        padding: 30px 0; /* Еще меньше отступы */
+    }
+
     .map-container {
-        height: 350px;
+        height: 250px; /* Компактная высота карты */
     }
 
     .store-title {
-        font-size: 28px;
+        font-size: 20px; /* Еще меньший заголовок */
     }
 
     .map-overlay {
-        padding: 15px 20px;
-        margin: 15px;
-        margin-bottom: -50px;
+        padding: 10px 12px; /* Минимальные отступы */
+        margin: 8px; /* Минимальные отступы */
+        margin-bottom: -25px;
     }
 
-    .map-features {
-        display: none;
+    .additional-info {
+        margin-top: 20px; /* Минимальный отступ */
+        padding-top: 20px; /* Минимальный отступ */
+    }
+
+    .info-card {
+        padding: 20px 12px; /* Минимальные внутренние отступы */
+        margin-bottom: 12px; /* Минимальный отступ между карточками */
     }
 }
