@@ -13,7 +13,7 @@ public class CreateOrderRequest {
     private String customerName;
 
     @Email(message = "Некорректный email")
-    @NotBlank(message = "Email обязателен для заполнения")
+//    @NotBlank(message = "Email обязателен для заполнения")
     private String email;
 
     // Временно упрощенная валидация для отладки
