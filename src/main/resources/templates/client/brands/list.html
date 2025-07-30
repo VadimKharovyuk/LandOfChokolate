@@ -1,3 +1,558 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Наші бренди - Land of Chocolate</title>-->
+
+<!--  &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--  &lt;!&ndash; Font Awesome &ndash;&gt;-->
+<!--  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">-->
+<!--  &lt;!&ndash; Google Fonts &ndash;&gt;-->
+<!--  <link rel="preconnect" href="https://fonts.googleapis.com">-->
+<!--  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
+<!--  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">-->
+
+<!--  &lt;!&ndash; Fragment CSS - только необходимые &ndash;&gt;-->
+<!--  <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">-->
+<!--  <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">-->
+<!--  <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">-->
+
+<!--  <style>-->
+<!--    :root {-->
+<!--      &#45;&#45;primary-dark: #2C2C2C;-->
+<!--      &#45;&#45;primary-medium: #5A5A5A;-->
+<!--      &#45;&#45;primary-light: #FAFAFA;-->
+<!--      &#45;&#45;accent-gold: #D4AF37;-->
+<!--      &#45;&#45;accent-warm: #F5F5F0;-->
+<!--      &#45;&#45;text-primary: #1A1A1A;-->
+<!--      &#45;&#45;text-secondary: #757575;-->
+<!--      &#45;&#45;border-subtle: #E8E8E8;-->
+<!--      &#45;&#45;shadow-soft: rgba(0, 0, 0, 0.04);-->
+<!--      &#45;&#45;shadow-medium: rgba(0, 0, 0, 0.08);-->
+<!--      &#45;&#45;success-color: #28a745;-->
+<!--      &#45;&#45;warning-color: #ffc107;-->
+<!--      &#45;&#45;danger-color: #dc3545;-->
+<!--    }-->
+
+<!--    * {-->
+<!--      margin: 0;-->
+<!--      padding: 0;-->
+<!--      box-sizing: border-box;-->
+<!--    }-->
+
+<!--    body {-->
+<!--      font-family: 'Inter', sans-serif;-->
+<!--      font-weight: 400;-->
+<!--      line-height: 1.7;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      background-color: #FFFFFF;-->
+<!--      letter-spacing: -0.01em;-->
+<!--      padding-bottom: 90px; /* Отступ для мобильной навигации */-->
+<!--    }-->
+
+<!--    .serif-font {-->
+<!--      font-family: 'Cormorant Garamond', serif;-->
+<!--    }-->
+
+<!--    /* Основной контент с отступом от навигации */-->
+<!--    .main-content {-->
+<!--      margin-top: 80px;-->
+<!--    }-->
+
+<!--    .main-container {-->
+<!--      max-width: 1400px;-->
+<!--      margin: 0 auto;-->
+<!--      padding: 0 2rem;-->
+<!--    }-->
+
+<!--    /* Breadcrumbs */-->
+<!--    .breadcrumb-container {-->
+<!--      padding: 2rem 0 1rem;-->
+<!--      border-bottom: 1px solid var(&#45;&#45;border-subtle);-->
+<!--    }-->
+
+<!--    .breadcrumb {-->
+<!--      background: none;-->
+<!--      padding: 0;-->
+<!--      margin: 0;-->
+<!--      font-size: 0.9rem;-->
+<!--    }-->
+
+<!--    .breadcrumb-item {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--    }-->
+
+<!--    .breadcrumb-item a {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      text-decoration: none;-->
+<!--      transition: color 0.2s ease;-->
+<!--    }-->
+
+<!--    .breadcrumb-item a:hover {-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--    }-->
+
+<!--    .breadcrumb-item.active {-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      font-weight: 500;-->
+<!--    }-->
+
+<!--    /* Page Header */-->
+<!--    .page-header {-->
+<!--      padding: 4rem 0 3rem;-->
+<!--      text-align: center;-->
+<!--    }-->
+
+<!--    .page-title {-->
+<!--      font-family: 'Cormorant Garamond', serif;-->
+<!--      font-size: 3rem;-->
+<!--      font-weight: 400;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      margin-bottom: 1rem;-->
+<!--      letter-spacing: -0.02em;-->
+<!--    }-->
+
+<!--    .page-subtitle {-->
+<!--      font-size: 1.1rem;-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      font-weight: 300;-->
+<!--      max-width: 600px;-->
+<!--      margin: 0 auto;-->
+<!--    }-->
+
+<!--    /* Results Info */-->
+<!--    .results-info {-->
+<!--      display: flex;-->
+<!--      justify-content: space-between;-->
+<!--      align-items: center;-->
+<!--      margin-bottom: 3rem;-->
+<!--      padding: 1.5rem 2rem;-->
+<!--      background: var(&#45;&#45;accent-warm);-->
+<!--      border-radius: 8px;-->
+<!--      border: 1px solid var(&#45;&#45;border-subtle);-->
+<!--    }-->
+
+<!--    .results-count {-->
+<!--      font-weight: 500;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--    }-->
+
+<!--    .results-meta {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      font-size: 0.9rem;-->
+<!--    }-->
+
+<!--    /* Brands Grid */-->
+<!--    .brands-section {-->
+<!--      padding: 3rem 0;-->
+<!--    }-->
+
+<!--    .brands-grid {-->
+<!--      display: grid;-->
+<!--      grid-template-columns: repeat(3, 1fr);-->
+<!--      gap: 2rem;-->
+<!--      margin-bottom: 4rem;-->
+<!--    }-->
+
+<!--    .brand-card {-->
+<!--      background: #FFFFFF;-->
+<!--      border-radius: 8px;-->
+<!--      overflow: hidden;-->
+<!--      box-shadow: var(&#45;&#45;shadow-soft);-->
+<!--      transition: all 0.3s ease;-->
+<!--      text-decoration: none;-->
+<!--      color: inherit;-->
+<!--      border: 1px solid var(&#45;&#45;border-subtle);-->
+<!--      position: relative;-->
+<!--      height: fit-content;-->
+<!--    }-->
+
+<!--    .brand-card:hover {-->
+<!--      text-decoration: none;-->
+<!--      color: inherit;-->
+<!--      transform: translateY(-4px);-->
+<!--      box-shadow: var(&#45;&#45;shadow-medium);-->
+<!--    }-->
+
+<!--    .brand-image {-->
+<!--      width: 100%;-->
+<!--      height: 200px;-->
+<!--      background-color: var(&#45;&#45;accent-warm);-->
+<!--      background-size: contain;-->
+<!--      background-repeat: no-repeat;-->
+<!--      background-position: center;-->
+<!--      position: relative;-->
+<!--      border-bottom: 1px solid var(&#45;&#45;border-subtle);-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      justify-content: center;-->
+<!--    }-->
+
+<!--    .brand-image-placeholder {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      font-size: 4rem;-->
+<!--    }-->
+
+<!--    .premium-badge {-->
+<!--      position: absolute;-->
+<!--      top: 15px;-->
+<!--      right: 15px;-->
+<!--      background: var(&#45;&#45;accent-gold);-->
+<!--      color: #FFFFFF;-->
+<!--      padding: 6px 12px;-->
+<!--      border-radius: 20px;-->
+<!--      font-size: 0.75rem;-->
+<!--      font-weight: 600;-->
+<!--      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      gap: 0.5rem;-->
+<!--    }-->
+
+<!--    .brand-content {-->
+<!--      padding: 2rem;-->
+<!--      text-align: center;-->
+<!--    }-->
+
+<!--    .brand-category {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      font-size: 0.85rem;-->
+<!--      font-weight: 500;-->
+<!--      text-transform: uppercase;-->
+<!--      letter-spacing: 0.5px;-->
+<!--      margin-bottom: 0.5rem;-->
+<!--    }-->
+
+<!--    .brand-name {-->
+<!--      font-family: 'Cormorant Garamond', serif;-->
+<!--      font-size: 1.5rem;-->
+<!--      font-weight: 500;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      margin-bottom: 1rem;-->
+<!--      line-height: 1.3;-->
+<!--    }-->
+
+<!--    .brand-description {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      font-size: 0.95rem;-->
+<!--      line-height: 1.6;-->
+<!--      margin-bottom: 1.5rem;-->
+<!--    }-->
+
+<!--    .brand-footer {-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      justify-content: center;-->
+<!--      gap: 0.5rem;-->
+<!--      color: var(&#45;&#45;success-color);-->
+<!--      font-size: 0.9rem;-->
+<!--      font-weight: 500;-->
+<!--    }-->
+
+<!--    /* Empty State */-->
+<!--    .empty-state {-->
+<!--      text-align: center;-->
+<!--      padding: 4rem 2rem;-->
+<!--      background: var(&#45;&#45;accent-warm);-->
+<!--      border-radius: 8px;-->
+<!--      border: 1px solid var(&#45;&#45;border-subtle);-->
+<!--    }-->
+
+<!--    .empty-state i {-->
+<!--      font-size: 5rem;-->
+<!--      color: var(&#45;&#45;accent-gold);-->
+<!--      margin-bottom: 2rem;-->
+<!--    }-->
+
+<!--    .empty-state h3 {-->
+<!--      font-family: 'Cormorant Garamond', serif;-->
+<!--      font-size: 1.8rem;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      margin-bottom: 1rem;-->
+<!--    }-->
+
+<!--    .empty-state p {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      font-size: 1.1rem;-->
+<!--    }-->
+
+<!--    /* Pagination */-->
+<!--    .pagination-container {-->
+<!--      display: flex;-->
+<!--      justify-content: center;-->
+<!--      margin-top: 4rem;-->
+<!--    }-->
+
+<!--    .pagination {-->
+<!--      background: #FFFFFF;-->
+<!--      border-radius: 8px;-->
+<!--      box-shadow: var(&#45;&#45;shadow-soft);-->
+<!--      padding: 1rem;-->
+<!--      border: 1px solid var(&#45;&#45;border-subtle);-->
+<!--    }-->
+
+<!--    .page-link {-->
+<!--      border: none;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      padding: 12px 18px;-->
+<!--      margin: 0 2px;-->
+<!--      border-radius: 4px;-->
+<!--      font-weight: 500;-->
+<!--      transition: all 0.2s ease;-->
+<!--      background: transparent;-->
+<!--    }-->
+
+<!--    .page-link:hover {-->
+<!--      background: var(&#45;&#45;primary-light);-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--    }-->
+
+<!--    .page-item.active .page-link {-->
+<!--      background: var(&#45;&#45;primary-dark);-->
+<!--      color: #FFFFFF;-->
+<!--    }-->
+
+<!--    .page-item.disabled .page-link {-->
+<!--      color: var(&#45;&#45;text-secondary);-->
+<!--      cursor: not-allowed;-->
+<!--    }-->
+
+<!--    .page-item.disabled .page-link:hover {-->
+<!--      background: transparent;-->
+<!--    }-->
+
+<!--    /* Continue Shopping */-->
+<!--    .continue-shopping {-->
+<!--      margin-top: 3rem;-->
+<!--      text-align: center;-->
+<!--    }-->
+
+<!--    .btn-continue {-->
+<!--      display: inline-flex;-->
+<!--      align-items: center;-->
+<!--      gap: 0.75rem;-->
+<!--      background: none;-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      border: 1px solid var(&#45;&#45;border-subtle);-->
+<!--      padding: 1rem 2rem;-->
+<!--      border-radius: 4px;-->
+<!--      text-decoration: none;-->
+<!--      font-weight: 400;-->
+<!--      font-size: 0.9rem;-->
+<!--      transition: all 0.2s ease;-->
+<!--    }-->
+
+<!--    .btn-continue:hover {-->
+<!--      background: var(&#45;&#45;primary-light);-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      text-decoration: none;-->
+<!--    }-->
+
+<!--    /* Responsive Design */-->
+<!--    @media (max-width: 992px) {-->
+<!--      .brands-grid {-->
+<!--        grid-template-columns: repeat(2, 1fr);-->
+<!--        gap: 1.5rem;-->
+<!--      }-->
+
+<!--      .page-title {-->
+<!--        font-size: 2.5rem;-->
+<!--      }-->
+
+<!--      .results-info {-->
+<!--        flex-direction: column;-->
+<!--        gap: 1rem;-->
+<!--        text-align: center;-->
+<!--      }-->
+
+<!--      /* Скрываем мобильную навигацию на больших экранах */-->
+<!--      .mobile-bottom-nav {-->
+<!--        display: none;-->
+<!--      }-->
+
+<!--      body {-->
+<!--        padding-bottom: 0;-->
+<!--      }-->
+<!--    }-->
+
+<!--    @media (max-width: 576px) {-->
+<!--      .main-container {-->
+<!--        padding: 0 1.5rem;-->
+<!--      }-->
+
+<!--      .brands-grid {-->
+<!--        grid-template-columns: 1fr;-->
+<!--      }-->
+
+<!--      .page-title {-->
+<!--        font-size: 2rem;-->
+<!--      }-->
+
+<!--      .brand-content {-->
+<!--        padding: 1.5rem;-->
+<!--      }-->
+
+<!--      .page-header {-->
+<!--        padding: 3rem 0 2rem;-->
+<!--      }-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<div th:insert="~{admin/fragments/navigation :: navigation}"></div>-->
+
+<!--&lt;!&ndash; Основной контент &ndash;&gt;-->
+<!--<div class="main-content">-->
+<!--  <div class="main-container">-->
+<!--    &lt;!&ndash; Хлебные крошки &ndash;&gt;-->
+<!--    <nav class="breadcrumb-container" aria-label="breadcrumb">-->
+<!--      <ol class="breadcrumb">-->
+<!--        <li class="breadcrumb-item">-->
+<!--          <a th:href="@{/}">-->
+<!--            <i class="fas fa-home"></i> Головна-->
+<!--          </a>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item active" aria-current="page">Бренди</li>-->
+<!--      </ol>-->
+<!--    </nav>-->
+
+<!--    &lt;!&ndash; Page Header &ndash;&gt;-->
+<!--    <header class="page-header">-->
+<!--      <h1 class="page-title">Наші бренди</h1>-->
+<!--      <p class="page-subtitle">-->
+<!--        Преміальні світові виробники кондитерських виробів-->
+<!--      </p>-->
+<!--    </header>-->
+
+<!--    &lt;!&ndash; Main Content &ndash;&gt;-->
+<!--    <main class="brands-section">-->
+
+<!--      &lt;!&ndash; Results Info &ndash;&gt;-->
+<!--      <div class="results-info" th:if="${totalElements > 0}">-->
+<!--        <div class="results-count">-->
+<!--          <strong th:text="${totalElements}">24</strong> брендів знайдено-->
+<!--        </div>-->
+<!--        <div class="results-meta">-->
+<!--          Сторінка <span th:text="${currentPage + 1}">1</span> з <span th:text="${totalPages}">3</span>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Brands Grid &ndash;&gt;-->
+<!--      <div class="brands-grid" th:if="${brands != null and !brands.isEmpty()}">-->
+<!--        <a th:each="brand : ${brands}"-->
+<!--           th:href="@{'/brands/' + ${brand.slug}}"-->
+<!--           class="brand-card">-->
+
+<!--          &lt;!&ndash; Brand Image &ndash;&gt;-->
+<!--          <div class="brand-image"-->
+<!--               th:style="${brand.imageUrl != null and !brand.imageUrl.isEmpty()} ?-->
+<!--                                       'background-image: url(' + ${brand.imageUrl} + ');' : ''">-->
+
+<!--            &lt;!&ndash; Placeholder if no image &ndash;&gt;-->
+<!--            <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"-->
+<!--                 class="brand-image-placeholder">-->
+<!--              <i class="fas fa-award"></i>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Premium Badge &ndash;&gt;-->
+<!--            <div class="premium-badge">-->
+<!--              <i class="fas fa-crown"></i>-->
+<!--              Premium-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Brand Content &ndash;&gt;-->
+<!--          <div class="brand-content">-->
+<!--            <p class="brand-category">Бренд</p>-->
+<!--            <h3 class="brand-name" th:text="${brand.name}">Ferrero</h3>-->
+<!--            <p class="brand-description" th:text="${brand.description}">-->
+<!--              Італійський виробник преміальних шоколадних виробів з багаторічною історією та традиціями якості.-->
+<!--            </p>-->
+
+<!--            &lt;!&ndash; Brand Footer &ndash;&gt;-->
+<!--            <div class="brand-footer">-->
+<!--              <i class="fas fa-check-circle"></i>-->
+<!--              Офіційний дистриб'ютор-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Empty State &ndash;&gt;-->
+<!--      <div class="empty-state" th:if="${brands == null or brands.isEmpty()}">-->
+<!--        <i class="fas fa-award"></i>-->
+<!--        <h3>Бренди скоро будуть</h3>-->
+<!--        <p>Ми працюємо над додаванням найкращих світових брендів кондитерських виробів</p>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Pagination &ndash;&gt;-->
+<!--      <div class="pagination-container" th:if="${totalPages > 1}">-->
+<!--        <nav>-->
+<!--          <ul class="pagination">-->
+<!--            &lt;!&ndash; Previous Button &ndash;&gt;-->
+<!--            <li class="page-item" th:classappend="${!hasPrevious} ? 'disabled' : ''">-->
+<!--              <a class="page-link"-->
+<!--                 th:href="${hasPrevious} ? @{/brands(page=${currentPage - 1})} : '#'"-->
+<!--                 tabindex="-1">-->
+<!--                <i class="fas fa-chevron-left"></i>-->
+<!--              </a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; Page Numbers &ndash;&gt;-->
+<!--            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                class="page-item"-->
+<!--                th:classappend="${i == currentPage} ? 'active' : ''">-->
+<!--              <a class="page-link"-->
+<!--                 th:href="@{/brands(page=${i})}"-->
+<!--                 th:text="${i + 1}">1</a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; Next Button &ndash;&gt;-->
+<!--            <li class="page-item" th:classappend="${!hasNext} ? 'disabled' : ''">-->
+<!--              <a class="page-link"-->
+<!--                 th:href="${hasNext} ? @{/brands(page=${currentPage + 1})} : '#'">-->
+<!--                <i class="fas fa-chevron-right"></i>-->
+<!--              </a>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </nav>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Continue Shopping &ndash;&gt;-->
+<!--      <div class="continue-shopping">-->
+<!--        <a th:href="@{/categories}" class="btn-continue">-->
+<!--          <i class="fas fa-arrow-left"></i>-->
+<!--          Повернутися до категорій-->
+<!--        </a>-->
+<!--      </div>-->
+
+<!--    </main>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Мобильная навигация снизу (только на мобильных) &ndash;&gt;-->
+<!--<div th:insert="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation}"></div>-->
+
+<!--&lt;!&ndash; Подвал &ndash;&gt;-->
+<!--<footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>-->
+
+<!--&lt;!&ndash; JavaScript &ndash;&gt;-->
+<!--<script th:src="@{/js/scrollTopButton.js}"></script>-->
+<!--<script th:src="@{/js/navigation.js}"></script>-->
+<!--<script th:src="@{/js/mobile-bottom-nav.js}"></script>-->
+<!--<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>-->
+<!--&lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -14,7 +569,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Fragment CSS - только необходимые -->
+  <!-- Fragment CSS -->
   <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
   <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
   <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
@@ -144,14 +699,15 @@
       font-size: 0.9rem;
     }
 
-    /* Brands Grid */
+    /* Brands Section */
     .brands-section {
       padding: 3rem 0;
     }
 
+    /* Brands Grid - ОБНОВЛЕНО */
     .brands-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
       margin-bottom: 4rem;
     }
@@ -350,7 +906,13 @@
       text-decoration: none;
     }
 
-    /* Responsive Design */
+    /* Responsive Design - ОБНОВЛЕНО */
+    @media (max-width: 1200px) {
+      .brands-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
     @media (max-width: 992px) {
       .brands-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -367,23 +929,52 @@
         text-align: center;
       }
 
-      /* Скрываем мобильную навигацию на больших экранах */
-      .mobile-bottom-nav {
-        display: none;
+      /* Показываем мобильную навигацию */
+      body {
+        padding-bottom: 90px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .brands-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
       }
 
-      body {
-        padding-bottom: 0;
+      .main-container {
+        padding: 0 1rem;
+      }
+
+      .brand-content {
+        padding: 1.5rem;
+      }
+
+      .brand-name {
+        font-size: 1.3rem;
+      }
+
+      .brand-description {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .brand-image {
+        height: 160px;
+      }
+
+      .brand-image-placeholder {
+        font-size: 3rem;
       }
     }
 
     @media (max-width: 576px) {
       .main-container {
-        padding: 0 1.5rem;
+        padding: 0 1rem;
       }
 
       .brands-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
       }
 
       .page-title {
@@ -391,11 +982,62 @@
       }
 
       .brand-content {
-        padding: 1.5rem;
+        padding: 1rem;
+      }
+
+      .brand-name {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .brand-description {
+        font-size: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .brand-category {
+        font-size: 0.7rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .brand-footer {
+        font-size: 0.8rem;
+      }
+
+      .brand-image {
+        height: 140px;
+      }
+
+      .brand-image-placeholder {
+        font-size: 2.5rem;
+      }
+
+      .premium-badge {
+        top: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        font-size: 0.65rem;
       }
 
       .page-header {
-        padding: 3rem 0 2rem;
+        padding: 2rem 0 1.5rem;
+      }
+
+      .page-subtitle {
+        font-size: 1rem;
+      }
+
+      .results-info {
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+    }
+
+    /* Убираем мобильную навигацию на больших экранах */
+    @media (min-width: 993px) {
+      body {
+        padding-bottom: 0;
       }
     }
   </style>
@@ -534,19 +1176,20 @@
   </div>
 </div>
 
-<!-- Мобильная навигация снизу (только на мобильных) -->
+<!-- Мобильная навигация снизу -->
 <div th:insert="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation}"></div>
 
 <!-- Подвал -->
 <footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 
-<!-- JavaScript -->
-<script th:src="@{/js/scrollTopButton.js}"></script>
-<script th:src="@{/js/navigation.js}"></script>
-<script th:src="@{/js/mobile-bottom-nav.js}"></script>
-<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
-<!-- Bootstrap JS -->
+<!-- JavaScript - ИСПРАВЛЕННЫЙ ПОРЯДОК -->
+<!-- Bootstrap JS сначала -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Остальные скрипты -->
+<script th:src="@{/js/scrollTopButton.js}"></script>
+<script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
+<script th:src="@{/js/mobile-bottom-nav.js}"></script>
 
 </body>
 </html>
