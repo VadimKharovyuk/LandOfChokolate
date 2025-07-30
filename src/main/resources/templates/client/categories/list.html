@@ -15,7 +15,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
-<!--    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
@@ -382,8 +381,9 @@
 <body>
 <!-- Подключение навигации -->
 <div th:insert="~{admin/fragments/navigation :: navigation}"></div>
-
+<br><br>
 <div class="main-container">
+
     <!-- Заголовок сторінки -->
     <header class="page-header">
         <h1 class="page-title">Категорії</h1>
@@ -395,12 +395,6 @@
     <!-- Statistics -->
     <section class="stats-section" th:if="${!categoryList.isEmpty()}">
         <div class="stats-inline">
-            <div class="stat-inline">
-                <span>Показано</span>
-                <span class="stat-value" th:text="${categoryList.categories.size()}">12</span>
-                <span>з</span>
-                <span class="stat-value" th:text="${categoryList.totalCount}">48</span>
-            </div>
 
             <div class="stat-separator" th:if="${categoryList.totalPages > 1}"></div>
 
