@@ -147,9 +147,9 @@ public class LoadTestController {
     @PostMapping("/load-test/homepage/{users}")
     public ResponseEntity<String> testHomePage(@PathVariable int users) {
         // Валидация количества пользователей
-        if (users <= 0 || users > 200) {
+        if (users <= 0 || users > 500) {
             return ResponseEntity.badRequest()
-                    .body("Количество пользователей должно быть от 1 до 200");
+                    .body("Количество пользователей должно быть от 1 до 500");
         }
 
         ExecutorService executor = Executors.newFixedThreadPool(Math.min(users, 50));
@@ -265,9 +265,9 @@ public class LoadTestController {
 
     @PostMapping("/load-test/categories/{users}")
     public ResponseEntity<String> testCategoriesPage(@PathVariable int users) {
-        if (users <= 0 || users > 200) {
+        if (users <= 0 || users > 500) {
             return ResponseEntity.badRequest()
-                    .body("Количество пользователей должно быть от 1 до 200");
+                    .body("Количество пользователей должно быть от 1 до 500");
         }
 
         ExecutorService executor = Executors.newFixedThreadPool(Math.min(users, 50));
@@ -320,7 +320,7 @@ public class LoadTestController {
 
     @PostMapping("/load-test/products-all/{users}")
     public ResponseEntity<String> testAllProductsPage(@PathVariable int users) {
-        if (users <= 0 || users > 200) {
+        if (users <= 0 || users > 500) {
             return ResponseEntity.badRequest()
                     .body("Количество пользователей должно быть от 1 до 200");
         }
@@ -374,7 +374,7 @@ public class LoadTestController {
 
     @PostMapping("/load-test/product-ferrero/{users}")
     public ResponseEntity<String> testFerreroProductPage(@PathVariable int users) {
-        if (users <= 0 || users > 200) {
+        if (users <= 0 || users > 500) {
             return ResponseEntity.badRequest()
                     .body("Количество пользователей должно быть от 1 до 200");
         }
@@ -425,7 +425,7 @@ public class LoadTestController {
     }
     @PostMapping("/load-test/complex/{users}")
     public ResponseEntity<String> testComplexUserJourney(@PathVariable int users) {
-        if (users <= 0 || users > 100) {
+        if (users <= 0 || users > 500) {
             return ResponseEntity.badRequest()
                     .body("Для комплексного теста максимум 100 пользователей");
         }
