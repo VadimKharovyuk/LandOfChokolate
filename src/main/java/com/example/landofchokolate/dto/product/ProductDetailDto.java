@@ -71,21 +71,12 @@ public class ProductDetailDto {
 
     public String getStockMessage() {
         if (!isInStock()) {
-            return "Нет в наличии";
+            return "Немає в наявності";
         } else if (isLowStock()) {
-            return "Осталось мало";
+            return "Залишилося мало";
         } else {
-            return "В наличии: " + stockQuantity;
+            return "В наявності: " + stockQuantity;
         }
     }
 
-    public String getStockBadgeClass() {
-        if (!isInStock()) {
-            return "badge-out-of-stock";
-        } else if (isLowStock()) {
-            return "badge-low-stock";
-        } else {
-            return "badge-in-stock";
-        }
-    }
 }

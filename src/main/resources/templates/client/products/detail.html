@@ -1000,7 +1000,6 @@
 
 
 <!-- Подвал -->
-<!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
 <footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 
 <script th:src="@{/js/scrollTopButton.js}"></script>
@@ -1065,10 +1064,10 @@
             .then(data => {
                 if (data.success) {
                     // Показываем уведомление об успехе
-                    showNotification(data.message || 'Товар добавлен в корзину', 'success');
+                    showNotification(data.message || 'Товар додано до кошика', 'success');
 
-                    // Временно меняем текст кнопки
-                    button.innerHTML = '<i class="fas fa-check"></i> Добавлено!';
+                    // Тимчасово змінюємо текст кнопки
+                    button.innerHTML = '<i class="fas fa-check"></i> Додано!';
                     button.style.backgroundColor = '#28a745';
                     button.style.borderColor = '#28a745';
 
@@ -1080,13 +1079,13 @@
                     }, 2000);
 
                 } else {
-                    // Показываем ошибку
-                    showNotification(data.message || 'Произошла ошибка при добавлении товара', 'error');
+                    // Показуємо помилку
+                    showNotification(data.message || 'Сталася помилка під час додавання товару', 'error');
                 }
             })
             .catch(error => {
-                console.error('Ошибка при добавлении товара в корзину:', error);
-                showNotification('Произошла ошибка. Попробуйте позже.', 'error');
+                console.error('Помилка при додаванні товару до кошика:', error);
+                showNotification('Сталася помилка. Спробуйте пізніше.', 'error');
             })
             .finally(() => {
                 // Разблокируем кнопку и удаляем из активных запросов
@@ -1131,7 +1130,7 @@
         event.target.classList.add('active');
     }
 
-    // Добавление в избранное
+    // Додавання до обраного
     function toggleFavorite(productId = null) {
         const button = event.target.closest('.btn-favorite, .btn-related-favorite');
         const icon = button.querySelector('i');
@@ -1140,15 +1139,15 @@
             button.classList.remove('active');
             icon.classList.remove('fas');
             icon.classList.add('far');
-            showNotification('Товар удален из избранного', 'success');
+            showNotification('Товар видалено з обраного', 'success');
         } else {
             button.classList.add('active');
             icon.classList.remove('far');
             icon.classList.add('fas');
-            showNotification('Товар добавлен в избранное!', 'success');
+            showNotification('Товар додано до обраного!', 'success');
         }
 
-        console.log('Toggle favorite for product:', productId || 'current product');
+        console.log('Зміна стану обраного для товару:', productId || 'поточний товар');
     }
 
     // Функция показа уведомлений (если нет в основном скрипте)
