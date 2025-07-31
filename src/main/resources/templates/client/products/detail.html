@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${product.name + ' - Land of Chocolate'}">Товар - Land of Chocolate</title>
-    <meta name="description" th:content="'Купить ' + ${product.name} + ' в интернет-магазине Land of Chocolate. Цена: ' + ${product.price} + ' грн'">
 
+    <title th:text="${product.metaTitle ?: product.name + ' - Країна шоколаду'}">Товар - Країна шоколаду</title>
+    <meta name="description" th:content="${product.metaDescription ?: 'Купити ' + product.name + ' в Країні шоколаду. Ціна: ' + product.price + ' ₴. Доставка по Україні.'}">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -678,6 +678,49 @@
             transform: translateY(-1px);
         }
 
+
+
+
+
+
+
+
+
+
+
+        /* Стили для описания товара */
+        .product-full-description {
+            line-height: 1.7;
+            font-size: 16px;
+            color: #333;
+            white-space: pre-line; /* Сохраняет переносы строк */
+        }
+
+        .no-description-placeholder {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .no-description-placeholder i {
+            font-size: 48px;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+        }
+
+        .contact-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+
+
+
+
         /* Notifications */
         .notification {
             position: fixed;
@@ -918,24 +961,48 @@
             </div>
 
             <div class="tabs-content">
+                <!-- 🆕 Обновленный таб с описанием -->
                 <div id="description" class="tab-panel active">
-                    <p>Тут буде детальний опис товару. Поки що використовується заглушка, яка демонструє якість продукту, його особливості та переваги.</p>
-                    <p>Цей розділ можна буде заповнити, коли в моделі Product з’явиться поле description.</p>
+                    <!-- Если есть описание товара -->
+                    <div th:if="${product.description != null and !product.description.isEmpty()}">
+                        <div class="product-full-description" th:text="${product.description}">
+                            Описание товара
+                        </div>
+                    </div>
+
+                    <!-- Если описания нет - показываем заглушку -->
+                    <div th:if="${product.description == null or product.description.isEmpty()}">
+                        <div class="no-description-placeholder">
+                            <div class="placeholder-content">
+                                <i class="fas fa-info-circle text-muted mb-3"></i>
+                                <h4 class="text-muted">Детальний опис товару</h4>
+                                <p class="text-muted">Детальна інформація про цей товар буде додана найближчим часом.</p>
+                                <p class="text-muted">Якщо у вас є питання щодо товару, зв'яжіться з нами:</p>
+                                <div class="contact-info">
+                                    <p><i class="fas fa-phone"></i> +380 XX XXX XX XX</p>
+                                    <p><i class="fas fa-envelope"></i> info@landofchocolate.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 <div id="characteristics" class="tab-panel">
                     <p><strong>Основні характеристики:</strong></p>
                     <ul>
                         <li>Артикул: <span th:text="${product.id}">12345</span></li>
                         <li>Наявність: <span th:text="${product.stockMessage}">В наявності</span></li>
                         <li>Бренд: <span th:if="${product.brand != null}" th:text="${product.brand.name}">Бренд</span></li>
+                        <li>Категорія: <span th:if="${product.category != null}" th:text="${product.category.name}">Категорія</span></li>
                     </ul>
                 </div>
+
                 <div id="delivery" class="tab-panel">
                     <p><strong>Доставка:</strong></p>
                     <ul>
                         <li>Нова Пошта — від 50 грн</li>
                         <li>Укрпошта — від 30 грн</li>
-                        <li>Кур’єр по Києву — 80 грн</li>
+                        <li>Кур'єр по Києву — 80 грн</li>
                     </ul>
                     <p><strong>Оплата:</strong> готівкою при отриманні, карткою онлайн</p>
                 </div>

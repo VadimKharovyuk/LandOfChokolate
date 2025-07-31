@@ -175,6 +175,10 @@ public class ProductMapper {
         dto.setImageId(product.getImageId());
         dto.setIsActive(product.getIsActive());
 
+        dto.setMetaTitle(product.getMetaTitle());
+        dto.setMetaDescription(product.getMetaDescription());
+        dto.setDescription(product.getDescription());
+
 
         // Маппинг категории
         if (product.getCategory() != null) {

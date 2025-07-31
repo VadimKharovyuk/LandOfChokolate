@@ -21,6 +21,11 @@ public class ProductDetailDto {
     private String imageId;
     private Boolean isActive;
 
+    // 🆕 SEO атрибуты
+    private String metaTitle;
+    private String metaDescription;
+    private String description;
+
     // Связанные сущности
     private CategoryInfo category;
     private BrandInfo brand;

@@ -151,6 +151,7 @@ public class ClientProductController {
     }
 
 
+
     @GetMapping("/{slug}")
     public String getProductDetail(@PathVariable String slug, Model model) {
 
