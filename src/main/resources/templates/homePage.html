@@ -1015,7 +1015,11 @@
                     <a th:href="@{/product/{slug}(slug=${product.slug})}" class="image-link">
                         <img th:src="${product.imageUrl}" th:alt="${product.name}">
                     </a>
-                    <button class="favorite-btn" onclick="toggleFavorite(this)">
+                    <button class="wishlist-btn"
+                            th:data-product-id="${product.id}"
+                            data-in-wishlist="false"
+                            title="Додати в обране"
+                            onclick="handleWishlistClick(event, this)">
                         <i class="far fa-heart"></i>
                     </button>
                     <div th:if="${product.inStock}" class="stock-badge">В наявності</div>
@@ -1032,6 +1036,7 @@
                     <div class="product-footer">
                         <div class="product-price" th:text="'цiна ' + ${#numbers.formatDecimal(product.price, 1, 'COMMA', 0, 'POINT')} + ' ₴'"> 0 ₴</div>
                     </div>
+                    <!-- Уже правильно -->
                     <button th:if="${product.inStock}"
                             class="add-to-cart"
                             th:attr="data-product-id=${product.id}"
@@ -1053,8 +1058,11 @@
     </div>
 </section>
 
+<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+<link rel="stylesheet" th:href="@{/css/components/wishlist.css}">
+
 <script src="/js/add-to-cart-button.js"></script>
-<script src="/js/wishlist/toggleFavorite.js"></script>
+<script src="/js/productList/WishlistModule.js"></script>
 
 
 

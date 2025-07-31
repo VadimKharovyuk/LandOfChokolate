@@ -1,0 +1,83 @@
+/* =================================
+   КНОПКИ ИЗБРАННОГО
+   ================================= */
+
+/* Контейнер для кнопки избранного */
+.product-card {
+    position: relative;
+}
+
+/* Базовые стили кнопки избранного */
+.wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.wishlist-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wishlist-btn i {
+    font-size: 18px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover i {
+    color: #e74c3c;
+}
+
+/* Активное состояние (товар в избранном) */
+.wishlist-btn[data-in-wishlist="true"] {
+    background: #e74c3c;
+}
+
+.wishlist-btn[data-in-wishlist="true"] i {
+    color: white;
+}
+
+.wishlist-btn[data-in-wishlist="true"]:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+/* Анимация при добавлении */
+.wishlist-btn.adding {
+    animation: wishlistPulse 0.3s ease;
+}
+
+@keyframes wishlistPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Состояние загрузки */
+.wishlist-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.wishlist-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

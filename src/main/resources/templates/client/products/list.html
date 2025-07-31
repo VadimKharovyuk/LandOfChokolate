@@ -853,148 +853,20 @@
                         </div>
                     </a>
 
-                    <!-- Кнопки действий отдельно от ссылки -->
                     <div class="product-actions-bottom">
                         <button class="add-to-cart-btn"
                                 th:data-product-id="${product.id}"
                                 th:disabled="${!product.inStock}">
-                <span class="btn-text">
-                    <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
-                    <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
-                </span>
+                            <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>
+                            <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>
                         </button>
                     </div>
                 </div>
             </div>
+            <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+            <link rel="stylesheet" th:href="@{/css/components/wishlist.css}">
             <script src="/js/productList/WishlistModule.js"></script>
-            <style>
-                /* Стили для кнопки избранного */
-                .product-card {
-                    position: relative;
-                }
 
-                .wishlist-btn {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
-                    z-index: 10;
-                    background: rgba(255, 255, 255, 0.9);
-                    border: none;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                }
-
-                .wishlist-btn:hover {
-                    background: rgba(255, 255, 255, 1);
-                    transform: scale(1.1);
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                }
-
-                .wishlist-btn i {
-                    font-size: 18px;
-                    color: #666;
-                    transition: all 0.3s ease;
-                }
-
-                .wishlist-btn:hover i {
-                    color: #e74c3c;
-                }
-
-                /* Активное состояние (товар в избранном) */
-                .wishlist-btn[data-in-wishlist="true"] {
-                    background: #e74c3c;
-                }
-
-                .wishlist-btn[data-in-wishlist="true"] i {
-                    color: white;
-                }
-
-                .wishlist-btn[data-in-wishlist="true"]:hover {
-                    background: #c0392b;
-                    transform: scale(1.1);
-                }
-
-                /* Анимация при добавлении */
-                .wishlist-btn.adding {
-                    animation: wishlistPulse 0.3s ease;
-                }
-
-                @keyframes wishlistPulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.2); }
-                    100% { transform: scale(1); }
-                }
-
-                /* Состояние загрузки */
-                .wishlist-btn.loading {
-                    pointer-events: none;
-                    opacity: 0.7;
-                }
-
-                .wishlist-btn.loading i {
-                    animation: spin 1s linear infinite;
-                }
-
-                @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-            </style>
-
-<!--            &lt;!&ndash; Products Grid &ndash;&gt;-->
-<!--            <div class="products-grid" th:if="${products != null and !products.isEmpty()}">-->
-<!--                <div class="product-card" th:each="product : ${products}">-->
-<!--                    &lt;!&ndash; Основная ссылка на товар &ndash;&gt;-->
-<!--                    <a th:href="@{/product/{slug}(slug=${product.slug})}" class="product-link">-->
-<!--                        <div class="product-image-container">-->
-<!--                            <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/400x300?text=Зображення+відсутнє'}"-->
-<!--                                 th:alt="${product.name}"-->
-<!--                                 class="product-image"-->
-<!--                                 onerror="this.src='https://via.placeholder.com/400x300?text=Зображення+відсутнє'">-->
-<!--                        </div>-->
-
-<!--                        <div class="product-info">-->
-<!--                            <div class="product-name" th:text="${product.name}">Назва товару</div>-->
-<!--                            <div class="product-price" th:text="${product.price} + ' ₴'">0 ₴</div>-->
-
-<!--                            <div class="product-stock"-->
-<!--                                 th:class="${product.inStock ? (product.lowStock ? 'low-stock' : 'in-stock') : 'out-of-stock'}">-->
-<!--                                <span class="stock-indicator"></span>-->
-<!--                                <span th:if="${product.inStock and product.lowStock}"-->
-<!--                                      th:text="'Мало на складі: ' + ${product.stockQuantity} + ' шт.'">Мало на складі</span>-->
-<!--                                <span th:if="${product.inStock and !product.lowStock}"-->
-<!--                                      th:text="'В наявності: ' + ${product.stockQuantity} + ' шт.'">В наявності</span>-->
-<!--                                <span th:if="${!product.inStock}">Немає в наявності</span>-->
-<!--                            </div>-->
-
-<!--                            <div class="product-meta">-->
-<!--                                <span class="product-category" th:text="${product.categoryName ?: 'Без категорії'}">Категорія</span>-->
-<!--                                <span class="product-brand" th:text="${product.brandName ?: 'Без бренду'}">Бренд</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-
-<!--                    &lt;!&ndash; Кнопки действий отдельно от ссылки &ndash;&gt;-->
-<!--                    <div class="product-actions-bottom">-->
-<!--                        <button class="add-to-cart-btn"-->
-<!--                                th:data-product-id="${product.id}"-->
-<!--                                th:disabled="${!product.inStock}">-->
-<!--                            <span class="btn-text">-->
-<!--                                <i th:class="${product.inStock ? 'fas fa-shopping-cart' : 'fas fa-times'}"></i>-->
-<!--                                <span th:text="${product.inStock ? 'Додати в кошик' : 'Немає в наявності'}">Додати в кошик</span>-->
-<!--                            </span>-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--            </div>-->
 
             <!-- No Products Message -->
             <div class="no-products" th:if="${products == null or products.isEmpty()}">

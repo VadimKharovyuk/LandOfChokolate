@@ -1,0 +1,51 @@
+/* =================================
+   КНОПКИ ДОБАВЛЕНИЯ В КОРЗИНУ
+   ================================= */
+
+/* Базовые стили для всех кнопок корзины */
+.add-to-cart,
+.add-to-cart-btn {
+    width: 100%;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #c9a96e 0%, #b8944a 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.add-to-cart:hover,
+.add-to-cart-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #b8944a 0%, #a8874a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+}
+
+.add-to-cart:active,
+.add-to-cart-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Состояние disabled */
+.add-to-cart:disabled,
+.add-to-cart-btn:disabled {
+    background: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.add-to-cart-btn:disabled:hover {
+    background: #cccccc;
+    transform: none;
+    box-shadow: none;
+}
