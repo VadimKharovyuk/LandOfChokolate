@@ -195,6 +195,7 @@ public class WishlistController {
         }
     }
 
+
     /**
      * API: Очистить избранное
      */
