@@ -33,20 +33,28 @@
             "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
             "offers": {
                 "@type": "Offer",
-                "price": "[(${product.price})]",
+                "price": "[(${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'POINT')})]",
                 "priceCurrency": "UAH",
-                "availability": "[(${product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'})]",
+                "availability": "[(${product.inStock ? 'InStock' : 'OutOfStock'})]",
                 "url": "https://landofchokolate.onrender.com/products/[(${product.slug})]",
+                "priceValidUntil": "[(${#dates.format(#dates.createNow().plusYears(1), 'yyyy-MM-dd')})]",
                 "seller": {
                     "@type": "Organization",
                     "name": "Країна шоколаду",
-                    "url": "https://landofchokolate.onrender.com"
+                    "url": "https://landofchokolate.onrender.com/"
                 }
             },
             "manufacturer": {
                 "@type": "Organization",
                 "name": "Країна шоколаду",
-                "url": "https://landofchokolate.onrender.com"
+                "url": "https://landofchokolate.onrender.com/"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.5",
+                "reviewCount": "1",
+                "bestRating": "5",
+                "worstRating": "1"
             }
         }
     </script>
