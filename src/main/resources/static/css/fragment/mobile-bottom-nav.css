@@ -1,6 +1,744 @@
+
+/*!* ==========================================================================*/
+/*   MOBILE BOTTOM NAVIGATION STYLES - ОБНОВЛЕННАЯ ВЕРСИЯ*/
+/*   Классический белый фон с черным текстом*/
+/*   ========================================================================== *!*/
+
+/*!* CSS Variables (если не определены в основном файле) *!*/
+/*:root {*/
+/*    --primary-dark: #2c3e50;*/
+/*    --accent-gold: #c9a96e;*/
+/*    --white: #ffffff;*/
+/*    --black: #333333;*/
+/*    --mobile-nav-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);*/
+/*}*/
+
+/*!* Базовые стили для body (отступ снизу на мобильных) *!*/
+/*@media screen and (max-width: 991px) {*/
+/*    body {*/
+/*        padding-bottom: 85px !important;*/
+/*    }*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   МОБИЛЬНАЯ НАВИГАЦИЯ СНИЗУ - ОБНОВЛЕННЫЕ СТИЛИ*/
+/*   ========================================================================== *!*/
+
+/*.mobile-bottom-nav {*/
+/*    !* Позиционирование *!*/
+/*    position: fixed !important;*/
+/*    bottom: 0 !important;*/
+/*    left: 0 !important;*/
+/*    right: 0 !important;*/
+/*    width: 100% !important;*/
+
+/*    !* ОБНОВЛЕННЫЙ ВНЕШНИЙ ВИД - КЛАССИЧЕСКИЙ БЕЛЫЙ - УСИЛЕННЫЙ *!*/
+/*    background: #ffffff !important;*/
+/*    background-color: #ffffff !important;*/
+/*    backdrop-filter: blur(20px) !important;*/
+/*    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;*/
+/*    box-shadow: 0 -3px 20px rgba(0, 0, 0, 0.08) !important;*/
+
+/*    !* Z-index и отображение *!*/
+/*    z-index: 9999 !important;*/
+/*    display: none !important;*/
+
+/*    !* Отступы *!*/
+/*    padding: 8px 0 max(8px, env(safe-area-inset-bottom)) !important;*/
+/*    margin: 0 !important;*/
+
+/*    !* Анимации *!*/
+/*    transform: translateY(0) !important;*/
+/*    transition: var(--mobile-nav-transition) !important;*/
+/*    opacity: 1 !important;*/
+/*    visibility: visible !important;*/
+/*}*/
+
+/*!* Список навигации *!*/
+/*.mobile-bottom-nav-list {*/
+/*    display: flex !important;*/
+/*    justify-content: space-around !important;*/
+/*    align-items: center !important;*/
+/*    list-style: none !important;*/
+/*    margin: 0 !important;*/
+/*    padding: 0 5px !important;*/
+/*    width: 100% !important;*/
+/*}*/
+
+/*!* Элементы навигации *!*/
+/*.mobile-bottom-nav-item {*/
+/*    flex: 1 !important;*/
+/*    text-align: center !important;*/
+/*    display: block !important;*/
+/*    max-width: 80px !important;*/
+/*}*/
+
+/*!* ОБНОВЛЕННЫЕ ССЫЛКИ НАВИГАЦИИ - ЧЕРНЫЙ ТЕКСТ *!*/
+/*.mobile-bottom-nav-link {*/
+/*    !* Отображение *!*/
+/*    display: flex !important;*/
+/*    flex-direction: column !important;*/
+/*    align-items: center !important;*/
+/*    gap: 4px !important;*/
+
+/*    !* ОБНОВЛЕННЫЕ СТИЛИ ТЕКСТА - ЧЕРНЫЙ ЦВЕТ - УСИЛЕННЫЙ *!*/
+/*    color: #333333 !important;*/
+/*    background-color: transparent !important;*/
+/*    text-decoration: none !important;*/
+/*    font-family: 'Cormorant Garamond', serif !important;*/
+/*    font-weight: 500 !important;*/
+/*    font-size: 11px !important;*/
+/*    letter-spacing: 0.2px !important;*/
+
+/*    !* Отступы и форма *!*/
+/*    padding: 8px 4px !important;*/
+/*    border-radius: 12px !important;*/
+
+/*    !* Позиционирование и анимации *!*/
+/*    position: relative !important;*/
+/*    transition: var(--mobile-nav-transition) !important;*/
+/*    transform-origin: center !important;*/
+
+/*    !* Интерактивность *!*/
+/*    cursor: pointer !important;*/
+/*    user-select: none !important;*/
+/*    -webkit-tap-highlight-color: transparent !important;*/
+/*}*/
+
+/*!* ОБНОВЛЕННЫЕ СОСТОЯНИЯ ССЫЛОК *!*/
+/*.mobile-bottom-nav-link:hover,*/
+/*.mobile-bottom-nav-link.active {*/
+/*    color: var(--accent-gold) !important;*/
+/*    background: rgba(201, 169, 110, 0.15) !important;*/
+/*    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;*/
+/*}*/
+
+/*.mobile-bottom-nav-link.active .mobile-bottom-nav-icon {*/
+/*    transform: translateY(-1px) scale(1.05) !important;*/
+/*}*/
+
+/*!* ОБНОВЛЕННЫЕ ИКОНКИ НАВИГАЦИИ *!*/
+/*.mobile-bottom-nav-icon {*/
+/*    font-size: 20px !important;*/
+/*    transition: var(--mobile-nav-transition) !important;*/
+/*    transform-origin: center !important;*/
+/*    opacity: 0.85 !important;*/
+/*    display: block !important;*/
+/*    color: inherit !important; !* Наследуют цвет от родителя *!*/
+/*}*/
+
+/*.mobile-bottom-nav-link:hover .mobile-bottom-nav-icon {*/
+/*    opacity: 1 !important;*/
+/*    transform: translateY(-2px) scale(1.1) !important;*/
+/*}*/
+
+/*!* Текст навигации *!*/
+/*.mobile-bottom-nav-text {*/
+/*    font-size: 10px !important;*/
+/*    line-height: 1.2 !important;*/
+/*    letter-spacing: 0.3px !important;*/
+/*    font-weight: 600 !important;*/
+/*    display: block !important;*/
+/*    margin-top: 2px !important;*/
+/*}*/
+
+/*!* Бейджи (счетчики) *!*/
+/*.mobile-nav-badge {*/
+/*    !* Позиционирование *!*/
+/*    position: absolute !important;*/
+/*    top: 2px !important;*/
+/*    right: 8px !important;*/
+
+/*    !* Внешний вид *!*/
+/*    background: var(--accent-gold) !important;*/
+/*    color: var(--white) !important;*/
+/*    border-radius: 10px !important;*/
+
+/*    !* Размеры *!*/
+/*    min-width: 18px !important;*/
+/*    height: 18px !important;*/
+
+/*    !* Текст *!*/
+/*    font-size: 10px !important;*/
+/*    font-weight: 700 !important;*/
+/*    font-family: 'Cormorant Garamond', serif !important;*/
+
+/*    !* Отображение *!*/
+/*    display: flex !important;*/
+/*    align-items: center !important;*/
+/*    justify-content: center !important;*/
+/*    padding: 0 4px !important;*/
+
+/*    !* Эффекты *!*/
+/*    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;*/
+/*    border: 1px solid rgba(255, 255, 255, 0.3) !important;*/
+/*}*/
+
+/*.mobile-nav-badge.favorites {*/
+/*    background: #e74c3c !important;*/
+/*}*/
+
+/*!* Анимация появления *!*/
+/*@keyframes slideUpFadeIn {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        transform: translateY(100%);*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   МЕДИА ЗАПРОСЫ*/
+/*   ========================================================================== *!*/
+
+/*!* Показываем на мобильных устройствах *!*/
+/*@media screen and (max-width: 991px) {*/
+/*    .mobile-bottom-nav {*/
+/*        display: block !important;*/
+/*        animation: slideUpFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;*/
+/*    }*/
+/*}*/
+
+/*!* Скрываем на планшетах и десктопах *!*/
+/*@media screen and (min-width: 992px) {*/
+/*    .mobile-bottom-nav {*/
+/*        display: none !important;*/
+/*    }*/
+
+/*    body {*/
+/*        padding-bottom: 0 !important;*/
+/*    }*/
+/*}*/
+
+/*!* Дополнительные настройки для маленьких экранов *!*/
+/*@media screen and (max-width: 576px) {*/
+/*    .mobile-bottom-nav-text {*/
+/*        font-size: 9px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-icon {*/
+/*        font-size: 18px !important;*/
+/*    }*/
+
+/*    .mobile-nav-badge {*/
+/*        min-width: 16px !important;*/
+/*        height: 16px !important;*/
+/*        font-size: 9px !important;*/
+/*        top: 1px !important;*/
+/*        right: 6px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-link {*/
+/*        padding: 6px 2px !important;*/
+/*    }*/
+/*}*/
+
+/*!* Настройки для очень широких мобильных экранов *!*/
+/*@media screen and (min-width: 768px) and (max-width: 991px) {*/
+/*    .mobile-bottom-nav-item {*/
+/*        max-width: 100px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-icon {*/
+/*        font-size: 22px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-text {*/
+/*        font-size: 11px !important;*/
+/*    }*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   ДОПОЛНИТЕЛЬНЫЕ УЛУЧШЕНИЯ*/
+/*   ========================================================================== *!*/
+
+/*!* Обработка landscape ориентации *!*/
+/*@media screen and (max-width: 991px) and (orientation: landscape) and (max-height: 500px) {*/
+/*    .mobile-bottom-nav {*/
+/*        padding: 6px 0 6px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-link {*/
+/*        padding: 6px 4px !important;*/
+/*        gap: 2px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-icon {*/
+/*        font-size: 16px !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-text {*/
+/*        font-size: 8px !important;*/
+/*    }*/
+/*}*/
+
+/*!* ОБНОВЛЕННАЯ ТЕМНАЯ ТЕМА *!*/
+/*@media (prefers-color-scheme: dark) {*/
+/*    .mobile-bottom-nav {*/
+/*        background: rgba(44, 62, 80, 0.95) !important;*/
+/*        border-top-color: rgba(255, 255, 255, 0.2) !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-link {*/
+/*        color: rgba(255, 255, 255, 0.9) !important;*/
+/*    }*/
+
+/*    .mobile-bottom-nav-link:hover,*/
+/*    .mobile-bottom-nav-link.active {*/
+/*        color: var(--accent-gold) !important;*/
+/*        background: rgba(201, 169, 110, 0.2) !important;*/
+/*    }*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ - ОБНОВЛЕННЫЕ СТИЛИ*/
+/*   ========================================================================== *!*/
+
+/*.mobile-categories-item {*/
+/*    position: relative !important;*/
+/*}*/
+
+/*.mobile-categories-dropdown {*/
+/*    position: absolute !important;*/
+/*    bottom: 100% !important;*/
+/*    left: 50% !important;*/
+/*    transform: translateX(-50%) translateY(-10px) !important;*/
+
+/*    !* ОБНОВЛЕННЫЙ ФОН ВЫПАДАЮЩЕГО МЕНЮ - УСИЛЕННЫЙ *!*/
+/*    background: #ffffff !important;*/
+/*    background-color: #ffffff !important;*/
+/*    backdrop-filter: blur(20px) !important;*/
+/*    border: 1px solid rgba(0, 0, 0, 0.1) !important;*/
+/*    border-radius: 16px !important;*/
+/*    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.1) !important;*/
+/*    z-index: 10000 !important;*/
+
+/*    !* УВЕЛИЧЕННЫЕ РАЗМЕРЫ *!*/
+/*    min-width: 280px !important;*/
+/*    max-width: 350px !important;*/
+/*    width: 85vw !important;*/
+/*    max-width: min(350px, 85vw) !important;*/
+
+/*    !* По умолчанию скрыто *!*/
+/*    opacity: 0 !important;*/
+/*    visibility: hidden !important;*/
+/*    transform: translateX(-50%) translateY(-5px) scale(0.9) !important;*/
+/*    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;*/
+/*}*/
+
+/*.mobile-categories-dropdown.show {*/
+/*    opacity: 1 !important;*/
+/*    visibility: visible !important;*/
+/*    transform: translateX(-50%) translateY(-10px) scale(1) !important;*/
+/*}*/
+
+/*.mobile-categories-list {*/
+/*    padding: 16px 12px !important;*/
+/*    max-height: 350px !important;*/
+/*    overflow-y: auto !important;*/
+/*}*/
+
+/*.mobile-category-link {*/
+/*    display: flex !important;*/
+/*    align-items: center !important;*/
+/*    gap: 16px !important;*/
+/*    padding: 16px 20px !important;*/
+
+/*    !* ОБНОВЛЕННЫЙ ЦВЕТ ТЕКСТА - УСИЛЕННЫЙ *!*/
+/*    color: #333333 !important;*/
+/*    background-color: transparent !important;*/
+/*    text-decoration: none !important;*/
+/*    border-radius: 14px !important;*/
+/*    transition: all 0.3s ease !important;*/
+/*    font-size: 16px !important;*/
+/*    font-weight: 500 !important;*/
+/*    margin-bottom: 6px !important;*/
+/*    position: relative !important;*/
+/*    font-family: 'Cormorant Garamond', serif !important;*/
+/*    min-height: 50px !important;*/
+/*}*/
+
+/*.mobile-category-link:hover,*/
+/*.mobile-category-link.active {*/
+/*    background: rgba(201, 169, 110, 0.15) !important;*/
+/*    color: var(--accent-gold, #c9a96e) !important;*/
+/*    transform: translateX(6px) !important;*/
+/*}*/
+
+/*.mobile-category-icon {*/
+/*    font-size: 20px !important;*/
+/*    width: 24px !important;*/
+/*    text-align: center !important;*/
+/*    opacity: 0.8 !important;*/
+/*    transition: all 0.3s ease !important;*/
+/*}*/
+
+/*.mobile-category-link:hover .mobile-category-icon,*/
+/*.mobile-category-link.active .mobile-category-icon {*/
+/*    opacity: 1 !important;*/
+/*    transform: scale(1.15) !important;*/
+/*}*/
+
+/*.mobile-category-name {*/
+/*    flex: 1 !important;*/
+/*    letter-spacing: 0.3px !important;*/
+/*    line-height: 1.3 !important;*/
+/*}*/
+
+/*!* ОБНОВЛЕННАЯ СТРЕЛКА-УКАЗАТЕЛЬ *!*/
+/*.mobile-categories-dropdown::after {*/
+/*    content: '' !important;*/
+/*    position: absolute !important;*/
+/*    top: 100% !important;*/
+/*    left: 50% !important;*/
+/*    transform: translateX(-50%) !important;*/
+/*    border: 10px solid transparent !important;*/
+/*    border-top-color: rgba(255, 255, 255, 0.98) !important;*/
+/*    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;*/
+/*}*/
+
+/*!* Анимация появления элементов списка *!*/
+/*.mobile-categories-dropdown.show .mobile-category-link {*/
+/*    animation: fadeInUp 0.3s ease forwards !important;*/
+/*}*/
+
+/*.mobile-categories-dropdown.show .mobile-category-link:nth-child(1) { animation-delay: 0s !important; }*/
+/*.mobile-categories-dropdown.show .mobile-category-link:nth-child(2) { animation-delay: 0.05s !important; }*/
+/*.mobile-categories-dropdown.show .mobile-category-link:nth-child(3) { animation-delay: 0.1s !important; }*/
+/*.mobile-categories-dropdown.show .mobile-category-link:nth-child(4) { animation-delay: 0.15s !important; }*/
+/*.mobile-categories-dropdown.show .mobile-category-link:nth-child(5) { animation-delay: 0.2s !important; }*/
+/*.mobile-categories-dropdown.show .mobile-category-link:nth-child(6) { animation-delay: 0.25s !important; }*/
+
+/*@keyframes fadeInUp {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        transform: translateY(10px);*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*}*/
+
+/*!* Настройки скроллбара *!*/
+/*.mobile-categories-list::-webkit-scrollbar {*/
+/*    width: 6px !important;*/
+/*}*/
+
+/*.mobile-categories-list::-webkit-scrollbar-track {*/
+/*    background: rgba(0, 0, 0, 0.05) !important;*/
+/*    border-radius: 3px !important;*/
+/*}*/
+
+/*.mobile-categories-list::-webkit-scrollbar-thumb {*/
+/*    background: rgba(0, 0, 0, 0.2) !important;*/
+/*    border-radius: 3px !important;*/
+/*}*/
+
+/*.mobile-categories-list::-webkit-scrollbar-thumb:hover {*/
+/*    background: rgba(0, 0, 0, 0.3) !important;*/
+/*}*/
+
+/*!* Адаптация для маленьких экранов *!*/
+/*@media screen and (max-width: 576px) {*/
+/*    .mobile-categories-dropdown {*/
+/*        min-width: 260px !important;*/
+/*        max-width: 320px !important;*/
+/*        width: 90vw !important;*/
+/*        max-width: min(320px, 90vw) !important;*/
+/*    }*/
+
+/*    .mobile-category-link {*/
+/*        padding: 14px 16px !important;*/
+/*        font-size: 15px !important;*/
+/*        min-height: 48px !important;*/
+/*    }*/
+
+/*    .mobile-category-icon {*/
+/*        font-size: 18px !important;*/
+/*        width: 22px !important;*/
+/*    }*/
+
+/*    .mobile-categories-list {*/
+/*        padding: 14px 10px !important;*/
+/*        max-height: 320px !important;*/
+/*    }*/
+/*}*/
+
+/*!* Для очень широких экранов (планшеты в landscape) *!*/
+/*@media screen and (min-width: 768px) and (max-width: 991px) {*/
+/*    .mobile-categories-dropdown {*/
+/*        min-width: 320px !important;*/
+/*        max-width: 400px !important;*/
+/*        width: 70vw !important;*/
+/*        max-width: min(400px, 70vw) !important;*/
+/*    }*/
+
+/*    .mobile-category-link {*/
+/*        padding: 18px 24px !important;*/
+/*        font-size: 17px !important;*/
+/*        min-height: 54px !important;*/
+/*    }*/
+
+/*    .mobile-category-icon {*/
+/*        font-size: 22px !important;*/
+/*        width: 26px !important;*/
+/*    }*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - УБРАНА ПОСТОЯННАЯ ПОДСВЕТКА*/
+/*   ========================================================================== *!*/
+
+/*!* ОБНОВЛЕННЫЕ ОСНОВНЫЕ СТИЛИ КНОПКИ КАТЕГОРИЙ *!*/
+/*.mobile-categories-trigger {*/
+/*    !* Убираем стандартные стили кнопки *!*/
+/*    background: none !important;*/
+/*    border: none !important;*/
+/*    outline: none !important;*/
+/*    cursor: pointer !important;*/
+
+/*    !* Наследуем стили от mobile-bottom-nav-link *!*/
+/*    display: flex !important;*/
+/*    flex-direction: column !important;*/
+/*    align-items: center !important;*/
+/*    gap: 4px !important;*/
+
+/*    !* ОБНОВЛЕНО: ОБЫЧНОЕ СОСТОЯНИЕ БЕЗ ПОДСВЕТКИ - УСИЛЕННОЕ *!*/
+/*    color: #333333 !important;*/
+/*    background: transparent !important;*/
+/*    background-color: transparent !important;*/
+/*    box-shadow: none !important;*/
+
+/*    text-decoration: none !important;*/
+/*    font-weight: 500 !important;*/
+/*    font-size: 11px !important;*/
+/*    font-family: 'Cormorant Garamond', serif !important;*/
+/*    padding: 8px 4px !important;*/
+/*    transition: var(--mobile-nav-transition) !important;*/
+/*    position: relative !important;*/
+/*    border-radius: 12px !important;*/
+/*    transform-origin: center !important;*/
+
+/*    !* Обнуляем отступы кнопки *!*/
+/*    margin: 0 !important;*/
+
+/*    !* Размеры как у других элементов *!*/
+/*    width: 100% !important;*/
+/*    min-height: auto !important;*/
+
+/*    !* Убираем системные стили кнопки *!*/
+/*    -webkit-appearance: none !important;*/
+/*    -moz-appearance: none !important;*/
+/*    appearance: none !important;*/
+
+/*    !* Убираем выделение текста *!*/
+/*    -webkit-user-select: none !important;*/
+/*    -moz-user-select: none !important;*/
+/*    -ms-user-select: none !important;*/
+/*    user-select: none !important;*/
+/*    -webkit-touch-callout: none !important;*/
+/*    -webkit-tap-highlight-color: transparent !important;*/
+/*}*/
+
+/*!* Hover состояние - как у обычных ссылок *!*/
+/*.mobile-categories-trigger:hover {*/
+/*    color: var(--accent-gold, #c9a96e) !important;*/
+/*    background: rgba(201, 169, 110, 0.15) !important;*/
+/*    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;*/
+/*    transform: translateY(-1px) !important;*/
+/*}*/
+
+/*!* Активное состояние страницы категорий *!*/
+/*.mobile-categories-trigger.active {*/
+/*    color: var(--accent-gold, #c9a96e) !important;*/
+/*    background: rgba(201, 169, 110, 0.15) !important;*/
+/*    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;*/
+/*}*/
+
+/*!* Состояние открытого выпадающего меню *!*/
+/*.mobile-categories-trigger.dropdown-open {*/
+/*    color: var(--accent-gold, #c9a96e) !important;*/
+/*    background: rgba(201, 169, 110, 0.2) !important;*/
+/*    box-shadow: 0 3px 12px rgba(201, 169, 110, 0.3) !important;*/
+/*    transform: translateY(-1px) !important;*/
+/*}*/
+
+/*!* ОБНОВЛЕННАЯ ИКОНКА В КНОПКЕ КАТЕГОРИЙ *!*/
+/*.mobile-categories-trigger .mobile-bottom-nav-icon {*/
+/*    font-size: 20px !important;*/
+/*    transition: var(--mobile-nav-transition) !important;*/
+/*    transform-origin: center !important;*/
+/*    opacity: 0.85 !important; !* ОБНОВЛЕНО: обычная прозрачность *!*/
+/*    transform: none !important; !* ОБНОВЛЕНО: без трансформаций *!*/
+/*}*/
+
+/*!* При hover иконка активируется *!*/
+/*.mobile-categories-trigger:hover .mobile-bottom-nav-icon {*/
+/*    opacity: 1 !important;*/
+/*    transform: translateY(-2px) scale(1.1) !important;*/
+/*}*/
+
+/*!* При активном состоянии страницы *!*/
+/*.mobile-categories-trigger.active .mobile-bottom-nav-icon {*/
+/*    opacity: 1 !important;*/
+/*    transform: translateY(-1px) scale(1.05) !important;*/
+/*}*/
+
+/*!* При открытом меню иконка активна *!*/
+/*.mobile-categories-trigger.dropdown-open .mobile-bottom-nav-icon {*/
+/*    opacity: 1 !important;*/
+/*    transform: translateY(-1px) scale(1.05) !important;*/
+/*}*/
+
+/*!* Текст в кнопке категорий *!*/
+/*.mobile-categories-trigger .mobile-bottom-nav-text {*/
+/*    font-size: 10px !important;*/
+/*    line-height: 1.2 !important;*/
+/*    letter-spacing: 0.3px !important;*/
+/*    font-weight: 600 !important;*/
+/*}*/
+
+/*!* ОБНОВЛЕННАЯ СТРЕЛКА ДЛЯ КНОПКИ КАТЕГОРИЙ *!*/
+/*.mobile-categories-trigger .mobile-categories-arrow {*/
+/*    position: absolute !important;*/
+/*    top: 6px !important;*/
+/*    right: 2px !important;*/
+/*    font-size: 10px !important;*/
+/*    opacity: 0.6 !important; !* ОБНОВЛЕНО: менее заметная *!*/
+/*    transition: all 0.3s ease !important;*/
+/*    pointer-events: none !important;*/
+/*    z-index: 10 !important;*/
+/*}*/
+
+/*!* При hover стрелка становится видимой *!*/
+/*.mobile-categories-trigger:hover .mobile-categories-arrow {*/
+/*    opacity: 1 !important;*/
+/*}*/
+
+/*!* При активном состоянии стрелка видна *!*/
+/*.mobile-categories-trigger.active .mobile-categories-arrow {*/
+/*    opacity: 0.9 !important;*/
+/*}*/
+
+/*!* Состояние когда выпадающее меню открыто *!*/
+/*.mobile-categories-trigger.dropdown-open .mobile-categories-arrow {*/
+/*    opacity: 1 !important;*/
+/*    transform: rotate(180deg) !important;*/
+/*}*/
+
+/*!* Убираем focus outline для кнопки *!*/
+/*.mobile-categories-trigger:focus {*/
+/*    outline: none !important;*/
+/*    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.3) !important;*/
+/*}*/
+
+/*!* Активное нажатие кнопки *!*/
+/*.mobile-categories-trigger:active {*/
+/*    transform: scale(0.95) !important;*/
+/*}*/
+
+/*!* Дополнительные стили для WebKit браузеров *!*/
+/*.mobile-categories-trigger::-webkit-focus-ring {*/
+/*    outline: none !important;*/
+/*}*/
+
+/*!* Адаптация для маленьких экранов *!*/
+/*@media screen and (max-width: 576px) {*/
+/*    .mobile-categories-trigger .mobile-bottom-nav-text {*/
+/*        font-size: 9px !important;*/
+/*    }*/
+
+/*    .mobile-categories-trigger .mobile-bottom-nav-icon {*/
+/*        font-size: 18px !important;*/
+/*    }*/
+
+/*    .mobile-categories-trigger .mobile-categories-arrow {*/
+/*        font-size: 9px !important;*/
+/*        top: 5px !important;*/
+/*        right: 1px !important;*/
+/*    }*/
+/*}*/
+
+/*!* Дополнительные стили для улучшения доступности *!*/
+/*.mobile-categories-trigger[aria-expanded="true"] {*/
+/*    color: var(--accent-gold, #c9a96e) !important;*/
+/*    background: rgba(201, 169, 110, 0.2) !important;*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   ДОПОЛНИТЕЛЬНЫЕ ПЕРЕОПРЕДЕЛЕНИЯ ДЛЯ ОБЕСПЕЧЕНИЯ БЕЛОГО ФОНА*/
+/*   ========================================================================== *!*/
+
+/*!* Принудительное переопределение всех возможных темных стилей *!*/
+/*.mobile-bottom-nav,*/
+/*#mobileBottomNav {*/
+/*    background: #ffffff !important;*/
+/*    background-color: #ffffff !important;*/
+/*    color: #333333 !important;*/
+/*}*/
+
+/*.mobile-bottom-nav *,*/
+/*#mobileBottomNav * {*/
+/*    color: #333333 !important;*/
+/*}*/
+
+/*.mobile-bottom-nav-link,*/
+/*.mobile-bottom-nav-link *,*/
+/*.mobile-categories-trigger,*/
+/*.mobile-categories-trigger * {*/
+/*    color: #333333 !important;*/
+/*    background-color: transparent !important;*/
+/*}*/
+
+/*!* Переопределение hover состояний *!*/
+/*.mobile-bottom-nav-link:hover,*/
+/*.mobile-bottom-nav-link:hover *,*/
+/*.mobile-categories-trigger:hover,*/
+/*.mobile-categories-trigger:hover * {*/
+/*    color: #c9a96e !important;*/
+/*}*/
+
+/*!* Переопределение активных состояний *!*/
+/*.mobile-bottom-nav-link.active,*/
+/*.mobile-bottom-nav-link.active *,*/
+/*.mobile-categories-trigger.active,*/
+/*.mobile-categories-trigger.active * {*/
+/*    color: #c9a96e !important;*/
+/*}*/
+
+/*!* Принудительные стили для выпадающего меню *!*/
+/*.mobile-categories-dropdown {*/
+/*    background: #ffffff !important;*/
+/*    background-color: #ffffff !important;*/
+/*    color: #333333 !important;*/
+/*}*/
+
+/*.mobile-category-link,*/
+/*.mobile-category-link * {*/
+/*    color: #333333 !important;*/
+/*    background-color: transparent !important;*/
+/*}*/
+
+/*.mobile-category-link:hover,*/
+/*.mobile-category-link:hover *,*/
+/*.mobile-category-link.active,*/
+/*.mobile-category-link.active * {*/
+/*    color: #c9a96e !important;*/
+/*}*/
+
+/*!* ==========================================================================*/
+/*   КОНЕЦ ДОПОЛНИТЕЛЬНЫХ ПЕРЕОПРЕДЕЛЕНИЙ*/
+/*   ========================================================================== *!*/
+
+
+
 /* ==========================================================================
-   MOBILE BOTTOM NAVIGATION STYLES
-   Отдельный CSS файл для мобильной навигации снизу
+   MOBILE BOTTOM NAVIGATION STYLES - ОБНОВЛЕННАЯ ВЕРСИЯ
+   Классический белый фон с черным текстом
    ========================================================================== */
 
 /* CSS Variables (если не определены в основном файле) */
@@ -8,6 +746,7 @@
     --primary-dark: #2c3e50;
     --accent-gold: #c9a96e;
     --white: #ffffff;
+    --black: #333333;
     --mobile-nav-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -19,7 +758,7 @@
 }
 
 /* ==========================================================================
-   МОБИЛЬНАЯ НАВИГАЦИЯ СНИЗУ
+   МОБИЛЬНАЯ НАВИГАЦИЯ СНИЗУ - ОБНОВЛЕННЫЕ СТИЛИ
    ========================================================================== */
 
 .mobile-bottom-nav {
@@ -30,11 +769,12 @@
     right: 0 !important;
     width: 100% !important;
 
-    /* Внешний вид */
-    background: rgba(248, 248, 248, 0.98) !important;
+    /* ОБНОВЛЕННЫЙ ВНЕШНИЙ ВИД - КЛАССИЧЕСКИЙ БЕЛЫЙ - УСИЛЕННЫЙ */
+    background: #ffffff !important;
+    background-color: #ffffff !important;
     backdrop-filter: blur(20px) !important;
-    border-top: 1px solid rgba(201, 169, 110, 0.3) !important;
-    box-shadow: 0 -3px 20px rgba(0, 0, 0, 0.12) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 -3px 20px rgba(0, 0, 0, 0.08) !important;
 
     /* Z-index и отображение */
     z-index: 9999 !important;
@@ -62,15 +802,16 @@
     width: 100% !important;
 }
 
-/* Элементы навигации */
+/* Элементы навигации - ОБНОВЛЕНО ДЛЯ 6 КНОПОК */
 .mobile-bottom-nav-item {
     flex: 1 !important;
     text-align: center !important;
     display: block !important;
-    max-width: 80px !important;
+    max-width: 70px !important; /* Уменьшили для 6 кнопок */
+    min-width: 50px !important; /* Минимальная ширина */
 }
 
-/* Ссылки навигации */
+/* ОБНОВЛЕННЫЕ ССЫЛКИ НАВИГАЦИИ - ЧЕРНЫЙ ТЕКСТ */
 .mobile-bottom-nav-link {
     /* Отображение */
     display: flex !important;
@@ -78,8 +819,9 @@
     align-items: center !important;
     gap: 4px !important;
 
-    /* Стили текста */
-    color: var(--primary-dark) !important;
+    /* ОБНОВЛЕННЫЕ СТИЛИ ТЕКСТА - ЧЕРНЫЙ ЦВЕТ - УСИЛЕННЫЙ */
+    color: #333333 !important;
+    background-color: transparent !important;
     text-decoration: none !important;
     font-family: 'Cormorant Garamond', serif !important;
     font-weight: 500 !important;
@@ -101,7 +843,7 @@
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Состояния ссылок */
+/* ОБНОВЛЕННЫЕ СОСТОЯНИЯ ССЫЛОК */
 .mobile-bottom-nav-link:hover,
 .mobile-bottom-nav-link.active {
     color: var(--accent-gold) !important;
@@ -113,13 +855,14 @@
     transform: translateY(-1px) scale(1.05) !important;
 }
 
-/* Иконки навигации */
+/* ОБНОВЛЕННЫЕ ИКОНКИ НАВИГАЦИИ */
 .mobile-bottom-nav-icon {
     font-size: 20px !important;
     transition: var(--mobile-nav-transition) !important;
     transform-origin: center !important;
     opacity: 0.85 !important;
     display: block !important;
+    color: inherit !important; /* Наследуют цвет от родителя */
 }
 
 .mobile-bottom-nav-link:hover .mobile-bottom-nav-icon {
@@ -208,41 +951,47 @@
     }
 }
 
-/* Дополнительные настройки для маленьких экранов */
+/* Дополнительные настройки для маленьких экранов - ОБНОВЛЕНО ДЛЯ 6 КНОПОК */
 @media screen and (max-width: 576px) {
     .mobile-bottom-nav-text {
-        font-size: 9px !important;
+        font-size: 8px !important; /* Еще меньше текст */
     }
 
     .mobile-bottom-nav-icon {
-        font-size: 18px !important;
+        font-size: 16px !important; /* Меньше иконки */
     }
 
     .mobile-nav-badge {
-        min-width: 16px !important;
-        height: 16px !important;
-        font-size: 9px !important;
+        min-width: 14px !important;
+        height: 14px !important;
+        font-size: 8px !important;
         top: 1px !important;
-        right: 6px !important;
+        right: 4px !important;
     }
 
     .mobile-bottom-nav-link {
-        padding: 6px 2px !important;
+        padding: 4px 1px !important; /* Меньше отступы */
+        gap: 2px !important;
+    }
+
+    .mobile-bottom-nav-item {
+        max-width: 60px !important; /* Еще меньше для маленьких экранов */
+        min-width: 45px !important;
     }
 }
 
-/* Настройки для очень широких мобильных экранов */
+/* Настройки для очень широких мобильных экранов - ОБНОВЛЕНО ДЛЯ 6 КНОПОК */
 @media screen and (min-width: 768px) and (max-width: 991px) {
     .mobile-bottom-nav-item {
-        max-width: 100px !important;
+        max-width: 85px !important; /* Увеличили для широких экранов */
     }
 
     .mobile-bottom-nav-icon {
-        font-size: 22px !important;
+        font-size: 20px !important; /* Немного меньше */
     }
 
     .mobile-bottom-nav-text {
-        font-size: 11px !important;
+        font-size: 10px !important;
     }
 }
 
@@ -270,11 +1019,11 @@
     }
 }
 
-/* Темная тема (если нужно) */
+/* ОБНОВЛЕННАЯ ТЕМНАЯ ТЕМА */
 @media (prefers-color-scheme: dark) {
     .mobile-bottom-nav {
         background: rgba(44, 62, 80, 0.95) !important;
-        border-top-color: rgba(201, 169, 110, 0.4) !important;
+        border-top-color: rgba(255, 255, 255, 0.2) !important;
     }
 
     .mobile-bottom-nav-link {
@@ -288,10 +1037,8 @@
     }
 }
 
-
-
 /* ==========================================================================
-   ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ - ДОБАВЬТЕ В ВАШ CSS ФАЙЛ
+   ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ - ОБНОВЛЕННЫЕ СТИЛИ
    ========================================================================== */
 
 .mobile-categories-item {
@@ -303,18 +1050,21 @@
     bottom: 100% !important;
     left: 50% !important;
     transform: translateX(-50%) translateY(-10px) !important;
-    background: rgba(248, 248, 248, 0.98) !important;
+
+    /* ОБНОВЛЕННЫЙ ФОН ВЫПАДАЮЩЕГО МЕНЮ - УСИЛЕННЫЙ */
+    background: #ffffff !important;
+    background-color: #ffffff !important;
     backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(201, 169, 110, 0.3) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 16px !important;
-    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.1) !important;
     z-index: 10000 !important;
 
     /* УВЕЛИЧЕННЫЕ РАЗМЕРЫ */
     min-width: 280px !important;
     max-width: 350px !important;
-    width: 85vw !important; /* 85% от ширины экрана */
-    max-width: min(350px, 85vw) !important; /* Не больше 350px или 85% экрана */
+    width: 85vw !important;
+    max-width: min(350px, 85vw) !important;
 
     /* По умолчанию скрыто */
     opacity: 0 !important;
@@ -330,38 +1080,41 @@
 }
 
 .mobile-categories-list {
-    padding: 16px 12px !important; /* Увеличили отступы */
-    max-height: 350px !important; /* Увеличили максимальную высоту */
+    padding: 16px 12px !important;
+    max-height: 350px !important;
     overflow-y: auto !important;
 }
 
 .mobile-category-link {
     display: flex !important;
     align-items: center !important;
-    gap: 16px !important; /* Увеличили промежуток между элементами */
-    padding: 16px 20px !important; /* Увеличили внутренние отступы */
-    color: var(--primary-dark, #2c3e50) !important;
+    gap: 16px !important;
+    padding: 16px 20px !important;
+
+    /* ОБНОВЛЕННЫЙ ЦВЕТ ТЕКСТА - УСИЛЕННЫЙ */
+    color: #333333 !important;
+    background-color: transparent !important;
     text-decoration: none !important;
-    border-radius: 14px !important; /* Увеличили скругление */
+    border-radius: 14px !important;
     transition: all 0.3s ease !important;
-    font-size: 16px !important; /* Увеличили размер шрифта */
+    font-size: 16px !important;
     font-weight: 500 !important;
-    margin-bottom: 6px !important; /* Увеличили отступ между ссылками */
+    margin-bottom: 6px !important;
     position: relative !important;
     font-family: 'Cormorant Garamond', serif !important;
-    min-height: 50px !important; /* Минимальная высота для удобства тапа */
+    min-height: 50px !important;
 }
 
 .mobile-category-link:hover,
 .mobile-category-link.active {
     background: rgba(201, 169, 110, 0.15) !important;
     color: var(--accent-gold, #c9a96e) !important;
-    transform: translateX(6px) !important; /* Увеличили смещение при hover */
+    transform: translateX(6px) !important;
 }
 
 .mobile-category-icon {
-    font-size: 20px !important; /* Увеличили размер иконки */
-    width: 24px !important; /* Увеличили ширину для иконки */
+    font-size: 20px !important;
+    width: 24px !important;
     text-align: center !important;
     opacity: 0.8 !important;
     transition: all 0.3s ease !important;
@@ -370,24 +1123,24 @@
 .mobile-category-link:hover .mobile-category-icon,
 .mobile-category-link.active .mobile-category-icon {
     opacity: 1 !important;
-    transform: scale(1.15) !important; /* Немного увеличили масштаб */
+    transform: scale(1.15) !important;
 }
 
 .mobile-category-name {
     flex: 1 !important;
     letter-spacing: 0.3px !important;
-    line-height: 1.3 !important; /* Добавили межстрочный интервал */
+    line-height: 1.3 !important;
 }
 
-/* Стрелка-указатель снизу выпадающего меню */
+/* ОБНОВЛЕННАЯ СТРЕЛКА-УКАЗАТЕЛЬ */
 .mobile-categories-dropdown::after {
     content: '' !important;
     position: absolute !important;
     top: 100% !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    border: 10px solid transparent !important; /* Увеличили размер стрелки */
-    border-top-color: rgba(248, 248, 248, 0.98) !important;
+    border: 10px solid transparent !important;
+    border-top-color: rgba(255, 255, 255, 0.98) !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
 }
 
@@ -414,36 +1167,36 @@
     }
 }
 
-/* Настройки скроллбара - тоже увеличили */
+/* Настройки скроллбара */
 .mobile-categories-list::-webkit-scrollbar {
-    width: 6px !important; /* Увеличили ширину скроллбара */
+    width: 6px !important;
 }
 
 .mobile-categories-list::-webkit-scrollbar-track {
-    background: rgba(201, 169, 110, 0.1) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
     border-radius: 3px !important;
 }
 
 .mobile-categories-list::-webkit-scrollbar-thumb {
-    background: rgba(201, 169, 110, 0.5) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
     border-radius: 3px !important;
 }
 
 .mobile-categories-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(201, 169, 110, 0.7) !important;
+    background: rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Адаптация для маленьких экранов */
 @media screen and (max-width: 576px) {
     .mobile-categories-dropdown {
-        min-width: 260px !important; /* Увеличили минимум для маленьких экранов */
+        min-width: 260px !important;
         max-width: 320px !important;
-        width: 90vw !important; /* 90% экрана на маленьких устройствах */
+        width: 90vw !important;
         max-width: min(320px, 90vw) !important;
     }
 
     .mobile-category-link {
-        padding: 14px 16px !important; /* Немного меньше, но все равно больше оригинала */
+        padding: 14px 16px !important;
         font-size: 15px !important;
         min-height: 48px !important;
     }
@@ -481,14 +1234,10 @@
 }
 
 /* ==========================================================================
-   СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - ДОБАВЬТЕ В КОНЕЦ ФАЙЛА
+   ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - УБРАНА ПОСТОЯННАЯ ПОДСВЕТКА
    ========================================================================== */
 
-/* ==========================================================================
-   ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ КНОПКИ КАТЕГОРИЙ - ВСЕГДА ПОДСВЕЧЕНА
-   ========================================================================== */
-
-/* Основные стили кнопки категорий */
+/* ОБНОВЛЕННЫЕ ОСНОВНЫЕ СТИЛИ КНОПКИ КАТЕГОРИЙ */
 .mobile-categories-trigger {
     /* Убираем стандартные стили кнопки */
     background: none !important;
@@ -502,10 +1251,11 @@
     align-items: center !important;
     gap: 4px !important;
 
-    /* ИЗМЕНИЛИ: Всегда используем активный цвет */
-    color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.15) !important;
-    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
+    /* ОБНОВЛЕНО: ОБЫЧНОЕ СОСТОЯНИЕ БЕЗ ПОДСВЕТКИ - УСИЛЕННОЕ */
+    color: #333333 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
 
     text-decoration: none !important;
     font-weight: 500 !important;
@@ -538,48 +1288,54 @@
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Hover состояние - еще больше подсвечиваем */
+/* Hover состояние - как у обычных ссылок */
 .mobile-categories-trigger:hover {
     color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.25) !important; /* Увеличиваем интенсивность */
-    box-shadow: 0 3px 12px rgba(201, 169, 110, 0.3) !important; /* Усиливаем тень */
-    transform: translateY(-1px) !important; /* Небольшой подъем */
+    background: rgba(201, 169, 110, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* Активное состояние страницы категорий */
 .mobile-categories-trigger.active {
     color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.2) !important;
-    box-shadow: 0 2px 10px rgba(201, 169, 110, 0.25) !important;
+    background: rgba(201, 169, 110, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2) !important;
 }
 
 /* Состояние открытого выпадающего меню */
 .mobile-categories-trigger.dropdown-open {
     color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.3) !important; /* Самая яркая подсветка */
-    box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4) !important;
+    background: rgba(201, 169, 110, 0.2) !important;
+    box-shadow: 0 3px 12px rgba(201, 169, 110, 0.3) !important;
     transform: translateY(-1px) !important;
 }
 
-/* Иконка в кнопке категорий - ВСЕГДА АКТИВНАЯ */
+/* ОБНОВЛЕННАЯ ИКОНКА В КНОПКЕ КАТЕГОРИЙ */
 .mobile-categories-trigger .mobile-bottom-nav-icon {
     font-size: 20px !important;
     transition: var(--mobile-nav-transition) !important;
     transform-origin: center !important;
-    opacity: 1 !important; /* ИЗМЕНИЛИ: всегда полная непрозрачность */
-    transform: translateY(-1px) scale(1.05) !important; /* ИЗМЕНИЛИ: всегда слегка приподнята и увеличена */
+    opacity: 0.85 !important; /* ОБНОВЛЕНО: обычная прозрачность */
+    transform: none !important; /* ОБНОВЛЕНО: без трансформаций */
 }
 
-/* При hover иконка становится еще активнее */
+/* При hover иконка активируется */
 .mobile-categories-trigger:hover .mobile-bottom-nav-icon {
     opacity: 1 !important;
-    transform: translateY(-2px) scale(1.1) !important; /* Еще больше поднимаем */
+    transform: translateY(-2px) scale(1.1) !important;
 }
 
-/* При открытом меню иконка максимально активна */
+/* При активном состоянии страницы */
+.mobile-categories-trigger.active .mobile-bottom-nav-icon {
+    opacity: 1 !important;
+    transform: translateY(-1px) scale(1.05) !important;
+}
+
+/* При открытом меню иконка активна */
 .mobile-categories-trigger.dropdown-open .mobile-bottom-nav-icon {
     opacity: 1 !important;
-    transform: translateY(-1px) scale(1.08) !important;
+    transform: translateY(-1px) scale(1.05) !important;
 }
 
 /* Текст в кнопке категорий */
@@ -590,21 +1346,26 @@
     font-weight: 600 !important;
 }
 
-/* Стрелка для кнопки категорий - ВСЕГДА ВИДНА */
+/* ОБНОВЛЕННАЯ СТРЕЛКА ДЛЯ КНОПКИ КАТЕГОРИЙ */
 .mobile-categories-trigger .mobile-categories-arrow {
     position: absolute !important;
     top: 6px !important;
     right: 2px !important;
     font-size: 10px !important;
-    opacity: 0.9 !important; /* ИЗМЕНИЛИ: всегда хорошо видна */
+    opacity: 0.6 !important; /* ОБНОВЛЕНО: менее заметная */
     transition: all 0.3s ease !important;
     pointer-events: none !important;
     z-index: 10 !important;
 }
 
-/* При hover стрелка становится полностью видимой */
+/* При hover стрелка становится видимой */
 .mobile-categories-trigger:hover .mobile-categories-arrow {
     opacity: 1 !important;
+}
+
+/* При активном состоянии стрелка видна */
+.mobile-categories-trigger.active .mobile-categories-arrow {
+    opacity: 0.9 !important;
 }
 
 /* Состояние когда выпадающее меню открыто */
@@ -616,7 +1377,7 @@
 /* Убираем focus outline для кнопки */
 .mobile-categories-trigger:focus {
     outline: none !important;
-    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.5) !important; /* Увеличили интенсивность */
+    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.3) !important;
 }
 
 /* Активное нажатие кнопки */
@@ -649,14 +1410,70 @@
 /* Дополнительные стили для улучшения доступности */
 .mobile-categories-trigger[aria-expanded="true"] {
     color: var(--accent-gold, #c9a96e) !important;
-    background: rgba(201, 169, 110, 0.3) !important;
+    background: rgba(201, 169, 110, 0.2) !important;
 }
 
-/* Анимация для плавного перехода между состояниями */
+/* ==========================================================================
+   ДОПОЛНИТЕЛЬНЫЕ ПЕРЕОПРЕДЕЛЕНИЯ ДЛЯ ОБЕСПЕЧЕНИЯ БЕЛОГО ФОНА
+   ========================================================================== */
+
+/* Принудительное переопределение всех возможных темных стилей */
+.mobile-bottom-nav,
+#mobileBottomNav {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
+
+.mobile-bottom-nav *,
+#mobileBottomNav * {
+    color: #333333 !important;
+}
+
+.mobile-bottom-nav-link,
+.mobile-bottom-nav-link *,
+.mobile-categories-trigger,
 .mobile-categories-trigger * {
-    transition: var(--mobile-nav-transition) !important;
+    color: #333333 !important;
+    background-color: transparent !important;
 }
 
+/* Переопределение hover состояний */
+.mobile-bottom-nav-link:hover,
+.mobile-bottom-nav-link:hover *,
+.mobile-categories-trigger:hover,
+.mobile-categories-trigger:hover * {
+    color: #c9a96e !important;
+}
 
+/* Переопределение активных состояний */
+.mobile-bottom-nav-link.active,
+.mobile-bottom-nav-link.active *,
+.mobile-categories-trigger.active,
+.mobile-categories-trigger.active * {
+    color: #c9a96e !important;
+}
 
+/* Принудительные стили для выпадающего меню */
+.mobile-categories-dropdown {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
 
+.mobile-category-link,
+.mobile-category-link * {
+    color: #333333 !important;
+    background-color: transparent !important;
+}
+
+.mobile-category-link:hover,
+.mobile-category-link:hover *,
+.mobile-category-link.active,
+.mobile-category-link.active * {
+    color: #c9a96e !important;
+}
+
+/* ==========================================================================
+   КОНЕЦ ДОПОЛНИТЕЛЬНЫХ ПЕРЕОПРЕДЕЛЕНИЙ
+   ========================================================================== */

@@ -18,6 +18,7 @@
       </a>
     </li>
 
+
     <!-- Товары -->
     <li class="mobile-bottom-nav-item">
       <a th:href="@{/product/all}"
@@ -76,6 +77,20 @@
          th:classappend="${currentURI == '/search' ? 'active' : ''}">
         <i class="fas fa-search mobile-bottom-nav-icon"></i>
         <span class="mobile-bottom-nav-text">Пошук</span>
+      </a>
+    </li>
+
+
+    <!-- ИЗБРАННОЕ -->
+    <li class="mobile-bottom-nav-item">
+      <a th:href="@{/wishlist}"
+         class="mobile-bottom-nav-link"
+         th:classappend="${currentURI == '/wishlist' ? 'active' : ''}">
+        <i class="fas fa-heart mobile-bottom-nav-icon"></i>
+        <span class="mobile-bottom-nav-text">Вибране</span>
+        <span class="mobile-nav-badge favorites"
+              th:if="${favoritesCount > 0}"
+              th:text="${favoritesCount}">0</span>
       </a>
     </li>
 

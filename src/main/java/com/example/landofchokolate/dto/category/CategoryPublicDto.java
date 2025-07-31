@@ -37,4 +37,17 @@ public class CategoryPublicDto {
     private BigDecimal minPrice;        // минимальная цена товара в категории
     private BigDecimal maxPrice;        // максимальная цена товара в категории (опционально)
     private String priceRange;
+
+    // ✅ Добавить этот метод для автоматического формирования ценового диапазона
+    public String getPriceRange() {
+        if (minPrice == null) {
+            return null;
+        }
+
+        if (maxPrice == null || minPrice.equals(maxPrice)) {
+            return "від " + minPrice + " ₴";
+        }
+
+        return "від " + minPrice + " до " + maxPrice + " ₴";
+    }
 }
