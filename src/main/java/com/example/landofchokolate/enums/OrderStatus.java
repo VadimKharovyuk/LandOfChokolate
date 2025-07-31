@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
-    NEW("Новый заказ"),
-    PAID("Оплачен"),
-    CANCELLED("Отменён"),
-    COMPLETED("Завершён"),
-    READY_FOR_PICKUP("Готов к выдаче в магазине");
+    NEW("Нове замовлення"),
+    PAID("Оплачено"),
+    CANCELLED("Скасовано"),
+    COMPLETED("Завершено"),
+    READY_FOR_PICKUP("Готове до видачі в магазині");
 
     private final String description;
 
