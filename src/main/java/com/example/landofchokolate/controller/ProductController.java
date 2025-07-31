@@ -136,6 +136,10 @@ public class ProductController {
             editDto.setBrandId(product.getBrand().getId());
             editDto.setIsRecommendation(product.getIsRecommendation());
 
+            editDto.setDescription(product.getDescription());
+            editDto.setMetaTitle(product.getMetaTitle());
+            editDto.setMetaDescription(product.getMetaDescription());
+
 
             model.addAttribute("product", editDto);
             model.addAttribute("productId", id);

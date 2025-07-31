@@ -42,4 +42,12 @@ public class UpdateProductDto {
     private Boolean removeCurrentImage = false;
 
 
+    @Size(max = 60, message = "Meta title не должен превышать 60 символов")
+    private String metaTitle;
+
+    @Size(max = 160, message = "Meta description не должно превышать 160 символов")
+    private String metaDescription;
+
+    @Size(max = 1000, message = "Описание не должно превышать 1000 символов")
+    private String description;
 }

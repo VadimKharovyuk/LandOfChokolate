@@ -610,6 +610,10 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setStockQuantity(updateProductDto.getStockQuantity());
         existingProduct.setIsRecommendation(updateProductDto.getIsRecommendation());
 
+        existingProduct.setMetaTitle(updateProductDto.getMetaTitle());
+        existingProduct.setMetaDescription(updateProductDto.getMetaDescription());
+        existingProduct.setDescription(updateProductDto.getDescription());
+
         // Обновляем slug если название изменилось
         if (!oldName.equals(updateProductDto.getName())) {
             String newSlug = slugService.generateUniqueSlugForProduct(updateProductDto.getName());
