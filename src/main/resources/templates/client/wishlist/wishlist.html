@@ -17,7 +17,7 @@
           rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
-<!--    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
+    <!--    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
@@ -613,21 +613,22 @@
 
                             <div class="wishlist-item-info">
                                 <div class="wishlist-item-stock">
-            <span th:if="${item.product.available}" class="status-available">
-                <i class="fas fa-check-circle"></i> В наявності
-            </span>
+<!--                            <span th:if="${item.product.available}" class="status-available">-->
+<!--                                <i class="fas fa-check-circle"></i> В наявності-->
+<!--                            </span>-->
                                     <span th:if="${!item.product.active}" class="status-unavailable">
-                <i class="fas fa-times-circle"></i> Недоступний
-            </span>
-                                    <span th:if="${item.product.active and !item.product.inStock}" class="status-out-of-stock">
-                <i class="fas fa-exclamation-triangle"></i> Немає в наявності
-            </span>
+                                <i class="fas fa-times-circle"></i> Недоступний
+                            </span>
+                                    <span th:if="${item.product.active and !item.product.inStock}"
+                                          class="status-out-of-stock">
+                                <i class="fas fa-exclamation-triangle"></i> Немає в наявності
+                            </span>
                                 </div>
 
-                                <div class="wishlist-item-added">
-                                    <i class="fas fa-calendar"></i>
-                                    <span th:text="${#temporals.format(item.addedAt, 'dd.MM.yyyy')}">15.12.2024</span>
-                                </div>
+<!--                                <div class="wishlist-item-added">-->
+<!--                                    <i class="fas fa-calendar"></i>-->
+<!--                                    <span th:text="${#temporals.format(item.addedAt, 'dd.MM.yyyy')}">15.12.2024</span>-->
+<!--                                </div>-->
                             </div>
                         </div>
 
@@ -663,31 +664,17 @@
 
                     <div class="summary-row">
                         <span class="summary-label">Доступно для покупки:</span>
-                        <span class="summary-value">
-            <th:block th:with="availableCount=0">
-                <th:block th:each="item : ${wishlist.items}">
-                    <th:block th:if="${item.product.available}" th:with="availableCount=${availableCount + 1}"></th:block>
-                </th:block>
-                <span th:text="${availableCount}">0</span>
-            </th:block>
-        </span>
+                        <span class="summary-value" th:text="${wishlist.availableItems}">0</span>
                     </div>
 
                     <div class="summary-row">
                         <span class="summary-label">Загальна вартість:</span>
-                        <span class="summary-value">
-            <th:block th:with="totalPrice=0">
-                <th:block th:each="item : ${wishlist.items}">
-                    <th:block th:if="${item.product.available}"
-                              th:with="totalPrice=${totalPrice + item.product.currentPrice}"></th:block>
-                </th:block>
-                <span th:text="${totalPrice + ' грн'}">0 грн</span>
-            </th:block>
-        </span>
+                        <span class="summary-value" th:text="${wishlist.total + ' грн'}">0 грн</span>
                     </div>
 
                     <div class="wishlist-actions">
-                        <button class="btn-clear-wishlist" onclick="clearWishlist()">
+                        <button class="btn-clear-wishlist" onclick="clearWishlist()"
+                                th:disabled="${wishlist.totalItems == 0}">
                             <i class="fas fa-trash"></i>
                             Очистити вибране
                         </button>
@@ -723,7 +710,6 @@
 </div>
 
 <!-- Подвал -->
-<!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
 <footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 
 
@@ -732,7 +718,6 @@
 <!-- Мобильная навигация снизу  -->
 <div th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation}"></div>
 <script th:replace="~{admin/fragments/mobile-bottom-nav :: mobile-bottom-navigation-script}"></script>
-
 
 
 <!-- JavaScript -->

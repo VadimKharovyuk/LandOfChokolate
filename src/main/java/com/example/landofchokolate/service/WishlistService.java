@@ -86,4 +86,6 @@ public interface WishlistService {
      * Синхронизировать cookie с сессией
      */
     Map<String, Object> syncCookieWithSession(HttpSession session);
+
+
 }

@@ -52,10 +52,21 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
     @Override
     @Transactional(readOnly = true)
     public WishlistDto getWishlistDto(HttpSession session) {
-        Wishlist wishlist = getWishlistReadOnly(session);
-        WishlistDto wishlistDto =wishlistMapper.toDto(wishlist);
-        return wishlistDto;
+        try {
+            log.debug("Getting wishlist DTO for session: {}", session.getId());
 
+            Wishlist wishlist = getWishlistReadOnly(session);
+            WishlistDto wishlistDto = wishlistMapper.toDto(wishlist);
+
+            log.debug("Retrieved wishlist DTO: totalItems={}, availableItems={}, total={}",
+                    wishlistDto.getTotalItems(), wishlistDto.getAvailableItems(), wishlistDto.getTotal());
+
+            return wishlistDto;
+
+        } catch (Exception e) {
+            log.error("Ошибка при получении WishlistDto для сессии: {}", session.getId(), e);
+            return wishlistMapper.toDto(null);
+        }
     }
 
 

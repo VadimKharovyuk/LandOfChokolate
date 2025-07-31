@@ -25,9 +25,7 @@ public class CartController {
 
     private final CartService cartService;
 
-    /**
-     * Отображение страницы корзины
-     */
+
     @GetMapping
     public String viewCart(HttpSession session, Model model) {
         CartDto cart = cartService.getCartDto(session);
@@ -66,9 +64,8 @@ public class CartController {
 
             Integer cartItemCount = cartService.getCartItemCount(session);
             BigDecimal cartTotal = cartService.getCartTotal(session);
-
             response.put("success", true);
-            response.put("message", "Товар добавлен в корзину");
+            response.put("message", "Товар додано до кошика");
             response.put("cartItemCount", cartItemCount);
             response.put("cartTotal", cartTotal);
 
@@ -105,7 +102,7 @@ public class CartController {
 
             if (quantity < 0) {
                 response.put("success", false);
-                response.put("message", "Количество не может быть отрицательным");
+                response.put("message", "Кількість не може бути від’ємною");
                 return ResponseEntity.badRequest().body(response);
             }
 
@@ -131,7 +128,7 @@ public class CartController {
             }
 
             response.put("success", true);
-            response.put("message", "Количество обновлено");
+            response.put("message", "Кількість оновлено");
             response.put("cartItemCount", cartItemCount != null ? cartItemCount : 0);
             response.put("cartTotal", cartTotal != null ? cartTotal : BigDecimal.ZERO);
             response.put("itemTotal", itemTotal);
@@ -175,7 +172,7 @@ public class CartController {
             boolean isEmpty = cartService.isCartEmpty(session);
 
             response.put("success", true);
-            response.put("message", "Товар удален из корзины");
+            response.put("message", "Товар видалено з кошика");
             response.put("cartItemCount", cartItemCount);
             response.put("cartTotal", cartTotal);
             response.put("isEmpty", isEmpty);
@@ -203,7 +200,7 @@ public class CartController {
             cartService.clearCart(session);
 
             response.put("success", true);
-            response.put("message", "Корзина очищена");
+            response.put("message", "Кошик очищено");
             response.put("cartItemCount", 0);
             response.put("cartTotal", BigDecimal.ZERO);
             response.put("isEmpty", true);

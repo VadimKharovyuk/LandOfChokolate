@@ -25,6 +25,22 @@ public class WishlistController {
     private final WishlistService wishlistService;
     private final WishlistRepository wishlistRepository;
 
+    @GetMapping
+    public String wishlistPage(HttpSession session, Model model) {
+        try {
+            WishlistDto wishlist = wishlistService.getWishlistDto(session);
+
+            model.addAttribute("wishlist", wishlist);
+            model.addAttribute("pageTitle", "Избранное");
+            return "client/wishlist/wishlist";
+        } catch (Exception e) {
+            log.error("Ошибка при загрузке страницы избранного", e);
+            model.addAttribute("error", "Произошла ошибка при загрузке избранного");
+            return "error/error";
+        }
+    }
+
+
     /**
      * API: Добавить товар в избранное
      */
@@ -34,8 +50,6 @@ public class WishlistController {
             @RequestParam Long productId,
             HttpSession session) {
 
-        log.info("Получен запрос на добавление в избранное: productId={}", productId);
-
 
         Map<String, Object> response = new HashMap<>();
 
@@ -43,7 +57,7 @@ public class WishlistController {
             wishlistService.addProduct(session, productId);
 
             response.put("success", true);
-            response.put("message", "Товар добавлен в избранное");
+            response.put("message", "Товар додано до обраного");
             response.put("itemCount", wishlistService.getWishlistItemCount(session));
 
             return ResponseEntity.ok(response);
@@ -57,22 +71,6 @@ public class WishlistController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
-    @GetMapping
-    public String wishlistPage(HttpSession session, Model model) {
-        try {
-            WishlistDto wishlist = wishlistService.getWishlistDto(session);
-            model.addAttribute("wishlist", wishlist);
-            model.addAttribute("pageTitle", "Избранное");
-            return "client/wishlist/wishlist";
-        } catch (Exception e) {
-            log.error("Ошибка при загрузке страницы избранного", e);
-            model.addAttribute("error", "Произошла ошибка при загрузке избранного");
-            return "error/error";
-        }
-    }
-
-
 
 
     /**
@@ -90,7 +88,7 @@ public class WishlistController {
             wishlistService.removeProduct(session, productId);
 
             response.put("success", true);
-            response.put("message", "Товар удален из избранного");
+            response.put("message", "Товар видалено з обраного");
             response.put("itemCount", wishlistService.getWishlistItemCount(session));
 
             return ResponseEntity.ok(response);
@@ -124,7 +122,7 @@ public class WishlistController {
 
             response.put("success", true);
             response.put("isInWishlist", isInWishlist);
-            response.put("message", isInWishlist ? "Товар добавлен в избранное" : "Товар удален из избранного");
+            response.put("message", isInWishlist ? "Товар додано до обраного" : "Товар видалено з обраного");
             response.put("itemCount", wishlistService.getWishlistItemCount(session));
 
             return ResponseEntity.ok(response);
@@ -159,7 +157,7 @@ public class WishlistController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            log.error("Ошибка при проверке товара {} в избранном", productId, e);
+            log.error("Помилка при перевірці товару {} в обраному", productId, e);
 
             response.put("success", false);
             response.put("isInWishlist", false);
@@ -209,7 +207,7 @@ public class WishlistController {
             wishlistService.clearWishlist(session);
 
             response.put("success", true);
-            response.put("message", "Избранное очищено");
+            response.put("message", "Обране очищено");
             response.put("itemCount", 0);
 
             return ResponseEntity.ok(response);

@@ -2,19 +2,19 @@
 (function() {
     'use strict';
 
-    // Функция добавления в корзину из избранного
+    // Функція додавання в кошик з обраного
     window.addToCartFromWishlist = function(button) {
         const productId = button.getAttribute('data-product-id');
 
         if (!productId || isNaN(productId)) {
-            console.error('Некорректный ID товара:', productId);
+            console.error('Некоректний ID товару:', productId);
             return;
         }
 
-        // Блокируем кнопку
+        // Блокуємо кнопку
         const originalText = button.innerHTML;
         button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Добавление...';
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Додавання...';
 
         fetch('/cart/add', {
             method: 'POST',
@@ -26,7 +26,7 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP помилка! Статус: ${response.status}`);
                 }
                 return response.json();
             })
@@ -35,33 +35,33 @@
                     showNotification(data.message, 'success');
                     updateCartCounter(data.cartItemCount);
 
-                    button.innerHTML = '<i class="fas fa-check"></i> Добавлено!';
+                    button.innerHTML = '<i class="fas fa-check"></i> Додано!';
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         button.disabled = false;
                     }, 2000);
                 } else {
-                    throw new Error(data.message || 'Ошибка при добавлении в корзину');
+                    throw new Error(data.message || 'Помилка при додаванні до кошика');
                 }
             })
             .catch(error => {
-                console.error('Ошибка при добавлении в корзину:', error);
-                showNotification('Ошибка при добавлении в корзину: ' + error.message, 'error');
+                console.error('Помилка при додаванні до кошика:', error);
+                showNotification('Помилка при додаванні до кошика: ' + error.message, 'error');
                 button.innerHTML = originalText;
                 button.disabled = false;
             });
     };
 
-    // Функция удаления из избранного
+    // Функція видалення з обраного
     window.removeFromWishlist = function(button) {
         const productId = button.getAttribute('data-product-id');
 
         if (!productId || isNaN(productId)) {
-            console.error('Некорректный ID товара:', productId);
+            console.error('Некоректний ID товару:', productId);
             return;
         }
 
-        if (!confirm('Удалить товар из избранного?')) {
+        if (!confirm('Видалити товар з обраного?')) {
             return;
         }
 
@@ -79,7 +79,7 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP помилка! Статус: ${response.status}`);
                 }
                 return response.json();
             })
@@ -88,7 +88,7 @@
                     showNotification(data.message, 'success');
                     updateWishlistCounter(data.itemCount);
 
-                    // Удаляем элемент из DOM с анимацией
+                    // Видаляємо елемент з DOM з анімацією
                     const wishlistItem = button.closest('.wishlist-item');
                     if (wishlistItem) {
                         wishlistItem.style.transition = 'all 0.3s ease';
@@ -98,7 +98,7 @@
                         setTimeout(() => {
                             wishlistItem.remove();
 
-                            // Проверяем, остались ли товары
+                            // Перевіряємо, чи залишилися товари
                             const remainingItems = document.querySelectorAll('.wishlist-item');
                             if (remainingItems.length === 0) {
                                 window.location.reload();
@@ -106,20 +106,20 @@
                         }, 300);
                     }
                 } else {
-                    throw new Error(data.message || 'Ошибка при удалении из избранного');
+                    throw new Error(data.message || 'Помилка при видаленні з обраного');
                 }
             })
             .catch(error => {
-                console.error('Ошибка при удалении из избранного:', error);
-                showNotification('Ошибка при удалении из избранного: ' + error.message, 'error');
+                console.error('Помилка при видаленні з обраного:', error);
+                showNotification('Помилка при видаленні з обраного: ' + error.message, 'error');
                 button.innerHTML = originalText;
                 button.disabled = false;
             });
     };
 
-    // Функция очистки избранного
+    // Функція очищення обраного
     window.clearWishlist = function() {
-        if (!confirm('Очистить все избранное? Это действие нельзя отменить.')) {
+        if (!confirm('Очистити всі обрані товари? Цю дію неможливо скасувати.')) {
             return;
         }
 
@@ -132,7 +132,7 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP помилка! Статус: ${response.status}`);
                 }
                 return response.json();
             })
@@ -145,12 +145,12 @@
                         window.location.reload();
                     }, 1000);
                 } else {
-                    throw new Error(data.message || 'Ошибка при очистке избранного');
+                    throw new Error(data.message || 'Помилка під час очищення обраного');
                 }
             })
             .catch(error => {
-                console.error('Ошибка при очистке избранного:', error);
-                showNotification('Ошибка при очистке избранного: ' + error.message, 'error');
+                console.error('Помилка під час очищення обраного:', error);
+                showNotification('Помилка під час очищення обраного: ' + error.message, 'error');
             });
     };
 
