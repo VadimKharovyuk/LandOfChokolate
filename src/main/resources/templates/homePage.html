@@ -444,15 +444,18 @@
             }
         }
 
+
+
+
         /* Product Preview Section */
         .preview-section {
-            padding: 120px 0;
+            padding: 30px 0; /* БЫЛО: 120px 0 */
             background: var(--white);
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 20px; /* БЫЛО: 80px */
         }
 
         .section-subtitle {
@@ -499,7 +502,7 @@
             transition: var(--transition);
             position: relative;
             overflow: hidden;
-            margin-top: 60px;
+            margin-top: 15px; /* БЫЛО: 60px */
         }
 
         .view-more-btn::before {
@@ -534,7 +537,7 @@
 
         .section-footer {
             text-align: center;
-            margin-top: 60px;
+            margin-top: 40px; /* БЫЛО: 60px */
         }
 
         /* Product Cards */
@@ -578,27 +581,6 @@
             transform: scale(1.05);
         }
 
-        .favorite-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            z-index: 2;
-        }
-
-        .favorite-btn:hover {
-            background: var(--white);
-            transform: scale(1.1);
-        }
 
         .favorite-btn i {
             color: var(--text-muted);
