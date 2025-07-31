@@ -32,21 +32,6 @@ public class ProductController {
 
 
 
-    @GetMapping("/click")
-    public String click(Model model,
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        PagedResponse<ProductListClickDto> clickDtoPagedResponse =
-                productService.getProductsClick(pageable);
-
-        model.addAttribute("clickDtoPagedResponse", clickDtoPagedResponse);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("currentSize", size);
-        return "admin/product/product-click";
-    }
-
     @GetMapping
     public String productCreateForm(Model model) {
         model.addAttribute("product", new CreateProductDto());
@@ -150,6 +135,7 @@ public class ProductController {
             editDto.setCategoryId(product.getCategory().getId());
             editDto.setBrandId(product.getBrand().getId());
             editDto.setIsRecommendation(product.getIsRecommendation());
+
 
             model.addAttribute("product", editDto);
             model.addAttribute("productId", id);
@@ -278,6 +264,21 @@ public class ProductController {
             model.addAttribute("errorMessage", "Ошибка при загрузке статистики: " + e.getMessage());
             return "admin/product/product-statistics";
         }
+    }
+
+    @GetMapping("/click")
+    public String click(Model model,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        PagedResponse<ProductListClickDto> clickDtoPagedResponse =
+                productService.getProductsClick(pageable);
+
+        model.addAttribute("clickDtoPagedResponse", clickDtoPagedResponse);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("currentSize", size);
+        return "admin/product/product-click";
     }
 
     /**

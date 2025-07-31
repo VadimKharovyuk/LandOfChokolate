@@ -1,197 +1,632 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Управление продуктами</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Динамический заголовок &ndash;&gt;-->
+<!--<h1 th:text="${isEdit != null and isEdit} ? 'Редактирование продукта' : 'Создание нового продукта'"></h1>-->
+
+<!--&lt;!&ndash; Flash сообщения &ndash;&gt;-->
+<!--<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">-->
+<!--  <span th:text="${successMessage}"></span>-->
+<!--</div>-->
+
+<!--<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--  <span th:text="${errorMessage}"></span>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Форма создания/редактирования продукта &ndash;&gt;-->
+<!--<form th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"-->
+<!--      th:object="${product}" method="post" enctype="multipart/form-data">-->
+
+<!--  <div style="display: flex; gap: 20px;">-->
+<!--    &lt;!&ndash; Левая колонка &ndash;&gt;-->
+<!--    <div style="flex: 1;">-->
+<!--      &lt;!&ndash; Поле для названия продукта &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="name">Название продукта:</label><br>-->
+<!--        <input type="text" id="name" th:field="*{name}"-->
+<!--               style="width: 100%; padding: 8px;"-->
+<!--               placeholder="Введите название продукта">-->
+
+<!--        <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Поле для цены &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="price">Цена (грн.):</label><br>-->
+<!--        <input type="number" id="price" th:field="*{price}"-->
+<!--               step="0.01" min="0.01"-->
+<!--               style="width: 100%; padding: 8px;"-->
+<!--               placeholder="0.00">-->
+
+<!--        <div th:if="${#fields.hasErrors('price')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('price')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Поле для количества на складе &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="stockQuantity">Количество на складе:</label><br>-->
+<!--        <input type="number" id="stockQuantity" th:field="*{stockQuantity}"-->
+<!--               min="0" step="1"-->
+<!--               style="width: 100%; padding: 8px;"-->
+<!--               placeholder="0">-->
+
+<!--        <div th:if="${#fields.hasErrors('stockQuantity')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('stockQuantity')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Чекбокс для рекомендации &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="isRecommendation" style="display: flex; align-items: center; cursor: pointer;">-->
+<!--          <input type="checkbox" id="isRecommendation" th:field="*{isRecommendation}"-->
+<!--                 style="margin-right: 8px; transform: scale(1.2);">-->
+<!--          <span style="font-weight: bold; color: #007bff;">Рекомендуемый товар (отображать на главной странице)</span>-->
+<!--        </label>-->
+
+<!--        <div style="font-size: 12px; color: #666; margin-top: 5px; margin-left: 25px;">-->
+<!--          Отмеченные товары будут показаны в разделе рекомендаций на главной странице-->
+<!--        </div>-->
+
+<!--        <div th:if="${#fields.hasErrors('isRecommendation')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('isRecommendation')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Правая колонка &ndash;&gt;-->
+<!--    <div style="flex: 1;">-->
+<!--      &lt;!&ndash; Поле для выбора категории &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="categoryId">Категория:</label><br>-->
+<!--        <select id="categoryId" th:field="*{categoryId}" style="width: 100%; padding: 8px;">-->
+<!--          <option value="">Выберите категорию</option>-->
+<!--          <option th:each="category : ${categories}"-->
+<!--                  th:value="${category.id}"-->
+<!--                  th:text="${category.name}"></option>-->
+<!--        </select>-->
+
+<!--        <div th:if="${#fields.hasErrors('categoryId')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('categoryId')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Поле для выбора бренда &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="brandId">Бренд:</label><br>-->
+<!--        <select id="brandId" th:field="*{brandId}" style="width: 100%; padding: 8px;">-->
+<!--          <option value="">Выберите бренд</option>-->
+<!--          <option th:each="brand : ${brands}"-->
+<!--                  th:value="${brand.id}"-->
+<!--                  th:text="${brand.name}"></option>-->
+<!--        </select>-->
+
+<!--        <div th:if="${#fields.hasErrors('brandId')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('brandId')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Поле для загрузки изображения &ndash;&gt;-->
+<!--      <div style="margin: 10px 0;">-->
+<!--        <label for="image">Изображение продукта:</label><br>-->
+
+<!--        &lt;!&ndash; Отображение текущего изображения при редактировании &ndash;&gt;-->
+<!--        <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" style="margin: 10px 0;">-->
+<!--          <p style="margin: 5px 0; font-weight: bold;">Текущее изображение:</p>-->
+<!--          <img th:src="${currentImageUrl}" alt="Текущее изображение продукта"-->
+<!--               style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; padding: 5px;">-->
+
+<!--          &lt;!&ndash; Чекбокс для удаления текущего изображения &ndash;&gt;-->
+<!--          <div style="margin: 10px 0;">-->
+<!--            <label>-->
+<!--              <input type="checkbox" th:field="*{removeCurrentImage}">-->
+<!--              Удалить текущее изображение-->
+<!--            </label>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <input type="file" id="image" th:field="*{image}"-->
+<!--               accept="image/*"-->
+<!--               style="width: 100%; padding: 5px;">-->
+
+<!--        <div style="font-size: 12px; color: #666; margin-top: 5px;">-->
+<!--          Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5MB-->
+<!--        </div>-->
+
+<!--        <div th:if="${#fields.hasErrors('image')}" style="color: red; font-size: 12px;">-->
+<!--          <ul>-->
+<!--            <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Кнопки действий &ndash;&gt;-->
+<!--  <div style="margin: 20px 0; border-top: 1px solid #ccc; padding-top: 20px;">-->
+<!--    <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-right: 10px;">-->
+<!--      <span th:text="${isEdit != null and isEdit} ? 'Обновить продукт' : 'Создать продукт'"></span>-->
+<!--    </button>-->
+<!--    <a th:href="@{/admin/product/list}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">-->
+<!--      Отмена-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</form>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">-->
+<!--  <h3>Навигация:</h3>-->
+<!--  <ul>-->
+<!--    <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>-->
+<!--    <li><a th:href="@{/admin/product/list}">Список всех продуктов</a></li>-->
+<!--    <li><a th:href="@{/admin/product/statistics}">Статистика продуктов</a></li>-->
+<!--    <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>-->
+<!--    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>-->
+<!--  </ul>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Быстрые ссылки для создания категорий/брендов &ndash;&gt;-->
+<!--<div th:if="${categories.empty or brands.empty}" style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7;">-->
+<!--  <h4>Внимание!</h4>-->
+<!--  <div th:if="${categories.empty}">-->
+<!--    <p>У вас нет категорий. <a th:href="@{/admin/category}">Создать категорию</a></p>-->
+<!--  </div>-->
+<!--  <div th:if="${brands.empty}">-->
+<!--    <p>У вас нет брендов. <a th:href="@{/admin/brand}">Создать бренд</a></p>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Управление продуктами</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
-<body>
-<!-- Динамический заголовок -->
-<h1 th:text="${isEdit != null and isEdit} ? 'Редактирование продукта' : 'Создание нового продукта'"></h1>
+<body class="bg-light">
 
-<!-- Flash сообщения -->
-<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
-  <span th:text="${successMessage}"></span>
-</div>
-
-<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-  <span th:text="${errorMessage}"></span>
-</div>
-
-<!-- Форма создания/редактирования продукта -->
-<form th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"
-      th:object="${product}" method="post" enctype="multipart/form-data">
-
-  <div style="display: flex; gap: 20px;">
-    <!-- Левая колонка -->
-    <div style="flex: 1;">
-      <!-- Поле для названия продукта -->
-      <div style="margin: 10px 0;">
-        <label for="name">Название продукта:</label><br>
-        <input type="text" id="name" th:field="*{name}"
-               style="width: 100%; padding: 8px;"
-               placeholder="Введите название продукта">
-
-        <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Поле для цены -->
-      <div style="margin: 10px 0;">
-        <label for="price">Цена (грн.):</label><br>
-        <input type="number" id="price" th:field="*{price}"
-               step="0.01" min="0.01"
-               style="width: 100%; padding: 8px;"
-               placeholder="0.00">
-
-        <div th:if="${#fields.hasErrors('price')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('price')}" th:text="${error}"></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Поле для количества на складе -->
-      <div style="margin: 10px 0;">
-        <label for="stockQuantity">Количество на складе:</label><br>
-        <input type="number" id="stockQuantity" th:field="*{stockQuantity}"
-               min="0" step="1"
-               style="width: 100%; padding: 8px;"
-               placeholder="0">
-
-        <div th:if="${#fields.hasErrors('stockQuantity')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('stockQuantity')}" th:text="${error}"></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Чекбокс для рекомендации -->
-      <div style="margin: 10px 0;">
-        <label for="isRecommendation" style="display: flex; align-items: center; cursor: pointer;">
-          <input type="checkbox" id="isRecommendation" th:field="*{isRecommendation}"
-                 style="margin-right: 8px; transform: scale(1.2);">
-          <span style="font-weight: bold; color: #007bff;">Рекомендуемый товар (отображать на главной странице)</span>
-        </label>
-
-        <div style="font-size: 12px; color: #666; margin-top: 5px; margin-left: 25px;">
-          Отмеченные товары будут показаны в разделе рекомендаций на главной странице
-        </div>
-
-        <div th:if="${#fields.hasErrors('isRecommendation')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('isRecommendation')}" th:text="${error}"></li>
-          </ul>
-        </div>
+<div class="container py-4">
+  <!-- Заголовок страницы -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-box-seam text-primary me-3" style="font-size: 2rem;"></i>
+        <h1 class="mb-0" th:text="${isEdit != null and isEdit} ? 'Редактирование продукта' : 'Создание нового продукта'"></h1>
       </div>
     </div>
+  </div>
 
-    <!-- Правая колонка -->
-    <div style="flex: 1;">
-      <!-- Поле для выбора категории -->
-      <div style="margin: 10px 0;">
-        <label for="categoryId">Категория:</label><br>
-        <select id="categoryId" th:field="*{categoryId}" style="width: 100%; padding: 8px;">
-          <option value="">Выберите категорию</option>
-          <option th:each="category : ${categories}"
-                  th:value="${category.id}"
-                  th:text="${category.name}"></option>
-        </select>
+  <!-- Flash сообщения -->
+  <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
 
-        <div th:if="${#fields.hasErrors('categoryId')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('categoryId')}" th:text="${error}"></li>
-          </ul>
-        </div>
-      </div>
+  <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
 
-      <!-- Поле для выбора бренда -->
-      <div style="margin: 10px 0;">
-        <label for="brandId">Бренд:</label><br>
-        <select id="brandId" th:field="*{brandId}" style="width: 100%; padding: 8px;">
-          <option value="">Выберите бренд</option>
-          <option th:each="brand : ${brands}"
-                  th:value="${brand.id}"
-                  th:text="${brand.name}"></option>
-        </select>
+  <!-- Форма создания/редактирования продукта -->
+  <form th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"
+        th:object="${product}" method="post" enctype="multipart/form-data">
 
-        <div th:if="${#fields.hasErrors('brandId')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('brandId')}" th:text="${error}"></li>
-          </ul>
-        </div>
-      </div>
+    <div class="row g-4">
+      <!-- Основная информация -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-info-circle me-2"></i>Основная информация
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Название продукта -->
+            <div class="mb-3">
+              <label for="name" class="form-label fw-bold">
+                <i class="bi bi-tag me-1"></i>Название продукта *
+              </label>
+              <input type="text" id="name" th:field="*{name}"
+                     class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                     placeholder="Введите название продукта">
+              <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+                <ul class="mb-0 list-unstyled">
+                  <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
+                </ul>
+              </div>
+            </div>
 
-      <!-- Поле для загрузки изображения -->
-      <div style="margin: 10px 0;">
-        <label for="image">Изображение продукта:</label><br>
+            <!-- Цена -->
+            <div class="mb-3">
+              <label for="price" class="form-label fw-bold">
+                <i class="bi bi-currency-exchange me-1"></i>Цена (грн.) *
+              </label>
+              <div class="input-group">
+                <input type="number" id="price" th:field="*{price}"
+                       step="0.01" min="0.01"
+                       class="form-control" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+                       placeholder="0.00">
+                <span class="input-group-text">₴</span>
+                <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback">
+                  <ul class="mb-0 list-unstyled">
+                    <li th:each="error : ${#fields.errors('price')}" th:text="${error}"></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-        <!-- Отображение текущего изображения при редактировании -->
-        <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" style="margin: 10px 0;">
-          <p style="margin: 5px 0; font-weight: bold;">Текущее изображение:</p>
-          <img th:src="${currentImageUrl}" alt="Текущее изображение продукта"
-               style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; padding: 5px;">
+            <!-- Количество на складе -->
+            <div class="mb-3">
+              <label for="stockQuantity" class="form-label fw-bold">
+                <i class="bi bi-boxes me-1"></i>Количество на складе *
+              </label>
+              <input type="number" id="stockQuantity" th:field="*{stockQuantity}"
+                     min="0" step="1"
+                     class="form-control" th:classappend="${#fields.hasErrors('stockQuantity')} ? 'is-invalid' : ''"
+                     placeholder="0">
+              <div th:if="${#fields.hasErrors('stockQuantity')}" class="invalid-feedback">
+                <ul class="mb-0 list-unstyled">
+                  <li th:each="error : ${#fields.errors('stockQuantity')}" th:text="${error}"></li>
+                </ul>
+              </div>
+            </div>
 
-          <!-- Чекбокс для удаления текущего изображения -->
-          <div style="margin: 10px 0;">
-            <label>
-              <input type="checkbox" th:field="*{removeCurrentImage}">
-              Удалить текущее изображение
-            </label>
+            <!-- Рекомендуемый товар -->
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input type="checkbox" id="isRecommendation" th:field="*{isRecommendation}"
+                       class="form-check-input" role="switch">
+                <label for="isRecommendation" class="form-check-label fw-bold text-primary">
+                  <i class="bi bi-star me-1"></i>Рекомендуемый товар
+                </label>
+              </div>
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                Отмеченные товары будут показаны в разделе рекомендаций на главной странице
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <input type="file" id="image" th:field="*{image}"
-               accept="image/*"
-               style="width: 100%; padding: 5px;">
+      <!-- Категории и изображение -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-collection me-2"></i>Категории и медиа
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Категория -->
+            <div class="mb-3">
+              <label for="categoryId" class="form-label fw-bold">
+                <i class="bi bi-folder me-1"></i>Категория *
+              </label>
+              <select id="categoryId" th:field="*{categoryId}"
+                      class="form-select" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''">
+                <option value="">Выберите категорию</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}"></option>
+              </select>
+              <div th:if="${#fields.hasErrors('categoryId')}" class="invalid-feedback">
+                <ul class="mb-0 list-unstyled">
+                  <li th:each="error : ${#fields.errors('categoryId')}" th:text="${error}"></li>
+                </ul>
+              </div>
+            </div>
 
-        <div style="font-size: 12px; color: #666; margin-top: 5px;">
-          Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5MB
+            <!-- Бренд -->
+            <div class="mb-3">
+              <label for="brandId" class="form-label fw-bold">
+                <i class="bi bi-award me-1"></i>Бренд *
+              </label>
+              <select id="brandId" th:field="*{brandId}"
+                      class="form-select" th:classappend="${#fields.hasErrors('brandId')} ? 'is-invalid' : ''">
+                <option value="">Выберите бренд</option>
+                <option th:each="brand : ${brands}"
+                        th:value="${brand.id}"
+                        th:text="${brand.name}"></option>
+              </select>
+              <div th:if="${#fields.hasErrors('brandId')}" class="invalid-feedback">
+                <ul class="mb-0 list-unstyled">
+                  <li th:each="error : ${#fields.errors('brandId')}" th:text="${error}"></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Изображение -->
+            <div class="mb-3">
+              <label for="image" class="form-label fw-bold">
+                <i class="bi bi-image me-1"></i>Изображение продукта
+              </label>
+
+              <!-- Текущее изображение -->
+              <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" class="mb-3">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <p class="card-text fw-bold">Текущее изображение:</p>
+                    <img th:src="${currentImageUrl}" alt="Текущее изображение"
+                         class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+
+                    <div class="form-check mt-2">
+                      <input type="checkbox" th:field="*{removeCurrentImage}"
+                             class="form-check-input" id="removeImage">
+                      <label for="removeImage" class="form-check-label text-danger">
+                        <i class="bi bi-trash me-1"></i>Удалить текущее изображение
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <input type="file" id="image" th:field="*{image}"
+                     accept="image/*" class="form-control">
+              <div class="form-text">
+                <i class="bi bi-info-circle me-1"></i>
+                Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5MB
+              </div>
+              <div th:if="${#fields.hasErrors('image')}" class="text-danger small mt-1">
+                <ul class="mb-0 list-unstyled">
+                  <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div th:if="${#fields.hasErrors('image')}" style="color: red; font-size: 12px;">
-          <ul>
-            <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>
-          </ul>
+    <!-- SEO секция -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card border-warning">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-search me-2"></i>SEO оптимизация
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info" role="alert">
+              <i class="bi bi-lightbulb me-2"></i>
+              <strong>Совет:</strong> Заполните эти поля для лучшего ранжирования товара в поисковых системах
+            </div>
+
+            <div class="row g-3">
+              <!-- Meta Title -->
+              <div class="col-md-6">
+                <label for="metaTitle" class="form-label fw-bold">
+                  <i class="bi bi-card-heading me-1"></i>SEO заголовок (Meta Title)
+                </label>
+                <input type="text" id="metaTitle" th:field="*{metaTitle}"
+                       class="form-control" th:classappend="${#fields.hasErrors('metaTitle')} ? 'is-invalid' : ''"
+                       placeholder="Швейцарський темний шоколад 85% - Країна шоколаду"
+                       maxlength="60">
+                <div class="form-text">
+                  <span id="metaTitleCounter" class="badge bg-secondary">0</span>/60 символов
+                  <span class="text-muted ms-2">Оптимально: 50-60 символов</span>
+                </div>
+                <div th:if="${#fields.hasErrors('metaTitle')}" class="invalid-feedback">
+                  <ul class="mb-0 list-unstyled">
+                    <li th:each="error : ${#fields.errors('metaTitle')}" th:text="${error}"></li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Meta Description -->
+              <div class="col-md-6">
+                <label for="metaDescription" class="form-label fw-bold">
+                  <i class="bi bi-card-text me-1"></i>SEO описание (Meta Description)
+                </label>
+                <textarea id="metaDescription" th:field="*{metaDescription}"
+                          class="form-control" th:classappend="${#fields.hasErrors('metaDescription')} ? 'is-invalid' : ''"
+                          rows="3" maxlength="160"
+                          placeholder="Елітний швейцарський темний шоколад 85% какао. Преміум якість, натуральні інгредієнти..."></textarea>
+                <div class="form-text">
+                  <span id="metaDescCounter" class="badge bg-secondary">0</span>/160 символов
+                  <span class="text-muted ms-2">Оптимально: 140-160 символов</span>
+                </div>
+                <div th:if="${#fields.hasErrors('metaDescription')}" class="invalid-feedback">
+                  <ul class="mb-0 list-unstyled">
+                    <li th:each="error : ${#fields.errors('metaDescription')}" th:text="${error}"></li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Full Description -->
+              <div class="col-12">
+                <label for="description" class="form-label fw-bold">
+                  <i class="bi bi-file-text me-1"></i>Полное описание товара
+                </label>
+                <textarea id="description" th:field="*{description}"
+                          class="form-control" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                          rows="5" maxlength="1000"
+                          placeholder="Подробное описание товара для покупателей. Укажите состав, особенности, способ употребления..."></textarea>
+                <div class="form-text">
+                  <span id="descCounter" class="badge bg-secondary">0</span>/1000 символов
+                  <span class="text-muted ms-2">Чем подробнее описание, тем лучше для SEO</span>
+                </div>
+                <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback">
+                  <ul class="mb-0 list-unstyled">
+                    <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- SEO подсказки -->
+            <div class="alert alert-primary mt-3" role="alert">
+              <h6 class="alert-heading">
+                <i class="bi bi-lightbulb-fill me-2"></i>SEO советы:
+              </h6>
+              <ul class="mb-0 small">
+                <li>Включите название товара и ключевые слова в SEO заголовок</li>
+                <li>Добавьте "Країна шоколаду", "Київ", "купити" для локального SEO</li>
+                <li>Укажите цену в описании - люди часто ищут "ціна" + товар</li>
+                <li>Упомяните бренд, состав, страну происхождения</li>
+                <li>Используйте эмоциональные слова: "вкусный", "натуральный", "элитный"</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кнопки действий -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-check-lg me-2"></i>
+                <span th:text="${isEdit != null and isEdit} ? 'Обновить продукт' : 'Создать продукт'"></span>
+              </button>
+              <a th:href="@{/admin/product/list}" class="btn btn-secondary btn-lg">
+                <i class="bi bi-arrow-left me-2"></i>
+                Отмена
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Навигация -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="bi bi-compass me-2"></i>Навигация
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-md-4">
+              <a th:href="@{/admin/product}" class="btn btn-outline-primary w-100">
+                <i class="bi bi-plus-circle me-2"></i>Создать новый продукт
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a th:href="@{/admin/product/list}" class="btn btn-outline-info w-100">
+                <i class="bi bi-list me-2"></i>Список всех продуктов
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a th:href="@{/admin/product/statistics}" class="btn btn-outline-success w-100">
+                <i class="bi bi-graph-up me-2"></i>Статистика продуктов
+              </a>
+            </div>
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="col-md-6">
+              <a th:href="@{/admin/category/list}" class="btn btn-outline-warning w-100">
+                <i class="bi bi-folder me-2"></i>Управление категориями
+              </a>
+            </div>
+            <div class="col-md-6">
+              <a th:href="@{/admin/brand/list}" class="btn btn-outline-danger w-100">
+                <i class="bi bi-award me-2"></i>Управление брендами
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Кнопки действий -->
-  <div style="margin: 20px 0; border-top: 1px solid #ccc; padding-top: 20px;">
-    <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-right: 10px;">
-      <span th:text="${isEdit != null and isEdit} ? 'Обновить продукт' : 'Создать продукт'"></span>
-    </button>
-    <a th:href="@{/admin/product/list}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
-      Отмена
-    </a>
-  </div>
-</form>
-
-<!-- Навигация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-  <h3>Навигация:</h3>
-  <ul>
-    <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>
-    <li><a th:href="@{/admin/product/list}">Список всех продуктов</a></li>
-    <li><a th:href="@{/admin/product/statistics}">Статистика продуктов</a></li>
-    <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>
-    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
-  </ul>
-</div>
-
-<!-- Быстрые ссылки для создания категорий/брендов -->
-<div th:if="${categories.empty or brands.empty}" style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7;">
-  <h4>Внимание!</h4>
-  <div th:if="${categories.empty}">
-    <p>У вас нет категорий. <a th:href="@{/admin/category}">Создать категорию</a></p>
-  </div>
-  <div th:if="${brands.empty}">
-    <p>У вас нет брендов. <a th:href="@{/admin/brand}">Создать бренд</a></p>
+  <!-- Предупреждения -->
+  <div th:if="${categories.empty or brands.empty}" class="row mt-4">
+    <div class="col-12">
+      <div class="alert alert-warning" role="alert">
+        <h5 class="alert-heading">
+          <i class="bi bi-exclamation-triangle me-2"></i>Внимание!
+        </h5>
+        <div th:if="${categories.empty}" class="mb-2">
+          <p class="mb-1">У вас нет категорий.</p>
+          <a th:href="@{/admin/category}" class="btn btn-sm btn-warning">
+            <i class="bi bi-plus me-1"></i>Создать категорию
+          </a>
+        </div>
+        <div th:if="${brands.empty}">
+          <p class="mb-1">У вас нет брендов.</p>
+          <a th:href="@{/admin/brand}" class="btn btn-sm btn-warning">
+            <i class="bi bi-plus me-1"></i>Создать бренд
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript для счетчиков символов -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Функция обновления счетчика
+    function createCounter(inputId, counterId, maxLength, optimalMin = 0) {
+      const input = document.getElementById(inputId);
+      const counter = document.getElementById(counterId);
+
+      function updateCounter() {
+        const length = input.value.length;
+        counter.textContent = length;
+
+        // Цветовая индикация
+        counter.className = 'badge ';
+        if (length > maxLength) {
+          counter.className += 'bg-danger';
+        } else if (length >= optimalMin) {
+          counter.className += 'bg-success';
+        } else if (length > 0) {
+          counter.className += 'bg-warning';
+        } else {
+          counter.className += 'bg-secondary';
+        }
+      }
+
+      input.addEventListener('input', updateCounter);
+      updateCounter(); // Инициализация
+    }
+
+    // Инициализация счетчиков
+    createCounter('metaTitle', 'metaTitleCounter', 60, 50);
+    createCounter('metaDescription', 'metaDescCounter', 160, 140);
+    createCounter('description', 'descCounter', 1000, 100);
+  });
+</script>
+
 </body>
 </html>

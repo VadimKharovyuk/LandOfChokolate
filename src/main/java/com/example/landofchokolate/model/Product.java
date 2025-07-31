@@ -34,6 +34,18 @@ public class Product {
     private String slug;
 
 
+    // 🆕 SEO поля
+    @Column(name = "meta_title", length = 60)
+    private String metaTitle;
+
+    @Column(name = "meta_description", length = 160)
+    private String metaDescription;
+
+    // 🆕 Описание товара (тоже важно для SEO)
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
+
     private Boolean isActive = true;
 
 

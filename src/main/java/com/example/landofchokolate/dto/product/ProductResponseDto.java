@@ -19,6 +19,10 @@ public class ProductResponseDto {
     private String imageUrl;
     private String slug ;
 
+    private String metaTitle;
+    private String metaDescription;
+    private String description;
+
 
     // Вложенные объекты для связанных сущностей
     private CategoryInfo category;

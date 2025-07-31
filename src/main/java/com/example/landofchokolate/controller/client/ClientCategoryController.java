@@ -1,6 +1,7 @@
 package com.example.landofchokolate.controller.client;
 
 import com.example.landofchokolate.dto.category.CategoryListPublicDto;
+import com.example.landofchokolate.dto.category.CategoryPublicDto;
 import com.example.landofchokolate.exception.CategoryNotFoundException;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.model.Product;
@@ -34,6 +35,7 @@ public class ClientCategoryController {
         model.addAttribute("categoryList", categoryList);
         return "client/categories/list";
     }
+
 
     @GetMapping("/{categorySlug}")
     public String categoryProducts(@PathVariable String categorySlug,

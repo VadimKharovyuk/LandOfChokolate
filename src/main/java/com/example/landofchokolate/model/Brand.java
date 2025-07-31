@@ -29,6 +29,13 @@ public class Brand {
     @Column(unique = true)
     private String slug;
 
+    // 🆕 SEO поля для брендов
+    @Column(name = "meta_title", length = 60)
+    private String metaTitle;
+
+    @Column(name = "meta_description", length = 160)
+    private String metaDescription;
+
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

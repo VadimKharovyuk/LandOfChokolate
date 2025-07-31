@@ -40,4 +40,6 @@ public class UpdateProductDto {
 
     // Флаг для удаления текущего изображения
     private Boolean removeCurrentImage = false;
+
+
 }

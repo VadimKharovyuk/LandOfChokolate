@@ -15,10 +15,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProductMapper {
 
-    /**
-     * Преобразует CreateProductDto в Entity
-     * Категория и бренд должны быть установлены отдельно в сервисе
-     */
+
     public Product toEntity(CreateProductDto createProductDto) {
         if (createProductDto == null) {
             log.warn("CreateProductDto is null, returning null");
@@ -30,7 +27,11 @@ public class ProductMapper {
         product.setPrice(createProductDto.getPrice());
         product.setStockQuantity(createProductDto.getStockQuantity());
         product.setIsRecommendation(createProductDto.getIsRecommendation());
-        log.debug("Mapped CreateProductDto to Product: {}", createProductDto.getName());
+
+        product.setDescription(createProductDto.getDescription());
+        product.setMetaDescription(createProductDto.getMetaDescription());
+        product.setMetaTitle(createProductDto.getMetaTitle());
+
         return product;
     }
 
@@ -75,6 +76,10 @@ public class ProductMapper {
 
          dto.setCreatedAt(product.getCreatedAt());
          dto.setUpdatedAt(product.getUpdatedAt());
+
+         dto.setDescription(product.getDescription());
+         dto.setMetaDescription(product.getMetaDescription());
+         dto.setMetaTitle(product.getMetaTitle());
 
         return dto;
     }
@@ -169,6 +174,7 @@ public class ProductMapper {
         dto.setImageUrl(product.getImageUrl());
         dto.setImageId(product.getImageId());
         dto.setIsActive(product.getIsActive());
+
 
         // Маппинг категории
         if (product.getCategory() != null) {
