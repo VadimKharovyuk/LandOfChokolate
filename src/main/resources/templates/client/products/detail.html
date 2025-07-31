@@ -19,24 +19,24 @@
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
-    <script type="application/ld+json" th:inline="javascript">
+    <script type="application/ld+json" th:inline="none">
         {
             "@context": "https://schema.org",
             "@type": "Product",
-            "name": "[[${product.name}]]",
-            "description": "[[${product.name}]] - преміальний шоколад від Країни шоколаду",
-            "image": "[[${product.imageUrl}]]",
+            "name": "[(${product.name})]",
+            "description": "[(${product.name})] - преміальний шоколад від Країни шоколаду",
+            "image": "[(${product.imageUrl})]",
             "brand": {
                 "@type": "Brand",
-                "name": "[[${product.brand != null ? product.brand.name : 'Країна шоколаду'}]]"
+                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
             },
-            "category": "[[${product.category != null ? product.category.name : 'Шоколад'}]]",
+            "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
             "offers": {
                 "@type": "Offer",
-                "price": "[[${product.price}]]",
+                "price": "[(${product.price})]",
                 "priceCurrency": "UAH",
-                "availability": "[[${product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}]]",
-                "url": "https://landofchokolate.onrender.com/products/[[${product.slug}]]",
+                "availability": "[(${product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'})]",
+                "url": "https://landofchokolate.onrender.com/products/[(${product.slug})]",
                 "seller": {
                     "@type": "Organization",
                     "name": "Країна шоколаду",
