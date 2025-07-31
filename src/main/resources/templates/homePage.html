@@ -254,6 +254,9 @@
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
+
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/wishlist.css}">
 </head>
     <style>
         :root {
@@ -304,18 +307,6 @@
             z-index: -2;
         }
 
-        /* Альтернативный вариант для фона - если нужно полное покрытие без обрезки */
-        .hero-image-alt {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1579954115545-a95591f28bfc?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
-            background-size: 100% 100%;
-            background-color: var(--accent-warm);
-            z-index: -2;
-        }
 
         .hero-overlay {
             position: absolute;
@@ -333,16 +324,7 @@
             padding: 0 20px;
         }
 
-        .hero-subtitle {
-            font-size: 16px;
-            color: var(--accent-gold);
-            font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.2s forwards;
-        }
+
 
         .hero-title {
             font-family: 'Cormorant Garamond', serif;
@@ -443,6 +425,8 @@
                 transform: translateY(-5px);
             }
         }
+
+
 
 
 
@@ -652,68 +636,9 @@
             color: var(--primary-dark);
         }
 
-        .product-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
 
-        /* Кнопка добавления в корзину */
-        .add-to-cart {
-            width: 100%;
-            padding: 12px 20px;
-            background-color: transparent;
-            border: 1px solid #1a1a1a;
-            color: #1a1a1a;
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
 
-        .add-to-cart::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background-color: #1a1a1a;
-            transition: all 0.4s cubic-bezier(0.42, 0, 0.58, 1);
-            z-index: -1;
-        }
 
-        .add-to-cart:hover {
-            color: #fff;
-        }
-
-        .add-to-cart:hover::before {
-            left: 0;
-        }
-
-        .add-to-cart::after {
-            content: '→';
-            margin-left: 8px;
-            transition: transform 0.3s ease;
-        }
-
-        .add-to-cart:hover::after {
-            transform: translateX(5px);
-        }
-
-        .add-to-cart:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .add-to-cart:disabled::before {
-            display: none;
-        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -757,18 +682,6 @@
                 gap: 24px;
             }
 
-            .nav-luxury.mobile-menu {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--white);
-                padding: 24px;
-                box-shadow: var(--shadow-medium);
-                gap: 24px;
-            }
 
             .scroll-indicator {
                 display: none;
@@ -1040,8 +953,6 @@
     </div>
 </section>
 
-<link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-<link rel="stylesheet" th:href="@{/css/components/wishlist.css}">
 
 <script src="/js/add-to-cart-button.js"></script>
 <script src="/js/productList/WishlistModule.js"></script>
@@ -1254,32 +1165,7 @@
         margin-bottom: 0;
     }
 
-    /* КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Кнопки на одном уровне */
-    .add-to-cart {
-        width: 100%;
-        padding: 12px 24px;
-        background: linear-gradient(135deg, #c9a96e 0%, #b8944a 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: auto; /* Прижимаем кнопку к низу контейнера */
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
 
-    .add-to-cart:hover {
-        background: linear-gradient(135deg, #b8944a 0%, #a8874a 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
-    }
-
-    .add-to-cart:active {
-        transform: translateY(0);
-    }
 
     /* Responsive grid */
     @media (max-width: 992px) {
