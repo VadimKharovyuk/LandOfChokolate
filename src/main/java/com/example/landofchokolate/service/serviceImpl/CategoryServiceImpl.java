@@ -378,14 +378,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Caching(
             put = {
                     @CachePut(value = "categoryById", key = "#result.id"),
-                    @CachePut(value = "categoryBySlug", key = "#result.slug")
+
             },
             evict = {
                     @CacheEvict(value = "allCategories", allEntries = true),
                     @CacheEvict(value = "publicCategories", allEntries = true),
                     @CacheEvict(value = "topCategories", allEntries = true),
                     @CacheEvict(value = "navigationCategories", allEntries = true),
-                    @CacheEvict(value = "categoriesByName", allEntries = true)
+                    @CacheEvict(value = "categoriesByName", allEntries = true),
+                    @CacheEvict(value = "categoryBySlug", allEntries = true)
             }
     )
     public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto) {
@@ -416,7 +417,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Caching(
             put = {
                     @CachePut(value = "categoryById", key = "#id"),
-                    @CachePut(value = "categoryBySlug", key = "#result.slug")
             },
             evict = {
                     @CacheEvict(value = "allCategories", allEntries = true),
@@ -424,7 +424,8 @@ public class CategoryServiceImpl implements CategoryService {
                     @CacheEvict(value = "topCategories", allEntries = true),
                     @CacheEvict(value = "categoriesByName", allEntries = true),
                     @CacheEvict(value = "navigationCategories", allEntries = true),
-                    @CacheEvict(value = "categoryEditData", key = "#id")
+                    @CacheEvict(value = "categoryEditData", key = "#id"),
+                    @CacheEvict(value = "categoryBySlug", allEntries = true)
             }
     )
     public CategoryResponseDto updateCategory(Long id, CreateCategoryDto updateCategoryDto) {
