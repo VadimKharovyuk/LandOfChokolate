@@ -39,6 +39,18 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private DeliveryMethod deliveryMethod;
 
+    @Column(name = "tracking_number", length = 50)
+    private String trackingNumber;
+
+    @Column(name = "recipient_city_ref", length = 100)
+    private String recipientCityRef;
+
+    @Column(name = "recipient_address_ref", length = 100)
+    private String recipientAddressRef;
+
+    @Column(name = "delivery_status", length = 50)
+    private String deliveryStatus;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -59,4 +71,7 @@ public class Order {
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
+
+
+
 }

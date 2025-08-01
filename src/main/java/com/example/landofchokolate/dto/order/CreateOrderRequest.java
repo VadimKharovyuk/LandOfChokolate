@@ -26,6 +26,10 @@ public class CreateOrderRequest {
 
     private String someNotes;
 
+    // ✅ Новые поля для Nova Poshta
+    private String recipientCityRef;    // Ref города получателя
+    private String recipientAddressRef;
+
     // ID корзины или список товаров
     private Long cartId;
 }

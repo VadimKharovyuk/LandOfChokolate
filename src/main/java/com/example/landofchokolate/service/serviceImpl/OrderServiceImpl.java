@@ -4,6 +4,7 @@ import com.example.landofchokolate.dto.card.CartDto;
 import com.example.landofchokolate.dto.card.CartItemDto;
 import com.example.landofchokolate.dto.order.CreateOrderRequest;
 import com.example.landofchokolate.dto.order.OrderDTO;
+import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.exception.EmptyCartException;
 import com.example.landofchokolate.exception.OrderCreationException;
 import com.example.landofchokolate.exception.OrderNotFoundException;
@@ -16,6 +17,7 @@ import com.example.landofchokolate.repository.OrderRepository;
 import com.example.landofchokolate.repository.ProductRepository;
 import com.example.landofchokolate.service.CartService;
 import com.example.landofchokolate.service.OrderService;
+import com.example.landofchokolate.service.PoshtaService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final CartService cartService;
     private final ProductRepository productRepository;
+    private final PoshtaService poshtaService;
 
     @Override
     @Transactional
@@ -58,10 +61,47 @@ public class OrderServiceImpl implements OrderService {
         // Шаг 4: Сохраняем заказ
         Order savedOrder = orderRepository.save(order);
 
-        // Шаг 5: Очищаем корзину
+        // Шаг 5: Конвертируем в DTO
+        OrderDTO createdOrder = orderMapper.toDTO(savedOrder);
+
+        // ✅ Шаг 6: Новая логика для Nova Poshta
+        if (createdOrder.getDeliveryMethod() == DeliveryMethod.NOVA_POSHTA) {
+            try {
+                log.info("Creating Nova Poshta delivery for order {}", createdOrder.getId());
+
+                String ttnNumber = poshtaService.createDelivery(createdOrder);
+
+                if (ttnNumber != null && !ttnNumber.trim().isEmpty()) {
+                    // Сохранить номер ТТН в заказе
+                    savedOrder.setTrackingNumber(ttnNumber);
+
+                    // Обновить в БД
+                    orderRepository.save(savedOrder);
+
+                    // Обновить DTO
+                    createdOrder.setTrackingNumber(ttnNumber);
+
+                    log.info("TTN created successfully for order {}: {}", createdOrder.getId(), ttnNumber);
+                } else {
+                    log.warn("Failed to create TTN for order {} - empty response from Nova Poshta", createdOrder.getId());
+                    // Можно установить статус или добавить заметку об ошибке
+                    // savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta");
+                }
+
+            } catch (Exception e) {
+                log.error("Error creating Nova Poshta delivery for order {}: {}", createdOrder.getId(), e.getMessage(), e);
+
+                // Не падаем, заказ все равно создается
+                // Можно добавить информацию об ошибке в заказ
+                // savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta: " + e.getMessage());
+                // orderRepository.save(savedOrder);
+            }
+        }
+
+        // Шаг 7: Очищаем корзину
         cartService.clearCart(session);
 
-        return orderMapper.toDTO(savedOrder);
+        return createdOrder;
     }
 
     @Override

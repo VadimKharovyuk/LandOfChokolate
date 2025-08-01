@@ -26,6 +26,7 @@ public class NovaPoshtaService implements PoshtaService {
     private final NovaPoshtaConfig config;
     private final RestTemplate restTemplate;
 
+
     /**
      * Получение списка всех городов Nova Poshta
      */

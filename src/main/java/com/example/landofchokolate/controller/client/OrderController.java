@@ -3,15 +3,18 @@ package com.example.landofchokolate.controller.client;
 import com.example.landofchokolate.dto.card.CartDto;
 import com.example.landofchokolate.dto.order.CreateOrderRequest;
 import com.example.landofchokolate.dto.order.OrderDTO;
+import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.exception.EmptyCartException;
 import com.example.landofchokolate.exception.OrderCreationException;
 import com.example.landofchokolate.exception.OrderNotFoundException;
 import com.example.landofchokolate.service.CartService;
 import com.example.landofchokolate.service.OrderService;
+import com.example.landofchokolate.service.PoshtaService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
+
 
 
     @GetMapping
@@ -58,8 +63,24 @@ public class OrderController {
 
         try {
             OrderDTO createdOrder = orderService.createOrder(orderRequest, session);
-            redirectAttributes.addFlashAttribute("successMessage", "Заказ успешно создан!");
+
+            // ✅ Специальное сообщение для Nova Poshta
+            if (createdOrder.getDeliveryMethod() == DeliveryMethod.NOVA_POSHTA) {
+                if (createdOrder.getTrackingNumber() != null && !createdOrder.getTrackingNumber().trim().isEmpty()) {
+                    redirectAttributes.addFlashAttribute("successMessage",
+                            "Заказ успешно создан! Номер для отслеживания Nova Poshta: " + createdOrder.getTrackingNumber());
+                } else {
+                    redirectAttributes.addFlashAttribute("successMessage",
+                            "Заказ успешно создан! Накладная Nova Poshta будет создана позже.");
+                    redirectAttributes.addFlashAttribute("warningMessage",
+                            "Не удалось создать накладную Nova Poshta автоматически. Свяжитесь с нами для уточнения.");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("successMessage", "Заказ успешно создан!");
+            }
+
             return "redirect:/order/" + createdOrder.getId();
+
         } catch (EmptyCartException | OrderCreationException e) {
             model.addAttribute("errorMessage", e.getMessage());
             CartDto cartDto = cartService.getCartDto(session);
@@ -73,11 +94,52 @@ public class OrderController {
         try {
             OrderDTO orderDTO = orderService.getOrderById(id);
             model.addAttribute("orderDTO", orderDTO);
+
+            // ✅ Добавляем информацию о Nova Poshta
+            if (orderDTO.getDeliveryMethod() == DeliveryMethod.NOVA_POSHTA) {
+                model.addAttribute("isNovaPoshta", true);
+                if (orderDTO.getTrackingNumber() != null && !orderDTO.getTrackingNumber().trim().isEmpty()) {
+                    model.addAttribute("hasTrackingNumber", true);
+                }
+            }
+
             return "client/order/details";
         } catch (OrderNotFoundException e) {
             return "redirect:/";
         }
     }
+    // ✅ Новый endpoint для отслеживания Nova Poshta
+    @GetMapping("/{id}/track")
+    @ResponseBody
+    public ResponseEntity<?> trackOrder(@PathVariable Long id) {
+        try {
+            OrderDTO orderDTO = orderService.getOrderById(id);
+
+            if (orderDTO.getDeliveryMethod() != DeliveryMethod.NOVA_POSHTA) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Заказ не использует доставку Nova Poshta"));
+            }
+
+            if (orderDTO.getTrackingNumber() == null || orderDTO.getTrackingNumber().trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Номер отслеживания не найден"));
+            }
+
+            // Здесь можно добавить реальное отслеживание через poshtaService
+            // TrackingInfo trackingInfo = poshtaService.trackDelivery(orderDTO.getTrackingNumber());
+
+            return ResponseEntity.ok(Map.of(
+                    "trackingNumber", orderDTO.getTrackingNumber(),
+                    "status", "Информация будет доступна позже",
+                    "message", "Отслеживайте посылку на сайте Nova Poshta"
+            ));
+
+        } catch (OrderNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
     // Показать форму поиска заказов
     @GetMapping("/info")

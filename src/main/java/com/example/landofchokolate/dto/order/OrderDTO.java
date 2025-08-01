@@ -24,4 +24,10 @@ public class OrderDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<OrderItemDTO> orderItems;
+
+    // ✅ Новые поля для Nova Poshta
+    private String trackingNumber;      // Номер ТТН
+    private String recipientCityRef;    // Город получателя (ref)
+    private String recipientAddress;    // Адрес/отделение получателя
+    private String deliveryStatus;
 }
