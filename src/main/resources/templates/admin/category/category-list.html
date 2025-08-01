@@ -1,180 +1,941 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Список категорий</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Заголовок с учетом поиска &ndash;&gt;-->
+<!--<h1 th:if="${isSearch == null or !isSearch}">Список категорий</h1>-->
+<!--<h1 th:if="${isSearch != null and isSearch}">-->
+<!--    Результаты поиска по запросу: "<span th:text="${searchQuery}"></span>"-->
+<!--</h1>-->
+
+<!--&lt;!&ndash; Flash сообщения &ndash;&gt;-->
+<!--<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">-->
+<!--    <span th:text="${successMessage}"></span>-->
+<!--</div>-->
+
+<!--<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--    <span th:text="${errorMessage}"></span>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Панель управления &ndash;&gt;-->
+<!--<div style="margin: 20px 0; display: flex; justify-content: space-between; align-items: center;">-->
+<!--    &lt;!&ndash; Кнопка создания новой категории &ndash;&gt;-->
+<!--    <div>-->
+<!--        <a th:href="@{/admin/category}"-->
+<!--           style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">-->
+<!--            + Создать новую категорию-->
+<!--        </a>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Форма поиска &ndash;&gt;-->
+<!--    <div>-->
+<!--        <form th:action="@{/admin/category/search}" method="get" style="display: inline-flex; align-items: center;">-->
+<!--            <input type="text" name="name" th:value="${searchQuery}"-->
+<!--                   placeholder="Поиск по названию..."-->
+<!--                   style="padding: 8px; margin-right: 10px; width: 200px;">-->
+<!--            <button type="submit"-->
+<!--                    style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">-->
+<!--                Поиск-->
+<!--            </button>-->
+<!--            <a th:href="@{/admin/category/list}"-->
+<!--               style="margin-left: 10px; padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none;">-->
+<!--                Сбросить-->
+<!--            </a>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Таблица категорий &ndash;&gt;-->
+<!--&lt;!&ndash; Таблица категорий &ndash;&gt;-->
+<!--<div th:if="${categories != null and !categories.isEmpty()}">-->
+<!--    &lt;!&ndash; Информация о количестве &ndash;&gt;-->
+<!--    <h2 th:if="${isSearch == null or !isSearch}">-->
+<!--        Всего категорий: <span th:text="${categories.size()}"></span>-->
+<!--    </h2>-->
+<!--    <h2 th:if="${isSearch != null and isSearch}">-->
+<!--        Найдено категорий: <span th:text="${categories.size()}"></span>-->
+<!--    </h2>-->
+
+<!--    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">-->
+<!--        <thead style="background-color: #f8f9fa;">-->
+<!--        <tr>-->
+<!--            <th style="padding: 10px; text-align: center;">Фото</th>-->
+<!--            <th style="padding: 10px; text-align: left;">ID</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Название</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Slug</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Краткое описание</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Meta Title</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Meta Description</th>-->
+<!--            <th style="padding: 10px; text-align: center;">Статус</th>-->
+<!--            <th style="padding: 10px; text-align: center;">Топовая</th>-->
+<!--            <th style="padding: 10px; text-align: center;">Создана</th>-->
+<!--            <th style="padding: 10px; text-align: center;">Действия</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="category : ${categories}">-->
+<!--            &lt;!&ndash; Столбец с изображением &ndash;&gt;-->
+<!--            <td style="padding: 10px; text-align: center; width: 80px;">-->
+<!--                <div th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}">-->
+<!--                    <img th:src="${category.imageUrl}"-->
+<!--                         th:alt="${category.name}"-->
+<!--                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">-->
+<!--                </div>-->
+<!--                <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"-->
+<!--                     style="width: 60px; height: 60px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">-->
+<!--                    Нет фото-->
+<!--                </div>-->
+<!--            </td>-->
+
+<!--            <td style="padding: 10px;" th:text="${category.id}"></td>-->
+<!--            <td style="padding: 10px; font-weight: bold;" th:text="${category.name}"></td>-->
+<!--            <td style="padding: 10px; font-family: monospace; color: #6c757d; max-width: 120px; word-wrap: break-word;"-->
+<!--                th:text="${category.slug}"></td>-->
+<!--            <td style="padding: 10px; max-width: 200px; word-wrap: break-word;"-->
+<!--                th:text="${category.shortDescription}"></td>-->
+<!--            <td style="padding: 10px; max-width: 150px; word-wrap: break-word; color: #6c757d;"-->
+<!--                th:text="${category.metaTitle != null and !category.metaTitle.isEmpty()} ? ${category.metaTitle} : '—'"></td>-->
+<!--            <td style="padding: 10px; max-width: 150px; word-wrap: break-word; color: #6c757d;"-->
+<!--                th:text="${category.metaDescription != null and !category.metaDescription.isEmpty()} ? ${category.metaDescription} : '—'"></td>-->
+
+<!--            &lt;!&ndash; Столбец статуса &ndash;&gt;-->
+<!--            <td style="padding: 10px; text-align: center;">-->
+<!--            <span th:if="${category.isActive != null and category.isActive}"-->
+<!--                  style="color: #28a745; font-weight: bold;">✓ Активна</span>-->
+<!--                <span th:if="${category.isActive == null or !category.isActive}"-->
+<!--                      style="color: #dc3545; font-weight: bold;">✗ Неактивна</span>-->
+<!--            </td>-->
+
+<!--            &lt;!&ndash; 🆕 Столбец топовой категории &ndash;&gt;-->
+<!--            <td style="padding: 10px; text-align: center;">-->
+<!--            <span th:if="${category.isFeatured != null and category.isFeatured}"-->
+<!--                  style="color: #ffc107; font-weight: bold; font-size: 16px;" title="Отображается на главной странице">-->
+<!--                ⭐ Топ-->
+<!--            </span>-->
+<!--                <span th:if="${category.isFeatured == null or !category.isFeatured}"-->
+<!--                      style="color: #6c757d; font-size: 14px;">-->
+<!--                —-->
+<!--            </span>-->
+<!--            </td>-->
+
+<!--            <td style="padding: 10px; text-align: center; font-size: 12px; color: #6c757d;"-->
+<!--                th:text="${category.createdAt != null} ? ${#temporals.format(category.createdAt, 'dd.MM.yyyy HH:mm')} : '—'"></td>-->
+<!--            <td style="padding: 10px; text-align: center;">-->
+<!--                <a th:href="@{'/admin/category/edit/' + ${category.id}}"-->
+<!--                   style="color: #007bff; text-decoration: none; margin-right: 10px;">-->
+<!--                    Редактировать-->
+<!--                </a>-->
+<!--                <a th:href="@{'/admin/category/delete/' + ${category.id}}"-->
+<!--                   style="color: #dc3545; text-decoration: none;"-->
+<!--                   onclick="return confirm('Вы уверены, что хотите удалить эту категорию?')">-->
+<!--                    Удалить-->
+<!--                </a>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Сообщение когда список пуст &ndash;&gt;-->
+<!--<div th:if="${categories == null or categories.isEmpty()}"-->
+<!--     style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">-->
+<!--    <h3 th:if="${isSearch == null or !isSearch}">Категории не найдены</h3>-->
+<!--    <h3 th:if="${isSearch != null and isSearch}">По вашему запросу ничего не найдено</h3>-->
+
+<!--    <p th:if="${isSearch == null or !isSearch}">Пока что ни одной категории не создано.</p>-->
+<!--    <p th:if="${isSearch != null and isSearch}">-->
+<!--        Попробуйте изменить поисковый запрос или-->
+<!--        <a th:href="@{/admin/category/list}">посмотреть все категории</a>-->
+<!--    </p>-->
+
+<!--    <a th:href="@{/admin/category}"-->
+<!--       style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">-->
+<!--        <span th:if="${isSearch == null or !isSearch}">Создать первую категорию</span>-->
+<!--        <span th:if="${isSearch != null and isSearch}">Создать новую категорию</span>-->
+<!--    </a>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">-->
+<!--    <h3>Навигация:</h3>-->
+<!--    <ul>-->
+<!--        <li><a th:href="@{/admin/category}">Создать новую категорию</a></li>-->
+<!--        <li><a th:href="@{/admin/category/list}">Обновить список</a></li>-->
+<!--        <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Отладочная информация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">-->
+<!--    <h4>Отладочная информация:</h4>-->
+<!--    <p>Количество категорий в модели: <span th:text="${categories != null ? categories.size() : 'null'}"></span></p>-->
+<!--    <p>Поисковый запрос: <span th:text="${searchQuery != null ? searchQuery : 'отсутствует'}"></span></p>-->
+<!--    <p>Режим поиска: <span th:text="${isSearch != null and isSearch ? 'да' : 'нет'}"></span></p>-->
+<!--    <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Список категорий</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управління категоріями</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2C2C2C;
+            --accent-color: #D4AF37;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-bg: #F8F9FA;
+            --border-color: #DEE2E6;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+
+        .search-highlight {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-custom {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, var(--success-color) 0%, #32d44a 100%);
+            color: white;
+        }
+
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--info-color) 0%, #20c6dd 100%);
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            background: #6c757d;
+            color: white;
+        }
+
+        .search-form {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .custom-table {
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .custom-table thead th {
+            background: var(--light-bg);
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 15px 12px;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.001);
+        }
+
+        .custom-table td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .category-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+
+        .category-image:hover {
+            transform: scale(1.1);
+        }
+
+        .image-placeholder {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .featured-badge {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #ffdb4d 100%);
+            color: #856404;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #ffeaa7;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-edit {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-color: #bbdefb;
+        }
+
+        .btn-edit:hover {
+            background: #1976d2;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #d32f2f;
+            border-color: #ffcdd2;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-custom {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success-custom {
+            background: #d4edda;
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .alert-danger-custom {
+            background: #f8d7da;
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+
+        .navigation-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .text-truncate-custom {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                padding: 1rem;
+            }
+
+            .control-panel .row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-<!-- Заголовок с учетом поиска -->
-<h1 th:if="${isSearch == null or !isSearch}">Список категорий</h1>
-<h1 th:if="${isSearch != null and isSearch}">
-    Результаты поиска по запросу: "<span th:text="${searchQuery}"></span>"
-</h1>
-
-<!-- Flash сообщения -->
-<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
-    <span th:text="${successMessage}"></span>
-</div>
-
-<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-    <span th:text="${errorMessage}"></span>
-</div>
-
-<!-- Панель управления -->
-<div style="margin: 20px 0; display: flex; justify-content: space-between; align-items: center;">
-    <!-- Кнопка создания новой категории -->
-    <div>
-        <a th:href="@{/admin/category}"
-           style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
-            + Создать новую категорию
-        </a>
+<div class="container-fluid">
+    <!-- Заголовок -->
+    <div class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <i class="header-icon bi bi-folder-fill"></i>
+                <div>
+                    <h1 class="mb-1" th:if="${isSearch == null or !isSearch}">
+                        Управління категоріями
+                    </h1>
+                    <h1 class="mb-1" th:if="${isSearch != null and isSearch}">
+                        Результати пошуку
+                    </h1>
+                    <p class="mb-0 opacity-75" th:if="${isSearch != null and isSearch}">
+                        за запитом: "<span class="search-highlight" th:text="${searchQuery}"></span>"
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Форма поиска -->
-    <div>
-        <form th:action="@{/admin/category/search}" method="get" style="display: inline-flex; align-items: center;">
-            <input type="text" name="name" th:value="${searchQuery}"
-                   placeholder="Поиск по названию..."
-                   style="padding: 8px; margin-right: 10px; width: 200px;">
-            <button type="submit"
-                    style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">
-                Поиск
-            </button>
-            <a th:href="@{/admin/category/list}"
-               style="margin-left: 10px; padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none;">
-                Сбросить
+    <div class="container">
+        <!-- Повідомлення -->
+        <div th:if="${successMessage}" class="alert alert-custom alert-success-custom">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-custom alert-danger-custom">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Панель управління -->
+        <div class="control-panel">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <a th:href="@{/admin/category}" class="btn btn-custom btn-success-custom">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Створити нову категорію
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <form th:action="@{/admin/category/search}" method="get" class="search-form">
+                        <div class="input-group">
+                            <input type="text"
+                                   name="name"
+                                   th:value="${searchQuery}"
+                                   class="form-control"
+                                   placeholder="Пошук за назвою категорії...">
+                            <button type="submit" class="btn btn-custom btn-primary-custom">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <a th:href="@{/admin/category/list}"
+                               class="btn btn-custom btn-secondary-custom">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-card" th:if="${categories != null and !categories.isEmpty()}">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stats-number" th:text="${categories.size()}">0</div>
+                <div>
+                    <h5 class="mb-1" th:if="${isSearch == null or !isSearch}">
+                        <i class="bi bi-bar-chart me-2"></i>Всього категорій
+                    </h5>
+                    <h5 class="mb-1" th:if="${isSearch != null and isSearch}">
+                        <i class="bi bi-search me-2"></i>Знайдено категорій
+                    </h5>
+                    <p class="text-muted mb-0">в системі управління</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблиця категорій -->
+        <div class="table-container" th:if="${categories != null and !categories.isEmpty()}">
+            <div class="table-header">
+                <i class="bi bi-table me-2" style="font-size: 1.5rem;"></i>
+                <h4 class="mb-0">Список категорій</h4>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table custom-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 80px;">
+                            <i class="bi bi-image me-1"></i>Фото
+                        </th>
+                        <th style="width: 60px;">ID</th>
+                        <th>
+                            <i class="bi bi-tag me-1"></i>Назва
+                        </th>
+                        <th>
+                            <i class="bi bi-link-45deg me-1"></i>Slug
+                        </th>
+                        <th>
+                            <i class="bi bi-text-paragraph me-1"></i>Опис
+                        </th>
+                        <th>
+                            <i class="bi bi-search me-1"></i>SEO Title
+                        </th>
+                        <th>
+                            <i class="bi bi-card-text me-1"></i>SEO Опис
+                        </th>
+                        <th style="width: 100px;">
+                            <i class="bi bi-toggle-on me-1"></i>Статус
+                        </th>
+                        <th style="width: 80px;">
+                            <i class="bi bi-star me-1"></i>Топ
+                        </th>
+                        <th style="width: 120px;">
+                            <i class="bi bi-calendar me-1"></i>Створено
+                        </th>
+                        <th style="width: 140px;">
+                            <i class="bi bi-gear me-1"></i>Дії
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <!-- Зображення -->
+                        <td class="text-center">
+                            <div th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}">
+                                <img th:src="${category.imageUrl}"
+                                     th:alt="${category.name}"
+                                     class="category-image">
+                            </div>
+                            <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
+                                 class="image-placeholder">
+                                <i class="bi bi-image"></i><br>
+                                <small>Немає</small>
+                            </div>
+                        </td>
+
+                        <!-- ID -->
+                        <td class="fw-bold text-muted" th:text="${category.id}"></td>
+
+                        <!-- Назва -->
+                        <td>
+                            <div class="fw-bold" th:text="${category.name}"></div>
+                        </td>
+
+                        <!-- Slug -->
+                        <td>
+                            <code class="small text-muted text-truncate-custom" th:text="${category.slug}"></code>
+                        </td>
+
+                        <!-- Короткий опис -->
+                        <td>
+                            <div class="text-truncate-custom" th:text="${category.shortDescription}"></div>
+                        </td>
+
+                        <!-- Meta Title -->
+                        <td>
+                            <div class="text-truncate-custom text-muted small"
+                                 th:text="${category.metaTitle != null and !category.metaTitle.isEmpty()} ? ${category.metaTitle} : '—'"></div>
+                        </td>
+
+                        <!-- Meta Description -->
+                        <td>
+                            <div class="text-truncate-custom text-muted small"
+                                 th:text="${category.metaDescription != null and !category.metaDescription.isEmpty()} ? ${category.metaDescription} : '—'"></div>
+                        </td>
+
+                        <!-- Статус -->
+                        <td class="text-center">
+                                    <span th:if="${category.isActive != null and category.isActive}"
+                                          class="status-badge status-active">
+                                        <i class="bi bi-check-circle"></i>Активна
+                                    </span>
+                            <span th:if="${category.isActive == null or !category.isActive}"
+                                  class="status-badge status-inactive">
+                                        <i class="bi bi-x-circle"></i>Неактивна
+                                    </span>
+                        </td>
+
+                        <!-- Топова -->
+                        <td class="text-center">
+                                    <span th:if="${category.isFeatured != null and category.isFeatured}"
+                                          class="featured-badge"
+                                          title="Відображається на головній сторінці">
+                                        <i class="bi bi-star-fill"></i>Топ
+                                    </span>
+                            <span th:if="${category.isFeatured == null or !category.isFeatured}"
+                                  class="text-muted">
+                                        —
+                                    </span>
+                        </td>
+
+                        <!-- Дата створення -->
+                        <td class="text-center">
+                            <small class="text-muted"
+                                   th:text="${category.createdAt != null} ? ${#temporals.format(category.createdAt, 'dd.MM.yyyy HH:mm')} : '—'"></small>
+                        </td>
+
+                        <!-- Дії -->
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/category/edit/' + ${category.id}}"
+                                   class="btn-action btn-edit"
+                                   title="Редагувати категорію">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{'/admin/category/delete/' + ${category.id}}"
+                                   class="btn-action btn-delete"
+                                   title="Видалити категорію"
+                                   onclick="return confirm('Ви впевнені, що хочете видалити цю категорію?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Порожній стан -->
+        <div class="empty-state" th:if="${categories == null or categories.isEmpty()}">
+            <div class="empty-icon">
+                <i class="bi bi-folder-x"></i>
+            </div>
+            <h3 class="mb-3" th:if="${isSearch == null or !isSearch}">
+                Категорії не знайдені
+            </h3>
+            <h3 class="mb-3" th:if="${isSearch != null and isSearch}">
+                За вашим запитом нічого не знайдено
+            </h3>
+
+            <p class="text-muted mb-4" th:if="${isSearch == null or !isSearch}">
+                Поки що жодної категорії не створено. Розпочніть з створення першої категорії товарів.
+            </p>
+            <p class="text-muted mb-4" th:if="${isSearch != null and isSearch}">
+                Спробуйте змінити пошуковий запит або
+                <a th:href="@{/admin/category/list}" class="text-decoration-none">переглянути всі категорії</a>
+            </p>
+
+            <a th:href="@{/admin/category}" class="btn btn-custom btn-success-custom">
+                <i class="bi bi-plus-circle me-2"></i>
+                <span th:if="${isSearch == null or !isSearch}">Створити першу категорію</span>
+                <span th:if="${isSearch != null and isSearch}">Створити нову категорію</span>
             </a>
-        </form>
+        </div>
+
+        <!-- Навігація -->
+        <div class="navigation-section">
+            <h5 class="mb-3">
+                <i class="bi bi-compass me-2"></i>Швидка навігація
+            </h5>
+            <ul class="nav-links">
+                <li>
+                    <a th:href="@{/admin/category}">
+                        <i class="bi bi-plus-circle"></i>
+                        Створити категорію
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/category/list}">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Оновити список
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/brand/list}">
+                        <i class="bi bi-tag"></i>
+                        Управління брендами
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin}">
+                        <i class="bi bi-house"></i>
+                        Адмін панель
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Відладочна інформація -->
+        <div class="debug-info">
+            <h6 class="mb-3">
+                <i class="bi bi-bug me-2"></i>Відладочна інформація
+            </h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Кількість категорій:</strong>
+                        <span th:text="${categories != null ? categories.size() : 'null'}"></span>
+                    </p>
+                    <p class="mb-1">
+                        <strong>Пошуковий запит:</strong>
+                        <span th:text="${searchQuery != null ? searchQuery : 'відсутній'}"></span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <strong>Режим пошуку:</strong>
+                        <span th:text="${isSearch != null and isSearch ? 'так' : 'ні'}"></span>
+                    </p>
+                    <p class="mb-1">
+                        <strong>Поточний час:</strong>
+                        <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Таблица категорий -->
-<!-- Таблица категорий -->
-<div th:if="${categories != null and !categories.isEmpty()}">
-    <!-- Информация о количестве -->
-    <h2 th:if="${isSearch == null or !isSearch}">
-        Всего категорий: <span th:text="${categories.size()}"></span>
-    </h2>
-    <h2 th:if="${isSearch != null and isSearch}">
-        Найдено категорий: <span th:text="${categories.size()}"></span>
-    </h2>
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
-        <thead style="background-color: #f8f9fa;">
-        <tr>
-            <th style="padding: 10px; text-align: center;">Фото</th>
-            <th style="padding: 10px; text-align: left;">ID</th>
-            <th style="padding: 10px; text-align: left;">Название</th>
-            <th style="padding: 10px; text-align: left;">Slug</th>
-            <th style="padding: 10px; text-align: left;">Краткое описание</th>
-            <th style="padding: 10px; text-align: left;">Meta Title</th>
-            <th style="padding: 10px; text-align: left;">Meta Description</th>
-            <th style="padding: 10px; text-align: center;">Статус</th>
-            <th style="padding: 10px; text-align: center;">Топовая</th>
-            <th style="padding: 10px; text-align: center;">Создана</th>
-            <th style="padding: 10px; text-align: center;">Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="category : ${categories}">
-            <!-- Столбец с изображением -->
-            <td style="padding: 10px; text-align: center; width: 80px;">
-                <div th:if="${category.imageUrl != null and !category.imageUrl.isEmpty()}">
-                    <img th:src="${category.imageUrl}"
-                         th:alt="${category.name}"
-                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
-                </div>
-                <div th:if="${category.imageUrl == null or category.imageUrl.isEmpty()}"
-                     style="width: 60px; height: 60px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 12px;">
-                    Нет фото
-                </div>
-            </td>
+<!-- Додатковий JavaScript -->
+<script>
+    // Анімація завантаження таблиці
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(20px)';
 
-            <td style="padding: 10px;" th:text="${category.id}"></td>
-            <td style="padding: 10px; font-weight: bold;" th:text="${category.name}"></td>
-            <td style="padding: 10px; font-family: monospace; color: #6c757d; max-width: 120px; word-wrap: break-word;"
-                th:text="${category.slug}"></td>
-            <td style="padding: 10px; max-width: 200px; word-wrap: break-word;"
-                th:text="${category.shortDescription}"></td>
-            <td style="padding: 10px; max-width: 150px; word-wrap: break-word; color: #6c757d;"
-                th:text="${category.metaTitle != null and !category.metaTitle.isEmpty()} ? ${category.metaTitle} : '—'"></td>
-            <td style="padding: 10px; max-width: 150px; word-wrap: break-word; color: #6c757d;"
-                th:text="${category.metaDescription != null and !category.metaDescription.isEmpty()} ? ${category.metaDescription} : '—'"></td>
+            setTimeout(() => {
+                row.style.transition = 'all 0.5s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
 
-            <!-- Столбец статуса -->
-            <td style="padding: 10px; text-align: center;">
-            <span th:if="${category.isActive != null and category.isActive}"
-                  style="color: #28a745; font-weight: bold;">✓ Активна</span>
-                <span th:if="${category.isActive == null or !category.isActive}"
-                      style="color: #dc3545; font-weight: bold;">✗ Неактивна</span>
-            </td>
+        // Збільшення зображень при наведенні
+        const images = document.querySelectorAll('.category-image');
+        images.forEach(img => {
+            img.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.5)';
+                this.style.zIndex = '1000';
+                this.style.position = 'relative';
+            });
 
-            <!-- 🆕 Столбец топовой категории -->
-            <td style="padding: 10px; text-align: center;">
-            <span th:if="${category.isFeatured != null and category.isFeatured}"
-                  style="color: #ffc107; font-weight: bold; font-size: 16px;" title="Отображается на главной странице">
-                ⭐ Топ
-            </span>
-                <span th:if="${category.isFeatured == null or !category.isFeatured}"
-                      style="color: #6c757d; font-size: 14px;">
-                —
-            </span>
-            </td>
+            img.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.zIndex = 'auto';
+            });
+        });
 
-            <td style="padding: 10px; text-align: center; font-size: 12px; color: #6c757d;"
-                th:text="${category.createdAt != null} ? ${#temporals.format(category.createdAt, 'dd.MM.yyyy HH:mm')} : '—'"></td>
-            <td style="padding: 10px; text-align: center;">
-                <a th:href="@{'/admin/category/edit/' + ${category.id}}"
-                   style="color: #007bff; text-decoration: none; margin-right: 10px;">
-                    Редактировать
-                </a>
-                <a th:href="@{'/admin/category/delete/' + ${category.id}}"
-                   style="color: #dc3545; text-decoration: none;"
-                   onclick="return confirm('Вы уверены, что хотите удалить эту категорию?')">
-                    Удалить
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        // Підтвердження видалення з красивим повідомленням
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
 
-<!-- Сообщение когда список пуст -->
-<div th:if="${categories == null or categories.isEmpty()}"
-     style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
-    <h3 th:if="${isSearch == null or !isSearch}">Категории не найдены</h3>
-    <h3 th:if="${isSearch != null and isSearch}">По вашему запросу ничего не найдено</h3>
+                const categoryName = this.closest('tr').querySelector('td:nth-child(3) .fw-bold').textContent;
 
-    <p th:if="${isSearch == null or !isSearch}">Пока что ни одной категории не создано.</p>
-    <p th:if="${isSearch != null and isSearch}">
-        Попробуйте изменить поисковый запрос или
-        <a th:href="@{/admin/category/list}">посмотреть все категории</a>
-    </p>
+                if (confirm(`Ви впевнені, що хочете видалити категорію "${categoryName}"?\n\nЦю дію неможливо скасувати.`)) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+    });
 
-    <a th:href="@{/admin/category}"
-       style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
-        <span th:if="${isSearch == null or !isSearch}">Создать первую категорию</span>
-        <span th:if="${isSearch != null and isSearch}">Создать новую категорию</span>
-    </a>
-</div>
+    // Функція для пошуку в реальному часі (опціонально)
+    function enableLiveSearch() {
+        const searchInput = document.querySelector('input[name="name"]');
+        let searchTimeout;
 
-<!-- Навигация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-    <h3>Навигация:</h3>
-    <ul>
-        <li><a th:href="@{/admin/category}">Создать новую категорию</a></li>
-        <li><a th:href="@{/admin/category/list}">Обновить список</a></li>
-        <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
-    </ul>
-</div>
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
 
-<!-- Отладочная информация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">
-    <h4>Отладочная информация:</h4>
-    <p>Количество категорий в модели: <span th:text="${categories != null ? categories.size() : 'null'}"></span></p>
-    <p>Поисковый запрос: <span th:text="${searchQuery != null ? searchQuery : 'отсутствует'}"></span></p>
-    <p>Режим поиска: <span th:text="${isSearch != null and isSearch ? 'да' : 'нет'}"></span></p>
-    <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>
-</div>
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(() => {
+                    // Можна додати AJAX пошук тут
+                    console.log('Пошук:', query);
+                }, 500);
+            }
+        });
+    }
+
+    // Розкоментуйте для увімкнення живого пошуку
+    enableLiveSearch();
+</script>
 </body>
 </html>
