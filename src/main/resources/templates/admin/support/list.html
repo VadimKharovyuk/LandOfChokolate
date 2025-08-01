@@ -1,297 +1,1327 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="uk">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Адміністрування - Запити підтримки</title>-->
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">-->
+<!--  <style>-->
+<!--    .sort-link {-->
+<!--      color: #333;-->
+<!--      text-decoration: none;-->
+<!--    }-->
+<!--    .sort-link:hover {-->
+<!--      color: #007bff;-->
+<!--      text-decoration: underline;-->
+<!--    }-->
+<!--    .delete-btn {-->
+<!--      border: none;-->
+<!--      background: none;-->
+<!--      color: #dc3545;-->
+<!--      cursor: pointer;-->
+<!--    }-->
+<!--    .delete-btn:hover {-->
+<!--      color: #c82333;-->
+<!--    }-->
+<!--    .alert-dismissible {-->
+<!--      margin-bottom: 1rem;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container mt-4">-->
+<!--  <div class="row">-->
+<!--    <div class="col-12">-->
+<!--      <h2><i class="fas fa-headset"></i> Запросы поддержки</h2>-->
+
+<!--      &lt;!&ndash; Сообщения об успехе/ошибке &ndash;&gt;-->
+<!--      <div th:if="${param.deleted}" class="alert alert-success alert-dismissible fade show">-->
+<!--        <i class="fas fa-check-circle"></i> Запрос успешно удален!-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
+<!--      </div>-->
+
+<!--      <div th:if="${param.error == 'delete'}" class="alert alert-danger alert-dismissible fade show">-->
+<!--        <i class="fas fa-exclamation-circle"></i> Ошибка при удалении запроса!-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Фильтры и сортировка &ndash;&gt;-->
+<!--      <form th:action="@{/admin/support}" method="get" class="mb-4">-->
+<!--        <div class="card">-->
+<!--          <div class="card-header">-->
+<!--            <h5 class="mb-0"><i class="fas fa-filter"></i> Фильтры</h5>-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <div class="row">-->
+<!--              <div class="col-md-3">-->
+<!--                <label for="topic" class="form-label">Тема обращения:</label>-->
+<!--                <select name="topic" id="topic" class="form-select">-->
+<!--                  <option value="">Все темы</option>-->
+<!--                  <option th:each="topic : ${supportTopics}"-->
+<!--                          th:value="${topic}"-->
+<!--                          th:text="${topic}"-->
+<!--                          th:selected="${topic == currentTopic}"></option>-->
+<!--                </select>-->
+<!--              </div>-->
+<!--              <div class="col-md-3">-->
+<!--                <label for="email" class="form-label">Email:</label>-->
+<!--                <input type="text" name="email" id="email" th:value="${currentEmail}"-->
+<!--                       placeholder="Email" class="form-control" />-->
+<!--              </div>-->
+<!--              <div class="col-md-2">-->
+<!--                <label for="size" class="form-label">Записей на странице:</label>-->
+<!--                <select name="size" id="size" class="form-select">-->
+<!--                  <option th:each="pageSize : ${pageSizes}"-->
+<!--                          th:value="${pageSize}"-->
+<!--                          th:text="${pageSize}"-->
+<!--                          th:selected="${pageSize == currentSize}"></option>-->
+<!--                </select>-->
+<!--              </div>-->
+<!--              <div class="col-md-2 d-flex align-items-end">-->
+<!--                <button type="submit" class="btn btn-primary">-->
+<!--                  <i class="fas fa-search"></i> Фильтр-->
+<!--                </button>-->
+<!--              </div>-->
+<!--              <div class="col-md-2 d-flex align-items-end">-->
+<!--                <a th:href="@{/admin/support}" class="btn btn-outline-secondary">-->
+<!--                  <i class="fas fa-times"></i> Сбросить-->
+<!--                </a>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </form>-->
+
+<!--      &lt;!&ndash; Таблица с данными &ndash;&gt;-->
+<!--      <div class="card">-->
+<!--        <div class="card-header d-flex justify-content-between align-items-center">-->
+<!--          <h5 class="mb-0">Список запросов</h5>-->
+<!--          <span class="badge bg-primary" th:text="${metadata.totalElements} + ' записей'"></span>-->
+<!--        </div>-->
+<!--        <div class="card-body p-0">-->
+<!--          <div class="table-responsive">-->
+<!--            <table class="table table-striped table-hover mb-0">-->
+<!--              <thead class="table-dark">-->
+<!--              <tr>-->
+<!--                <th>-->
+<!--                  <a th:href="@{/admin/support(sortBy='id', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},-->
+<!--                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"-->
+<!--                     class="sort-link text-white">-->
+<!--                    ID <i class="fas fa-sort"></i>-->
+<!--                  </a>-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                  <a th:href="@{/admin/support(sortBy='email', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},-->
+<!--                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"-->
+<!--                     class="sort-link text-white">-->
+<!--                    Email <i class="fas fa-sort"></i>-->
+<!--                  </a>-->
+<!--                </th>-->
+<!--                <th>-->
+<!--                  <a th:href="@{/admin/support(sortBy='topic', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},-->
+<!--                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"-->
+<!--                     class="sort-link text-white">-->
+<!--                    Тема <i class="fas fa-sort"></i>-->
+<!--                  </a>-->
+<!--                </th>-->
+<!--                <th>Сообщение</th>-->
+<!--                <th>-->
+<!--                  <a th:href="@{/admin/support(sortBy='createdAt', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},-->
+<!--                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"-->
+<!--                     class="sort-link text-white">-->
+<!--                    Дата создания <i class="fas fa-sort"></i>-->
+<!--                  </a>-->
+<!--                </th>-->
+<!--                <th width="200">Действия</th>-->
+<!--              </tr>-->
+<!--              </thead>-->
+<!--              <tbody>-->
+<!--              <tr th:each="request : ${content}" th:id="'row-' + ${request.id}">-->
+<!--                <td>-->
+<!--                  <span class="badge bg-secondary" th:text="'#' + ${request.id}"></span>-->
+<!--                </td>-->
+<!--                <td th:text="${request.email}"></td>-->
+<!--                <td>-->
+<!--                  <span class="badge bg-info" th:text="${request.topic}"></span>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                  <span th:text="${#strings.abbreviate(request.message, 50)}"></span>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                  <small th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></small>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                  <div class="btn-group" role="group">-->
+<!--                    <a th:href="@{/admin/support/{id}(id=${request.id})}"-->
+<!--                       class="btn btn-sm btn-outline-primary">-->
+<!--                      <i class="fas fa-eye"></i> Просмотр-->
+<!--                    </a>-->
+<!--                    <button type="button"-->
+<!--                            class="btn btn-sm btn-outline-danger"-->
+<!--                            data-bs-toggle="modal"-->
+<!--                            th:data-bs-target="'#deleteModal-' + ${request.id}">-->
+<!--                      <i class="fas fa-trash"></i> Удалить-->
+<!--                    </button>-->
+<!--                  </div>-->
+
+<!--                  &lt;!&ndash; Модальное окно подтверждения удаления &ndash;&gt;-->
+<!--                  <div class="modal fade" th:id="'deleteModal-' + ${request.id}" tabindex="-1">-->
+<!--                    <div class="modal-dialog">-->
+<!--                      <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                          <h5 class="modal-title">-->
+<!--                            <i class="fas fa-exclamation-triangle text-warning"></i>-->
+<!--                            Подтверждение удаления-->
+<!--                          </h5>-->
+<!--                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                          <p>Вы уверены, что хотите удалить запрос поддержки?</p>-->
+<!--                          <div class="alert alert-info">-->
+<!--                            <strong>ID:</strong> <span th:text="${request.id}"></span><br>-->
+<!--                            <strong>Email:</strong> <span th:text="${request.email}"></span><br>-->
+<!--                            <strong>Тема:</strong> <span th:text="${request.topic}"></span><br>-->
+<!--                            <strong>Дата:</strong> <span th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></span>-->
+<!--                          </div>-->
+<!--                          <p class="text-danger">-->
+<!--                            <i class="fas fa-warning"></i>-->
+<!--                            <strong>Внимание:</strong> Это действие необратимо!-->
+<!--                          </p>-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
+<!--                            <i class="fas fa-times"></i> Отмена-->
+<!--                          </button>-->
+<!--                          <form th:action="@{/admin/support/{id}/delete(id=${request.id})}"-->
+<!--                                method="post" style="display: inline;">-->
+<!--                            <button type="submit" class="btn btn-danger">-->
+<!--                              <i class="fas fa-trash"></i> Удалить-->
+<!--                            </button>-->
+<!--                          </form>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </td>-->
+<!--              </tr>-->
+
+<!--              &lt;!&ndash; Сообщение когда нет данных &ndash;&gt;-->
+<!--              <tr th:if="${#lists.isEmpty(content)}">-->
+<!--                <td colspan="6" class="text-center py-4">-->
+<!--                  <i class="fas fa-inbox fa-3x text-muted mb-3"></i>-->
+<!--                  <h5 class="text-muted">Запросы не найдены</h5>-->
+<!--                  <p class="text-muted">Попробуйте изменить параметры фильтрации</p>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--              </tbody>-->
+<!--            </table>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; Пагинация &ndash;&gt;-->
+<!--      <nav th:if="${metadata.totalPages > 1}" class="mt-4">-->
+<!--        <ul class="pagination justify-content-center">-->
+<!--          &lt;!&ndash; Первая страница &ndash;&gt;-->
+<!--          <li class="page-item" th:class="${metadata.first ? 'page-item disabled' : 'page-item'}">-->
+<!--            <a class="page-link"-->
+<!--               th:href="@{/admin/support(page=0, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},-->
+<!--                                     topic=${currentTopic}, email=${currentEmail})}">-->
+<!--              <i class="fas fa-angle-double-left"></i>-->
+<!--            </a>-->
+<!--          </li>-->
+
+<!--          &lt;!&ndash; Предыдущая страница &ndash;&gt;-->
+<!--          <li class="page-item" th:class="${metadata.hasPrevious ? 'page-item' : 'page-item disabled'}">-->
+<!--            <a class="page-link"-->
+<!--               th:href="@{/admin/support(page=${metadata.page - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},-->
+<!--                                     topic=${currentTopic}, email=${currentEmail})}">-->
+<!--              <i class="fas fa-angle-left"></i>-->
+<!--            </a>-->
+<!--          </li>-->
+
+<!--          &lt;!&ndash; Номера страниц (показываем только ближайшие) &ndash;&gt;-->
+<!--          <th:block th:with="startPage=${metadata.page > 2 ? metadata.page - 2 : 0},-->
+<!--                                       endPage=${metadata.page + 2 < metadata.totalPages - 1 ? metadata.page + 2 : metadata.totalPages - 1}">-->
+<!--            <li class="page-item"-->
+<!--                th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"-->
+<!--                th:class="${pageNum == metadata.page ? 'page-item active' : 'page-item'}">-->
+<!--              <a class="page-link"-->
+<!--                 th:href="@{/admin/support(page=${pageNum}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},-->
+<!--                                         topic=${currentTopic}, email=${currentEmail})}"-->
+<!--                 th:text="${pageNum + 1}"></a>-->
+<!--            </li>-->
+<!--          </th:block>-->
+
+<!--          &lt;!&ndash; Следующая страница &ndash;&gt;-->
+<!--          <li class="page-item" th:class="${metadata.hasNext ? 'page-item' : 'page-item disabled'}">-->
+<!--            <a class="page-link"-->
+<!--               th:href="@{/admin/support(page=${metadata.page + 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},-->
+<!--                                     topic=${currentTopic}, email=${currentEmail})}">-->
+<!--              <i class="fas fa-angle-right"></i>-->
+<!--            </a>-->
+<!--          </li>-->
+
+<!--          &lt;!&ndash; Последняя страница &ndash;&gt;-->
+<!--          <li class="page-item" th:class="${metadata.last ? 'page-item disabled' : 'page-item'}">-->
+<!--            <a class="page-link"-->
+<!--               th:href="@{/admin/support(page=${metadata.totalPages - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},-->
+<!--                                     topic=${currentTopic}, email=${currentEmail})}">-->
+<!--              <i class="fas fa-angle-double-right"></i>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </nav>-->
+
+<!--      &lt;!&ndash; Информация о пагинации &ndash;&gt;-->
+<!--      <div class="row mt-3">-->
+<!--        <div class="col-md-6">-->
+<!--          <small class="text-muted">-->
+<!--            <i class="fas fa-info-circle"></i>-->
+<!--            Показано <strong th:text="${content.size()}"></strong> из <strong th:text="${metadata.totalElements}"></strong> записей-->
+<!--          </small>-->
+<!--        </div>-->
+<!--        <div class="col-md-6 text-end">-->
+<!--          <small class="text-muted">-->
+<!--            Страница <strong th:text="${metadata.page + 1}"></strong> из <strong th:text="${metadata.totalPages}"></strong>-->
+<!--          </small>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Адміністрування - Запити підтримки</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
-    .sort-link {
+    :root {
+      --primary-color: #2C2C2C;
+      --accent-color: #D4AF37;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #17a2b8;
+      --light-bg: #F8F9FA;
+      --border-color: #DEE2E6;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .header-icon {
+      font-size: 2.5rem;
+      color: var(--accent-color);
+    }
+
+    .filters-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+      border-left: 5px solid var(--accent-color);
+    }
+
+    .table-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+
+    .table-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-header h5 {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .records-badge {
+      background: var(--accent-color);
       color: #333;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+    }
+
+    .custom-table {
+      margin: 0;
+    }
+
+    .custom-table thead th {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-bottom: 3px solid var(--accent-color);
+      font-weight: 700;
+      color: var(--primary-color);
+      padding: 1rem;
+      vertical-align: middle;
+    }
+
+    .sort-link {
+      color: var(--primary-color);
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-weight: 700;
     }
+
     .sort-link:hover {
-      color: #007bff;
-      text-decoration: underline;
+      color: var(--accent-color);
+      transform: translateX(3px);
     }
-    .delete-btn {
+
+    .sort-link i {
+      transition: transform 0.3s ease;
+    }
+
+    .sort-link:hover i {
+      transform: rotate(180deg);
+    }
+
+    .custom-table tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .custom-table tbody tr:hover {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      transform: scale(1.001);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .custom-table td {
+      padding: 1rem;
+      vertical-align: middle;
+    }
+
+    .id-badge {
+      background: linear-gradient(135deg, #2C2C2C 0%, #404040 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .topic-badge {
+      background: linear-gradient(135deg, var(--info-color) 0%, #20c6dd 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .email-display {
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+
+    .message-preview {
+      color: #666;
+      font-style: italic;
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .date-display {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .btn-custom {
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 8px 16px;
+      transition: all 0.3s ease;
       border: none;
-      background: none;
-      color: #dc3545;
-      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .delete-btn:hover {
-      color: #c82333;
+
+    .btn-view {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      color: #1976d2;
+      border: 1px solid #bbdefb;
     }
-    .alert-dismissible {
-      margin-bottom: 1rem;
+
+    .btn-view:hover {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+      color: #d32f2f;
+      border: 1px solid #ffcdd2;
+    }
+
+    .btn-delete:hover {
+      background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+    }
+
+    .btn-filter {
+      background: linear-gradient(135deg, var(--info-color) 0%, #20c6dd 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .btn-filter:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn-reset {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .btn-reset:hover {
+      background: #545b62;
+      transform: translateY(-2px);
+    }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      border: 2px solid var(--border-color);
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.75rem;
+    }
+
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: #6c757d;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      color: var(--accent-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .pagination-container {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    .pagination .page-link {
+      border: none;
+      color: var(--primary-color);
+      padding: 12px 18px;
+      margin: 0 2px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .pagination .page-link:hover {
+      background: var(--light-bg);
+      color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    .pagination .page-item.active .page-link {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(44, 44, 44, 0.3);
+    }
+
+    .pagination .page-item.disabled .page-link {
+      color: #6c757d;
+      background: transparent;
+    }
+
+    .alert-custom {
+      border: none;
+      border-radius: 15px;
+      padding: 1.25rem 2rem;
+      margin-bottom: 2rem;
+      border-left: 5px solid;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .alert-success-custom {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border-left-color: var(--success-color);
+      color: #155724;
+    }
+
+    .alert-danger-custom {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      border-left-color: var(--danger-color);
+      color: #721c24;
+    }
+
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+      color: white;
+      border-radius: 20px 20px 0 0;
+      padding: 1.5rem 2rem;
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .stats-info {
+      background: white;
+      border-radius: 15px;
+      padding: 1rem 1.5rem;
+      margin-top: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    .quick-actions {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, var(--success-color) 0%, #32d44a 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .filters-card .row > div {
+        margin-bottom: 1rem;
+      }
+
+      .table-responsive {
+        font-size: 0.9rem;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .pagination .page-link {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .table-card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .filters-card {
+      animation: fadeInUp 0.4s ease-out;
     }
   </style>
 </head>
 <body>
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-12">
-      <h2><i class="fas fa-headset"></i> Запросы поддержки</h2>
-
-      <!-- Сообщения об успехе/ошибке -->
-      <div th:if="${param.deleted}" class="alert alert-success alert-dismissible fade show">
-        <i class="fas fa-check-circle"></i> Запрос успешно удален!
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-
-      <div th:if="${param.error == 'delete'}" class="alert alert-danger alert-dismissible fade show">
-        <i class="fas fa-exclamation-circle"></i> Ошибка при удалении запроса!
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-
-      <!-- Фильтры и сортировка -->
-      <form th:action="@{/admin/support}" method="get" class="mb-4">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-filter"></i> Фильтры</h5>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-3">
-                <label for="topic" class="form-label">Тема обращения:</label>
-                <select name="topic" id="topic" class="form-select">
-                  <option value="">Все темы</option>
-                  <option th:each="topic : ${supportTopics}"
-                          th:value="${topic}"
-                          th:text="${topic}"
-                          th:selected="${topic == currentTopic}"></option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="text" name="email" id="email" th:value="${currentEmail}"
-                       placeholder="Email" class="form-control" />
-              </div>
-              <div class="col-md-2">
-                <label for="size" class="form-label">Записей на странице:</label>
-                <select name="size" id="size" class="form-select">
-                  <option th:each="pageSize : ${pageSizes}"
-                          th:value="${pageSize}"
-                          th:text="${pageSize}"
-                          th:selected="${pageSize == currentSize}"></option>
-                </select>
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary">
-                  <i class="fas fa-search"></i> Фильтр
-                </button>
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                <a th:href="@{/admin/support}" class="btn btn-outline-secondary">
-                  <i class="fas fa-times"></i> Сбросить
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-
-      <!-- Таблица с данными -->
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Список запросов</h5>
-          <span class="badge bg-primary" th:text="${metadata.totalElements} + ' записей'"></span>
-        </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
-              <thead class="table-dark">
-              <tr>
-                <th>
-                  <a th:href="@{/admin/support(sortBy='id', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
-                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
-                     class="sort-link text-white">
-                    ID <i class="fas fa-sort"></i>
-                  </a>
-                </th>
-                <th>
-                  <a th:href="@{/admin/support(sortBy='email', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
-                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
-                     class="sort-link text-white">
-                    Email <i class="fas fa-sort"></i>
-                  </a>
-                </th>
-                <th>
-                  <a th:href="@{/admin/support(sortBy='topic', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
-                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
-                     class="sort-link text-white">
-                    Тема <i class="fas fa-sort"></i>
-                  </a>
-                </th>
-                <th>Сообщение</th>
-                <th>
-                  <a th:href="@{/admin/support(sortBy='createdAt', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
-                                                     topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
-                     class="sort-link text-white">
-                    Дата создания <i class="fas fa-sort"></i>
-                  </a>
-                </th>
-                <th width="200">Действия</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="request : ${content}" th:id="'row-' + ${request.id}">
-                <td>
-                  <span class="badge bg-secondary" th:text="'#' + ${request.id}"></span>
-                </td>
-                <td th:text="${request.email}"></td>
-                <td>
-                  <span class="badge bg-info" th:text="${request.topic}"></span>
-                </td>
-                <td>
-                  <span th:text="${#strings.abbreviate(request.message, 50)}"></span>
-                </td>
-                <td>
-                  <small th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></small>
-                </td>
-                <td>
-                  <div class="btn-group" role="group">
-                    <a th:href="@{/admin/support/{id}(id=${request.id})}"
-                       class="btn btn-sm btn-outline-primary">
-                      <i class="fas fa-eye"></i> Просмотр
-                    </a>
-                    <button type="button"
-                            class="btn btn-sm btn-outline-danger"
-                            data-bs-toggle="modal"
-                            th:data-bs-target="'#deleteModal-' + ${request.id}">
-                      <i class="fas fa-trash"></i> Удалить
-                    </button>
-                  </div>
-
-                  <!-- Модальное окно подтверждения удаления -->
-                  <div class="modal fade" th:id="'deleteModal-' + ${request.id}" tabindex="-1">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title">
-                            <i class="fas fa-exclamation-triangle text-warning"></i>
-                            Подтверждение удаления
-                          </h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                          <p>Вы уверены, что хотите удалить запрос поддержки?</p>
-                          <div class="alert alert-info">
-                            <strong>ID:</strong> <span th:text="${request.id}"></span><br>
-                            <strong>Email:</strong> <span th:text="${request.email}"></span><br>
-                            <strong>Тема:</strong> <span th:text="${request.topic}"></span><br>
-                            <strong>Дата:</strong> <span th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
-                          </div>
-                          <p class="text-danger">
-                            <i class="fas fa-warning"></i>
-                            <strong>Внимание:</strong> Это действие необратимо!
-                          </p>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fas fa-times"></i> Отмена
-                          </button>
-                          <form th:action="@{/admin/support/{id}/delete(id=${request.id})}"
-                                method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-danger">
-                              <i class="fas fa-trash"></i> Удалить
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-
-              <!-- Сообщение когда нет данных -->
-              <tr th:if="${#lists.isEmpty(content)}">
-                <td colspan="6" class="text-center py-4">
-                  <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                  <h5 class="text-muted">Запросы не найдены</h5>
-                  <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Пагинация -->
-      <nav th:if="${metadata.totalPages > 1}" class="mt-4">
-        <ul class="pagination justify-content-center">
-          <!-- Первая страница -->
-          <li class="page-item" th:class="${metadata.first ? 'page-item disabled' : 'page-item'}">
-            <a class="page-link"
-               th:href="@{/admin/support(page=0, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
-                                     topic=${currentTopic}, email=${currentEmail})}">
-              <i class="fas fa-angle-double-left"></i>
-            </a>
-          </li>
-
-          <!-- Предыдущая страница -->
-          <li class="page-item" th:class="${metadata.hasPrevious ? 'page-item' : 'page-item disabled'}">
-            <a class="page-link"
-               th:href="@{/admin/support(page=${metadata.page - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
-                                     topic=${currentTopic}, email=${currentEmail})}">
-              <i class="fas fa-angle-left"></i>
-            </a>
-          </li>
-
-          <!-- Номера страниц (показываем только ближайшие) -->
-          <th:block th:with="startPage=${metadata.page > 2 ? metadata.page - 2 : 0},
-                                       endPage=${metadata.page + 2 < metadata.totalPages - 1 ? metadata.page + 2 : metadata.totalPages - 1}">
-            <li class="page-item"
-                th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
-                th:class="${pageNum == metadata.page ? 'page-item active' : 'page-item'}">
-              <a class="page-link"
-                 th:href="@{/admin/support(page=${pageNum}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
-                                         topic=${currentTopic}, email=${currentEmail})}"
-                 th:text="${pageNum + 1}"></a>
-            </li>
-          </th:block>
-
-          <!-- Следующая страница -->
-          <li class="page-item" th:class="${metadata.hasNext ? 'page-item' : 'page-item disabled'}">
-            <a class="page-link"
-               th:href="@{/admin/support(page=${metadata.page + 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
-                                     topic=${currentTopic}, email=${currentEmail})}">
-              <i class="fas fa-angle-right"></i>
-            </a>
-          </li>
-
-          <!-- Последняя страница -->
-          <li class="page-item" th:class="${metadata.last ? 'page-item disabled' : 'page-item'}">
-            <a class="page-link"
-               th:href="@{/admin/support(page=${metadata.totalPages - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
-                                     topic=${currentTopic}, email=${currentEmail})}">
-              <i class="fas fa-angle-double-right"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Информация о пагинации -->
-      <div class="row mt-3">
-        <div class="col-md-6">
-          <small class="text-muted">
-            <i class="fas fa-info-circle"></i>
-            Показано <strong th:text="${content.size()}"></strong> из <strong th:text="${metadata.totalElements}"></strong> записей
-          </small>
-        </div>
-        <div class="col-md-6 text-end">
-          <small class="text-muted">
-            Страница <strong th:text="${metadata.page + 1}"></strong> из <strong th:text="${metadata.totalPages}"></strong>
-          </small>
-        </div>
+<!-- Заголовок -->
+<div class="main-header">
+  <div class="container">
+    <div class="header-content">
+      <i class="header-icon bi bi-headset"></i>
+      <div>
+        <h1 class="mb-1">Запити підтримки</h1>
+        <p class="mb-0 opacity-75">Управління зверненнями користувачів</p>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="container">
+  <!-- Повідомлення -->
+  <div th:if="${param.deleted}" class="alert alert-custom alert-success-custom">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    Запит успішно видалено!
+  </div>
+
+  <div th:if="${param.error == 'delete'}" class="alert alert-custom alert-danger-custom">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    Помилка при видаленні запиту!
+  </div>
+
+  <!-- Швидкі дії -->
+  <div class="quick-actions">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="bi bi-lightning-fill me-2" style="color: var(--accent-color);"></i>
+        Швидкі дії
+      </h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-export" onclick="exportData()">
+          <i class="bi bi-download me-1"></i>Експорт
+        </button>
+        <button class="btn btn-outline-info" onclick="refreshPage()">
+          <i class="bi bi-arrow-clockwise me-1"></i>Оновити
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Фільтри -->
+  <div class="filters-card">
+    <form th:action="@{/admin/support}" method="get">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+          <i class="bi bi-funnel-fill me-2"></i>Фільтри
+        </h5>
+        <small class="text-muted">Налаштуйте параметри пошуку</small>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="topic" class="form-label">
+            <i class="bi bi-tag me-1"></i>Тема звернення
+          </label>
+          <select name="topic" id="topic" class="form-select">
+            <option value="">Всі теми</option>
+            <option th:each="topic : ${supportTopics}"
+                    th:value="${topic}"
+                    th:text="${topic}"
+                    th:selected="${topic == currentTopic}"></option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label for="email" class="form-label">
+            <i class="bi bi-envelope me-1"></i>Email
+          </label>
+          <input type="email"
+                 name="email"
+                 id="email"
+                 th:value="${currentEmail}"
+                 placeholder="Введіть email користувача"
+                 class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label for="size" class="form-label">
+            <i class="bi bi-list me-1"></i>Записів на сторінці
+          </label>
+          <select name="size" id="size" class="form-select">
+            <option th:each="pageSize : ${pageSizes}"
+                    th:value="${pageSize}"
+                    th:text="${pageSize}"
+                    th:selected="${pageSize == currentSize}"></option>
+          </select>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-filter w-100">
+            <i class="bi bi-search me-1"></i>Фільтр
+          </button>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <a th:href="@{/admin/support}" class="btn btn-reset w-100">
+            <i class="bi bi-x-circle me-1"></i>Скинути
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Таблиця з даними -->
+  <div class="table-card">
+    <div class="table-header">
+      <h5>
+        <i class="bi bi-table me-2"></i>Список запитів
+      </h5>
+      <span class="records-badge" th:text="${metadata.totalElements} + ' записів'">0 записів</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table custom-table">
+        <thead>
+        <tr>
+          <th>
+            <a th:href="@{/admin/support(sortBy='id', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                              topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+               class="sort-link">
+              <i class="bi bi-hash"></i>ID
+              <i class="bi bi-arrow-up-down"></i>
+            </a>
+          </th>
+          <th>
+            <a th:href="@{/admin/support(sortBy='email', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                              topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+               class="sort-link">
+              <i class="bi bi-envelope"></i>Email
+              <i class="bi bi-arrow-up-down"></i>
+            </a>
+          </th>
+          <th>
+            <a th:href="@{/admin/support(sortBy='topic', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                              topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+               class="sort-link">
+              <i class="bi bi-tag"></i>Тема
+              <i class="bi bi-arrow-up-down"></i>
+            </a>
+          </th>
+          <th>
+            <i class="bi bi-chat-text me-1"></i>Повідомлення
+          </th>
+          <th>
+            <a th:href="@{/admin/support(sortBy='createdAt', sortDir=${currentSortDir == 'asc' ? 'desc' : 'asc'},
+                                              topic=${currentTopic}, email=${currentEmail}, size=${currentSize})}"
+               class="sort-link">
+              <i class="bi bi-calendar"></i>Дата створення
+              <i class="bi bi-arrow-up-down"></i>
+            </a>
+          </th>
+          <th style="width: 200px;">
+            <i class="bi bi-gear me-1"></i>Дії
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${content}" th:id="'row-' + ${request.id}">
+          <td>
+            <span class="id-badge" th:text="'#' + ${request.id}">#1</span>
+          </td>
+          <td>
+            <div class="email-display" th:text="${request.email}">user@example.com</div>
+          </td>
+          <td>
+            <span class="topic-badge" th:text="${request.topic}">Загальне питання</span>
+          </td>
+          <td>
+            <div class="message-preview" th:text="${#strings.abbreviate(request.message, 80)}">
+              Приклад повідомлення від користувача...
+            </div>
+          </td>
+          <td>
+            <div class="date-display"
+                 th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</div>
+          </td>
+          <td>
+            <div class="btn-group" role="group">
+              <a th:href="@{/admin/support/{id}(id=${request.id})}"
+                 class="btn btn-custom btn-view">
+                <i class="bi bi-eye"></i>Переглянути
+              </a>
+              <button type="button"
+                      class="btn btn-custom btn-delete"
+                      data-bs-toggle="modal"
+                      th:data-bs-target="'#deleteModal-' + ${request.id}">
+                <i class="bi bi-trash"></i>Видалити
+              </button>
+            </div>
+
+            <!-- Модальне вікно підтвердження видалення -->
+            <div class="modal fade" th:id="'deleteModal-' + ${request.id}" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">
+                      <i class="bi bi-exclamation-triangle me-2"></i>
+                      Підтвердження видалення
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="mb-3">Ви впевнені, що хочете видалити цей запит підтримки?</p>
+
+                    <div class="alert alert-info border-0">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <strong>ID:</strong> <span th:text="${request.id}"></span><br>
+                          <strong>Email:</strong> <span th:text="${request.email}"></span>
+                        </div>
+                        <div class="col-sm-6">
+                          <strong>Тема:</strong> <span th:text="${request.topic}"></span><br>
+                          <strong>Дата:</strong> <span th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="alert alert-warning border-0">
+                      <i class="bi bi-exclamation-triangle me-2"></i>
+                      <strong>Увага:</strong> Ця дія незворотна!
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                      <i class="bi bi-x-circle me-1"></i>Скасувати
+                    </button>
+                    <form th:action="@{/admin/support/{id}/delete(id=${request.id})}"
+                          method="post" style="display: inline;">
+                      <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Видалити
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Порожній стан -->
+        <tr th:if="${#lists.isEmpty(content)}">
+          <td colspan="6" class="empty-state">
+            <div class="empty-icon">
+              <i class="bi bi-inbox"></i>
+            </div>
+            <h5 class="text-muted mb-2">Запити не знайдені</h5>
+            <p class="text-muted mb-0">Спробуйте змінити параметри фільтрації</p>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Пагінація -->
+  <div th:if="${metadata.totalPages > 1}" class="pagination-container">
+    <nav>
+      <ul class="pagination justify-content-center mb-0">
+        <!-- Перша сторінка -->
+        <li class="page-item" th:class="${metadata.first ? 'page-item disabled' : 'page-item'}">
+          <a class="page-link"
+             th:href="@{/admin/support(page=0, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+            <i class="bi bi-chevron-double-left"></i>
+          </a>
+        </li>
+
+        <!-- Попередня сторінка -->
+        <li class="page-item" th:class="${metadata.hasPrevious ? 'page-item' : 'page-item disabled'}">
+          <a class="page-link"
+             th:href="@{/admin/support(page=${metadata.page - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        </li>
+
+        <!-- Номери сторінок -->
+        <th:block th:with="startPage=${metadata.page > 2 ? metadata.page - 2 : 0},
+                                       endPage=${metadata.page + 2 < metadata.totalPages - 1 ? metadata.page + 2 : metadata.totalPages - 1}">
+          <li class="page-item"
+              th:each="pageNum : ${#numbers.sequence(startPage, endPage)}"
+              th:class="${pageNum == metadata.page ? 'page-item active' : 'page-item'}">
+            <a class="page-link"
+               th:href="@{/admin/support(page=${pageNum}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                         topic=${currentTopic}, email=${currentEmail})}"
+               th:text="${pageNum + 1}">1</a>
+          </li>
+        </th:block>
+
+        <!-- Наступна сторінка -->
+        <li class="page-item" th:class="${metadata.hasNext ? 'page-item' : 'page-item disabled'}">
+          <a class="page-link"
+             th:href="@{/admin/support(page=${metadata.page + 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+
+        <!-- Остання сторінка -->
+        <li class="page-item" th:class="${metadata.last ? 'page-item disabled' : 'page-item'}">
+          <a class="page-link"
+             th:href="@{/admin/support(page=${metadata.totalPages - 1}, size=${currentSize}, sortBy=${currentSortBy}, sortDir=${currentSortDir},
+                                     topic=${currentTopic}, email=${currentEmail})}">
+            <i class="bi bi-chevron-double-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Інформація про пагінацію -->
+  <div class="stats-info">
+    <div class="row">
+      <div class="col-md-6">
+        <small class="text-muted">
+          <i class="bi bi-info-circle me-1"></i>
+          Показано <strong th:text="${content.size()}">10</strong> з <strong th:text="${metadata.totalElements}">100</strong> записів
+        </small>
+      </div>
+      <div class="col-md-6 text-end">
+        <small class="text-muted">
+          Сторінка <strong th:text="${metadata.page + 1}">1</strong> з <strong th:text="${metadata.totalPages}">10</strong>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Додатковий JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Анімація появи рядків таблиці
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach((row, index) => {
+      row.style.opacity = '0';
+      row.style.transform = 'translateY(20px)';
+
+      setTimeout(() => {
+        row.style.transition = 'all 0.5s ease';
+        row.style.opacity = '1';
+        row.style.transform = 'translateY(0)';
+      }, index * 50);
+    });
+
+    // Підтвердження видалення з додатковою інформацією
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+    deleteButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const email = row.querySelector('.email-display').textContent;
+        console.log(`Підготовка до видалення запиту від: ${email}`);
+      });
+    });
+
+    // Автозбереження фільтрів в localStorage
+    const filterForm = document.querySelector('form');
+    const filterInputs = filterForm.querySelectorAll('input, select');
+
+    // Відновлюємо збережені фільтри
+    filterInputs.forEach(input => {
+      const savedValue = localStorage.getItem(`filter_${input.name}`);
+      if (savedValue && !input.value) {
+        input.value = savedValue;
+      }
+    });
+
+    // Зберігаємо фільтри при зміні
+    filterInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        localStorage.setItem(`filter_${this.name}`, this.value);
+      });
+    });
+
+    // Швидка фільтрація по темах
+    const topicBadges = document.querySelectorAll('.topic-badge');
+    topicBadges.forEach(badge => {
+      badge.style.cursor = 'pointer';
+      badge.title = 'Клікніть для фільтрації за цією темою';
+
+      badge.addEventListener('click', function() {
+        const topic = this.textContent;
+        const topicSelect = document.getElementById('topic');
+        topicSelect.value = topic;
+        filterForm.submit();
+      });
+    });
+
+    // Швидка фільтрація по email
+    const emailDisplays = document.querySelectorAll('.email-display');
+    emailDisplays.forEach(email => {
+      email.style.cursor = 'pointer';
+      email.title = 'Клікніть для фільтрації за цим email';
+
+      email.addEventListener('click', function() {
+        const emailValue = this.textContent;
+        const emailInput = document.getElementById('email');
+        emailInput.value = emailValue;
+        filterForm.submit();
+      });
+    });
+
+    // Підсвічування активних фільтрів
+    const activeFilters = [];
+    filterInputs.forEach(input => {
+      if (input.value && input.value !== '') {
+        activeFilters.push(input);
+        input.style.borderColor = 'var(--accent-color)';
+        input.style.boxShadow = '0 0 0 0.2rem rgba(212, 175, 55, 0.25)';
+      }
+    });
+
+    // Показуємо кількість активних фільтрів
+    if (activeFilters.length > 0) {
+      const filtersTitle = document.querySelector('.filters-card h5');
+      const badge = document.createElement('span');
+      badge.className = 'badge bg-warning text-dark ms-2';
+      badge.textContent = activeFilters.length;
+      filtersTitle.appendChild(badge);
+    }
+
+    // Клярування фільтрів
+    const resetButton = document.querySelector('.btn-reset');
+    resetButton.addEventListener('click', function(e) {
+      // Очищуємо localStorage
+      filterInputs.forEach(input => {
+        localStorage.removeItem(`filter_${input.name}`);
+      });
+    });
+
+    // Автоматичне оновлення сторінки кожні 5 хвилин
+    setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        const currentUrl = new URL(window.location);
+        currentUrl.searchParams.set('autoRefresh', 'true');
+
+        // Показуємо індикатор оновлення
+        const indicator = document.createElement('div');
+        indicator.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--info-color);
+                        color: white;
+                        padding: 10px 20px;
+                        border-radius: 10px;
+                        z-index: 9999;
+                        font-size: 0.9rem;
+                    `;
+        indicator.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Оновлення даних...';
+        document.body.appendChild(indicator);
+
+        setTimeout(() => {
+          window.location.href = currentUrl.toString();
+        }, 1000);
+      }
+    }, 300000); // 5 хвилин
+
+    // Обробка успішних повідомлень
+    const alerts = document.querySelectorAll('.alert-custom');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          alert.remove();
+        }, 300);
+      }, 5000);
+    });
+  });
+
+  // Функція експорту даних
+  function exportData() {
+    const currentUrl = new URL(window.location);
+    currentUrl.pathname = '/admin/support/export';
+    currentUrl.searchParams.set('format', 'csv');
+
+    // Створюємо тимчасове посилання для завантаження
+    const link = document.createElement('a');
+    link.href = currentUrl.toString();
+    link.download = `support_requests_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Показуємо повідомлення
+    showNotification('Експорт розпочато', 'success');
+  }
+
+  // Функція оновлення сторінки
+  function refreshPage() {
+    showNotification('Оновлення даних...', 'info');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  }
+
+  // Функція показу повідомлень
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--success-color)' :
+            type === 'error' ? 'var(--danger-color)' : 'var(--info-color)'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                z-index: 9999;
+                font-weight: 600;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+            `;
+    notification.innerHTML = `<i class="bi bi-${type === 'success' ? 'check-circle' :
+            type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>${message}`;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+    }, 100);
+
+    setTimeout(() => {
+      notification.style.transform = 'translateX(400px)';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
+
+  // Клавіатурні скорочення
+  document.addEventListener('keydown', function(e) {
+    // Ctrl + F = фокус на пошук email
+    if (e.ctrlKey && e.key === 'f') {
+      e.preventDefault();
+      document.getElementById('email').focus();
+    }
+
+    // F5 = оновити сторінку
+    if (e.key === 'F5') {
+      e.preventDefault();
+      refreshPage();
+    }
+
+    // Ctrl + E = експорт
+    if (e.ctrlKey && e.key === 'e') {
+      e.preventDefault();
+      exportData();
+    }
+  });
+
+  // Показуємо підказки про клавіатурні скорочення
+  setTimeout(() => {
+    const helpTooltip = document.createElement('div');
+    helpTooltip.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: rgba(44, 44, 44, 0.9);
+                color: white;
+                padding: 15px;
+                border-radius: 10px;
+                font-size: 0.8rem;
+                z-index: 1000;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+    helpTooltip.innerHTML = `
+                <div><strong>Клавіатурні скорочення:</strong></div>
+                <div>Ctrl+F - Пошук email</div>
+                <div>F5 - Оновити</div>
+                <div>Ctrl+E - Експорт</div>
+            `;
+
+    document.body.appendChild(helpTooltip);
+
+    setTimeout(() => {
+      helpTooltip.style.opacity = '1';
+    }, 100);
+
+    setTimeout(() => {
+      helpTooltip.style.opacity = '0';
+      setTimeout(() => {
+        document.body.removeChild(helpTooltip);
+      }, 300);
+    }, 8000);
+  }, 2000);
+</script>
 </body>
 </html>

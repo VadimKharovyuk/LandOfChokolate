@@ -1,207 +1,1178 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Просмотр продукта</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Информация о продукте</h1>-->
+
+<!--&lt;!&ndash; Flash сообщения &ndash;&gt;-->
+<!--<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">-->
+<!--  <span th:text="${successMessage}"></span>-->
+<!--</div>-->
+
+<!--<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--  <span th:text="${errorMessage}"></span>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Основная информация о продукте &ndash;&gt;-->
+<!--<div style="display: flex; gap: 30px; margin: 20px 0;">-->
+
+<!--  &lt;!&ndash; Левая колонка - изображение &ndash;&gt;-->
+<!--  <div style="flex: 0 0 300px;">-->
+<!--    <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">-->
+<!--      <img th:src="${product.imageUrl}" alt="Изображение продукта"-->
+<!--           style="width: 100%; max-width: 300px; border: 1px solid #ddd; border-radius: 8px;">-->
+<!--    </div>-->
+<!--    <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"-->
+<!--         style="width: 300px; height: 200px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #666; background-color: #f8f9fa;">-->
+<!--      Нет изображения-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Правая колонка - информация &ndash;&gt;-->
+<!--  <div style="flex: 1;">-->
+<!--    <h2 th:text="${product.name}" style="margin: 0 0 20px 0; color: #333;"></h2>-->
+
+<!--    &lt;!&ndash; Статус рекомендации (визуально выделенный) &ndash;&gt;-->
+<!--    <div th:if="${product.isRecommendation != null and product.isRecommendation}"-->
+<!--         style="background: linear-gradient(45deg, #ffd700, #ffed4a); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #f39c12;">-->
+<!--      <div style="display: flex; align-items: center; gap: 10px;">-->
+<!--        <span style="font-size: 24px;">⭐</span>-->
+<!--        <div>-->
+<!--          <div style="font-weight: bold; color: #333; font-size: 14px;">РЕКОМЕНДУЕМЫЙ ТОВАР</div>-->
+<!--          <div style="font-size: 12px; color: #666;">Отображается на главной странице сайта</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Основные характеристики &ndash;&gt;-->
+<!--    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">-->
+<!--      <table style="width: 100%; border-collapse: collapse;">-->
+<!--        <tr>-->
+<!--          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">ID:</td>-->
+<!--          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;" th:text="${product.id}"></td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Цена:</td>-->
+<!--          <td style="padding: 8px; border-bottom: 1px solid #dee2e6; font-size: 18px; font-weight: bold; color: #007bff;">-->
+<!--            <span th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн.'"></span>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Количество на складе:</td>-->
+<!--          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">-->
+<!--            <span th:text="${product.stockQuantity}"-->
+<!--                  th:style="${product.stockQuantity == 0 ? 'color: red; font-weight: bold;' : (product.stockQuantity < 10 ? 'color: orange; font-weight: bold;' : 'color: green; font-weight: bold;')}"></span>-->
+
+<!--            &lt;!&ndash; Статус &ndash;&gt;-->
+<!--            <span th:if="${product.stockQuantity == 0}"-->
+<!--                  style="margin-left: 10px; padding: 3px 8px; background-color: #dc3545; color: white; border-radius: 3px; font-size: 11px;">-->
+<!--              Нет в наличии-->
+<!--            </span>-->
+<!--            <span th:if="${product.stockQuantity > 0 and product.stockQuantity < 10}"-->
+<!--                  style="margin-left: 10px; padding: 3px 8px; background-color: #ffc107; color: black; border-radius: 3px; font-size: 11px;">-->
+<!--              Заканчивается-->
+<!--            </span>-->
+<!--            <span th:if="${product.stockQuantity >= 10}"-->
+<!--                  style="margin-left: 10px; padding: 3px 8px; background-color: #28a745; color: white; border-radius: 3px; font-size: 11px;">-->
+<!--              В наличии-->
+<!--            </span>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Рекомендация:</td>-->
+<!--          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">-->
+<!--            <span th:if="${product.isRecommendation != null and product.isRecommendation}"-->
+<!--                  style="padding: 3px 8px; background-color: #ffd700; color: #333; border-radius: 3px; font-size: 11px; font-weight: bold;">-->
+<!--              ⭐ ДА-->
+<!--            </span>-->
+<!--            <span th:if="${product.isRecommendation == null or !product.isRecommendation}"-->
+<!--                  style="padding: 3px 8px; background-color: #6c757d; color: white; border-radius: 3px; font-size: 11px;">-->
+<!--              НЕТ-->
+<!--            </span>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Категория:</td>-->
+<!--          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">-->
+<!--            <span th:text="${product.category.name}"></span>-->
+<!--            <small style="color: #666;" th:text="'(ID: ' + ${product.category.id} + ')'"></small>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td style="padding: 8px; font-weight: bold;">Бренд:</td>-->
+<!--          <td style="padding: 8px;">-->
+<!--            <span th:text="${product.brand.name}"></span>-->
+<!--            <small style="color: #666;" th:text="'(ID: ' + ${product.brand.id} + ')'"></small>-->
+
+<!--            &lt;!&ndash; Логотип бренда &ndash;&gt;-->
+<!--            <div th:if="${product.brand.imageUrl != null and !product.brand.imageUrl.isEmpty()}" style="margin-top: 5px;">-->
+<!--              <img th:src="${product.brand.imageUrl}" alt="Логотип бренда"-->
+<!--                   style="max-width: 50px; max-height: 30px; border: 1px solid #ddd; border-radius: 3px;">-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </table>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Быстрое управление остатками &ndash;&gt;-->
+<!--    <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">-->
+<!--      <h4 style="margin: 0 0 10px 0;">Управление остатками:</h4>-->
+<!--      <form th:action="@{'/admin/product/stock/update/' + ${product.id}}" method="post" style="display: inline-flex; align-items: center; gap: 10px;">-->
+<!--        <label for="quantity">Новое количество:</label>-->
+<!--        <input type="number" id="quantity" name="quantity" th:value="${product.stockQuantity}"-->
+<!--               min="0" step="1" style="width: 100px; padding: 5px;">-->
+<!--        <button type="submit" style="padding: 5px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 3px;">-->
+<!--          Обновить-->
+<!--        </button>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Действия с продуктом &ndash;&gt;-->
+<!--<div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">-->
+<!--  <h3>Действия:</h3>-->
+<!--  <div style="display: flex; gap: 10px; flex-wrap: wrap;">-->
+<!--    <a th:href="@{'/admin/product/edit/' + ${product.id}}"-->
+<!--       style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">-->
+<!--      ✏️ Редактировать-->
+<!--    </a>-->
+<!--    <a th:href="@{'/admin/product/delete/' + ${product.id}}"-->
+<!--       style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px;"-->
+<!--       onclick="return confirm('Вы уверены, что хотите удалить этот продукт?')">-->
+<!--      🗑️ Удалить-->
+<!--    </a>-->
+<!--    <a th:href="@{/admin/product/list}"-->
+<!--       style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">-->
+<!--      📋 К списку продуктов-->
+<!--    </a>-->
+<!--    <a th:href="@{/admin/product}"-->
+<!--       style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">-->
+<!--      ➕ Создать новый-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Связанная информация &ndash;&gt;-->
+<!--<div style="display: flex; gap: 20px; margin: 30px 0;">-->
+
+<!--  &lt;!&ndash; Другие продукты той же категории &ndash;&gt;-->
+<!--  <div style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 8px;">-->
+<!--    <h4>Другие продукты в категории "<span th:text="${product.category.name}"></span>":</h4>-->
+<!--    <a th:href="@{/admin/product/list(category=${product.category.id})}"-->
+<!--       style="color: #007bff; text-decoration: none;">-->
+<!--      Показать все продукты этой категории →-->
+<!--    </a>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Другие продукты того же бренда &ndash;&gt;-->
+<!--  <div style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 8px;">-->
+<!--    <h4>Другие продукты бренда "<span th:text="${product.brand.name}"></span>":</h4>-->
+<!--    <a th:href="@{/admin/product/list(brand=${product.brand.id})}"-->
+<!--       style="color: #007bff; text-decoration: none;">-->
+<!--      Показать все продукты этого бренда →-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Техническая информация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">-->
+<!--  <h4>Техническая информация:</h4>-->
+<!--  <div style="font-size: 12px; color: #666;">-->
+<!--    <p><strong>ID продукта:</strong> <span th:text="${product.id}"></span></p>-->
+<!--    <p><strong>ID категории:</strong> <span th:text="${product.category.id}"></span></p>-->
+<!--    <p><strong>ID бренда:</strong> <span th:text="${product.brand.id}"></span></p>-->
+<!--    <p><strong>Рекомендация:</strong> <span th:text="${product.isRecommendation}"></span></p>-->
+<!--    <p th:if="${product.imageUrl != null}"><strong>URL изображения:</strong> <span th:text="${product.imageUrl}"></span></p>-->
+<!--    <p th:if="${product.createdAt != null}"><strong>Дата создания:</strong> <span th:text="${#temporals.format(product.createdAt, 'dd.MM.yyyy HH:mm')}"></span></p>-->
+<!--    <p th:if="${product.updatedAt != null}"><strong>Последнее обновление:</strong> <span th:text="${#temporals.format(product.updatedAt, 'dd.MM.yyyy HH:mm')}"></span></p>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">-->
+<!--  <h3>Навигация:</h3>-->
+<!--  <ul>-->
+<!--    <li><a th:href="@{/admin/product/list}">Список всех продуктов</a></li>-->
+<!--    <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>-->
+<!--    <li><a th:href="@{/admin/product/statistics}">Статистика продуктов</a></li>-->
+<!--    <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>-->
+<!--    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>-->
+<!--  </ul>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Просмотр продукта</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Перегляд товару - Land of Chocolate</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #2C2C2C;
+      --accent-color: #D4AF37;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #17a2b8;
+      --light-bg: #F8F9FA;
+      --border-color: #DEE2E6;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .header-icon {
+      font-size: 2.5rem;
+      color: var(--accent-color);
+    }
+
+    .product-container {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+
+    .product-image-container {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border: 3px solid var(--border-color);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .product-image:hover {
+      transform: scale(1.05);
+    }
+
+    .image-placeholder {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 3px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-size: 1.2rem;
+      border-radius: 15px;
+    }
+
+    .product-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .recommendation-badge {
+      background: linear-gradient(135deg, var(--accent-color) 0%, #f1c40f 100%);
+      color: #333;
+      padding: 1rem 1.5rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border: 3px solid #f39c12;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3); }
+      50% { box-shadow: 0 4px 25px rgba(212, 175, 55, 0.5); }
+      100% { box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3); }
+    }
+
+    .recommendation-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .recommendation-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .info-table {
+      background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .info-table table {
+      margin: 0;
+    }
+
+    .info-table td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .info-table td:first-child {
+      font-weight: 700;
+      color: var(--primary-color);
+      width: 200px;
+      background: rgba(248, 249, 250, 0.5);
+    }
+
+    .info-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .price-display {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--success-color);
+    }
+
+    .stock-number {
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .stock-in { color: var(--success-color); }
+    .stock-low { color: var(--warning-color); }
+    .stock-out { color: var(--danger-color); }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 1rem;
+    }
+
+    .badge-success {
+      background: var(--success-color);
+      color: white;
+    }
+
+    .badge-warning {
+      background: var(--warning-color);
+      color: #212529;
+    }
+
+    .badge-danger {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .badge-recommendation {
+      background: var(--accent-color);
+      color: #333;
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    .badge-no-recommendation {
+      background: #6c757d;
+      color: white;
+    }
+
+    .brand-logo {
+      max-width: 60px;
+      max-height: 40px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+
+    .stock-management {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 2px solid var(--info-color);
+    }
+
+    .stock-form {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stock-input {
+      width: 120px;
+      padding: 0.75rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .stock-input:focus {
+      border-color: var(--info-color);
+      box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+    }
+
+    .btn-custom {
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary-custom {
+      background: linear-gradient(135deg, var(--info-color) 0%, #20c6dd 100%);
+      color: white;
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: white;
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, var(--danger-color) 0%, #c82333 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+      color: white;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success-color) 0%, #218838 100%);
+      color: white;
+    }
+
+    .actions-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .related-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+
+    .related-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 2px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .related-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      border-color: var(--accent-color);
+    }
+
+    .related-link {
+      color: var(--info-color);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .related-link:hover {
+      color: var(--primary-color);
+    }
+
+    .tech-info {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 2px solid var(--border-color);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .navigation-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      padding: 1rem;
+      border-radius: 10px;
+      background: var(--light-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .nav-links a:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .alert-custom {
+      border: none;
+      border-radius: 15px;
+      padding: 1.25rem 2rem;
+      margin-bottom: 2rem;
+      border-left: 5px solid;
+    }
+
+    .alert-success-custom {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border-left-color: var(--success-color);
+      color: #155724;
+    }
+
+    .alert-danger-custom {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      border-left-color: var(--danger-color);
+      color: #721c24;
+    }
+
+    @media (max-width: 768px) {
+      .product-title {
+        font-size: 2rem;
+      }
+
+      .info-table td:first-child {
+        width: auto;
+      }
+
+      .stock-form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .stock-input {
+        width: 100%;
+      }
+
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-<h1>Информация о продукте</h1>
-
-<!-- Flash сообщения -->
-<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
-  <span th:text="${successMessage}"></span>
-</div>
-
-<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-  <span th:text="${errorMessage}"></span>
-</div>
-
-<!-- Основная информация о продукте -->
-<div style="display: flex; gap: 30px; margin: 20px 0;">
-
-  <!-- Левая колонка - изображение -->
-  <div style="flex: 0 0 300px;">
-    <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">
-      <img th:src="${product.imageUrl}" alt="Изображение продукта"
-           style="width: 100%; max-width: 300px; border: 1px solid #ddd; border-radius: 8px;">
-    </div>
-    <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
-         style="width: 300px; height: 200px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #666; background-color: #f8f9fa;">
-      Нет изображения
+<div class="container-fluid">
+  <!-- Заголовок -->
+  <div class="main-header">
+    <div class="container">
+      <div class="header-content">
+        <i class="header-icon bi bi-box-seam"></i>
+        <div>
+          <h1 class="mb-1">Інформація про товар</h1>
+          <p class="mb-0 opacity-75">Детальний перегляд характеристик товару</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Правая колонка - информация -->
-  <div style="flex: 1;">
-    <h2 th:text="${product.name}" style="margin: 0 0 20px 0; color: #333;"></h2>
+  <div class="container">
+    <!-- Повідомлення -->
+    <div th:if="${successMessage}" class="alert alert-custom alert-success-custom">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <span th:text="${successMessage}"></span>
+    </div>
 
-    <!-- Статус рекомендации (визуально выделенный) -->
-    <div th:if="${product.isRecommendation != null and product.isRecommendation}"
-         style="background: linear-gradient(45deg, #ffd700, #ffed4a); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; border: 2px solid #f39c12;">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 24px;">⭐</span>
-        <div>
-          <div style="font-weight: bold; color: #333; font-size: 14px;">РЕКОМЕНДУЕМЫЙ ТОВАР</div>
-          <div style="font-size: 12px; color: #666;">Отображается на главной странице сайта</div>
+    <div th:if="${errorMessage}" class="alert alert-custom alert-danger-custom">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Основна інформація про товар -->
+    <div class="product-container">
+      <div class="row">
+        <!-- Зображення товару -->
+        <div class="col-lg-4 mb-4">
+          <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
+               class="product-image-container">
+            <img th:src="${product.imageUrl}"
+                 th:alt="'Фото ' + ${product.name}"
+                 class="product-image">
+          </div>
+          <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
+               class="image-placeholder">
+            <div class="text-center">
+              <i class="bi bi-image" style="font-size: 3rem;"></i>
+              <div class="mt-2">Зображення відсутнє</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Інформація про товар -->
+        <div class="col-lg-8">
+          <h2 class="product-title" th:text="${product.name}">Назва товару</h2>
+
+          <!-- Статус рекомендації -->
+          <div th:if="${product.isRecommendation != null and product.isRecommendation}"
+               class="recommendation-badge">
+            <div class="recommendation-content">
+              <span class="recommendation-icon">⭐</span>
+              <div>
+                <div class="fw-bold">РЕКОМЕНДОВАНИЙ ТОВАР</div>
+                <div style="font-size: 0.9rem;">Відображається на головній сторінці сайту</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Таблиця характеристик -->
+          <div class="info-table">
+            <table class="table mb-0">
+              <tbody>
+              <tr>
+                <td><i class="bi bi-hash me-2"></i>ID товару:</td>
+                <td class="fw-bold" th:text="${product.id}">1</td>
+              </tr>
+              <tr>
+                <td><i class="bi bi-currency-dollar me-2"></i>Ціна:</td>
+                <td>
+                                            <span class="price-display"
+                                                  th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн'">150.00 грн</span>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="bi bi-boxes me-2"></i>Кількість на складі:</td>
+                <td>
+                                            <span class="stock-number"
+                                                  th:classappend="${product.stockQuantity == 0 ? 'stock-out' : (product.stockQuantity < 10 ? 'stock-low' : 'stock-in')}"
+                                                  th:text="${product.stockQuantity}">25</span>
+
+                  <!-- Статусні бейджі -->
+                  <span th:if="${product.stockQuantity == 0}" class="status-badge badge-danger">
+                                                <i class="bi bi-x-circle me-1"></i>Немає в наявності
+                                            </span>
+                  <span th:if="${product.stockQuantity > 0 and product.stockQuantity < 10}" class="status-badge badge-warning">
+                                                <i class="bi bi-exclamation-triangle me-1"></i>Закінчується
+                                            </span>
+                  <span th:if="${product.stockQuantity >= 10}" class="status-badge badge-success">
+                                                <i class="bi bi-check-circle me-1"></i>В наявності
+                                            </span>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="bi bi-star me-2"></i>Рекомендація:</td>
+                <td>
+                                            <span th:if="${product.isRecommendation != null and product.isRecommendation}"
+                                                  class="status-badge badge-recommendation">
+                                                <i class="bi bi-star-fill me-1"></i>ТАК
+                                            </span>
+                  <span th:if="${product.isRecommendation == null or !product.isRecommendation}"
+                        class="status-badge badge-no-recommendation">
+                                                <i class="bi bi-dash-circle me-1"></i>НІ
+                                            </span>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="bi bi-folder me-2"></i>Категорія:</td>
+                <td>
+                  <span class="fw-bold" th:text="${product.category.name}">Шоколад</span>
+                  <small class="text-muted ms-2" th:text="'(ID: ' + ${product.category.id} + ')'"></small>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="bi bi-tag me-2"></i>Бренд:</td>
+                <td>
+                  <div>
+                    <span class="fw-bold" th:text="${product.brand.name}">Roshen</span>
+                    <small class="text-muted ms-2" th:text="'(ID: ' + ${product.brand.id} + ')'"></small>
+                  </div>
+
+                  <!-- Логотип бренду -->
+                  <div th:if="${product.brand.imageUrl != null and !product.brand.imageUrl.isEmpty()}">
+                    <img th:src="${product.brand.imageUrl}"
+                         th:alt="'Логотип ' + ${product.brand.name}"
+                         class="brand-logo">
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Швидке управління залишками -->
+          <div class="stock-management">
+            <h5 class="mb-3">
+              <i class="bi bi-gear me-2"></i>Управління залишками
+            </h5>
+            <form th:action="@{'/admin/product/stock/update/' + ${product.id}}" method="post">
+              <div class="stock-form">
+                <label for="quantity" class="form-label mb-0">
+                  <i class="bi bi-boxes me-1"></i>Нова кількість:
+                </label>
+                <input type="number"
+                       id="quantity"
+                       name="quantity"
+                       th:value="${product.stockQuantity}"
+                       min="0"
+                       step="1"
+                       class="form-control stock-input">
+                <button type="submit" class="btn btn-custom btn-primary-custom">
+                  <i class="bi bi-arrow-repeat"></i>
+                  Оновити
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Основные характеристики -->
-    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-      <table style="width: 100%; border-collapse: collapse;">
-        <tr>
-          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">ID:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;" th:text="${product.id}"></td>
-        </tr>
-        <tr>
-          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Цена:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #dee2e6; font-size: 18px; font-weight: bold; color: #007bff;">
-            <span th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн.'"></span>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Количество на складе:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
-            <span th:text="${product.stockQuantity}"
-                  th:style="${product.stockQuantity == 0 ? 'color: red; font-weight: bold;' : (product.stockQuantity < 10 ? 'color: orange; font-weight: bold;' : 'color: green; font-weight: bold;')}"></span>
-
-            <!-- Статус -->
-            <span th:if="${product.stockQuantity == 0}"
-                  style="margin-left: 10px; padding: 3px 8px; background-color: #dc3545; color: white; border-radius: 3px; font-size: 11px;">
-              Нет в наличии
-            </span>
-            <span th:if="${product.stockQuantity > 0 and product.stockQuantity < 10}"
-                  style="margin-left: 10px; padding: 3px 8px; background-color: #ffc107; color: black; border-radius: 3px; font-size: 11px;">
-              Заканчивается
-            </span>
-            <span th:if="${product.stockQuantity >= 10}"
-                  style="margin-left: 10px; padding: 3px 8px; background-color: #28a745; color: white; border-radius: 3px; font-size: 11px;">
-              В наличии
-            </span>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Рекомендация:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
-            <span th:if="${product.isRecommendation != null and product.isRecommendation}"
-                  style="padding: 3px 8px; background-color: #ffd700; color: #333; border-radius: 3px; font-size: 11px; font-weight: bold;">
-              ⭐ ДА
-            </span>
-            <span th:if="${product.isRecommendation == null or !product.isRecommendation}"
-                  style="padding: 3px 8px; background-color: #6c757d; color: white; border-radius: 3px; font-size: 11px;">
-              НЕТ
-            </span>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #dee2e6;">Категория:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">
-            <span th:text="${product.category.name}"></span>
-            <small style="color: #666;" th:text="'(ID: ' + ${product.category.id} + ')'"></small>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 8px; font-weight: bold;">Бренд:</td>
-          <td style="padding: 8px;">
-            <span th:text="${product.brand.name}"></span>
-            <small style="color: #666;" th:text="'(ID: ' + ${product.brand.id} + ')'"></small>
-
-            <!-- Логотип бренда -->
-            <div th:if="${product.brand.imageUrl != null and !product.brand.imageUrl.isEmpty()}" style="margin-top: 5px;">
-              <img th:src="${product.brand.imageUrl}" alt="Логотип бренда"
-                   style="max-width: 50px; max-height: 30px; border: 1px solid #ddd; border-radius: 3px;">
-            </div>
-          </td>
-        </tr>
-      </table>
+    <!-- Дії з товаром -->
+    <div class="actions-section">
+      <h3 class="mb-4">
+        <i class="bi bi-gear-wide-connected me-2"></i>Дії з товаром
+      </h3>
+      <div class="actions-grid">
+        <a th:href="@{'/admin/product/edit/' + ${product.id}}" class="btn btn-custom btn-edit">
+          <i class="bi bi-pencil-square"></i>
+          Редагувати
+        </a>
+        <a th:href="@{'/admin/product/delete/' + ${product.id}}"
+           class="btn btn-custom btn-delete"
+           onclick="return confirm('Ви впевнені, що хочете видалити цей товар?')">
+          <i class="bi bi-trash3"></i>
+          Видалити
+        </a>
+        <a th:href="@{/admin/product/list}" class="btn btn-custom btn-secondary">
+          <i class="bi bi-list"></i>
+          До списку товарів
+        </a>
+        <a th:href="@{/admin/product}" class="btn btn-custom btn-success">
+          <i class="bi bi-plus-circle"></i>
+          Створити новий
+        </a>
+      </div>
     </div>
 
-    <!-- Быстрое управление остатками -->
-    <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-      <h4 style="margin: 0 0 10px 0;">Управление остатками:</h4>
-      <form th:action="@{'/admin/product/stock/update/' + ${product.id}}" method="post" style="display: inline-flex; align-items: center; gap: 10px;">
-        <label for="quantity">Новое количество:</label>
-        <input type="number" id="quantity" name="quantity" th:value="${product.stockQuantity}"
-               min="0" step="1" style="width: 100px; padding: 5px;">
-        <button type="submit" style="padding: 5px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 3px;">
-          Обновить
-        </button>
-      </form>
+    <!-- Пов'язана інформація -->
+    <div class="related-section">
+      <h3 class="mb-4">
+        <i class="bi bi-link-45deg me-2"></i>Пов'язані товари
+      </h3>
+      <div class="row">
+        <!-- Інші товари тієї ж категорії -->
+        <div class="col-md-6 mb-3">
+          <div class="related-card">
+            <h5 class="mb-3">
+              <i class="bi bi-folder me-2"></i>
+              Інші товари в категорії "<span th:text="${product.category.name}"></span>"
+            </h5>
+            <a th:href="@{/admin/product/list(category=${product.category.id})}"
+               class="related-link">
+              <i class="bi bi-arrow-right-circle"></i>
+              Показати всі товари цієї категорії
+            </a>
+          </div>
+        </div>
+
+        <!-- Інші товари того ж бренду -->
+        <div class="col-md-6 mb-3">
+          <div class="related-card">
+            <h5 class="mb-3">
+              <i class="bi bi-tag me-2"></i>
+              Інші товари бренду "<span th:text="${product.brand.name}"></span>"
+            </h5>
+            <a th:href="@{/admin/product/list(brand=${product.brand.id})}"
+               class="related-link">
+              <i class="bi bi-arrow-right-circle"></i>
+              Показати всі товари цього бренду
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Технічна інформація -->
+    <div class="tech-info">
+      <h5 class="mb-3">
+        <i class="bi bi-code-slash me-2"></i>Технічна інформація
+      </h5>
+      <div class="row">
+        <div class="col-md-6">
+          <p class="mb-2"><strong>ID товару:</strong> <span th:text="${product.id}"></span></p>
+          <p class="mb-2"><strong>ID категорії:</strong> <span th:text="${product.category.id}"></span></p>
+          <p class="mb-2"><strong>ID бренду:</strong> <span th:text="${product.brand.id}"></span></p>
+          <p class="mb-2"><strong>Рекомендація:</strong> <span th:text="${product.isRecommendation}"></span></p>
+        </div>
+        <div class="col-md-6">
+          <p class="mb-2" th:if="${product.imageUrl != null}">
+            <strong>URL зображення:</strong>
+            <span th:text="${#strings.abbreviate(product.imageUrl, 50)}"></span>
+          </p>
+          <p class="mb-2" th:if="${product.createdAt != null}">
+            <strong>Дата створення:</strong>
+            <span th:text="${#temporals.format(product.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+          </p>
+          <p class="mb-2" th:if="${product.updatedAt != null}">
+            <strong>Останнє оновлення:</strong>
+            <span th:text="${#temporals.format(product.updatedAt, 'dd.MM.yyyy HH:mm')}"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Навігація -->
+    <div class="navigation-section">
+      <h5 class="mb-3">
+        <i class="bi bi-compass me-2"></i>Швидка навігація
+      </h5>
+      <ul class="nav-links">
+        <li>
+          <a th:href="@{/admin/product/list}">
+            <i class="bi bi-list"></i>
+            Список товарів
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/admin/product}">
+            <i class="bi bi-plus-circle"></i>
+            Створити товар
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/admin/product/statistics}">
+            <i class="bi bi-bar-chart"></i>
+            Статистика товарів
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/admin/category/list}">
+            <i class="bi bi-folder"></i>
+            Управління категоріями
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/admin/brand/list}">
+            <i class="bi bi-tag"></i>
+            Управління брендами
+          </a>
+        </li>
+        <li>
+          <a th:href="@{/admin}">
+            <i class="bi bi-house"></i>
+            Адмін панель
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
 
-<!-- Действия с продуктом -->
-<div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-  <h3>Действия:</h3>
-  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-    <a th:href="@{'/admin/product/edit/' + ${product.id}}"
-       style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-      ✏️ Редактировать
-    </a>
-    <a th:href="@{'/admin/product/delete/' + ${product.id}}"
-       style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px;"
-       onclick="return confirm('Вы уверены, что хотите удалить этот продукт?')">
-      🗑️ Удалить
-    </a>
-    <a th:href="@{/admin/product/list}"
-       style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">
-      📋 К списку продуктов
-    </a>
-    <a th:href="@{/admin/product}"
-       style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
-      ➕ Создать новый
-    </a>
-  </div>
-</div>
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Связанная информация -->
-<div style="display: flex; gap: 20px; margin: 30px 0;">
+<!-- Додатковий JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Анімація появи елементів
+    const sections = document.querySelectorAll('.product-container, .actions-section, .related-section');
+    sections.forEach((section, index) => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(30px)';
 
-  <!-- Другие продукты той же категории -->
-  <div style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 8px;">
-    <h4>Другие продукты в категории "<span th:text="${product.category.name}"></span>":</h4>
-    <a th:href="@{/admin/product/list(category=${product.category.id})}"
-       style="color: #007bff; text-decoration: none;">
-      Показать все продукты этой категории →
-    </a>
-  </div>
+      setTimeout(() => {
+        section.style.transition = 'all 0.6s ease';
+        section.style.opacity = '1';
+        section.style.transform = 'translateY(0)';
+      }, index * 200);
+    });
 
-  <!-- Другие продукты того же бренда -->
-  <div style="flex: 1; background-color: #f8f9fa; padding: 15px; border-radius: 8px;">
-    <h4>Другие продукты бренда "<span th:text="${product.brand.name}"></span>":</h4>
-    <a th:href="@{/admin/product/list(brand=${product.brand.id})}"
-       style="color: #007bff; text-decoration: none;">
-      Показать все продукты этого бренда →
-    </a>
-  </div>
-</div>
+    // Ефект збільшення зображення
+    const productImage = document.querySelector('.product-image');
+    if (productImage) {
+      productImage.addEventListener('click', function() {
+        // Створюємо модальне вікно для збільшеного зображення
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.8);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 9999;
+                        cursor: pointer;
+                    `;
 
-<!-- Техническая информация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px; border-radius: 8px;">
-  <h4>Техническая информация:</h4>
-  <div style="font-size: 12px; color: #666;">
-    <p><strong>ID продукта:</strong> <span th:text="${product.id}"></span></p>
-    <p><strong>ID категории:</strong> <span th:text="${product.category.id}"></span></p>
-    <p><strong>ID бренда:</strong> <span th:text="${product.brand.id}"></span></p>
-    <p><strong>Рекомендация:</strong> <span th:text="${product.isRecommendation}"></span></p>
-    <p th:if="${product.imageUrl != null}"><strong>URL изображения:</strong> <span th:text="${product.imageUrl}"></span></p>
-    <p th:if="${product.createdAt != null}"><strong>Дата создания:</strong> <span th:text="${#temporals.format(product.createdAt, 'dd.MM.yyyy HH:mm')}"></span></p>
-    <p th:if="${product.updatedAt != null}"><strong>Последнее обновление:</strong> <span th:text="${#temporals.format(product.updatedAt, 'dd.MM.yyyy HH:mm')}"></span></p>
-  </div>
-</div>
+        const img = document.createElement('img');
+        img.src = this.src;
+        img.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+                    `;
 
-<!-- Навигация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-  <h3>Навигация:</h3>
-  <ul>
-    <li><a th:href="@{/admin/product/list}">Список всех продуктов</a></li>
-    <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>
-    <li><a th:href="@{/admin/product/statistics}">Статистика продуктов</a></li>
-    <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>
-    <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>
-  </ul>
-</div>
+        modal.appendChild(img);
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', () => {
+          document.body.removeChild(modal);
+        });
+      });
+    }
+
+    // Підтвердження видалення з назвою товару
+    const deleteBtn = document.querySelector('.btn-delete');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const productName = document.querySelector('.product-title').textContent;
+
+        if (confirm(`Ви впевнені, що хочете видалити товар "${productName}"?\n\nЦю дію неможливо скасувати.`)) {
+          window.location.href = this.href;
+        }
+      });
+    }
+
+    // Автофокус на поле кількості при кліку
+    const quantityInput = document.getElementById('quantity');
+    if (quantityInput) {
+      quantityInput.addEventListener('focus', function() {
+        this.select();
+      });
+
+      // Підтвердження при зміні кількості
+      const stockForm = quantityInput.closest('form');
+      stockForm.addEventListener('submit', function(e) {
+        const newQuantity = quantityInput.value;
+        const currentQuantity = quantityInput.defaultValue;
+
+        if (newQuantity !== currentQuantity) {
+          if (!confirm(`Змінити кількість товару з ${currentQuantity} на ${newQuantity}?`)) {
+            e.preventDefault();
+          }
+        }
+      });
+    }
+
+    // Анімація пульсації для рекомендованого товару
+    const recommendationBadge = document.querySelector('.recommendation-badge');
+    if (recommendationBadge) {
+      setInterval(() => {
+        recommendationBadge.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          recommendationBadge.style.transform = 'scale(1)';
+        }, 200);
+      }, 3000);
+    }
+
+    // Ефекти наведення для кнопок дій
+    const actionButtons = document.querySelectorAll('.btn-custom');
+    actionButtons.forEach(btn => {
+      btn.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px) scale(1.02)';
+      });
+
+      btn.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Ефекти для пов'язаних карток
+    const relatedCards = document.querySelectorAll('.related-card');
+    relatedCards.forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px) rotate(1deg)';
+      });
+
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) rotate(0deg)';
+      });
+    });
+
+    // Копіювання технічної інформації при кліку
+    const techInfo = document.querySelectorAll('.tech-info p');
+    techInfo.forEach(info => {
+      info.style.cursor = 'pointer';
+      info.title = 'Клікніть, щоб скопіювати';
+
+      info.addEventListener('click', function() {
+        const text = this.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          // Показуємо підтвердження
+          const originalBg = this.style.backgroundColor;
+          this.style.backgroundColor = '#d4edda';
+          this.style.transition = 'background-color 0.3s ease';
+
+          setTimeout(() => {
+            this.style.backgroundColor = originalBg;
+          }, 1000);
+        });
+      });
+    });
+
+    // Швидкі клавіатурні скорочення
+    document.addEventListener('keydown', function(e) {
+      // E = редагувати
+      if (e.key === 'e' || e.key === 'у') {
+        const editBtn = document.querySelector('.btn-edit');
+        if (editBtn) {
+          window.location.href = editBtn.href;
+        }
+      }
+
+      // Backspace = повернутися до списку
+      if (e.key === 'Backspace' && !e.target.matches('input')) {
+        e.preventDefault();
+        window.location.href = '/admin/product/list';
+      }
+
+      // Ctrl + N = новий товар
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        window.location.href = '/admin/product';
+      }
+    });
+
+    // Показуємо підказки про клавіатурні скорочення
+    const showKeyboardShortcuts = () => {
+      const shortcutsInfo = document.createElement('div');
+      shortcutsInfo.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: rgba(44, 44, 44, 0.9);
+                    color: white;
+                    padding: 1rem;
+                    border-radius: 10px;
+                    font-size: 0.8rem;
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+
+      shortcutsInfo.innerHTML = `
+                    <div><strong>Швидкі клавіші:</strong></div>
+                    <div>E - Редагувати</div>
+                    <div>Backspace - До списку</div>
+                    <div>Ctrl+N - Новий товар</div>
+                `;
+
+      document.body.appendChild(shortcutsInfo);
+
+      setTimeout(() => {
+        shortcutsInfo.style.opacity = '1';
+      }, 100);
+
+      setTimeout(() => {
+        shortcutsInfo.style.opacity = '0';
+        setTimeout(() => {
+          document.body.removeChild(shortcutsInfo);
+        }, 300);
+      }, 5000);
+    };
+
+    // Показуємо підказки через 3 секунди
+    setTimeout(showKeyboardShortcuts, 3000);
+  });
+
+  // Функція для оновлення статусу товару
+  function updateProductStatus(productId) {
+    // Можна додати AJAX запит для оновлення статусу
+    console.log('Оновлення статусу товару:', productId);
+  }
+
+  // Функція для швидкого переходу до редагування
+  function quickEdit() {
+    const editBtn = document.querySelector('.btn-edit');
+    if (editBtn) {
+      editBtn.click();
+    }
+  }
+
+  // Експорт функцій в глобальний scope для можливого використання
+  window.updateProductStatus = updateProductStatus;
+  window.quickEdit = quickEdit;
+</script>
 </body>
 </html>

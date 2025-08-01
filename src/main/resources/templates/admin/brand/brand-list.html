@@ -1,108 +1,898 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Список брендов</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Список брендов</h1>-->
+
+<!--&lt;!&ndash; Flash сообщения &ndash;&gt;-->
+<!--<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">-->
+<!--    <span th:text="${successMessage}"></span>-->
+<!--</div>-->
+
+<!--<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--    <span th:text="${errorMessage}"></span>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Кнопка создания нового бренда &ndash;&gt;-->
+<!--<div style="margin: 20px 0;">-->
+<!--    <a th:href="@{/admin/brand}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">-->
+<!--        + Создать новый бренд-->
+<!--    </a>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Таблица брендов &ndash;&gt;-->
+<!--<div th:if="${brands != null and !brands.isEmpty()}">-->
+<!--    <h2>Всего брендов: <span th:text="${brands.size()}"></span></h2>-->
+
+<!--    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">-->
+<!--        <thead style="background-color: #f8f9fa;">-->
+<!--        <tr>-->
+<!--            <th style="padding: 10px; text-align: left;">ID</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Изображение</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Название</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Описание</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Дата создания</th>-->
+<!--            <th style="padding: 10px; text-align: left;">Дата обновления</th>-->
+<!--            <th style="padding: 10px; text-align: center;">Действия</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="brand : ${brands}">-->
+<!--            <td style="padding: 10px;" th:text="${brand.id}"></td>-->
+<!--            <td style="padding: 10px; text-align: center;">-->
+<!--                <div th:if="${brand.imageUrl != null and !brand.imageUrl.isEmpty()}">-->
+<!--                    <img th:src="${brand.imageUrl}" alt="Изображение бренда"-->
+<!--                         style="max-width: 60px; max-height: 60px; border: 1px solid #ddd; border-radius: 4px;">-->
+<!--                </div>-->
+<!--                <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"-->
+<!--                     style="color: #6c757d; font-style: italic; font-size: 12px;">-->
+<!--                    Нет изображения-->
+<!--                </div>-->
+<!--            </td>-->
+<!--            <td style="padding: 10px;" th:text="${brand.name}"></td>-->
+<!--            <td style="padding: 10px; max-width: 300px; word-wrap: break-word;">-->
+<!--                <div th:if="${brand.description != null and !brand.description.isEmpty()}"-->
+<!--                     th:text="${#strings.length(brand.description) > 100 ? #strings.substring(brand.description, 0, 100) + '...' : brand.description}"-->
+<!--                     th:title="${brand.description}">-->
+<!--                </div>-->
+<!--                <div th:if="${brand.description == null or brand.description.isEmpty()}"-->
+<!--                     style="color: #6c757d; font-style: italic;">-->
+<!--                    Нет описания-->
+<!--                </div>-->
+<!--            </td>-->
+<!--            <td style="padding: 10px;" th:text="${#temporals.format(brand.createdAt, 'dd.MM.yyyy HH:mm')}"></td>-->
+<!--            <td style="padding: 10px;" th:text="${#temporals.format(brand.updatedAt, 'dd.MM.yyyy HH:mm')}"></td>-->
+<!--            <td style="padding: 10px; text-align: center;">-->
+<!--                <a th:href="@{'/admin/brand/edit/' + ${brand.id}}" style="color: #007bff; text-decoration: none; margin-right: 10px;">-->
+<!--                    Редактировать-->
+<!--                </a>-->
+<!--                <a th:href="@{'/admin/brand/delete/' + ${brand.id}}"-->
+<!--                   style="color: #dc3545; text-decoration: none;"-->
+<!--                   onclick="return confirm('Вы уверены, что хотите удалить этот бренд?')">-->
+<!--                    Удалить-->
+<!--                </a>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Сообщение когда список пуст &ndash;&gt;-->
+<!--<div th:if="${brands == null or brands.isEmpty()}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">-->
+<!--    <h3>Бренды не найдены</h3>-->
+<!--    <p>Пока что ни одного бренда не создано.</p>-->
+<!--    <a th:href="@{/admin/brand}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">-->
+<!--        Создать первый бренд-->
+<!--    </a>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">-->
+<!--    <h3>Навигация:</h3>-->
+<!--    <ul>-->
+<!--        <li><a th:href="@{/admin/brand}">Создать новый бренд</a></li>-->
+<!--        <li><a th:href="@{/admin/brand/list}">Обновить список</a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Отладочная информация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">-->
+<!--    <h4>Отладочная информация:</h4>-->
+<!--    <p>Количество брендов в модели: <span th:text="${brands != null ? brands.size() : 'null'}"></span></p>-->
+<!--    <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Список брендов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управління брендами</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2C2C2C;
+            --accent-color: #D4AF37;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-bg: #F8F9FA;
+            --border-color: #DEE2E6;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+            color: white;
+            padding: 2.5rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color) 0%, var(--success-color) 100%);
+        }
+
+        .btn-custom {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 14px 28px;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, var(--success-color) 0%, #32d44a 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 6px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20px;
+            width: 100px;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transform: rotate(15deg);
+        }
+
+        .stats-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .table-header-icon {
+            font-size: 1.8rem;
+        }
+
+        .table-header-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .custom-table {
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .custom-table thead th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 3px solid var(--accent-color);
+            font-weight: 700;
+            color: var(--primary-color);
+            padding: 18px 15px;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .custom-table tbody tr:hover {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            transform: scale(1.002);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .custom-table td {
+            padding: 20px 15px;
+            vertical-align: middle;
+        }
+
+        .brand-image {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 3px solid var(--border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .brand-image:hover {
+            transform: scale(1.2);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            z-index: 10;
+            position: relative;
+        }
+
+        .image-placeholder {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 3px dashed var(--border-color);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .image-placeholder:hover {
+            border-color: var(--accent-color);
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        }
+
+        .brand-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .brand-description {
+            color: #666;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .date-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-family: 'Courier New', monospace;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border-color: #bbdefb;
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border-color: #ffcdd2;
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .empty-state {
+            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            padding: 4rem 3rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .empty-state::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color) 0%, var(--info-color) 100%);
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .empty-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .alert-custom {
+            border: none;
+            border-radius: 15px;
+            padding: 1.25rem 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .alert-success-custom {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .alert-danger-custom {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+
+        .navigation-section {
+            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--light-bg) 0%, white 100%);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(44, 44, 44, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .debug-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .debug-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .control-panel, .stats-card, .navigation-section {
+                padding: 1.5rem;
+            }
+
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-image, .image-placeholder {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .custom-table td {
+                padding: 12px 8px;
+            }
+
+            .btn-action {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Список брендов</h1>
-
-<!-- Flash сообщения -->
-<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
-    <span th:text="${successMessage}"></span>
-</div>
-
-<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-    <span th:text="${errorMessage}"></span>
-</div>
-
-<!-- Кнопка создания нового бренда -->
-<div style="margin: 20px 0;">
-    <a th:href="@{/admin/brand}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">
-        + Создать новый бренд
-    </a>
-</div>
-
-<!-- Таблица брендов -->
-<div th:if="${brands != null and !brands.isEmpty()}">
-    <h2>Всего брендов: <span th:text="${brands.size()}"></span></h2>
-
-    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">
-        <thead style="background-color: #f8f9fa;">
-        <tr>
-            <th style="padding: 10px; text-align: left;">ID</th>
-            <th style="padding: 10px; text-align: left;">Изображение</th>
-            <th style="padding: 10px; text-align: left;">Название</th>
-            <th style="padding: 10px; text-align: left;">Описание</th>
-            <th style="padding: 10px; text-align: left;">Дата создания</th>
-            <th style="padding: 10px; text-align: left;">Дата обновления</th>
-            <th style="padding: 10px; text-align: center;">Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="brand : ${brands}">
-            <td style="padding: 10px;" th:text="${brand.id}"></td>
-            <td style="padding: 10px; text-align: center;">
-                <div th:if="${brand.imageUrl != null and !brand.imageUrl.isEmpty()}">
-                    <img th:src="${brand.imageUrl}" alt="Изображение бренда"
-                         style="max-width: 60px; max-height: 60px; border: 1px solid #ddd; border-radius: 4px;">
+<div class="container-fluid">
+    <!-- Заголовок -->
+    <div class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <i class="header-icon bi bi-tags-fill"></i>
+                <div>
+                    <h1 class="header-title">Управління брендами</h1>
+                    <p class="header-subtitle">Керуйте брендами товарів у вашому магазині</p>
                 </div>
-                <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"
-                     style="color: #6c757d; font-style: italic; font-size: 12px;">
-                    Нет изображения
-                </div>
-            </td>
-            <td style="padding: 10px;" th:text="${brand.name}"></td>
-            <td style="padding: 10px; max-width: 300px; word-wrap: break-word;">
-                <div th:if="${brand.description != null and !brand.description.isEmpty()}"
-                     th:text="${#strings.length(brand.description) > 100 ? #strings.substring(brand.description, 0, 100) + '...' : brand.description}"
-                     th:title="${brand.description}">
-                </div>
-                <div th:if="${brand.description == null or brand.description.isEmpty()}"
-                     style="color: #6c757d; font-style: italic;">
-                    Нет описания
-                </div>
-            </td>
-            <td style="padding: 10px;" th:text="${#temporals.format(brand.createdAt, 'dd.MM.yyyy HH:mm')}"></td>
-            <td style="padding: 10px;" th:text="${#temporals.format(brand.updatedAt, 'dd.MM.yyyy HH:mm')}"></td>
-            <td style="padding: 10px; text-align: center;">
-                <a th:href="@{'/admin/brand/edit/' + ${brand.id}}" style="color: #007bff; text-decoration: none; margin-right: 10px;">
-                    Редактировать
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Повідомлення -->
+        <div th:if="${successMessage}" class="alert alert-custom alert-success-custom">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-custom alert-danger-custom">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Панель управління -->
+        <div class="control-panel">
+            <div class="d-flex justify-content-center">
+                <a th:href="@{/admin/brand}" class="btn btn-custom btn-success-custom">
+                    <i class="bi bi-plus-circle-fill me-2"></i>
+                    Створити новий бренд
                 </a>
-                <a th:href="@{'/admin/brand/delete/' + ${brand.id}}"
-                   style="color: #dc3545; text-decoration: none;"
-                   onclick="return confirm('Вы уверены, что хотите удалить этот бренд?')">
-                    Удалить
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-card" th:if="${brands != null and !brands.isEmpty()}">
+            <div class="stats-content">
+                <i class="stats-icon bi bi-bar-chart-fill"></i>
+                <div>
+                    <div class="stats-number" th:text="${brands.size()}">0</div>
+                    <h5 class="mb-1 fw-bold">Всього брендів в системі</h5>
+                    <p class="text-muted mb-0">Активних партнерів вашого магазину</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблиця брендів -->
+        <div class="table-container" th:if="${brands != null and !brands.isEmpty()}">
+            <div class="table-header">
+                <i class="table-header-icon bi bi-table"></i>
+                <h4 class="table-header-title">Список брендів</h4>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table custom-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 60px;">
+                            <i class="bi bi-hash me-1"></i>ID
+                        </th>
+                        <th style="width: 100px;">
+                            <i class="bi bi-image me-1"></i>Лого
+                        </th>
+                        <th>
+                            <i class="bi bi-tag me-1"></i>Назва бренду
+                        </th>
+                        <th>
+                            <i class="bi bi-text-paragraph me-1"></i>Опис
+                        </th>
+                        <th style="width: 130px;">
+                            <i class="bi bi-calendar-plus me-1"></i>Створено
+                        </th>
+                        <th style="width: 130px;">
+                            <i class="bi bi-calendar-check me-1"></i>Оновлено
+                        </th>
+                        <th style="width: 160px;">
+                            <i class="bi bi-gear-fill me-1"></i>Дії
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="brand : ${brands}">
+                        <!-- ID -->
+                        <td class="fw-bold text-muted" th:text="${brand.id}"></td>
+
+                        <!-- Зображення -->
+                        <td class="text-center">
+                            <div th:if="${brand.imageUrl != null and !brand.imageUrl.isEmpty()}">
+                                <img th:src="${brand.imageUrl}"
+                                     th:alt="'Логотип ' + ${brand.name}"
+                                     class="brand-image"
+                                     th:title="'Логотип бренду ' + ${brand.name}">
+                            </div>
+                            <div th:if="${brand.imageUrl == null or brand.imageUrl.isEmpty()}"
+                                 class="image-placeholder"
+                                 title="Зображення відсутнє">
+                                <div>
+                                    <i class="bi bi-image"></i><br>
+                                    <small>Немає</small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Назва бренду -->
+                        <td>
+                            <div class="brand-name" th:text="${brand.name}"></div>
+                        </td>
+
+                        <!-- Опис -->
+                        <td style="max-width: 300px;">
+                            <div th:if="${brand.description != null and !brand.description.isEmpty()}"
+                                 class="brand-description"
+                                 th:text="${#strings.length(brand.description) > 100 ? #strings.substring(brand.description, 0, 100) + '...' : brand.description}"
+                                 th:title="${brand.description}">
+                            </div>
+                            <div th:if="${brand.description == null or brand.description.isEmpty()}"
+                                 class="text-muted fst-italic">
+                                <i class="bi bi-dash-circle me-1"></i>Опис відсутній
+                            </div>
+                        </td>
+
+                        <!-- Дата створення -->
+                        <td class="text-center">
+                            <div class="date-info" th:text="${#temporals.format(brand.createdAt, 'dd.MM.yyyy')}"></div>
+                            <small class="text-muted" th:text="${#temporals.format(brand.createdAt, 'HH:mm')}"></small>
+                        </td>
+
+                        <!-- Дата оновлення -->
+                        <td class="text-center">
+                            <div class="date-info" th:text="${#temporals.format(brand.updatedAt, 'dd.MM.yyyy')}"></div>
+                            <small class="text-muted" th:text="${#temporals.format(brand.updatedAt, 'HH:mm')}"></small>
+                        </td>
+
+                        <!-- Дії -->
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="@{'/admin/brand/edit/' + ${brand.id}}"
+                                   class="btn-action btn-edit"
+                                   th:title="'Редагувати бренд ' + ${brand.name}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a th:href="@{'/admin/brand/delete/' + ${brand.id}}"
+                                   class="btn-action btn-delete"
+                                   th:title="'Видалити бренд ' + ${brand.name}"
+                                   onclick="return confirm('Ви впевнені, що хочете видалити цей бренд?')">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Порожній стан -->
+        <div class="empty-state" th:if="${brands == null or brands.isEmpty()}">
+            <div class="empty-icon">
+                <i class="bi bi-tags"></i>
+            </div>
+            <h3 class="empty-title">Бренди не знайдені</h3>
+            <p class="empty-subtitle">
+                Поки що жодного бренду не створено. Додайте перший бренд, щоб розпочати роботу з каталогом товарів.
+            </p>
+            <a th:href="@{/admin/brand}" class="btn btn-custom btn-success-custom">
+                <i class="bi bi-plus-circle-fill me-2"></i>
+                Створити перший бренд
+            </a>
+        </div>
+
+        <!-- Навігація -->
+        <div class="navigation-section">
+            <div class="nav-header">
+                <i class="bi bi-compass-fill" style="font-size: 1.5rem; color: var(--accent-color);"></i>
+                <h5 class="mb-0 fw-bold">Швидка навігація</h5>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a th:href="@{/admin/brand}">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        Створити новий бренд
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/brand/list}">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Оновити список
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/category/list}">
+                        <i class="bi bi-folder-fill"></i>
+                        Управління категоріями
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin}">
+                        <i class="bi bi-house-fill"></i>
+                        Адмін панель
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Відладочна інформація -->
+        <div class="debug-info">
+            <div class="debug-header">
+                <i class="bi bi-bug-fill"></i>
+                <span>Відладочна інформація</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <strong>Кількість брендів в моделі:</strong>
+                        <span th:text="${brands != null ? brands.size() : 'null'}"></span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <strong>Поточний час:</strong>
+                        <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Сообщение когда список пуст -->
-<div th:if="${brands == null or brands.isEmpty()}" style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">
-    <h3>Бренды не найдены</h3>
-    <p>Пока что ни одного бренда не создано.</p>
-    <a th:href="@{/admin/brand}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">
-        Создать первый бренд
-    </a>
-</div>
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Навигация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-    <h3>Навигация:</h3>
-    <ul>
-        <li><a th:href="@{/admin/brand}">Создать новый бренд</a></li>
-        <li><a th:href="@{/admin/brand/list}">Обновить список</a></li>
-    </ul>
-</div>
+<!-- Додатковий JavaScript -->
+<script>
+    // Анімація завантаження
+    document.addEventListener('DOMContentLoaded', function() {
+        // Анімація таблиці
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
 
-<!-- Отладочная информация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px; background-color: #f8f9fa; padding: 10px;">
-    <h4>Отладочная информация:</h4>
-    <p>Количество брендов в модели: <span th:text="${brands != null ? brands.size() : 'null'}"></span></p>
-    <p>Текущее время: <span th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></span></p>
-</div>
+            setTimeout(() => {
+                row.style.transition = 'all 0.5s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateX(0)';
+            }, index * 100);
+        });
+
+        // Збільшення зображень при наведенні
+        const images = document.querySelectorAll('.brand-image');
+        images.forEach(img => {
+            img.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.5)';
+                this.style.zIndex = '1000';
+                this.style.position = 'relative';
+            });
+
+            img.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.zIndex = 'auto';
+            });
+        });
+
+        // Підтвердження видалення з красивим повідомленням
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const brandName = this.closest('tr').querySelector('.brand-name').textContent;
+
+                if (confirm(`Ви впевнені, що хочете видалити бренд "${brandName}"?\n\nЦю дію неможливо скасувати.`)) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+
+        // Анімація статистичної картки
+        const statsNumber = document.querySelector('.stats-number');
+        if (statsNumber) {
+            const finalNumber = parseInt(statsNumber.textContent);
+            let currentNumber = 0;
+            const increment = Math.ceil(finalNumber / 30);
+
+            const counter = setInterval(() => {
+                currentNumber += increment;
+                if (currentNumber >= finalNumber) {
+                    currentNumber = finalNumber;
+                    clearInterval(counter);
+                }
+                statsNumber.textContent = currentNumber;
+            }, 50);
+        }
+    });
+
+    // Функція для швидкого пошуку (майбутня можливість)
+    function quickSearch() {
+        // Можна додати швидкий пошук по назвах брендів
+        console.log('Швидкий пошук активовано');
+    }
+</script>
 </body>
 </html>
