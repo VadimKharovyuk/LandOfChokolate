@@ -28,7 +28,7 @@ public class NavigationControllerAdvice {
      */
     @ModelAttribute("navigationCategories")
     public List<CategoryNavDto> addNavigationCategories() {
-        return categoryService.getNavigationCategories(5);
+        return categoryService.getNavigationCategories(20);
     }
 
 

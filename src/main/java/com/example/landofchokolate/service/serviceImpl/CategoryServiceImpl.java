@@ -356,6 +356,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -600,13 +601,12 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Получает список категорий для отображения в мобильной навигации
      * @param limit максимальное количество категорий
-     * @return список DTO категорий для навигации (никогда не null и не пустой)
+     * @return список DTO категорий для навигации (может быть пустым)
      */
     @Cacheable(
             value = "navigationCategories",
             key = "#limit",
-            cacheManager = "categoryCacheManager",
-            unless = "#result == null or #result.isEmpty()"
+            cacheManager = "categoryCacheManager"
     )
     public List<CategoryNavDto> getNavigationCategories(int limit) {
         try {
@@ -614,18 +614,18 @@ public class CategoryServiceImpl implements CategoryService {
 
             List<Category> categories = categoryRepository.findActiveCategories(limit);
 
-            // Если нет категорий в БД, возвращаем дефолтные
+            // Если нет категорий в БД, возвращаем пустой список
             if (categories == null || categories.isEmpty()) {
-                log.warn("Не найдено активных категорий в базе данных, возвращаем дефолтные");
-                return getDefaultNavigationCategories();
+                log.debug("Не найдено активных категорий в базе данных");
+                return Collections.emptyList();
             }
 
             List<CategoryNavDto> result = categoryMapper.convertToCategoryNavDtoList(categories);
 
-            // Если маппер вернул пустой список, тоже возвращаем дефолтные
+            // Если маппер вернул пустой список или null
             if (result == null || result.isEmpty()) {
-                log.warn("Маппер вернул пустой список, возвращаем дефолтные категории");
-                return getDefaultNavigationCategories();
+                log.debug("Маппер вернул пустой список");
+                return Collections.emptyList();
             }
 
             log.debug("Загружено {} навигационных категорий", result.size());
@@ -633,9 +633,48 @@ public class CategoryServiceImpl implements CategoryService {
 
         } catch (Exception e) {
             log.error("Ошибка при получении категорий для навигации", e);
-            return getDefaultNavigationCategories();
+            return Collections.emptyList();
         }
     }
+//    /**
+//     * Получает список категорий для отображения в мобильной навигации
+//     * @param limit максимальное количество категорий
+//     * @return список DTO категорий для навигации (никогда не null и не пустой)
+//     */
+//    @Cacheable(
+//            value = "navigationCategories",
+//            key = "#limit",
+//            cacheManager = "categoryCacheManager",
+//            unless = "#result == null or #result.isEmpty()"
+//    )
+//    public List<CategoryNavDto> getNavigationCategories(int limit) {
+//        try {
+//            log.debug("Загрузка навигационных категорий из базы данных (limit: {})", limit);
+//
+//            List<Category> categories = categoryRepository.findActiveCategories(limit);
+//
+//            // Если нет категорий в БД, возвращаем дефолтные
+//            if (categories == null || categories.isEmpty()) {
+//                log.warn("Не найдено активных категорий в базе данных, возвращаем дефолтные");
+//                return getDefaultNavigationCategories();
+//            }
+//
+//            List<CategoryNavDto> result = categoryMapper.convertToCategoryNavDtoList(categories);
+//
+//            // Если маппер вернул пустой список, тоже возвращаем дефолтные
+//            if (result == null || result.isEmpty()) {
+//                log.warn("Маппер вернул пустой список, возвращаем дефолтные категории");
+//                return getDefaultNavigationCategories();
+//            }
+//
+//            log.debug("Загружено {} навигационных категорий", result.size());
+//            return result;
+//
+//        } catch (Exception e) {
+//            log.error("Ошибка при получении категорий для навигации", e);
+//            return getDefaultNavigationCategories();
+//        }
+//    }
 
     /**
      * Возвращает дефолтные категории - гарантирует, что навигация всегда работает
