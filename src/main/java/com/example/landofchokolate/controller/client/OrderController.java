@@ -1,6 +1,7 @@
 package com.example.landofchokolate.controller.client;
 
 import com.example.landofchokolate.dto.card.CartDto;
+import com.example.landofchokolate.dto.novaposhta.TrackingInfo;
 import com.example.landofchokolate.dto.order.CreateOrderRequest;
 import com.example.landofchokolate.dto.order.OrderDTO;
 import com.example.landofchokolate.enums.DeliveryMethod;
@@ -31,6 +32,7 @@ import java.util.Map;
 public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
+    private final PoshtaService poshtaService;
 
 
 
@@ -125,8 +127,7 @@ public class OrderController {
                         .body(Map.of("error", "Номер отслеживания не найден"));
             }
 
-            // Здесь можно добавить реальное отслеживание через poshtaService
-            // TrackingInfo trackingInfo = poshtaService.trackDelivery(orderDTO.getTrackingNumber());
+             TrackingInfo trackingInfo = poshtaService.trackDelivery(orderDTO.getTrackingNumber());
 
             return ResponseEntity.ok(Map.of(
                     "trackingNumber", orderDTO.getTrackingNumber(),

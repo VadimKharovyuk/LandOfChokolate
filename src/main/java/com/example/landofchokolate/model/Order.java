@@ -39,6 +39,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private DeliveryMethod deliveryMethod;
 
+
+
     @Column(name = "tracking_number", length = 50)
     private String trackingNumber;
 
@@ -50,6 +52,8 @@ public class Order {
 
     @Column(name = "delivery_status", length = 50)
     private String deliveryStatus;
+
+
 
     private LocalDateTime createdAt;
 

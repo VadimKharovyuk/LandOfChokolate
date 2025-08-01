@@ -84,17 +84,16 @@ public class OrderServiceImpl implements OrderService {
                     log.info("TTN created successfully for order {}: {}", createdOrder.getId(), ttnNumber);
                 } else {
                     log.warn("Failed to create TTN for order {} - empty response from Nova Poshta", createdOrder.getId());
-                    // Можно установить статус или добавить заметку об ошибке
-                    // savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta");
+
+                     savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta");
                 }
 
             } catch (Exception e) {
                 log.error("Error creating Nova Poshta delivery for order {}: {}", createdOrder.getId(), e.getMessage(), e);
 
-                // Не падаем, заказ все равно создается
-                // Можно добавить информацию об ошибке в заказ
-                // savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta: " + e.getMessage());
-                // orderRepository.save(savedOrder);
+//                 Можно добавить информацию об ошибке в заказ
+                 savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta: " + e.getMessage());
+                 orderRepository.save(savedOrder);
             }
         }
 
