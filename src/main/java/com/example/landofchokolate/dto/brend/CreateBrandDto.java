@@ -16,10 +16,16 @@ public class CreateBrandDto {
     private String name;
 
     @NotBlank(message = "Описание не может быть пустым")
-    @Size(min = 10, max = 1000, message = "Описание должно содержать от 10 до 1000 символов")
+    @Size(min = 10, max = 255, message = "Описание должно содержать от 10 до 255 символов")
     private String description;
 
     private String slug;
 
     private MultipartFile image;
+
+    @Size(max = 60, message = "Meta title не должен превышать 60 символов")
+    private String metaTitle;
+
+    @Size(max = 160, message = "Meta description не должно превышать 160 символов")
+    private String metaDescription;
 }

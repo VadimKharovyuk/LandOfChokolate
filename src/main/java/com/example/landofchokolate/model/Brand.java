@@ -21,6 +21,7 @@ public class Brand {
     private Long id;
     private String name;
 
+
     private String description;
 
     private String imageUrl;
@@ -28,6 +29,7 @@ public class Brand {
 
     @Column(unique = true)
     private String slug;
+
 
     // 🆕 SEO поля для брендов
     @Column(name = "meta_title", length = 60)

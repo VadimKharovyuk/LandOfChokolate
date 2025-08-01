@@ -1,101 +1,384 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Создание бренда</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Динамический заголовок &ndash;&gt;-->
+<!--<h1 th:text="${isEdit != null and isEdit} ? 'Редактирование бренда' : 'Создание нового бренда'"></h1>-->
+
+<!--&lt;!&ndash; Flash сообщения &ndash;&gt;-->
+<!--<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">-->
+<!--    <span th:text="${successMessage}"></span>-->
+<!--</div>-->
+
+<!--<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--    <span th:text="${errorMessage}"></span>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Форма создания/редактирования бренда &ndash;&gt;-->
+<!--<form th:action="${isEdit != null and isEdit} ? @{'/admin/brand/edit/' + ${brandId}} : @{/admin/brand}"-->
+<!--      th:object="${brand}" method="post" enctype="multipart/form-data">-->
+
+<!--    &lt;!&ndash; Поле для названия бренда &ndash;&gt;-->
+<!--    <div style="margin: 10px 0;">-->
+<!--        <label for="name">Название бренда:</label><br>-->
+<!--        <input type="text" id="name" th:field="*{name}" style="width: 300px; padding: 5px;">-->
+
+<!--        &lt;!&ndash; Отображение ошибок валидации для name &ndash;&gt;-->
+<!--        <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">-->
+<!--            <ul>-->
+<!--                <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Поле для описания бренда &ndash;&gt;-->
+<!--    <div style="margin: 10px 0;">-->
+<!--        <label for="description">Описание бренда:</label><br>-->
+<!--        <textarea id="description" th:field="*{description}"-->
+<!--                  style="width: 300px; height: 100px; padding: 5px; resize: vertical;"-->
+<!--                  placeholder="Введите описание бренда (от 10 до 1000 символов)"></textarea>-->
+
+<!--        &lt;!&ndash; Отображение ошибок валидации для description &ndash;&gt;-->
+<!--        <div th:if="${#fields.hasErrors('description')}" style="color: red; font-size: 12px;">-->
+<!--            <ul>-->
+<!--                <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Поле для загрузки изображения &ndash;&gt;-->
+<!--    <div style="margin: 10px 0;">-->
+<!--        <label for="image">Изображение бренда:</label><br>-->
+
+<!--        &lt;!&ndash; Отображение текущего изображения при редактировании &ndash;&gt;-->
+<!--        <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" style="margin: 10px 0;">-->
+<!--            <p style="margin: 5px 0; font-weight: bold;">Текущее изображение:</p>-->
+<!--            <img th:src="${currentImageUrl}" alt="Текущее изображение бренда"-->
+<!--                 style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; padding: 5px;">-->
+<!--            <p style="margin: 5px 0; font-size: 12px; color: #666;">-->
+<!--                Загрузите новый файл, чтобы заменить текущее изображение-->
+<!--            </p>-->
+<!--        </div>-->
+
+<!--        <input type="file" id="image" th:field="*{image}"-->
+<!--               accept="image/*"-->
+<!--               style="width: 300px; padding: 5px;">-->
+
+<!--        <div style="font-size: 12px; color: #666; margin-top: 5px;">-->
+<!--            Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5MB-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Отображение ошибок валидации для image &ndash;&gt;-->
+<!--        <div th:if="${#fields.hasErrors('image')}" style="color: red; font-size: 12px;">-->
+<!--            <ul>-->
+<!--                <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div style="margin: 20px 0;">-->
+<!--        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">-->
+<!--            <span th:text="${isEdit != null and isEdit} ? 'Обновить бренд' : 'Создать бренд'"></span>-->
+<!--        </button>-->
+<!--        <a th:href="@{/admin/brand/list}" style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">-->
+<!--            Отмена-->
+<!--        </a>-->
+<!--    </div>-->
+<!--</form>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">-->
+<!--    <h3>Навигация:</h3>-->
+<!--    <ul>-->
+<!--        <li><a th:href="@{/admin/brand}">Создать новый бренд</a></li>-->
+<!--        <li><a th:href="@{/admin/brand/list}">Список всех брендов</a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Создание бренда</title>
+    <title>Створення бренду</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-<!-- Динамический заголовок -->
-<h1 th:text="${isEdit != null and isEdit} ? 'Редактирование бренда' : 'Создание нового бренда'"></h1>
+<body class="bg-light">
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="card-title mb-0">
+                        <i class="bi bi-tag me-2"></i>
+                        <span th:text="${isEdit != null and isEdit} ? 'Редагування бренду' : 'Створення нового бренду'"></span>
+                    </h1>
+                </div>
 
-<!-- Flash сообщения -->
-<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">
-    <span th:text="${successMessage}"></span>
+                <div class="card-body">
+                    <!-- Flash повідомлення -->
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span th:text="${successMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Форма створення/редагування бренду -->
+                    <form th:action="${isEdit != null and isEdit} ? @{'/admin/brand/edit/' + ${brandId}} : @{/admin/brand}"
+                          th:object="${brand}" method="post" enctype="multipart/form-data">
+
+                        <!-- Основна інформація -->
+                        <div class="mb-4">
+                            <h5 class="text-primary border-bottom pb-2">
+                                <i class="bi bi-info-circle me-2"></i>Основна інформація
+                            </h5>
+                        </div>
+
+                        <!-- Назва бренду -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-bold">
+                                <i class="bi bi-tag me-1"></i>Назва бренду <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                   id="name"
+                                   th:field="*{name}"
+                                   placeholder="Введіть назву бренду (2-100 символів)">
+
+                            <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Опис бренду -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">
+                                <i class="bi bi-text-paragraph me-1"></i>Опис бренду <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control"
+                                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                                      id="description"
+                                      th:field="*{description}"
+                                      rows="4"
+                                      placeholder="Введіть опис бренду (10-1000 символів)"></textarea>
+
+                            <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback">
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Зображення -->
+                        <div class="mb-4">
+                            <label for="image" class="form-label fw-bold">
+                                <i class="bi bi-image me-1"></i>Зображення бренду
+                            </label>
+
+                            <!-- Поточне зображення при редагуванні -->
+                            <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" class="mb-3">
+                                <div class="card">
+                                    <div class="card-body p-3">
+                                        <p class="card-text fw-bold mb-2">Поточне зображення:</p>
+                                        <img th:src="${currentImageUrl}"
+                                             alt="Поточне зображення бренду"
+                                             class="img-thumbnail"
+                                             style="max-width: 200px; max-height: 150px;">
+                                        <p class="text-muted small mt-2 mb-0">
+                                            Завантажте новий файл, щоб замінити поточне зображення
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="file"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('image')} ? 'is-invalid' : ''"
+                                   id="image"
+                                   th:field="*{image}"
+                                   accept="image/*">
+
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Підтримувані формати: JPG, PNG, GIF. Максимальний розмір: 5MB
+                            </div>
+
+                            <div th:if="${#fields.hasErrors('image')}" class="invalid-feedback">
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- SEO розділ -->
+                        <div class="mb-4">
+                            <h5 class="text-success border-bottom pb-2">
+                                <i class="bi bi-search me-2"></i>SEO налаштування
+                            </h5>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-lightbulb me-1"></i>
+                                Ці поля допомагають пошуковим системам краще розуміти ваш бренд
+                            </p>
+                        </div>
+
+                        <!-- Meta Title -->
+                        <div class="mb-3">
+                            <label for="metaTitle" class="form-label fw-bold">
+                                <i class="bi bi-card-heading me-1"></i>Meta заголовок
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('metaTitle')} ? 'is-invalid' : ''"
+                                   id="metaTitle"
+                                   th:field="*{metaTitle}"
+                                   placeholder="Введіть SEO заголовок (до 60 символів)"
+                                   maxlength="60">
+
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Рекомендована довжина: 50-60 символів. Це заголовок, що відображається в результатах пошуку
+                            </div>
+
+                            <div th:if="${#fields.hasErrors('metaTitle')}" class="invalid-feedback">
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="error : ${#fields.errors('metaTitle')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Meta Description -->
+                        <div class="mb-4">
+                            <label for="metaDescription" class="form-label fw-bold">
+                                <i class="bi bi-card-text me-1"></i>Meta опис
+                            </label>
+                            <textarea class="form-control"
+                                      th:classappend="${#fields.hasErrors('metaDescription')} ? 'is-invalid' : ''"
+                                      id="metaDescription"
+                                      th:field="*{metaDescription}"
+                                      rows="3"
+                                      placeholder="Введіть SEO опис (до 160 символів)"
+                                      maxlength="160"></textarea>
+
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Рекомендована довжина: 150-160 символів. Це опис, що відображається в результатах пошуку
+                            </div>
+
+                            <div th:if="${#fields.hasErrors('metaDescription')}" class="invalid-feedback">
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="error : ${#fields.errors('metaDescription')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Кнопки -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/admin/brand/list}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left me-1"></i>Скасувати
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>
+                                <span th:text="${isEdit != null and isEdit} ? 'Оновити бренд' : 'Створити бренд'"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Навігація -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-compass me-2"></i>Навігація
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a th:href="@{/admin/brand}" class="btn btn-outline-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Створити новий бренд
+                        </a>
+                        <a th:href="@{/admin/brand/list}" class="btn btn-outline-info">
+                            <i class="bi bi-list me-1"></i>Список всіх брендів
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-    <span th:text="${errorMessage}"></span>
-</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Форма создания/редактирования бренда -->
-<form th:action="${isEdit != null and isEdit} ? @{'/admin/brand/edit/' + ${brandId}} : @{/admin/brand}"
-      th:object="${brand}" method="post" enctype="multipart/form-data">
+<!-- Додатковий скрипт для підрахунку символів -->
+<script>
+    // Функція для підрахунку символів
+    function setupCharacterCounter(inputId, counterId, maxLength) {
+        const input = document.getElementById(inputId);
+        const counter = document.getElementById(counterId);
 
-    <!-- Поле для названия бренда -->
-    <div style="margin: 10px 0;">
-        <label for="name">Название бренда:</label><br>
-        <input type="text" id="name" th:field="*{name}" style="width: 300px; padding: 5px;">
+        if (input && counter) {
+            function updateCounter() {
+                const currentLength = input.value.length;
+                counter.textContent = `${currentLength}/${maxLength}`;
 
-        <!-- Отображение ошибок валидации для name -->
-        <div th:if="${#fields.hasErrors('name')}" style="color: red; font-size: 12px;">
-            <ul>
-                <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
-            </ul>
-        </div>
-    </div>
+                if (currentLength > maxLength * 0.9) {
+                    counter.classList.add('text-warning');
+                } else {
+                    counter.classList.remove('text-warning');
+                }
 
-    <!-- Поле для описания бренда -->
-    <div style="margin: 10px 0;">
-        <label for="description">Описание бренда:</label><br>
-        <textarea id="description" th:field="*{description}"
-                  style="width: 300px; height: 100px; padding: 5px; resize: vertical;"
-                  placeholder="Введите описание бренда (от 10 до 1000 символов)"></textarea>
+                if (currentLength >= maxLength) {
+                    counter.classList.add('text-danger');
+                    counter.classList.remove('text-warning');
+                }
+            }
 
-        <!-- Отображение ошибок валидации для description -->
-        <div th:if="${#fields.hasErrors('description')}" style="color: red; font-size: 12px;">
-            <ul>
-                <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>
-            </ul>
-        </div>
-    </div>
+            input.addEventListener('input', updateCounter);
+            updateCounter(); // Ініціальний підрахунок
+        }
+    }
 
-    <!-- Поле для загрузки изображения -->
-    <div style="margin: 10px 0;">
-        <label for="image">Изображение бренда:</label><br>
+    // Ініціалізація після завантаження DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        // Додаємо лічильники символів для SEO полів
+        const metaTitleInput = document.getElementById('metaTitle');
+        const metaDescInput = document.getElementById('metaDescription');
 
-        <!-- Отображение текущего изображения при редактировании -->
-        <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" style="margin: 10px 0;">
-            <p style="margin: 5px 0; font-weight: bold;">Текущее изображение:</p>
-            <img th:src="${currentImageUrl}" alt="Текущее изображение бренда"
-                 style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; padding: 5px;">
-            <p style="margin: 5px 0; font-size: 12px; color: #666;">
-                Загрузите новый файл, чтобы заменить текущее изображение
-            </p>
-        </div>
+        if (metaTitleInput) {
+            const titleHelp = metaTitleInput.closest('.mb-3').querySelector('.form-text');
+            const titleCounter = document.createElement('span');
+            titleCounter.id = 'metaTitleCounter';
+            titleCounter.className = 'float-end small';
+            titleHelp.appendChild(titleCounter);
+            setupCharacterCounter('metaTitle', 'metaTitleCounter', 60);
+        }
 
-        <input type="file" id="image" th:field="*{image}"
-               accept="image/*"
-               style="width: 300px; padding: 5px;">
-
-        <div style="font-size: 12px; color: #666; margin-top: 5px;">
-            Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер: 5MB
-        </div>
-
-        <!-- Отображение ошибок валидации для image -->
-        <div th:if="${#fields.hasErrors('image')}" style="color: red; font-size: 12px;">
-            <ul>
-                <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>
-            </ul>
-        </div>
-    </div>
-
-    <div style="margin: 20px 0;">
-        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;">
-            <span th:text="${isEdit != null and isEdit} ? 'Обновить бренд' : 'Создать бренд'"></span>
-        </button>
-        <a th:href="@{/admin/brand/list}" style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">
-            Отмена
-        </a>
-    </div>
-</form>
-
-<!-- Навигация -->
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-    <h3>Навигация:</h3>
-    <ul>
-        <li><a th:href="@{/admin/brand}">Создать новый бренд</a></li>
-        <li><a th:href="@{/admin/brand/list}">Список всех брендов</a></li>
-    </ul>
-</div>
+        if (metaDescInput) {
+            const descHelp = metaDescInput.closest('.mb-4').querySelector('.form-text');
+            const descCounter = document.createElement('span');
+            descCounter.id = 'metaDescCounter';
+            descCounter.className = 'float-end small';
+            descHelp.appendChild(descCounter);
+            setupCharacterCounter('metaDescription', 'metaDescCounter', 160);
+        }
+    });
+</script>
 </body>
 </html>

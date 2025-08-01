@@ -1,5 +1,6 @@
 package com.example.landofchokolate.dto.brend;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,9 @@ public class BrandResponseDto {
     private String imageUrl;
     private String slug ;
 
+    // 🆕 SEO поля для брендов
+    private String metaTitle;
+    private String metaDescription;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

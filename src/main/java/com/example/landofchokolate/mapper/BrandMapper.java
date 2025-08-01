@@ -22,6 +22,9 @@ public class BrandMapper {
         brand.setDescription(createBrandDto.getDescription());
         brand.setSlug(createBrandDto.getSlug());
 
+        brand.setMetaDescription(createBrandDto.getMetaDescription());
+        brand.setMetaTitle(createBrandDto.getMetaTitle());
+
         return brand;
     }
 
@@ -33,6 +36,9 @@ public class BrandMapper {
 
         existingBrand.setName(dto.getName());
         existingBrand.setDescription(dto.getDescription());
+
+        existingBrand.setMetaDescription(dto.getMetaDescription());
+        existingBrand.setMetaTitle(dto.getMetaTitle());
 
     }
 
@@ -47,6 +53,9 @@ public class BrandMapper {
         dto.setDescription(brand.getDescription());
         dto.setImageUrl(brand.getImageUrl());
         dto.setSlug(brand.getSlug());
+
+        dto.setMetaDescription(brand.getMetaDescription());
+        dto.setMetaTitle(brand.getMetaTitle());
 
 
         dto.setCreatedAt(brand.getCreatedAt());
