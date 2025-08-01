@@ -440,7 +440,6 @@ public class NovaPoshtaService implements PoshtaService {
             return null;
         }
     }
-
     private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
         Map<String, Object> properties = new HashMap<>();
 
@@ -454,10 +453,12 @@ public class NovaPoshtaService implements PoshtaService {
         properties.put("Description", "Заказ шоколада #" + order.getId());
         properties.put("Cost", order.getTotalAmount().toString());
 
-        properties.put("CitySender", "8d5a980d-391c-11dd-90d9-001a92567626");
-        properties.put("SenderAddress", "1ec09d88-e1c2-11e3-8c4a-0050568002cf");
-        properties.put("ContactSender", "");
-        properties.put("SendersPhone", "+380000000000");
+        // Получаем из конфигурации
+        properties.put("CitySender", config.getCitySender());           // Ref города отправителя — откуда посылка уходит (например, Киев)
+        properties.put("SenderAddress", config.getSenderAddress());     // Ref склада или отделения отправителя в этом городе
+        properties.put("Sender", config.getSenderRef());                // Ref отправителя (юридического лица или физлица, зарегистрированного в Новой Почте)
+        properties.put("ContactSender", config.getContactSenderRef());  // Ref контактного лица отправителя (человека, который будет заниматься отправкой)
+        properties.put("SendersPhone", "+380000000000");                // Телефон отправителя для связи (можно использовать корпоративный номер)
 
         properties.put("CityRecipient", "");
         properties.put("RecipientAddress", "");
@@ -474,6 +475,76 @@ public class NovaPoshtaService implements PoshtaService {
 
         return properties;
     }
+
+//    private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
+//        Map<String, Object> properties = new HashMap<>();
+//
+//        properties.put("PayerType", "Sender");
+//        properties.put("PaymentMethod", "NonCash");
+//        properties.put("DateTime", "");
+//        properties.put("CargoType", "Cargo");
+//        properties.put("Weight", "1");
+//        properties.put("ServiceType", "WarehouseWarehouse");
+//        properties.put("SeatsAmount", "1");
+//        properties.put("Description", "Заказ шоколада #" + order.getId());
+//        properties.put("Cost", order.getTotalAmount().toString());
+//
+//        // Заглушки — использовать реальные данные в продакшене!
+//        properties.put("CitySender", "8d5a980d-391c-11dd-90d9-001a92567626"); // Киев
+//        properties.put("SenderAddress", "1ec09d88-e1c2-11e3-8c4a-0050568002cf"); // Адрес склада в Киеве
+//        properties.put("Sender", "00000000-0000-0000-0000-000000000001"); // Заглушка SenderRef
+//        properties.put("ContactSender", "00000000-0000-0000-0000-000000000002"); // Заглушка ContactSenderRef
+//        properties.put("SendersPhone", "+380000000000");
+//
+//        properties.put("CityRecipient", "");
+//        properties.put("RecipientAddress", "");
+//        properties.put("ContactRecipient", "");
+//        properties.put("RecipientsPhone", order.getPhoneNumber());
+//
+//        properties.put("NewAddress", "1");
+//        properties.put("RecipientCityName", "");
+//        properties.put("RecipientArea", "");
+//        properties.put("RecipientAreaRegions", "");
+//        properties.put("RecipientHouse", "");
+//        properties.put("RecipientFlat", "");
+//        properties.put("RecipientName", order.getCustomerName());
+//
+//        return properties;
+//    }
+//
+//    private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
+//        Map<String, Object> properties = new HashMap<>();
+//
+//        properties.put("PayerType", "Sender");
+//        properties.put("PaymentMethod", "NonCash");
+//        properties.put("DateTime", "");
+//        properties.put("CargoType", "Cargo");
+//        properties.put("Weight", "1");
+//        properties.put("ServiceType", "WarehouseWarehouse");
+//        properties.put("SeatsAmount", "1");
+//        properties.put("Description", "Заказ шоколада #" + order.getId());
+//        properties.put("Cost", order.getTotalAmount().toString());
+//
+//        properties.put("CitySender", "8d5a980d-391c-11dd-90d9-001a92567626");
+//        properties.put("SenderAddress", "1ec09d88-e1c2-11e3-8c4a-0050568002cf");
+//        properties.put("ContactSender", "");
+//        properties.put("SendersPhone", "+380000000000");
+//
+//        properties.put("CityRecipient", "");
+//        properties.put("RecipientAddress", "");
+//        properties.put("ContactRecipient", "");
+//        properties.put("RecipientsPhone", order.getPhoneNumber());
+//
+//        properties.put("NewAddress", "1");
+//        properties.put("RecipientCityName", "");
+//        properties.put("RecipientArea", "");
+//        properties.put("RecipientAreaRegions", "");
+//        properties.put("RecipientHouse", "");
+//        properties.put("RecipientFlat", "");
+//        properties.put("RecipientName", order.getCustomerName());
+//
+//        return properties;
+//    }
 
     private <T> NovaPoshtaResponse<T> sendRequest(NovaPoshtaRequest request,
                                                   ParameterizedTypeReference<NovaPoshtaResponse<T>> responseType) {

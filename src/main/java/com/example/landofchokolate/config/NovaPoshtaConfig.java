@@ -18,15 +18,30 @@ public class NovaPoshtaConfig {
     @Value("${novaposhta.api.url:https://api.novaposhta.ua/v2.0/json/}")
     private String apiUrl;
 
+    @Value("${novaposhta.sender-ref:}")
+    private String senderRef;
+
+    @Value("${novaposhta.contact-sender-ref:}")
+    private String contactSenderRef;
+
+    @Value("${novaposhta.city-sender:}")
+    private String citySender;
+
+    @Value("${novaposhta.sender-address:}")
+    private String senderAddress;
+
     @PostConstruct
     public void validateConfiguration() {
         if (apiKey == null || apiKey.trim().isEmpty()) {
-            throw new IllegalStateException("Nova Poshta API key is required! Set NOVAPOSHTA_API_KEY environment variable or novaposhta.api.key property");
+            throw new IllegalStateException("Потрібен API ключ Нова Пошта! Встановіть змінну оточення NOVAPOSHTA_API_KEY або властивість novaposhta.api.key");
         }
-        log.info("Nova Poshta configuration loaded:");
-        log.info("- API URL: {}", apiUrl);
-        log.info("- API key: {}...", apiKey.substring(0, Math.min(6, apiKey.length())) + "****");
+        log.info("Конфігурація Нова Пошта завантажена:");
+        log.info("- URL API: {}", apiUrl);
+        log.info("- API ключ: {}...", apiKey.substring(0, Math.min(6, apiKey.length())) + "****");
+        log.info("- Sender Ref: {}", senderRef != null && !senderRef.isEmpty() ? senderRef : "<не встановлено>");
+        log.info("- Contact Sender Ref: {}", contactSenderRef != null && !contactSenderRef.isEmpty() ? contactSenderRef : "<не встановлено>");
+        log.info("- City Sender Ref: {}", citySender != null && !citySender.isEmpty() ? citySender : "<не встановлено>");
+        log.info("- Sender Address Ref: {}", senderAddress != null && !senderAddress.isEmpty() ? senderAddress : "<не встановлено>");
     }
-
 }
 
