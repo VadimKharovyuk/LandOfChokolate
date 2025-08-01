@@ -6,11 +6,14 @@ import com.example.landofchokolate.dto.order.OrderDTO;
 import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.service.PoshtaService;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -22,25 +25,112 @@ import java.util.*;
 @RequiredArgsConstructor
 public class NovaPoshtaService implements PoshtaService {
 
+
     private final NovaPoshtaConfig config;
     private final RestTemplate restTemplate;
 
-    // ============================================================================
-// ОБНОВИТЕ NovaPoshtaService - метод getCities()
-// ============================================================================
+    // ✅ КЭШ для городов
+    private List<City> cachedCities = new ArrayList<>();
+    private boolean isLoadingCities = false;
+    private boolean citiesLoaded = false;
+
+    @PostConstruct
+    @Async
+    public void preloadCitiesAsync() {
+        log.info("Starting async preload of all Nova Poshta cities...");
+        loadAllCitiesInternal();
+    }
 
     @Override
     public List<City> getCities() {
-        log.info("Fetching ALL cities from Nova Poshta API with pagination");
+        log.info("Getting cities - cached: {}, loading: {}", citiesLoaded, isLoadingCities);
 
-        List<City> allCities = new ArrayList<>();
-        int page = 1;
-        int limit = 150; // Максимум записей за запрос
-        boolean hasMoreData = true;
+        // Если кэш готов - возвращаем его
+        if (citiesLoaded && !cachedCities.isEmpty()) {
+            log.info("Returning {} cached cities", cachedCities.size());
+            return cachedCities;
+        }
+
+        // Если загружаем в фоне - возвращаем первую страницу для быстрого старта
+        if (isLoadingCities && !cachedCities.isEmpty()) {
+            log.info("Background loading in progress, returning {} partial cities", cachedCities.size());
+            return cachedCities;
+        }
+
+        // Иначе загружаем только первую страницу для быстрого ответа
+        return loadFirstPageQuickly();
+    }
+    /**
+     * ✅ БЫСТРАЯ ЗАГРУЗКА: Только первая страница (150 городов)
+     */
+    private List<City> loadFirstPageQuickly() {
+        log.info("Loading first page of cities quickly...");
 
         try {
-            while (hasMoreData) {
-                log.info("Loading cities page {} with limit {}", page, limit);
+            Map<String, Object> methodProperties = new HashMap<>();
+            methodProperties.put("Page", "1");
+            methodProperties.put("Limit", "150");
+
+            NovaPoshtaRequest request = new NovaPoshtaRequest(
+                    config.getApiKey(),
+                    "Address",
+                    "getCities",
+                    methodProperties
+            );
+
+            String responseBody = makeDirectHttpRequest(request);
+
+            if (responseBody != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+                NovaPoshtaResponse<City> response = mapper.readValue(responseBody,
+                        new TypeReference<NovaPoshtaResponse<City>>() {});
+
+                if (response.isSuccess() && response.getData() != null) {
+                    List<City> cities = response.getData();
+                    log.info("✅ Quickly loaded {} cities from first page", cities.size());
+
+                    // Если фоновая загрузка не запущена - запускаем
+                    if (!isLoadingCities) {
+                        startBackgroundLoading();
+                    }
+
+                    return cities;
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error loading first page of cities", e);
+        }
+
+        return Collections.emptyList();
+    }
+    /**
+     * ✅ ФОНОВАЯ ЗАГРУЗКА: Все города в отдельном потоке
+     */
+    @Async
+    public void startBackgroundLoading() {
+        if (isLoadingCities || citiesLoaded) {
+            return;
+        }
+
+        log.info("Starting background loading of all cities...");
+        loadAllCitiesInternal();
+    }
+    /**
+     * ✅ ВНУТРЕННИЙ МЕТОД: Загрузка всех городов
+     */
+    private void loadAllCitiesInternal() {
+        isLoadingCities = true;
+        List<City> allCities = new ArrayList<>();
+
+        try {
+            int page = 1;
+            int limit = 200; // Увеличиваем лимит для меньшего количества запросов
+            boolean hasMoreData = true;
+
+            while (hasMoreData && page <= 70) { // Ограничиваем максимум страниц
+                log.debug("Loading cities page {} with limit {}", page, limit);
 
                 Map<String, Object> methodProperties = new HashMap<>();
                 methodProperties.put("Page", String.valueOf(page));
@@ -55,62 +145,136 @@ public class NovaPoshtaService implements PoshtaService {
 
                 String responseBody = makeDirectHttpRequest(request);
 
-                if (responseBody != null && !responseBody.trim().isEmpty()) {
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                if (responseBody != null) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-                        NovaPoshtaResponse<City> response = mapper.readValue(responseBody,
-                                new TypeReference<NovaPoshtaResponse<City>>() {});
+                    NovaPoshtaResponse<City> response = mapper.readValue(responseBody,
+                            new TypeReference<NovaPoshtaResponse<City>>() {});
 
-                        if (response.isSuccess() && response.getData() != null) {
-                            List<City> pageCities = response.getData();
-                            allCities.addAll(pageCities);
+                    if (response.isSuccess() && response.getData() != null) {
+                        List<City> pageCities = response.getData();
+                        allCities.addAll(pageCities);
 
-                            log.info("Page {}: loaded {} cities, total so far: {}",
-                                    page, pageCities.size(), allCities.size());
+                        // Обновляем кэш по ходу загрузки
+                        cachedCities = new ArrayList<>(allCities);
 
-                            // ✅ УСЛОВИЕ ОСТАНОВКИ: если получили меньше чем limit, значит это последняя страница
-                            if (pageCities.size() < limit) {
-                                hasMoreData = false;
-                                log.info("Received {} cities (less than limit {}), stopping pagination",
-                                        pageCities.size(), limit);
-                            } else {
-                                page++;
+                        log.info("Background loading: page {}, loaded {} cities, total: {}",
+                                page, pageCities.size(), allCities.size());
 
-                                // ✅ ЗАЩИТА от бесконечного цикла
-                                if (page > 100) {
-                                    log.warn("Reached maximum pages (100), stopping to prevent infinite loop");
-                                    hasMoreData = false;
-                                }
-
-                                // ✅ НЕБОЛЬШАЯ ЗАДЕРЖКА чтобы не перегружать API
-                                Thread.sleep(100);
-                            }
-                        } else {
-                            log.error("Page {}: Nova Poshta returned success=false. Errors: {}",
-                                    page, response.getErrors());
+                        if (pageCities.size() < limit) {
                             hasMoreData = false;
+                        } else {
+                            page++;
                         }
 
-                    } catch (Exception parseException) {
-                        log.error("Failed to parse cities response for page {}: {}", page, parseException.getMessage());
+                        // Небольшая пауза чтобы не перегружать API
+                        Thread.sleep(50);
+                    } else {
+                        log.warn("Page {} returned success=false", page);
                         hasMoreData = false;
                     }
                 } else {
-                    log.error("Empty response from Nova Poshta API for page {}", page);
+                    log.warn("Empty response for page {}", page);
                     hasMoreData = false;
                 }
             }
 
-            log.info("✅ Successfully loaded {} cities from {} pages", allCities.size(), page - 1);
-            return allCities;
+            cachedCities = allCities;
+            citiesLoaded = true;
+
+            log.info("✅ Background loading completed: {} cities total", allCities.size());
 
         } catch (Exception e) {
-            log.error("Error fetching cities from Nova Poshta API", e);
-            return allCities; // Возвращаем то что успели загрузить
+            log.error("Error during background cities loading", e);
+        } finally {
+            isLoadingCities = false;
         }
     }
+
+
+//    @Override
+//    public List<City> getCities() {
+//        log.info("Fetching ALL cities from Nova Poshta API with pagination");
+//
+//        List<City> allCities = new ArrayList<>();
+//        int page = 1;
+//        int limit = 150; // Максимум записей за запрос
+//        boolean hasMoreData = true;
+//
+//        try {
+//            while (hasMoreData) {
+//                log.info("Loading cities page {} with limit {}", page, limit);
+//
+//                Map<String, Object> methodProperties = new HashMap<>();
+//                methodProperties.put("Page", String.valueOf(page));
+//                methodProperties.put("Limit", String.valueOf(limit));
+//
+//                NovaPoshtaRequest request = new NovaPoshtaRequest(
+//                        config.getApiKey(),
+//                        "Address",
+//                        "getCities",
+//                        methodProperties
+//                );
+//
+//                String responseBody = makeDirectHttpRequest(request);
+//
+//                if (responseBody != null && !responseBody.trim().isEmpty()) {
+//                    try {
+//                        ObjectMapper mapper = new ObjectMapper();
+//                        mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//
+//                        NovaPoshtaResponse<City> response = mapper.readValue(responseBody,
+//                                new TypeReference<NovaPoshtaResponse<City>>() {});
+//
+//                        if (response.isSuccess() && response.getData() != null) {
+//                            List<City> pageCities = response.getData();
+//                            allCities.addAll(pageCities);
+//
+//                            log.info("Page {}: loaded {} cities, total so far: {}",
+//                                    page, pageCities.size(), allCities.size());
+//
+//                            // ✅ УСЛОВИЕ ОСТАНОВКИ: если получили меньше чем limit, значит это последняя страница
+//                            if (pageCities.size() < limit) {
+//                                hasMoreData = false;
+//                                log.info("Received {} cities (less than limit {}), stopping pagination",
+//                                        pageCities.size(), limit);
+//                            } else {
+//                                page++;
+//
+//                                // ✅ ЗАЩИТА от бесконечного цикла
+//                                if (page > 100) {
+//                                    log.warn("Reached maximum pages (100), stopping to prevent infinite loop");
+//                                    hasMoreData = false;
+//                                }
+//
+//                                // ✅ НЕБОЛЬШАЯ ЗАДЕРЖКА чтобы не перегружать API
+//                                Thread.sleep(100);
+//                            }
+//                        } else {
+//                            log.error("Page {}: Nova Poshta returned success=false. Errors: {}",
+//                                    page, response.getErrors());
+//                            hasMoreData = false;
+//                        }
+//
+//                    } catch (Exception parseException) {
+//                        log.error("Failed to parse cities response for page {}: {}", page, parseException.getMessage());
+//                        hasMoreData = false;
+//                    }
+//                } else {
+//                    log.error("Empty response from Nova Poshta API for page {}", page);
+//                    hasMoreData = false;
+//                }
+//            }
+//
+//            log.info("✅ Successfully loaded {} cities from {} pages", allCities.size(), page - 1);
+//            return allCities;
+//
+//        } catch (Exception e) {
+//            log.error("Error fetching cities from Nova Poshta API", e);
+//            return allCities; // Возвращаем то что успели загрузить
+//        }
+//    }
 
     // ✅ Добавьте этот вспомогательный метод (если еще не добавили):
     private String makeDirectHttpRequest(NovaPoshtaRequest request) {
