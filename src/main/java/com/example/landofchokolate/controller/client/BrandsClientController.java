@@ -56,6 +56,7 @@ public class BrandsClientController {
             pageable = PageRequest.of(pageable.getPageNumber(), DEFAULT_PAGE_SIZE_PRODUCT, pageable.getSort());
         }
 
+
         // Получаем информацию о бренде
         BrandClientDto brand = brandService.getBrandBySlug(slug);
         model.addAttribute("brand", brand);

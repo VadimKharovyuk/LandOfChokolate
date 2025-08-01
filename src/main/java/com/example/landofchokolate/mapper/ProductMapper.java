@@ -1,5 +1,6 @@
 package com.example.landofchokolate.mapper;
 
+import com.example.landofchokolate.dto.brend.ProductBrandClientDto;
 import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.model.Category;
@@ -263,5 +264,54 @@ public class ProductMapper {
 
 
         return dto;
+    }
+
+
+
+    /**
+     * Конвертація Product в DTO для відображення в контексті бренду
+     */
+    public ProductBrandClientDto toProductBrandClientDto(Product product) {
+        if (product == null) {
+            return null;
+        }
+
+        ProductBrandClientDto dto = new ProductBrandClientDto();
+
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setImageUrl(product.getImageUrl());
+        dto.setSlug(product.getSlug());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setIsActive(product.getIsActive());
+
+        // Встановлюємо назву категорії
+        dto.setCategoryName(product.getCategory() != null ?
+                product.getCategory().getName() : null);
+
+        // Обчислюємо статус наявності
+        dto.setInStock(product.getStockQuantity() != null &&
+                product.getStockQuantity() > 0);
+
+        // Обчислюємо статус низького залишку
+        dto.setLowStock(product.getStockQuantity() != null &&
+                product.getStockQuantity() < 10 &&
+                product.getStockQuantity() > 0);
+
+        return dto;
+    }
+
+    /**
+     * Конвертація списку Product в список DTO для бренду
+     */
+    public List<ProductBrandClientDto> toProductBrandClientDtoList(List<Product> products) {
+        if (products == null || products.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return products.stream()
+                .map(this::toProductBrandClientDto)
+                .collect(Collectors.toList());
     }
 }

@@ -14,6 +14,7 @@ public class BrandClientDto {
     private String imageUrl;
     private String slug;
 
+
     private String metaTitle;
     private String metaDescription;
 }
