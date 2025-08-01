@@ -18,7 +18,6 @@
           rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
-    <!--  <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
@@ -744,14 +743,23 @@
                                 Детальніше
                             </a>
 
-                            <button class="btn-add-to-cart"
+<!--                            <button class="btn-add-to-cart"-->
+<!--                                    th:disabled="${product.stockQuantity == 0}"-->
+<!--                                    th:data-product-id="${product.id}"-->
+<!--                                    data-cart-action="add">-->
+<!--                                <i class="fas fa-shopping-cart"></i>-->
+<!--                                <span th:text="${product.stockQuantity > 0} ? 'До кошика' : 'Немає в наявності'">-->
+<!--                        До кошика-->
+<!--                    </span>-->
+<!--                            </button>-->
+                            <button class="btn-add-to-cart add-to-cart-btn"
                                     th:disabled="${product.stockQuantity == 0}"
                                     th:data-product-id="${product.id}"
                                     data-cart-action="add">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span th:text="${product.stockQuantity > 0} ? 'До кошика' : 'Немає в наявності'">
-                        До кошика
-                    </span>
+        До кошика
+    </span>
                             </button>
                         </div>
                     </div>
@@ -760,6 +768,7 @@
 
 
         </section>
+        <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
 
 
         <!-- Пустое состояние -->
