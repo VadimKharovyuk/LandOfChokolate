@@ -638,22 +638,17 @@
                                 </small>
                             </div>
 
-                            <!-- Спосіб отримання -->
+
+
+                            <!-- Спосіб отримання - ОБНОВЛЕННЫЙ БЛОК -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-truck"></i>
                                     Спосіб отримання *
                                 </label>
-                                <div class="delivery-options">
-<!--                                    <div class="delivery-option" onclick="selectDelivery('DELIVERY')">-->
-<!--                                        <i class="fas fa-truck delivery-icon delivery"></i>-->
-<!--                                        <h6 class="delivery-title">Доставка</h6>-->
-<!--                                        <input type="radio"-->
-<!--                                               th:field="*{deliveryMethod}"-->
-<!--                                               value="DELIVERY"-->
-<!--                                               class="d-none">-->
-<!--                                    </div>-->
-                                    <div class="delivery-option" onclick="selectDelivery('PICKUP')">
+                                <div class="delivery-options" style="grid-template-columns: 1fr 1fr 1fr;">
+                                    <!-- Самовывоз -->
+                                    <div class="delivery-option" onclick="selectDelivery('PICKUP')" id="pickup-option">
                                         <i class="fas fa-store delivery-icon pickup"></i>
                                         <h6 class="delivery-title">Самовивіз</h6>
                                         <input type="radio"
@@ -661,11 +656,160 @@
                                                value="PICKUP"
                                                class="d-none">
                                     </div>
+
+                                    <!-- Обычная доставка (если нужна) -->
+                                    <div class="delivery-option" onclick="selectDelivery('DELIVERY')" id="delivery-option">
+                                        <i class="fas fa-truck delivery-icon delivery"></i>
+                                        <h6 class="delivery-title">Доставка</h6>
+                                        <input type="radio"
+                                               th:field="*{deliveryMethod}"
+                                               value="DELIVERY"
+                                               class="d-none">
+                                    </div>
+
+                                    <!-- Nova Poshta -->
+                                    <div class="delivery-option" onclick="selectDelivery('NOVA_POSHTA')" id="novaposhta-option">
+                                        <i class="fas fa-shipping-fast delivery-icon" style="color: #E53E3E;"></i>
+                                        <h6 class="delivery-title">Нова Пошта</h6>
+                                        <input type="radio"
+                                               th:field="*{deliveryMethod}"
+                                               value="NOVA_POSHTA"
+                                               class="d-none">
+                                    </div>
                                 </div>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('deliveryMethod')}" th:errors="*{deliveryMethod}">
                                     Оберіть спосіб отримання замовлення
                                 </div>
                             </div>
+
+                            <!-- Nova Poshta поля (показываются только при выборе Nova Poshta) -->
+                            <div id="novaPoshtaFields" class="nova-poshta-fields" style="display: none;">
+                                <!-- Выбор города -->
+                                <!-- Выбор города - НОВАЯ ВЕРСИЯ -->
+                                <div class="form-group">
+                                    <label for="cityInput" class="form-label">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Місто отримання *
+                                    </label>
+
+                                    <!-- ✅ ЗАМЕНЯЕМ select на input -->
+                                    <div class="city-search-container">
+                                        <input
+                                                type="text"
+                                                id="cityInput"
+                                                class="form-control city-search-input"
+                                                placeholder="Почніть вводити назву міста..."
+                                                autocomplete="off"
+                                        >
+
+                                        <!-- Скрытое поле для хранения ref -->
+                                        <input type="hidden" id="cityRef" name="recipientCityRef">
+
+                                        <!-- Dropdown для результатов поиска -->
+                                        <div id="cityDropdown" class="city-dropdown" style="display: none;"></div>
+
+                                        <!-- Индикатор загрузки -->
+                                        <div id="cityLoading" class="city-loading" style="display: none;">
+                                            <i class="fas fa-spinner fa-spin"></i> Завантаження...
+                                        </div>
+                                    </div>
+
+                                    <small class="form-text">
+                                        <i class="fas fa-info-circle"></i>
+                                        Введіть назву міста для пошуку серед усіх населених пунктів України
+                                    </small>
+                                </div>
+
+                                <!-- Выбор отделения -->
+                                <div class="form-group">
+                                    <label for="departmentSelect" class="form-label">
+                                        <i class="fas fa-building"></i>
+                                        Відділення Нової Пошти *
+                                    </label>
+                                    <select id="departmentSelect" class="form-control" name="recipientAddressRef">
+                                        <option value="">Спочатку оберіть місто</option>
+                                    </select>
+                                    <small class="form-text">
+                                        <i class="fas fa-info-circle"></i>
+                                        Виберіть найближче до вас відділення
+                                    </small>
+                                </div>
+
+                                <!-- Информационное сообщение -->
+                                <div class="alert" style="background: rgba(229, 62, 62, 0.1); color: #E53E3E; border-left: 4px solid #E53E3E; margin-top: 1rem;">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Нова Пошта:</strong> Доставка здійснюється протягом 1-3 робочих днів.
+                                    Номер для відстеження буде надіслано після оформлення замовлення.
+                                </div>
+                            </div>
+
+
+
+                         <style>
+                            /* Стили для Nova Poshta полей */
+                            .nova-poshta-fields {
+                            margin-top: 1.5rem;
+                            padding: 1.5rem;
+                            background: #FAFAFA;
+                            border: 1px solid var(--border-subtle);
+                            border-radius: 8px;
+                            animation: slideDown 0.3s ease-out;
+                            }
+
+                            @keyframes slideDown {
+                            from {
+                            opacity: 0;
+                            transform: translateY(-10px);
+                            }
+                            to {
+                            opacity: 1;
+                            transform: translateY(0);
+                            }
+                            }
+
+                            /* Обновляем grid для трех колонок на больших экранах */
+                            .delivery-options {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr;
+                            gap: 1rem;
+                            }
+
+                            /* Адаптивность для мобильных */
+                            @media (max-width: 768px) {
+                            .delivery-options {
+                            grid-template-columns: 1fr;
+                            gap: 0.75rem;
+                            }
+
+                            .nova-poshta-fields {
+                            padding: 1rem;
+                            margin-top: 1rem;
+                            }
+                            }
+
+                            /* Стиль для загрузки */
+                            .loading-option {
+                            opacity: 0.6;
+                            pointer-events: none;
+                            }
+
+                            .loading-spinner {
+                            display: inline-block;
+                            width: 16px;
+                            height: 16px;
+                            border: 2px solid #f3f3f3;
+                            border-top: 2px solid var(--primary-dark);
+                            border-radius: 50%;
+                            animation: spin 0.8s linear infinite;
+                            margin-left: 0.5rem;
+                            }
+
+                            @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                            }
+                            </style>
+
                             <!-- Коментар до замовлення -->
                             <div class="form-group">
                                 <label for="someNotes" class="form-label">
@@ -747,77 +891,19 @@
     </div>
 </div>
 
-<!-- Подвал -->
-<!--<div th:insert="~{admin/fragments/footer :: footer}"></div>-->
+
+<!-- Nova Poshta модуль -->
+<script src="/js/order/notifications.js"></script>
+<script src="/js/order/novaposhta.js"></script>
+<script src="/js/order/formatting.js"></script>
+<script src="/js/order/validation.js"></script>
+<script src="/js/order/main.js"></script>
+
 <footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
 
 <!-- JavaScript -->
 <script th:replace="~{admin/fragments/navigation :: navigation-script}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    // Выбор способа доставки
-    function selectDelivery(method) {
-        // Убираем активный класс со всех карточек
-        document.querySelectorAll('.delivery-option').forEach(option => {
-            option.classList.remove('selected');
-        });
-
-        // Добавляем активный класс к выбранной карточке
-        event.currentTarget.classList.add('selected');
-
-        // Отмечаем соответствующий radio button
-        document.querySelector(`input[value="${method}"]`).checked = true;
-    }
-
-    // Обработка номера телефона
-    document.getElementById('phoneNumber').addEventListener('input', function(e) {
-        // Убираем все не-цифры
-        let value = e.target.value.replace(/\D/g, '');
-
-        // Ограничиваем длину до 10 цифр
-        if (value.length > 10) {
-            value = value.substring(0, 10);
-        }
-
-        // Форматируем номер: 066 842 0005
-        if (value.length >= 6) {
-            value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
-        } else if (value.length >= 3) {
-            value = value.substring(0, 3) + ' ' + value.substring(3);
-        }
-
-        e.target.value = value;
-    });
-
-    // Перед отправкой формы объединяем код страны с номером
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const phoneInput = document.getElementById('phoneNumber');
-        const phoneValue = phoneInput.value.replace(/\D/g, ''); // Убираем все не-цифры
-
-        if (phoneValue.length > 0 && !phoneValue.startsWith('38')) {
-            // Создаем скрытое поле с полным номером
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'phoneNumber';
-            hiddenInput.value = '+38' + phoneValue;
-
-            // Отключаем оригинальное поле и добавляем скрытое
-            phoneInput.disabled = true;
-            this.appendChild(hiddenInput);
-        }
-    });
-
-    // Инициализация при загрузке страницы
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkedRadio = document.querySelector('input[name="deliveryMethod"]:checked');
-        if (checkedRadio) {
-            const option = checkedRadio.closest('.delivery-option');
-            if (option) {
-                option.classList.add('selected');
-            }
-        }
-    });
-</script>
 </body>
 </html>

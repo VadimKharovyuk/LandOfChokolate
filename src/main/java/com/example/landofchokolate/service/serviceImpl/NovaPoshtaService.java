@@ -5,13 +5,12 @@ import com.example.landofchokolate.dto.novaposhta.*;
 import com.example.landofchokolate.dto.order.OrderDTO;
 import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.service.PoshtaService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -26,42 +25,158 @@ public class NovaPoshtaService implements PoshtaService {
     private final NovaPoshtaConfig config;
     private final RestTemplate restTemplate;
 
+    // ============================================================================
+// ОБНОВИТЕ NovaPoshtaService - метод getCities()
+// ============================================================================
 
-    /**
-     * Получение списка всех городов Nova Poshta
-     */
     @Override
     public List<City> getCities() {
-        log.info("Fetching cities from Nova Poshta API");
+        log.info("Fetching ALL cities from Nova Poshta API with pagination");
+
+        List<City> allCities = new ArrayList<>();
+        int page = 1;
+        int limit = 150; // Максимум записей за запрос
+        boolean hasMoreData = true;
 
         try {
-            // Формируем запрос для получения городов
-            Map<String, Object> methodProperties = new HashMap<>();
-            methodProperties.put("Page", "1");
-            methodProperties.put("Limit", "0"); // 0 = все города
-            methodProperties.put("FindByString", ""); // пустая строка = все города
+            while (hasMoreData) {
+                log.info("Loading cities page {} with limit {}", page, limit);
 
-            NovaPoshtaRequest request = new NovaPoshtaRequest(
-                    config.getApiKey(),
-                    "Address",
-                    "getCities",
-                    methodProperties
-            );
+                Map<String, Object> methodProperties = new HashMap<>();
+                methodProperties.put("Page", String.valueOf(page));
+                methodProperties.put("Limit", String.valueOf(limit));
 
-            // Отправляем запрос
-            NovaPoshtaResponse<City> response = sendRequest(request, new ParameterizedTypeReference<NovaPoshtaResponse<City>>() {});
+                NovaPoshtaRequest request = new NovaPoshtaRequest(
+                        config.getApiKey(),
+                        "Address",
+                        "getCities",
+                        methodProperties
+                );
 
-            if (response != null && response.isSuccess() && response.getData() != null) {
-                log.info("Successfully fetched {} cities", response.getData().size());
-                return response.getData();
-            } else {
-                log.error("Failed to fetch cities. Errors: {}", response != null ? response.getErrors() : "null response");
-                return Collections.emptyList();
+                String responseBody = makeDirectHttpRequest(request);
+
+                if (responseBody != null && !responseBody.trim().isEmpty()) {
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+                        NovaPoshtaResponse<City> response = mapper.readValue(responseBody,
+                                new TypeReference<NovaPoshtaResponse<City>>() {});
+
+                        if (response.isSuccess() && response.getData() != null) {
+                            List<City> pageCities = response.getData();
+                            allCities.addAll(pageCities);
+
+                            log.info("Page {}: loaded {} cities, total so far: {}",
+                                    page, pageCities.size(), allCities.size());
+
+                            // ✅ УСЛОВИЕ ОСТАНОВКИ: если получили меньше чем limit, значит это последняя страница
+                            if (pageCities.size() < limit) {
+                                hasMoreData = false;
+                                log.info("Received {} cities (less than limit {}), stopping pagination",
+                                        pageCities.size(), limit);
+                            } else {
+                                page++;
+
+                                // ✅ ЗАЩИТА от бесконечного цикла
+                                if (page > 100) {
+                                    log.warn("Reached maximum pages (100), stopping to prevent infinite loop");
+                                    hasMoreData = false;
+                                }
+
+                                // ✅ НЕБОЛЬШАЯ ЗАДЕРЖКА чтобы не перегружать API
+                                Thread.sleep(100);
+                            }
+                        } else {
+                            log.error("Page {}: Nova Poshta returned success=false. Errors: {}",
+                                    page, response.getErrors());
+                            hasMoreData = false;
+                        }
+
+                    } catch (Exception parseException) {
+                        log.error("Failed to parse cities response for page {}: {}", page, parseException.getMessage());
+                        hasMoreData = false;
+                    }
+                } else {
+                    log.error("Empty response from Nova Poshta API for page {}", page);
+                    hasMoreData = false;
+                }
             }
+
+            log.info("✅ Successfully loaded {} cities from {} pages", allCities.size(), page - 1);
+            return allCities;
 
         } catch (Exception e) {
             log.error("Error fetching cities from Nova Poshta API", e);
-            return Collections.emptyList();
+            return allCities; // Возвращаем то что успели загрузить
+        }
+    }
+
+    // ✅ Добавьте этот вспомогательный метод (если еще не добавили):
+    private String makeDirectHttpRequest(NovaPoshtaRequest request) {
+        try {
+            java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+
+            ObjectMapper mapper = new ObjectMapper();
+            String requestBody = mapper.writeValueAsString(request);
+
+            log.debug("Request body: {}", requestBody);
+
+            java.net.http.HttpRequest httpRequest = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(config.getApiUrl()))
+                    .header("Content-Type", "application/json")
+                    .header("User-Agent", "LandOfChokolate/1.0")
+                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            java.net.http.HttpResponse<String> httpResponse = client.send(httpRequest,
+                    java.net.http.HttpResponse.BodyHandlers.ofString());
+
+            log.info("HTTP Status: {}, Response length: {}",
+                    httpResponse.statusCode(),
+                    httpResponse.body() != null ? httpResponse.body().length() : 0);
+
+            if (httpResponse.statusCode() == 200) {
+                return httpResponse.body();
+            } else {
+                log.error("HTTP error: {} - {}", httpResponse.statusCode(), httpResponse.body());
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("Direct HTTP request failed", e);
+            return null;
+        }
+    }
+
+
+    // ✅ ДОБАВЬТЕ ЭТОТ ВСПОМОГАТЕЛЬНЫЙ МЕТОД:
+    private String makeRawHttpRequest(NovaPoshtaRequest request) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("User-Agent", "LandOfChokolate/1.0");
+
+            HttpEntity<NovaPoshtaRequest> entity = new HttpEntity<>(request, headers);
+
+            log.info("Making HTTP POST to: {}", config.getApiUrl());
+            log.info("Request headers: {}", headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    config.getApiUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            log.info("HTTP Status: {}", response.getStatusCode());
+            log.info("Response headers: {}", response.getHeaders());
+
+            return response.getBody();
+
+        } catch (Exception e) {
+            log.error("HTTP request failed: {}", e.getMessage(), e);
+            return null;
         }
     }
 
