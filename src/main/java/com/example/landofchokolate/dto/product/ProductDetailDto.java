@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ProductDetailDto {
 
-    // Основная информация о товаре (соответствует текущей модели)
+
     private Long id;
     private String name;
     private String slug;
