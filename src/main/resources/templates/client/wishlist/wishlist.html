@@ -17,29 +17,33 @@
           rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
-    <!--    <link rel="stylesheet" th:href="@{/css/fragment/footer.css}">-->
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
-
     <style>
+        /* =================================
+           CSS ПЕРЕМЕННЫЕ (ЦВЕТОВАЯ СХЕМА)
+           ================================= */
         :root {
-            --primary-dark: #2C2C2C;
-            --primary-medium: #5A5A5A;
-            --primary-light: #FAFAFA;
-            --accent-gold: #D4AF37;
-            --accent-warm: #F5F5F0;
-            --text-primary: #1A1A1A;
-            --text-secondary: #757575;
-            --border-subtle: #E8E8E8;
-            --shadow-soft: rgba(0, 0, 0, 0.04);
-            --shadow-medium: rgba(0, 0, 0, 0.08);
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --wishlist-color: #e91e63;
+            --primary-dark: #2C2C2C;        /* Темный основной цвет */
+            --primary-medium: #5A5A5A;      /* Средний серый */
+            --primary-light: #FAFAFA;       /* Светлый фон */
+            --accent-gold: #D4AF37;         /* Золотистый акцент */
+            --accent-warm: #F5F5F0;         /* Теплый бежевый */
+            --text-primary: #1A1A1A;        /* Основной текст */
+            --text-secondary: #757575;      /* Вторичный текст */
+            --border-subtle: #E8E8E8;       /* Тонкие границы */
+            --shadow-soft: rgba(0, 0, 0, 0.04);    /* Мягкие тени */
+            --shadow-medium: rgba(0, 0, 0, 0.08);  /* Средние тени */
+            --success-color: #28a745;       /* Зеленый (успех) */
+            --warning-color: #ffc107;       /* Желтый (предупреждение) */
+            --danger-color: #dc3545;        /* Красный (опасность) */
+            --wishlist-color: #e91e63;      /* Розовый (избранное) */
         }
 
+        /* =================================
+           ГЛОБАЛЬНЫЕ СТИЛИ
+           ================================= */
         * {
             margin: 0;
             padding: 0;
@@ -59,18 +63,24 @@
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* Основной контент с отступом от навигации */
+        /* =================================
+           ОСНОВНАЯ СТРУКТУРА СТРАНИЦЫ
+           ================================= */
+        /* Отступ от фиксированной навигации */
         .main-content {
             margin-top: 80px;
         }
 
+        /* Контейнер с максимальной шириной */
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
-        /* Breadcrumbs */
+        /* =================================
+           ХЛЕБНЫЕ КРОШКИ (BREADCRUMBS)
+           ================================= */
         .breadcrumb-container {
             padding: 2rem 0 1rem;
             border-bottom: 1px solid var(--border-subtle);
@@ -102,12 +112,15 @@
             font-weight: 500;
         }
 
-        /* Wishlist Header */
+        /* =================================
+           ЗАГОЛОВОК ИЗБРАННОГО
+           ================================= */
         .wishlist-header {
             padding: 4rem 0 3rem;
             text-align: center;
         }
 
+        /* Главный заголовок "Вибране" */
         .wishlist-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: 3rem;
@@ -117,6 +130,7 @@
             letter-spacing: -0.02em;
         }
 
+        /* Подзаголовок с количеством товаров */
         .wishlist-subtitle {
             font-size: 1.1rem;
             color: var(--text-secondary);
@@ -125,11 +139,14 @@
             margin: 0 auto;
         }
 
-        /* Wishlist Content */
+        /* =================================
+           ОСНОВНОЙ КОНТЕНТ ИЗБРАННОГО
+           ================================= */
         .wishlist-section {
             padding: 3rem 0;
         }
 
+        /* Сетка: товары слева, итоги справа */
         .wishlist-container {
             display: grid;
             grid-template-columns: 1fr 350px;
@@ -137,7 +154,10 @@
             align-items: start;
         }
 
-        /* Wishlist Items */
+        /* =================================
+           СПИСОК ТОВАРОВ В ИЗБРАННОМ
+           ================================= */
+        /* Контейнер для всех товаров */
         .wishlist-items {
             background: #FFFFFF;
             border-radius: 8px;
@@ -145,6 +165,7 @@
             overflow: hidden;
         }
 
+        /* Заголовок секции товаров с счетчиком */
         .wishlist-items-header {
             background: var(--accent-warm);
             padding: 1.5rem 2rem;
@@ -162,6 +183,7 @@
             margin: 0;
         }
 
+        /* Бейдж с количеством товаров */
         .wishlist-count {
             background: var(--wishlist-color);
             color: white;
@@ -171,6 +193,10 @@
             font-weight: 500;
         }
 
+        /* =================================
+           ОТДЕЛЬНЫЙ ТОВАР В ИЗБРАННОМ
+           ================================= */
+        /* Сетка для одного товара: изображение, детали, действия */
         .wishlist-item {
             display: grid;
             grid-template-columns: 120px 1fr auto auto;
@@ -190,6 +216,9 @@
             background: var(--primary-light);
         }
 
+        /* =================================
+           ИЗОБРАЖЕНИЕ ТОВАРА
+           ================================= */
         .wishlist-item-image {
             width: 120px;
             height: 120px;
@@ -205,6 +234,7 @@
             object-fit: cover;
         }
 
+        /* Заглушка если нет изображения */
         .wishlist-item-placeholder {
             width: 100%;
             height: 100%;
@@ -216,10 +246,14 @@
             font-size: 2rem;
         }
 
+        /* =================================
+           ДЕТАЛИ ТОВАРА (НАЗВАНИЕ, ЦЕНА, СТАТУС)
+           ================================= */
         .wishlist-item-details {
             min-width: 0;
         }
 
+        /* Название товара с ссылкой */
         .wishlist-item-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.3rem;
@@ -239,6 +273,7 @@
             color: var(--wishlist-color);
         }
 
+        /* Цена товара */
         .wishlist-item-price {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.2rem;
@@ -247,6 +282,7 @@
             margin-bottom: 0.5rem;
         }
 
+        /* Дополнительная информация */
         .wishlist-item-info {
             display: flex;
             gap: 1rem;
@@ -254,6 +290,7 @@
             color: var(--text-secondary);
         }
 
+        /* Статус наличия товара */
         .wishlist-item-stock {
             display: flex;
             align-items: center;
@@ -264,6 +301,7 @@
             color: var(--text-secondary);
         }
 
+        /* Цветовая индикация статуса */
         .status-available {
             color: var(--success-color);
         }
@@ -276,7 +314,9 @@
             color: var(--warning-color);
         }
 
-        /* Item Actions */
+        /* =================================
+           ДЕЙСТВИЯ С ТОВАРОМ
+           ================================= */
         .wishlist-item-actions {
             display: flex;
             flex-direction: column;
@@ -284,6 +324,7 @@
             align-items: center;
         }
 
+        /* Кнопка "В корзину" */
         .btn-add-to-cart {
             background: var(--text-primary);
             color: white;
@@ -311,6 +352,7 @@
             opacity: 0.6;
         }
 
+        /* Кнопка удаления из избранного */
         .btn-remove-wishlist {
             background: none;
             border: 1px solid var(--border-subtle);
@@ -330,7 +372,9 @@
             border-color: var(--wishlist-color);
         }
 
-        /* Wishlist Summary */
+        /* =================================
+           ИТОГИ ИЗБРАННОГО (SIDEBAR)
+           ================================= */
         .wishlist-summary {
             background: #FFFFFF;
             border: 1px solid var(--border-subtle);
@@ -341,6 +385,7 @@
             top: 2rem;
         }
 
+        /* Заголовок итогов */
         .wishlist-summary-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.5rem;
@@ -351,6 +396,7 @@
             border-bottom: 1px solid var(--border-subtle);
         }
 
+        /* Строка с информацией */
         .summary-row {
             display: flex;
             justify-content: space-between;
@@ -368,6 +414,7 @@
             color: var(--text-primary);
         }
 
+        /* Действия с избранным */
         .wishlist-actions {
             margin-top: 2rem;
             display: flex;
@@ -375,6 +422,7 @@
             gap: 1rem;
         }
 
+        /* Кнопка очистки избранного */
         .btn-clear-wishlist {
             background: none;
             color: var(--danger-color);
@@ -393,7 +441,9 @@
             border-color: var(--danger-color);
         }
 
-        /* Continue Shopping */
+        /* =================================
+           ПРОДОЛЖИТЬ ПОКУПКИ
+           ================================= */
         .continue-shopping {
             margin-top: 3rem;
             text-align: center;
@@ -421,7 +471,9 @@
             transform: translateY(-1px);
         }
 
-        /* Empty Wishlist */
+        /* =================================
+           ПУСТОЕ ИЗБРАННОЕ
+           ================================= */
         .empty-wishlist {
             text-align: center;
             padding: 6rem 0;
@@ -471,61 +523,9 @@
             transform: translateY(-1px);
         }
 
-        /* Адаптивность */
-        @media (max-width: 992px) {
-            .wishlist-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .wishlist-summary {
-                position: static;
-            }
-
-            .wishlist-item {
-                grid-template-columns: 80px 1fr auto;
-                gap: 1rem;
-                padding: 1.5rem;
-            }
-
-            .wishlist-item-actions {
-                flex-direction: row;
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 0 1.5rem;
-            }
-
-            .wishlist-header {
-                padding: 3rem 0 2rem;
-            }
-
-            .wishlist-title {
-                font-size: 2.5rem;
-            }
-
-            .wishlist-item {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            .wishlist-item-image {
-                justify-self: center;
-                width: 100px;
-                height: 100px;
-            }
-
-            .wishlist-item-actions {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-        }
-
-        /* Loading state */
+        /* =================================
+           ИНДИКАТОР ЗАГРУЗКИ
+           ================================= */
         .loading {
             opacity: 0.6;
             pointer-events: none;
@@ -543,6 +543,163 @@
         @keyframes spin {
             to {
                 transform: rotate(360deg);
+            }
+        }
+
+        /* =================================
+           ПЛАНШЕТНАЯ ВЕРСИЯ (992px и меньше)
+           ================================= */
+        @media (max-width: 992px) {
+            /* Итоги под товарами вместо сбоку */
+            .wishlist-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            /* Итоги не липкие */
+            .wishlist-summary {
+                position: static;
+            }
+
+            /* Упрощенная сетка товара */
+            .wishlist-item {
+                grid-template-columns: 80px 1fr auto;
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+
+            /* Действия в ряд */
+            .wishlist-item-actions {
+                flex-direction: row;
+                gap: 0.5rem;
+            }
+        }
+
+        /* =================================
+           МОБИЛЬНАЯ ВЕРСИЯ (768px и меньше)
+           СЕТКА 2x2 ДЛЯ ТОВАРОВ
+           ================================= */
+        @media (max-width: 768px) {
+            /* Меньше отступы */
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            /* Компактный заголовок */
+            .wishlist-header {
+                padding: 2rem 0 1.5rem;
+            }
+
+            .wishlist-title {
+                font-size: 2rem;
+            }
+
+            /* ГЛАВНОЕ: сетка 2 колонки для товаров избранного */
+            .wishlist-items {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                padding: 1rem;
+                border: none;
+            }
+
+            /* Заголовок на всю ширину */
+            .wishlist-items-header {
+                grid-column: 1 / -1;
+                padding: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Каждый товар как карточка */
+            .wishlist-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1rem;
+                border: 1px solid var(--border-subtle);
+                border-radius: 8px;
+                background: #FFFFFF;
+                gap: 0.75rem;
+            }
+
+            /* Компактное изображение */
+            .wishlist-item-image {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Детали на всю ширину карточки */
+            .wishlist-item-details {
+                width: 100%;
+            }
+
+            /* Компактные тексты */
+            .wishlist-item-title {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.2;
+            }
+
+            .wishlist-item-price {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .wishlist-item-info {
+                font-size: 0.75rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            /* Действия в колонну */
+            .wishlist-item-actions {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            /* Компактные кнопки */
+            .btn-add-to-cart {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                width: 100%;
+                max-width: 140px;
+            }
+
+            .btn-remove-wishlist {
+                padding: 0.4rem 0.6rem;
+            }
+
+            /* Итоги не липкие */
+            .wishlist-summary {
+                margin-top: 2rem;
+                position: static;
+            }
+        }
+
+        /* =================================
+           ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (480px и меньше)
+           ================================= */
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0 0.75rem;
+            }
+
+            .wishlist-item-title {
+                font-size: 0.9rem;
+            }
+
+            .wishlist-item-image {
+                width: 70px;
+                height: 70px;
+            }
+
+            .wishlist-item-price {
+                font-size: 1rem;
             }
         }
     </style>
