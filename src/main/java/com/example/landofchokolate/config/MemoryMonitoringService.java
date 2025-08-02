@@ -14,10 +14,6 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.text.DecimalFormat;
 
-/**
- * Сервис для мониторинга памяти JVM и сессий
- */
-
 @Service
 @Slf4j
 public class MemoryMonitoringService {

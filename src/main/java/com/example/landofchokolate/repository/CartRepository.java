@@ -20,33 +20,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
      */
     Optional<Cart> findByCartUuidAndStatus(String cartUuid, CartStatus status);
 
-    /**
-     * Найти активную корзину по UUID
-     */
-    @Query("SELECT c FROM Cart c WHERE c.cartUuid = :cartUuid AND c.status = 'ACTIVE'")
-    Optional<Cart> findActiveCartByUuid(@Param("cartUuid") String cartUuid);
-
-    // ===== Методы для очистки и администрирования =====
-
-    /**
-     * Найти корзины для очистки (старые неактивные)
-     */
-    @Query("SELECT c FROM Cart c WHERE c.lastActivityAt < :threshold AND c.status = 'ACTIVE'")
-    List<Cart> findCartsForCleanup(@Param("threshold") LocalDateTime threshold);
-
-    /**
-     * Удалить старые корзины с определенными статусами
-     */
-    @Modifying
-    @Query("DELETE FROM Cart c WHERE c.createdAt < :threshold AND c.status IN ('EXPIRED', 'CONVERTED', 'ABANDONED')")
-    int deleteOldCarts(@Param("threshold") LocalDateTime threshold);
-
-    /**
-     * Удалить заброшенные корзины старше определенного времени
-     */
-    @Modifying
-    @Query("DELETE FROM Cart c WHERE c.status = 'ABANDONED' AND c.lastActivityAt < :threshold")
-    int deleteAbandonedCarts(@Param("threshold") LocalDateTime threshold);
 
     /**
      * Экстренное удаление всех корзин старше определенного времени (независимо от статуса)
@@ -55,13 +28,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("DELETE FROM Cart c WHERE c.createdAt < :threshold")
     int deleteAllOldCarts(@Param("threshold") LocalDateTime threshold);
 
-    /**
-     * Удалить пустые корзины старше определенного времени
-     */
-    @Modifying
-    @Query("DELETE FROM Cart c WHERE c.lastActivityAt < :threshold AND " +
-            "NOT EXISTS (SELECT 1 FROM CartItem ci WHERE ci.cart = c)")
-    int deleteEmptyCarts(@Param("threshold") LocalDateTime threshold);
 
     // ===== Статистические методы =====
 
@@ -83,11 +49,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT COUNT(DISTINCT c) FROM Cart c JOIN c.items ci WHERE c.status = 'ACTIVE'")
     Long countActiveCartsWithItems();
 
-    /**
-     * Подсчитать количество корзин по статусам
-     */
-    @Query("SELECT c.status, COUNT(c) FROM Cart c GROUP BY c.status")
-    List<Object[]> countCartsByStatus();
 
     /**
      * Получить среднее количество товаров в корзинах
@@ -95,11 +56,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT AVG(SIZE(c.items)) FROM Cart c WHERE c.status = 'ACTIVE'")
     Double getAverageItemsPerCart();
 
-    /**
-     * Найти самые старые активные корзины
-     */
-    @Query("SELECT c FROM Cart c WHERE c.status = 'ACTIVE' ORDER BY c.createdAt ASC")
-    List<Cart> findOldestActiveCarts();
 
     // ===== Методы для поиска и фильтрации =====
 
@@ -114,22 +70,15 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByCartUuidAndStatusWithItems(@Param("cartUuid") String cartUuid,
                                                     @Param("status") CartStatus status);
 
-    /**
-     * Дополнительный метод для поиска только корзины с товарами (без пустых корзин)
-     */
-    @Query("SELECT DISTINCT c FROM Cart c " +
-            "JOIN FETCH c.items ci " +
-            "JOIN FETCH ci.product p " +
-            "WHERE c.cartUuid = :cartUuid AND c.status = :status " +
-            "AND SIZE(c.items) > 0")
-    Optional<Cart> findActiveCartWithItemsByUuid(@Param("cartUuid") String cartUuid,
-                                                 @Param("status") CartStatus status);
+
 
 
     boolean existsByCartUuidAndStatus(String newCartUuid, CartStatus cartStatus);
 
-    @Modifying
-    @Query("DELETE FROM Cart c WHERE c.cartUuid IS NULL OR c.cartUuid = ''")
-    void deleteByCartUuidIsNullOrCartUuidEquals(String emptyString);
 
+
+    @Modifying
+    @Query("DELETE FROM CartItem ci WHERE ci.cart.id IN " +
+            "(SELECT c.id FROM Cart c WHERE c.createdAt < :threshold)")
+    void deleteCartItemsForOldCarts(@Param("threshold") LocalDateTime threshold);
 }

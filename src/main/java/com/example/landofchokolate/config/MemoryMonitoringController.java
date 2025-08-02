@@ -15,9 +15,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * REST контроллер для мониторинга памяти JVM и сессий
- */
 @RestController
 @RequestMapping("/api/monitoring")
 @RequiredArgsConstructor

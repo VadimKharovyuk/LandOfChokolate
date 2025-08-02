@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -28,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheManager = "novaPoshtaCacheManager")
 public class NovaPoshtaService implements PoshtaService {
 
     private final NovaPoshtaConfig config;
@@ -409,8 +412,8 @@ public class NovaPoshtaService implements PoshtaService {
     }
 
 
-    // Полностью замените ваш метод trackDelivery на этот:
     @Override
+    @Cacheable(value = "novaPoshtaTracking", key = "#trackingNumber")
     public TrackingInfo trackDelivery(String trackingNumber) {
         log.info("🚀 Tracking delivery: {}", trackingNumber);
 
