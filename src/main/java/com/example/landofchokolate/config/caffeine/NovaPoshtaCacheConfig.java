@@ -23,14 +23,13 @@ public class NovaPoshtaCacheConfig {
         Cache<Object, Object> trackingCache = Caffeine.newBuilder()
                 .maximumSize(1000)
                 .expireAfterWrite(Duration.ofMinutes(60))
-                .expireAfterAccess(Duration.ofMinutes(30)) // добавить для неиспользуемых
+                .expireAfterAccess(Duration.ofMinutes(30))
                 .recordStats()
                 .evictionListener((key, value, cause) ->
-                        log.info("NovaPoshtaTracking cache eviction: key={}, cause={}", key, cause))
+                        log.info("Видалення з кешу Nova Poshta трекінгу: ключ={}, причина={}", key, cause))
                 .build();
         cacheManager.registerCustomCache("novaPoshtaTracking", trackingCache);
 
-        log.info("Nova Poshta cache manager configured");
         return cacheManager;
     }
 }
