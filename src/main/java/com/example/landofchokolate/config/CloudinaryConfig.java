@@ -1,8 +1,6 @@
 package com.example.landofchokolate.config;
-
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +21,7 @@ public class CloudinaryConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        log.info("Creating Cloudinary bean with cloud name: {}", cloudName);
+        log.info("Creating Cloudinary bean...");
 
         try {
             Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -33,21 +31,12 @@ public class CloudinaryConfig {
                     "secure", true
             ));
 
-            // Тестируем конфигурацию
-//            cloudinary.api().ping();
-            log.info("Cloudinary configuration is valid and API is accessible");
-
+            log.info("✅ Cloudinary bean created successfully");
             return cloudinary;
+
         } catch (Exception e) {
-            log.error("Failed to create Cloudinary bean: {}", e.getMessage(), e);
+            log.error("❌ Failed to create Cloudinary bean: {}", e.getMessage(), e);
             throw new RuntimeException("Cloudinary configuration failed", e);
         }
-    }
-
-    @PostConstruct
-    public void logConfiguration() {
-        log.info("Final Cloudinary config - Cloud: {}, Key: {}...",
-                cloudName,
-                apiKey != null && apiKey.length() > 6 ? apiKey.substring(0, 6) : "null");
     }
 }

@@ -40,13 +40,7 @@ public class NovaPoshtaConfig {
             throw new IllegalStateException("Потрібен API ключ Нова Пошта! Встановіть змінну оточення NOVAPOSHTA_API_KEY або властивість novaposhta.api.key");
         }
         log.info("Конфігурація Нова Пошта завантажена:");
-        log.info("- URL API: {}", apiUrl);
-        log.info("- API ключ: {}...", apiKey.substring(0, Math.min(6, apiKey.length())) + "****");
-        log.info("- Sender Ref: {}", senderRef != null && !senderRef.isEmpty() ? senderRef : "<не встановлено>");
-        log.info("- Contact Sender Ref: {}", contactSenderRef != null && !contactSenderRef.isEmpty() ? contactSenderRef : "<не встановлено>");
-        log.info("- City Sender Ref: {}", citySender != null && !citySender.isEmpty() ? citySender : "<не встановлено>");
-        log.info("- Sender Address Ref: {}", senderAddress != null && !senderAddress.isEmpty() ? senderAddress : "<не встановлено>");
-        log.info("- Sender Phone: {}", senderPhone != null && !senderPhone.isEmpty() ? senderPhone : "<не встановлено>");
+
     }
 }
 
