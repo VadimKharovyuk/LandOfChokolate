@@ -4,8 +4,10 @@ import com.example.landofchokolate.dto.novaposhta.*;
 import com.example.landofchokolate.dto.order.OrderDTO;
 import com.example.landofchokolate.enums.DeliveryMethod;
 import com.example.landofchokolate.service.PoshtaService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -406,48 +408,201 @@ public class NovaPoshtaService implements PoshtaService {
         }
     }
 
+
+    // Полностью замените ваш метод trackDelivery на этот:
     @Override
     public TrackingInfo trackDelivery(String trackingNumber) {
-        log.info("Tracking delivery: {}", trackingNumber);
+        log.info("🚀 Tracking delivery: {}", trackingNumber);
 
+        // Валидация
         if (trackingNumber == null || trackingNumber.trim().isEmpty()) {
-            log.warn("Tracking number is empty");
-            return null;
+            throw new IllegalArgumentException("Номер відстеження не може бути порожнім");
+        }
+
+        String cleanTrackingNumber = trackingNumber.replaceAll("\\s+", "");
+        if (cleanTrackingNumber.length() != 14 || !cleanTrackingNumber.matches("\\d{14}")) {
+            throw new IllegalArgumentException("Неправильний формат номеру відстеження");
         }
 
         try {
-            Map<String, Object> methodProperties = new HashMap<>();
-            Map<String, Object> documents = new HashMap<>();
-            documents.put("DocumentNumber", trackingNumber);
-            documents.put("Phone", "");
+            // Формируем JSON запрос вручную
+            String requestJson = String.format("""
+            {
+                "apiKey": "%s",
+                "modelName": "TrackingDocument",
+                "calledMethod": "getStatusDocuments",
+                "methodProperties": {
+                    "Documents": [
+                        {
+                            "DocumentNumber": "%s",
+                            "Phone": ""
+                        }
+                    ]
+                }
+            }
+            """, config.getApiKey(), cleanTrackingNumber);
 
-            methodProperties.put("Documents", Arrays.asList(documents));
+            log.debug("📤 Sending tracking request");
 
-            NovaPoshtaRequest request = new NovaPoshtaRequest(
-                    config.getApiKey(),
-                    "TrackingDocument",
-                    "getStatusDocuments",
-                    methodProperties
+            // Прямой HTTP запрос без использования sendRequest
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("User-Agent", "LandOfChokolate/1.0");
+
+            HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+
+            // Получаем сырой JSON ответ
+            ResponseEntity<String> response = restTemplate.exchange(
+                    config.getApiUrl(),
+                    HttpMethod.POST,
+                    entity,
+                    String.class
             );
 
-            NovaPoshtaResponse<TrackingInfo> response = sendRequest(request,
-                    new ParameterizedTypeReference<NovaPoshtaResponse<TrackingInfo>>() {});
-
-            if (response != null && response.isSuccess() && response.getData() != null && !response.getData().isEmpty()) {
-                TrackingInfo trackingInfo = response.getData().get(0);
-                log.info("Successfully tracked delivery: {} - Status: {}", trackingNumber, trackingInfo.getStatus());
-                return trackingInfo;
-            } else {
-                log.error("Failed to track delivery {}. Errors: {}", trackingNumber,
-                        response != null ? response.getErrors() : "null response");
-                return null;
+            String responseBody = response.getBody();
+            if (responseBody == null || responseBody.trim().isEmpty()) {
+                log.error("❌ Empty response from Nova Poshta");
+                throw new RuntimeException("Отримано порожню відповідь від Nova Пошта");
             }
 
+            log.debug("📥 Response received: {} chars", responseBody.length());
+
+            // Парсим JSON вручную, избегая проблемных полей
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+
+            boolean success = rootNode.path("success").asBoolean(false);
+            log.debug("✅ API success: {}", success);
+
+            if (!success) {
+                JsonNode errorsNode = rootNode.path("errors");
+                if (errorsNode.isArray() && errorsNode.size() > 0) {
+                    String errorMessage = errorsNode.get(0).asText("Невідома помилка");
+                    log.error("❌ Nova Poshta error: {}", errorMessage);
+                    throw new RuntimeException(errorMessage);
+                }
+                throw new RuntimeException("Nova Пошта повернула помилку");
+            }
+
+            JsonNode dataNode = rootNode.path("data");
+            if (!dataNode.isArray() || dataNode.size() == 0) {
+                log.warn("⚠️ No data found for: {}", cleanTrackingNumber);
+                throw new RuntimeException("Посилку з номером " + cleanTrackingNumber + " не знайдено");
+            }
+
+            // Извлекаем данные посылки
+            JsonNode trackingData = dataNode.get(0);
+            log.debug("📦 Processing tracking data");
+
+            // Создаем TrackingInfo объект вручную
+            TrackingInfo trackingInfo = buildTrackingInfo(trackingData);
+
+            log.info("✅ Successfully tracked: {} - Status: {}",
+                    cleanTrackingNumber, trackingInfo.getStatus());
+
+            return trackingInfo;
+
+        } catch (JsonProcessingException e) {
+            log.error("❌ JSON error for: " + cleanTrackingNumber, e);
+            throw new RuntimeException("Помилка обробки відповіді від Nova Пошта");
+        } catch (RestClientException e) {
+            log.error("❌ Network error for: " + cleanTrackingNumber, e);
+            if (e.getMessage().contains("timeout") || e.getMessage().contains("Connection")) {
+                throw new RuntimeException("Проблеми з підключенням до Nova Пошта");
+            }
+            throw new RuntimeException("Помилка зв'язку з Nova Пошта");
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("Error tracking delivery: " + trackingNumber, e);
-            return null;
+            log.error("❌ Unexpected error for: " + cleanTrackingNumber, e);
+            throw new RuntimeException("Неочікувана помилка: " + e.getMessage());
         }
     }
+
+    // Метод для создания TrackingInfo из JsonNode
+    private TrackingInfo buildTrackingInfo(JsonNode trackingData) {
+        TrackingInfo trackingInfo = new TrackingInfo();
+
+        // Основные поля
+        trackingInfo.setNumber(safeGetString(trackingData, "Number"));
+        trackingInfo.setStatusCode(safeGetString(trackingData, "StatusCode"));
+        trackingInfo.setDateCreated(safeGetString(trackingData, "DateCreated"));
+        trackingInfo.setStatus(safeGetString(trackingData, "Status"));
+
+        // География
+        trackingInfo.setCitySender(safeGetString(trackingData, "CitySender"));
+        trackingInfo.setCityRecipient(safeGetString(trackingData, "CityRecipient"));
+
+        // Адреса (приоритет детальным адресам)
+        String senderAddr = safeGetString(trackingData, "WarehouseSenderAddress");
+        if (isEmpty(senderAddr)) {
+            senderAddr = safeGetString(trackingData, "WarehouseSender");
+        }
+        trackingInfo.setSenderAddress(senderAddr);
+
+        String recipientAddr = safeGetString(trackingData, "WarehouseRecipientAddress");
+        if (isEmpty(recipientAddr)) {
+            recipientAddr = safeGetString(trackingData, "WarehouseRecipient");
+        }
+        trackingInfo.setRecipientAddress(recipientAddr);
+
+        // Получатель
+        trackingInfo.setRecipientFullName(safeGetString(trackingData, "RecipientFullName"));
+
+        // Финансы
+        trackingInfo.setDocumentCost(safeGetString(trackingData, "DocumentCost"));
+        trackingInfo.setAnnouncedPrice(safeGetString(trackingData, "AnnouncedPrice"));
+
+        // Даты
+        trackingInfo.setScheduledDeliveryDate(safeGetString(trackingData, "ScheduledDeliveryDate"));
+        trackingInfo.setActualDeliveryDate(safeGetString(trackingData, "ActualDeliveryDate"));
+        trackingInfo.setDateScan(safeGetString(trackingData, "DateScan"));
+        trackingInfo.setDateMoving(safeGetString(trackingData, "DateMoving"));
+        trackingInfo.setTrackingUpdateDate(safeGetString(trackingData, "TrackingUpdateDate"));
+
+        // Платежи
+        trackingInfo.setPaymentMethod(safeGetString(trackingData, "PaymentMethod"));
+        trackingInfo.setPayerType(safeGetString(trackingData, "PayerType"));
+
+        // Груз
+        trackingInfo.setCargoDescriptionString(safeGetString(trackingData, "CargoDescriptionString"));
+        trackingInfo.setCargoType(safeGetString(trackingData, "CargoType"));
+
+        // Контакты
+        trackingInfo.setPhoneSender(safeGetString(trackingData, "PhoneSender"));
+        trackingInfo.setPhoneRecipient(safeGetString(trackingData, "PhoneRecipient"));
+
+        // Склады
+        trackingInfo.setWarehouseSender(safeGetString(trackingData, "WarehouseSender"));
+        trackingInfo.setWarehouseRecipient(safeGetString(trackingData, "WarehouseRecipient"));
+
+        // Вес и количество
+        JsonNode weightNode = trackingData.path("DocumentWeight");
+        if (!weightNode.isMissingNode()) {
+            trackingInfo.setDocumentWeight(String.valueOf(weightNode.asInt(0)));
+        }
+
+        trackingInfo.setSeatsAmount(safeGetString(trackingData, "SeatsAmount"));
+        trackingInfo.setServiceType(safeGetString(trackingData, "ServiceType"));
+
+        return trackingInfo;
+    }
+
+    // Вспомогательные методы
+    private String safeGetString(JsonNode node, String fieldName) {
+        JsonNode fieldNode = node.path(fieldName);
+        if (fieldNode.isMissingNode() || fieldNode.isNull()) {
+            return null;
+        }
+        String value = fieldNode.asText();
+        return isEmpty(value) ? null : value;
+    }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.trim().isEmpty() || "null".equals(value) || "".equals(value);
+    }
+
+
+
     private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
         Map<String, Object> properties = new HashMap<>();
 

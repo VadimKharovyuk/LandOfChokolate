@@ -1,6 +1,3 @@
-// ============================================================================
-// dto/novaposhta/NovaPoshtaResponse.java - ИСПРАВЛЕННАЯ ВЕРСИЯ
-// ============================================================================
 package com.example.landofchokolate.dto.novaposhta;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,14 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true) // Игнорируем неизвестные поля
+@JsonIgnoreProperties(ignoreUnknown = true) // Игнорируем ВСЕ неизвестные поля
 public class NovaPoshtaResponse<T> {
+
     @JsonProperty("success")
     private boolean success;
 
@@ -25,12 +23,7 @@ public class NovaPoshtaResponse<T> {
     @JsonProperty("errors")
     private List<String> errors;
 
-    @JsonProperty("warnings")
-    private List<String> warnings;
 
-    // ✅ ИСПРАВЛЕНО: info может быть объектом или массивом
-    @JsonProperty("info")
-    private Object info; // Используем Object вместо List<String>
 
     @JsonProperty("messageCodes")
     private List<String> messageCodes;
@@ -38,21 +31,16 @@ public class NovaPoshtaResponse<T> {
     @JsonProperty("errorCodes")
     private List<String> errorCodes;
 
-    @JsonProperty("warningCodes")
-    private List<String> warningCodes;
+    // Простые методы проверки
+    public boolean hasErrors() {
+        return errors != null && !errors.isEmpty();
+    }
 
-    @JsonProperty("infoCodes")
-    private List<String> infoCodes;
+    public String getFirstError() {
+        return hasErrors() ? errors.get(0) : null;
+    }
 
-    // ✅ Добавим удобный метод для получения totalCount из info
-    public Integer getTotalCount() {
-        if (info instanceof Map) {
-            Map<?, ?> infoMap = (Map<?, ?>) info;
-            Object totalCount = infoMap.get("totalCount");
-            if (totalCount instanceof Number) {
-                return ((Number) totalCount).intValue();
-            }
-        }
-        return null;
+    public boolean hasData() {
+        return data != null && !data.isEmpty();
     }
 }

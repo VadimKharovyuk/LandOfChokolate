@@ -834,6 +834,344 @@
       </div>
     </div>
 
+
+
+    <!-- ДОБАВЬТЕ ЭТУ СЕКЦИЮ ПОСЛЕ ФОРМЫ ПОИСКА ЗАКАЗОВ -->
+
+    <!-- Форма отслеживания посылки -->
+    <div class="card search-form mt-4">
+      <div class="card-header" style="background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%); color: white;">
+        <h5 class="card-title">
+          <i class="bi bi-truck"></i>
+          Відстеження посилки Nova Poshta
+        </h5>
+      </div>
+      <div class="card-body">
+        <!-- УБИРАЕМ action и method, добавляем onsubmit -->
+        <form onsubmit="trackPackageAjax(event)">
+          <div class="row g-4 align-items-end">
+            <div class="col-md-8">
+              <label for="trackingNumber" class="form-label">Номер відстеження (ТТН)</label>
+              <input type="text"
+                     class="form-control form-control-lg"
+                     id="trackingNumber"
+                     name="trackingNumber"
+                     placeholder="20451218194332"
+                     pattern="[0-9]{14}"
+                     required>
+              <div class="form-text">
+                Введіть 14-значний номер відстеження Nova Poshta
+              </div>
+            </div>
+            <div class="col-md-4">
+              <button type="submit" class="btn-search" id="trackBtn" style="background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);">
+                <i class="bi bi-geo-alt"></i>
+                Відстежити посилку
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Контейнер для сообщений (будет заполняться через JS) -->
+    <div id="trackingAlert" class="mt-3" style="display: none;"></div>
+
+    <!-- Контейнер для результата отслеживания (будет заполняться через JS) -->
+    <div id="trackingResult" class="mt-4" style="display: none;"></div>
+
+    <style>
+      .tracking-detail {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .tracking-detail:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .detail-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .detail-value {
+        font-size: 1rem;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      /* Анимации */
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+
+    <script>
+      // Главная функция отслеживания через AJAX
+      function trackPackageAjax(event) {
+        event.preventDefault(); // Предотвращаем отправку формы
+
+        const trackingNumber = document.getElementById('trackingNumber').value.trim();
+        const trackBtn = document.getElementById('trackBtn');
+        const alertContainer = document.getElementById('trackingAlert');
+        const resultContainer = document.getElementById('trackingResult');
+
+        // Валидация
+        if (!trackingNumber) {
+          showAlert('Введіть номер відстеження', 'danger');
+          return;
+        }
+
+        if (trackingNumber.length !== 14 || !/^\d{14}$/.test(trackingNumber)) {
+          showAlert('Неправильний формат номеру відстеження (потрібно 14 цифр)', 'danger');
+          return;
+        }
+
+        // Показываем загрузку
+        const originalBtnText = trackBtn.innerHTML;
+        trackBtn.innerHTML = '<div class="loading-spinner"></div> Відстежуємо...';
+        trackBtn.disabled = true;
+
+        // Скрываем предыдущие результаты
+        alertContainer.style.display = 'none';
+        resultContainer.style.display = 'none';
+
+        // AJAX запрос
+        fetch(`/order/track/${trackingNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                  if (data.error) {
+                    showAlert(data.error, 'danger');
+                  } else {
+                    showTrackingInfo(data);
+                    showAlert('Інформація про посилку оновлена', 'success');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  showAlert('Помилка з\'єднання з сервером', 'danger');
+                })
+                .finally(() => {
+                  // Возвращаем кнопку в исходное состояние
+                  trackBtn.innerHTML = originalBtnText;
+                  trackBtn.disabled = false;
+                });
+      }
+
+      // Функция показа уведомлений
+      function showAlert(message, type) {
+        const alertContainer = document.getElementById('trackingAlert');
+        const iconClass = type === 'success' ? 'bi-check-circle' :
+                type === 'warning' ? 'bi-exclamation-triangle' : 'bi-x-circle';
+
+        alertContainer.innerHTML = `
+    <div class="alert alert-${type} alert-dismissible fade show fade-in" role="alert">
+      <i class="bi ${iconClass}"></i>
+      <div>
+        <span>${message}</span>
+      </div>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+  `;
+        alertContainer.style.display = 'block';
+      }
+
+      // Функция показа информации об отслеживании
+      function showTrackingInfo(trackingInfo) {
+        const resultContainer = document.getElementById('trackingResult');
+
+        // Определяем класс статуса
+        let statusClass = 'new';
+        if (trackingInfo.statusCode === '2') statusClass = 'paid';
+        else if (trackingInfo.statusCode === '3') statusClass = 'ready';
+        else if (trackingInfo.statusCode === '4') statusClass = 'completed';
+
+        resultContainer.innerHTML = `
+    <div class="card fade-in">
+      <div class="card-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+        <h5 class="card-title">
+          <i class="bi bi-box-seam"></i>
+          Інформація про посилку
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-4">
+          <!-- Основная информация -->
+          <div class="col-md-6">
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-hash"></i>
+                Номер відстеження
+              </h6>
+              <div class="detail-value">${trackingInfo.number}</div>
+            </div>
+
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-info-circle"></i>
+                Статус
+              </h6>
+              <div class="detail-value">
+                <span class="status-badge ${statusClass}">
+                  ${trackingInfo.status || 'Невідомо'}
+                </span>
+              </div>
+            </div>
+
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-calendar"></i>
+                Дата створення
+              </h6>
+              <div class="detail-value">${trackingInfo.dateCreated}</div>
+            </div>
+
+            ${trackingInfo.scheduledDeliveryDate ? `
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-clock"></i>
+                Планова доставка
+              </h6>
+              <div class="detail-value">${trackingInfo.scheduledDeliveryDate}</div>
+            </div>
+            ` : ''}
+          </div>
+
+          <!-- Адреса -->
+          <div class="col-md-6">
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-geo-alt"></i>
+                Відправник
+              </h6>
+              <div class="detail-value">
+                <div>${trackingInfo.citySender}</div>
+                <small class="text-muted">${trackingInfo.senderAddress || ''}</small>
+              </div>
+            </div>
+
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-geo-alt-fill"></i>
+                Отримувач
+              </h6>
+              <div class="detail-value">
+                <div>${trackingInfo.cityRecipient}</div>
+                <small class="text-muted">${trackingInfo.recipientAddress || ''}</small>
+              </div>
+            </div>
+
+            ${trackingInfo.recipientFullName ? `
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-person"></i>
+                Отримувач
+              </h6>
+              <div class="detail-value">${trackingInfo.recipientFullName}</div>
+            </div>
+            ` : ''}
+
+            ${trackingInfo.documentCost ? `
+            <div class="tracking-detail">
+              <h6 class="detail-label">
+                <i class="bi bi-currency-dollar"></i>
+                Сума накладеного платежу
+              </h6>
+              <div class="detail-value">
+                <span class="order-amount">${trackingInfo.documentCost} грн</span>
+              </div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Дополнительные кнопки -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="d-flex gap-3 flex-wrap justify-content-center">
+              <a href="https://novaposhta.ua/tracking?cargo_number=${trackingInfo.number}"
+                 target="_blank"
+                 class="btn btn-outline-primary">
+                <i class="bi bi-arrow-up-right-square"></i>
+                Відкрити на сайті Nova Poshta
+              </a>
+              <button type="button"
+                      class="btn btn-outline-secondary"
+                      onclick="refreshCurrentTracking()">
+                <i class="bi bi-arrow-clockwise"></i>
+                Оновити інформацію
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+        resultContainer.style.display = 'block';
+      }
+
+      // Функция обновления текущей информации
+      function refreshCurrentTracking() {
+        const trackingNumber = document.getElementById('trackingNumber').value;
+        if (trackingNumber) {
+          trackPackageAjax({ preventDefault: () => {} });
+        }
+      }
+
+      // Валидация номера отслеживания при вводе
+      document.getElementById('trackingNumber')?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, ''); // Только цифры
+        if (value.length > 14) {
+          value = value.substring(0, 14);
+        }
+        e.target.value = value;
+
+        // Скрываем предыдущие результаты при изменении номера
+        if (value !== e.target.dataset.lastTracked) {
+          document.getElementById('trackingAlert').style.display = 'none';
+          document.getElementById('trackingResult').style.display = 'none';
+        }
+      });
+
+      // Автофокус на поле при загрузке
+      document.addEventListener('DOMContentLoaded', function() {
+        const trackingInput = document.getElementById('trackingNumber');
+        if (trackingInput) {
+          trackingInput.focus();
+        }
+      });
+    </script>
+
     <!-- Інформаційний блок -->
     <div th:if="${orders == null and searchPhone == null}" class="card">
       <div class="card-body empty-state">

@@ -36,6 +36,7 @@ public class OrderController {
 
 
 
+
     @GetMapping
     public String showOrderForm(Model model, HttpSession session) {
         if (cartService.isCartEmpty(session)) {
@@ -110,33 +111,26 @@ public class OrderController {
             return "redirect:/";
         }
     }
-    // ✅ Новый endpoint для отслеживания Nova Poshta
-    @GetMapping("/{id}/track")
+
+    // ✅ ЕДИНСТВЕННЫЙ МЕТОД: API для AJAX отслеживания
+    @GetMapping("/track/{trackingNumber}")
     @ResponseBody
-    public ResponseEntity<?> trackOrder(@PathVariable Long id) {
+    public ResponseEntity<?> trackPackage(@PathVariable String trackingNumber) {
         try {
-            OrderDTO orderDTO = orderService.getOrderById(id);
+            // Убираем пробелы и проверяем формат
+            String cleanTrackingNumber = trackingNumber.replaceAll("\\s+", "");
 
-            if (orderDTO.getDeliveryMethod() != DeliveryMethod.NOVA_POSHTA) {
+            if (cleanTrackingNumber.length() != 14) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of("error", "Заказ не использует доставку Nova Poshta"));
+                        .body(Map.of("error", "Неправильний формат номеру відстеження (потрібно 14 цифр)"));
             }
 
-            if (orderDTO.getTrackingNumber() == null || orderDTO.getTrackingNumber().trim().isEmpty()) {
-                return ResponseEntity.badRequest()
-                        .body(Map.of("error", "Номер отслеживания не найден"));
-            }
+            TrackingInfo trackingInfo = poshtaService.trackDelivery(cleanTrackingNumber);
+            return ResponseEntity.ok(trackingInfo);
 
-             TrackingInfo trackingInfo = poshtaService.trackDelivery(orderDTO.getTrackingNumber());
-
-            return ResponseEntity.ok(Map.of(
-                    "trackingNumber", orderDTO.getTrackingNumber(),
-                    "status", "Информация будет доступна позже",
-                    "message", "Отслеживайте посылку на сайте Nova Poshta"
-            ));
-
-        } catch (OrderNotFoundException e) {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Не вдалося отримати інформацію про посилку: " + e.getMessage()));
         }
     }
 
