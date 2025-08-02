@@ -179,7 +179,7 @@ public class NovaPoshtaService implements PoshtaService {
 
                 if (response.isSuccess() && response.getData() != null) {
                     List<City> cities = response.getData();
-                    log.info("✅ Emergency loaded {} cities", cities.size());
+
 
                     // Запускаем фоновую загрузку если еще не запущена
                     if (!isLoadingCities.get()) {
@@ -212,7 +212,6 @@ public class NovaPoshtaService implements PoshtaService {
             boolean hasMoreData = true;
 
             while (hasMoreData && page <= 50) { // Ограничиваем максимум 50 страниц
-                log.debug("Loading cities page {} with limit {}", page, limit);
 
                 Map<String, Object> methodProperties = new HashMap<>();
                 methodProperties.put("Page", String.valueOf(page));
@@ -242,7 +241,7 @@ public class NovaPoshtaService implements PoshtaService {
                         cachedCities = new ArrayList<>(allCities);
 
                         if (page % 5 == 0) { // Логируем каждые 5 страниц
-                            log.info("Background loading: page {}, total cities: {}", page, allCities.size());
+
                         }
 
                         if (pageCities.size() < limit) {
