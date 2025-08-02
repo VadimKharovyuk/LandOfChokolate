@@ -1,6 +1,5 @@
 package com.example.landofchokolate.config;
 
-import com.example.landofchokolate.service.MemoryMonitoringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,6 @@ public class MemoryMonitoringController {
 
     private final MemoryMonitoringService memoryMonitoringService;
     private final MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-    private final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
     private final DecimalFormat df = new DecimalFormat("#.##");
 
 
@@ -120,74 +118,7 @@ public class MemoryMonitoringController {
         return "Нормальний рівень";
     }
 
-    /**
-     * Получить информацию о сессиях
-     * GET /api/monitoring/sessions
-     */
-    @GetMapping("/sessions")
-    public ResponseEntity<Map<String, Object>> getSessionInfo() {
-        try {
-            Map<String, Object> sessionInfo = new HashMap<>();
-            sessionInfo.put("timestamp", LocalDateTime.now());
-            sessionInfo.put("status", "success");
-            sessionInfo.put("icon", "🔐");
-            sessionInfo.put("title", "HTTP Сесії");
-            sessionInfo.put("description", "Статистика активних користувацьких сесій");
 
-            try {
-                // Попытка получить статистику через JMX
-                ObjectName sessionManager = new ObjectName("Catalina:type=Manager,host=localhost,context=/");
-
-                if (mBeanServer.isRegistered(sessionManager)) {
-                    Integer activeSessions = (Integer) mBeanServer.getAttribute(sessionManager, "activeSessions");
-                    Integer maxActiveSessions = (Integer) mBeanServer.getAttribute(sessionManager, "maxActiveSessions");
-                    Long sessionCounter = (Long) mBeanServer.getAttribute(sessionManager, "sessionCounter");
-                    Integer maxInactiveInterval = (Integer) mBeanServer.getAttribute(sessionManager, "maxInactiveInterval");
-
-                    sessionInfo.put("active_sessions", activeSessions);
-                    sessionInfo.put("active_sessions_icon", "👥");
-                    sessionInfo.put("max_active_sessions", maxActiveSessions);
-                    sessionInfo.put("total_created_sessions", sessionCounter);
-                    sessionInfo.put("timeout_seconds", maxInactiveInterval);
-                    sessionInfo.put("timeout_minutes", maxInactiveInterval / 60);
-                    sessionInfo.put("timeout_icon", "⏰");
-
-                    // Примерный расчет памяти сессий
-                    Map<String, Object> memoryEstimate = calculateSessionMemory(activeSessions);
-                    sessionInfo.put("memory_estimate", memoryEstimate);
-
-                    sessionInfo.put("server_type", "external_tomcat");
-                    sessionInfo.put("server_icon", "🖥️");
-                } else {
-                    // Для embedded сервера
-                    sessionInfo.put("server_type", "embedded");
-                    sessionInfo.put("server_icon", "📦");
-                    sessionInfo.put("message", "Детальна статистика недоступна для вбудованого сервера");
-                    sessionInfo.put("active_sessions", "невідомо");
-                    sessionInfo.put("recommendation", "Використовуйте Spring Boot Actuator для детального моніторингу");
-                }
-            } catch (Exception jmxError) {
-                log.warn("⚠️ JMX недоступний: {}", jmxError.getMessage());
-                sessionInfo.put("server_type", "embedded_or_restricted");
-                sessionInfo.put("server_icon", "🔒");
-                sessionInfo.put("message", "JMX статистика недоступна");
-                sessionInfo.put("error", jmxError.getMessage());
-            }
-
-            log.info("🔐 API: Запитано інформацію про сесії");
-            return ResponseEntity.ok(sessionInfo);
-
-        } catch (Exception e) {
-            log.error("❌ Помилка при отриманні інформації про сесії: {}", e.getMessage());
-            return ResponseEntity.internalServerError()
-                    .body(Map.of(
-                            "status", "error",
-                            "message", e.getMessage(),
-                            "icon", "❌",
-                            "description", "Сталася помилка при отриманні статистики сесій"
-                    ));
-        }
-    }
 
     /**
      * Получить информацию о сборщике мусора
@@ -247,14 +178,11 @@ public class MemoryMonitoringController {
 
             // Получаем все данные
             ResponseEntity<Map<String, Object>> memoryResponse = getMemoryInfo();
-            ResponseEntity<Map<String, Object>> sessionResponse = getSessionInfo();
+
             ResponseEntity<Map<String, Object>> gcResponse = getGCInfo();
 
             if (memoryResponse.getStatusCode().is2xxSuccessful()) {
                 fullStats.put("memory", memoryResponse.getBody());
-            }
-            if (sessionResponse.getStatusCode().is2xxSuccessful()) {
-                fullStats.put("sessions", sessionResponse.getBody());
             }
             if (gcResponse.getStatusCode().is2xxSuccessful()) {
                 fullStats.put("garbage_collection", gcResponse.getBody());

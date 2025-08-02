@@ -45,7 +45,7 @@ public class Cart {
     private String userAgent;
 
 
-    // IP адрес для анонимных корзин (опционально)
+
     @Column(length = 45)
     private String ipAddress;
 
@@ -57,6 +57,10 @@ public class Cart {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
 
 
     @PrePersist

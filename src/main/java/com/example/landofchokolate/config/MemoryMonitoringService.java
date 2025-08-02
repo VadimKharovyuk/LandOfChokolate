@@ -1,4 +1,4 @@
-package com.example.landofchokolate.service;
+package com.example.landofchokolate.config;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 /**
  * Сервис для мониторинга памяти JVM и сессий
  */
+
 @Service
 @Slf4j
 public class MemoryMonitoringService {
@@ -36,29 +37,10 @@ public class MemoryMonitoringService {
     @Scheduled(fixedRate = 300000) // 5 минут = 300000 мс
     public void logMemoryStatistics() {
         logJVMMemoryUsage();
-        logSessionStatistics();
         logGarbageCollectionInfo();
     }
 
-//    /**
-//     * Логирование статистики памяти каждую минуту (можно отключить в продакшене)
-//     */
-//    @Scheduled(fixedRate = 60000) // 1 минута = 60000 мс
-//    public void logMemoryStatisticsDetailed() {
-//        MemoryInfo memoryInfo = getMemoryInfo();
-//
-//        log.info("🔍 ПАМЯТЬ JVM: Использовано: {} MB, Свободно: {} MB, Макс: {} MB ({}% использовано)",
-//                memoryInfo.getUsedMemoryMB(),
-//                memoryInfo.getFreeMemoryMB(),
-//                memoryInfo.getMaxMemoryMB(),
-//                memoryInfo.getUsagePercentage());
-//
-//        // Предупреждение при высоком использовании памяти
-//        if (memoryInfo.getUsagePercentageValue() > 80) {
-//            log.warn("⚠️ ВЫСОКОЕ ИСПОЛЬЗОВАНИЕ ПАМЯТИ: {}% - рекомендуется проверить утечки памяти",
-//                    memoryInfo.getUsagePercentage());
-//        }
-//    }
+
 
     /**
      * Подробное логирование памяти JVM
@@ -93,70 +75,7 @@ public class MemoryMonitoringService {
                 totalMemory, freeMemory, maxMemory);
     }
 
-    /**
-     * Логирование статистики сессий
-     */
-    public void logSessionStatistics() {
-        try {
-            // Получаем статистику сессий через JMX
-            ObjectName sessionManager = new ObjectName("Catalina:type=Manager,host=localhost,context=/");
 
-            if (mBeanServer.isRegistered(sessionManager)) {
-                Integer activeSessions = (Integer) mBeanServer.getAttribute(sessionManager, "activeSessions");
-                Integer maxActiveSessions = (Integer) mBeanServer.getAttribute(sessionManager, "maxActiveSessions");
-                Long sessionCounter = (Long) mBeanServer.getAttribute(sessionManager, "sessionCounter");
-                Integer maxInactiveInterval = (Integer) mBeanServer.getAttribute(sessionManager, "maxInactiveInterval");
-
-                log.info("🔐 === СЕССИИ СТАТИСТИКА ===");
-                log.info("📋 Активные сессии: {} (макс за время работы: {})", activeSessions, maxActiveSessions);
-                log.info("📊 Всего создано сессий: {}", sessionCounter);
-                log.info("⏰ Таймаут сессии: {} секунд ({} минут)", maxInactiveInterval, maxInactiveInterval / 60);
-
-                // Примерный расчет памяти, занимаемой сессиями
-                estimateSessionMemoryUsage(activeSessions);
-            } else {
-                log.debug("🔍 SessionManager MBean не найден - возможно, используется embedded server");
-                logAlternativeSessionInfo();
-            }
-        } catch (Exception e) {
-            log.warn("⚠️ Ошибка при получении статистики сессий: {}", e.getMessage());
-            logAlternativeSessionInfo();
-        }
-    }
-
-    /**
-     * Альтернативный способ логирования информации о сессиях
-     */
-    private void logAlternativeSessionInfo() {
-        // Для embedded серверов можем логировать общую информацию
-        log.info("🔐 === СЕССИИ (БАЗОВАЯ ИНФОРМАЦИЯ) ===");
-        log.info("📋 Сервер: Embedded (точная статистика недоступна)");
-        log.info("💡 Для детальной статистики используйте внешний Tomcat или Actuator");
-    }
-
-    /**
-     * Примерный расчет памяти, занимаемой сессиями
-     */
-    private void estimateSessionMemoryUsage(Integer activeSessions) {
-        if (activeSessions == null || activeSessions == 0) {
-            log.info("💾 Память сессий: 0 MB (нет активных сессий)");
-            return;
-        }
-
-        // Примерная оценка: каждая сессия с корзиной ~ 1-5 KB
-        // Базовая сессия: ~1KB
-        // Корзина с товарами: ~2-4KB дополнительно
-        int estimatedBytesPerSession = 3 * 1024; // 3KB в среднем
-        long totalSessionMemory = (long) activeSessions * estimatedBytesPerSession;
-        double sessionMemoryMB = totalSessionMemory / (1024.0 * 1024.0);
-
-        log.info("💾 Примерная память сессий: {} MB (~{} KB на сессию)",
-                df.format(sessionMemoryMB), estimatedBytesPerSession / 1024);
-
-        if (sessionMemoryMB > 10) {
-            log.warn("⚠️ Сессии занимают много памяти: {} MB", df.format(sessionMemoryMB));
-        }
-    }
 
     /**
      * Информация о сборщике мусора
