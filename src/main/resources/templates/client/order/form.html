@@ -683,16 +683,16 @@
                             </div>
 
                             <!-- Nova Poshta поля (показываются только при выборе Nova Poshta) -->
+
                             <div id="novaPoshtaFields" class="nova-poshta-fields" style="display: none;">
+
                                 <!-- Выбор города -->
-                                <!-- Выбор города - НОВАЯ ВЕРСИЯ -->
                                 <div class="form-group">
                                     <label for="cityInput" class="form-label">
                                         <i class="fas fa-map-marker-alt"></i>
                                         Місто отримання *
                                     </label>
 
-                                    <!-- ✅ ЗАМЕНЯЕМ select на input -->
                                     <div class="city-search-container">
                                         <input
                                                 type="text"
@@ -702,8 +702,9 @@
                                                 autocomplete="off"
                                         >
 
-                                        <!-- Скрытое поле для хранения ref -->
-                                        <input type="hidden" id="cityRef" name="recipientCityRef">
+                                        <!-- ✅ Скрытые поля для города -->
+                                        <input type="hidden" id="cityRef" name="recipientCityRef" th:value="${orderRequest.recipientCityRef}">
+                                        <input type="hidden" id="cityName" name="recipientCityName" th:value="${orderRequest.recipientCityName}">
 
                                         <!-- Dropdown для результатов поиска -->
                                         <div id="cityDropdown" class="city-dropdown" style="display: none;"></div>
@@ -726,22 +727,198 @@
                                         <i class="fas fa-building"></i>
                                         Відділення Нової Пошти *
                                     </label>
+
                                     <select id="departmentSelect" class="form-control" name="recipientAddressRef">
                                         <option value="">Спочатку оберіть місто</option>
                                     </select>
+
+                                    <!-- ✅ Скрытое поле для названия отделения -->
+                                    <input type="hidden" id="departmentName" name="recipientAddressName" th:value="${orderRequest.recipientAddressName}">
+
                                     <small class="form-text">
                                         <i class="fas fa-info-circle"></i>
                                         Виберіть найближче до вас відділення
                                     </small>
                                 </div>
 
+                                <!-- ✅ НОВЫЙ БЛОК: Данные получателя -->
+                                <div class="recipient-details-section">
+                                    <h5 class="recipient-section-title">
+                                        <i class="fas fa-user-friends"></i>
+                                        Дані отримувача (за бажанням)
+                                    </h5>
+                                    <p class="recipient-section-subtitle">
+                                        Якщо отримувач відрізняється від замовника, заповніть ці поля
+                                    </p>
+
+                                    <div class="form-row">
+                                        <!-- Имя получателя -->
+                                        <div class="form-group col-md-6">
+                                            <label for="recipientFirstName" class="form-label">
+                                                <i class="fas fa-user"></i>
+                                                Ім'я отримувача
+                                            </label>
+                                            <input type="text"
+                                                   id="recipientFirstName"
+                                                   name="recipientFirstName"
+                                                   class="form-control"
+                                                   th:value="${orderRequest.recipientFirstName}"
+                                                   placeholder="Якщо відрізняється від замовника">
+                                            <small class="form-text">Залиште порожнім, якщо отримувач - ви</small>
+                                        </div>
+
+                                        <!-- Фамилия получателя -->
+                                        <div class="form-group col-md-6">
+                                            <label for="recipientLastName" class="form-label">
+                                                <i class="fas fa-user"></i>
+                                                Прізвище отримувача
+                                            </label>
+                                            <input type="text"
+                                                   id="recipientLastName"
+                                                   name="recipientLastName"
+                                                   class="form-control"
+                                                   th:value="${orderRequest.recipientLastName}"
+                                                   placeholder="Якщо відрізняється від замовника">
+                                        </div>
+                                    </div>
+
+                                    <!-- Телефон получателя -->
+                                    <div class="form-group">
+                                        <label for="recipientPhone" class="form-label">
+                                            <i class="fas fa-phone"></i>
+                                            Телефон отримувача
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">+38</span>
+                                            <input type="tel"
+                                                   id="recipientPhone"
+                                                   name="recipientPhone"
+                                                   class="form-control"
+                                                   th:value="${orderRequest.recipientPhone}"
+                                                   placeholder="066 842 0005"
+                                                   maxlength="12">
+                                        </div>
+                                        <small class="form-text">
+                                            Залиште порожнім, якщо номер отримувача такий же як у замовника
+                                        </small>
+                                    </div>
+                                </div>
+
                                 <!-- Информационное сообщение -->
-                                <div class="alert" style="background: rgba(229, 62, 62, 0.1); color: #E53E3E; border-left: 4px solid #E53E3E; margin-top: 1rem;">
+                                <div class="alert nova-poshta-info">
                                     <i class="fas fa-info-circle"></i>
                                     <strong>Нова Пошта:</strong> Доставка здійснюється протягом 1-3 робочих днів.
                                     Номер для відстеження буде надіслано після оформлення замовлення.
                                 </div>
                             </div>
+
+                            <style>
+                                /* ✅ Дополнительные стили для новых полей */
+
+                                .recipient-details-section {
+                                    margin-top: 2rem;
+                                    padding: 1.5rem;
+                                    background: #FFFFFF;
+                                    border: 1px solid var(--border-subtle);
+                                    border-radius: 8px;
+                                }
+
+                                .recipient-section-title {
+                                    font-family: 'Cormorant Garamond', serif;
+                                    font-size: 1.2rem;
+                                    font-weight: 500;
+                                    color: var(--text-primary);
+                                    margin-bottom: 0.5rem;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.5rem;
+                                }
+
+                                .recipient-section-subtitle {
+                                    color: var(--text-secondary);
+                                    font-size: 0.9rem;
+                                    margin-bottom: 1.5rem;
+                                    font-style: italic;
+                                }
+
+                                .form-row {
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr;
+                                    gap: 1rem;
+                                }
+
+                                .form-row .form-group {
+                                    margin-bottom: 1.5rem;
+                                }
+
+                                .nova-poshta-info {
+                                    background: rgba(229, 62, 62, 0.1);
+                                    color: #E53E3E;
+                                    border-left: 4px solid #E53E3E;
+                                    margin-top: 1.5rem;
+                                    border-radius: 4px;
+                                    padding: 1rem;
+                                }
+
+                                .city-search-container {
+                                    position: relative;
+                                }
+
+                                .city-dropdown {
+                                    position: absolute;
+                                    top: 100%;
+                                    left: 0;
+                                    right: 0;
+                                    background: #FFFFFF;
+                                    border: 1px solid var(--border-subtle);
+                                    border-top: none;
+                                    border-radius: 0 0 4px 4px;
+                                    max-height: 200px;
+                                    overflow-y: auto;
+                                    z-index: 1000;
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                                }
+
+                                .city-dropdown-item {
+                                    padding: 0.75rem 1rem;
+                                    cursor: pointer;
+                                    border-bottom: 1px solid #f8f9fa;
+                                    font-size: 0.9rem;
+                                    transition: background-color 0.2s ease;
+                                }
+
+                                .city-dropdown-item:hover {
+                                    background-color: var(--accent-warm);
+                                }
+
+                                .city-dropdown-item:last-child {
+                                    border-bottom: none;
+                                }
+
+                                .city-loading {
+                                    padding: 0.75rem 1rem;
+                                    color: var(--text-secondary);
+                                    font-size: 0.9rem;
+                                    text-align: center;
+                                }
+
+                                /* Адаптивность для мобильных */
+                                @media (max-width: 768px) {
+                                    .form-row {
+                                        grid-template-columns: 1fr;
+                                        gap: 0.5rem;
+                                    }
+
+                                    .recipient-details-section {
+                                        padding: 1rem;
+                                        margin-top: 1rem;
+                                    }
+
+                                    .recipient-section-title {
+                                        font-size: 1.1rem;
+                                    }
+                                }
+                            </style>
 
 
 
@@ -892,11 +1069,15 @@
 </div>
 
 
-<!-- Nova Poshta модуль -->
+<!-- 1. Базовые модули (утилиты) -->
 <script src="/js/order/notifications.js"></script>
-<script src="/js/order/novaposhta.js"></script>
 <script src="/js/order/formatting.js"></script>
 <script src="/js/order/validation.js"></script>
+
+<!-- 2. Nova Poshta модуль (зависит от базовых) -->
+<script src="/js/order/novaposhta.js"></script>
+
+<!-- 3. Главный модуль (зависит от всех предыдущих) -->
 <script src="/js/order/main.js"></script>
 
 <footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>

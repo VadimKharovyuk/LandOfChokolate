@@ -74,10 +74,13 @@ public class OrderMapper {
                 .deliveryMethod(order.getDeliveryMethod())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
-                // ✅ Новые поля для Nova Poshta
                 .trackingNumber(order.getTrackingNumber())
                 .recipientCityRef(order.getRecipientCityRef())
                 .recipientAddress(order.getRecipientAddressRef())
+                .recipientFirstName(order.getRecipientFirstName())
+                .recipientLastName(order.getRecipientLastName())
+                .contactRecipientRef(order.getContactRecipientRef())
+                .recipientPhone(order.getRecipientPhone())
                 .deliveryStatus(order.getDeliveryStatus())
                 .orderItems(order.getOrderItems() != null ?
                         order.getOrderItems().stream()
@@ -87,27 +90,28 @@ public class OrderMapper {
                 .build();
     }
 
+    // ✅ Добавить обратное преобразование для создания заказов
     public Order toEntity(OrderDTO orderDTO) {
         if (orderDTO == null) return null;
 
-        Order order = new Order();
-        order.setId(orderDTO.getId());
-        order.setTotalAmount(orderDTO.getTotalAmount());
-        order.setEmail(orderDTO.getEmail());
-        order.setPhoneNumber(orderDTO.getPhoneNumber());
-        order.setCustomerName(orderDTO.getCustomerName());
-        order.setSomeNotes(orderDTO.getSomeNotes());
-        order.setStatus(orderDTO.getStatus());
-        order.setDeliveryMethod(orderDTO.getDeliveryMethod());
-        order.setCreatedAt(orderDTO.getCreatedAt());
-        order.setUpdatedAt(orderDTO.getUpdatedAt());
-        // ✅ Новые поля для Nova Poshta
-        order.setTrackingNumber(orderDTO.getTrackingNumber());
-        order.setRecipientCityRef(orderDTO.getRecipientCityRef());
-        order.setRecipientAddressRef(orderDTO.getRecipientAddress());
-        order.setDeliveryStatus(orderDTO.getDeliveryStatus());
-
-        return order;
+        return Order.builder()
+                .id(orderDTO.getId())
+                .totalAmount(orderDTO.getTotalAmount())
+                .email(orderDTO.getEmail())
+                .phoneNumber(orderDTO.getPhoneNumber())
+                .customerName(orderDTO.getCustomerName())
+                .someNotes(orderDTO.getSomeNotes())
+                .status(orderDTO.getStatus())
+                .deliveryMethod(orderDTO.getDeliveryMethod())
+                .trackingNumber(orderDTO.getTrackingNumber())
+                .recipientCityRef(orderDTO.getRecipientCityRef())
+                .recipientAddressRef(orderDTO.getRecipientAddress())
+                .recipientFirstName(orderDTO.getRecipientFirstName())
+                .recipientLastName(orderDTO.getRecipientLastName())
+                .contactRecipientRef(orderDTO.getContactRecipientRef())
+                .recipientPhone(orderDTO.getRecipientPhone())
+                .deliveryStatus(orderDTO.getDeliveryStatus())
+                .build();
     }
 
     private OrderItemDTO toOrderItemDTO(OrderItem item) {

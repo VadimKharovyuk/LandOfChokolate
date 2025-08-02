@@ -30,4 +30,12 @@ public class OrderDTO {
     private String recipientCityRef;    // Город получателя (ref)
     private String recipientAddress;    // Адрес/отделение получателя
     private String deliveryStatus;
+
+    private String recipientFirstName;
+    private String recipientLastName;
+    private String recipientPhone;
+
+    private String contactRecipientRef; // контакт получателя (Ref)
+
+
 }

@@ -53,7 +53,17 @@ public class Order {
     @Column(name = "delivery_status", length = 50)
     private String deliveryStatus;
 
+    @Column(name = "recipient_first_name", length = 100)
+    private String recipientFirstName;
 
+    @Column(name = "recipient_last_name", length = 100)
+    private String recipientLastName;
+
+    @Column(name = "recipient_phone", length = 20)
+    private String recipientPhone;
+
+    @Column(name = "contact_recipient_ref", length = 100)
+    private String contactRecipientRef;
 
     private LocalDateTime createdAt;
 

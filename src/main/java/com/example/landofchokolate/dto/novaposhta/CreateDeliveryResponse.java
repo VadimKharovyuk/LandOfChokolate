@@ -1,19 +1,62 @@
+// Убедитесь что ваш CreateDeliveryResponse содержит все нужные поля
+
 package com.example.landofchokolate.dto.novaposhta;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CreateDeliveryResponse {
-    private String ref;                      // Уникальный ID накладной
-    private BigDecimal costOnSite;           // Стоимость на сайте
-    private String estimatedDeliveryDate;    // Расчетная дата доставки
-    private String intDocNumber;             // Номер ТТН
-    private String typeDocument;             // Тип документа
-    private String error;                    // Ошибка создания
+
+    @JsonProperty("Ref")
+    private String ref;
+
+    @JsonProperty("IntDocNumber")
+    private String intDocNumber;
+
+    @JsonProperty("DocumentNumber")
+    private String documentNumber;
+
+    @JsonProperty("Number")
+    private String number;
+
+    @JsonProperty("CostOnSite")
+    private String costOnSite;
+
+    @JsonProperty("EstimatedDeliveryDate")
+    private String estimatedDeliveryDate;
+
+    @JsonProperty("TypeDocument")
+    private String typeDocument;
+
+    @JsonProperty("Error")
+    private String error;
+
+    // ✅ Дополнительные поля которые могут присутствовать в ответе
+    @JsonProperty("BarCode")
+    private String barCode;
+
+    @JsonProperty("DocNumber")
+    private String docNumber;
+
+    @JsonProperty("DocumentWeight")
+    private String documentWeight;
+
+    @JsonProperty("CheckWeight")
+    private String checkWeight;
+
+    @JsonProperty("DocumentCost")
+    private String documentCost;
+
+    @JsonProperty("SenderFullNameEW")
+    private String senderFullNameEW;
+
+    @JsonProperty("RecipientFullNameEW")
+    private String recipientFullNameEW;
+
+    @JsonProperty("PhoneSender")
+    private String phoneSender;
+
+    @JsonProperty("PhoneRecipient")
+    private String phoneRecipient;
 }

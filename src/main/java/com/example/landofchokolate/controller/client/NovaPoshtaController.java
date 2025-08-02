@@ -234,33 +234,53 @@ public class NovaPoshtaController {
      * GET /api/novaposhta/cities/search?query=Київ
      */
     @GetMapping("/cities/search")
-    public ResponseEntity<Map<String, Object>> searchCities(@RequestParam String query) {
-        log.info("API: Searching cities with query: {}", query);
+    public ResponseEntity<Map<String, Object>> searchCities(
+            @RequestParam(required = false, defaultValue = "") String query) {
+
+        log.info("API: Searching cities with query: '{}'", query);
 
         Map<String, Object> response = new HashMap<>();
-
-        if (query == null || query.trim().length() < 2) {
-            response.put("success", false);
-            response.put("message", "Запит має містити мінімум 2 символи");
-            response.put("data", List.of());
-            response.put("count", 0);
-            return ResponseEntity.badRequest().body(response);
-        }
 
         try {
             List<City> allCities = poshtaService.getCities();
 
-            String searchQuery = query.trim().toLowerCase();
-            List<City> filteredCities = allCities.stream()
-                    .filter(city ->
-                            city.getDescription().toLowerCase().contains(searchQuery) ||
-                                    (city.getDescriptionRu() != null && city.getDescriptionRu().toLowerCase().contains(searchQuery))
-                    )
-                    .limit(50) // Ограничиваем результат
-                    .toList();
+            if (allCities == null || allCities.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Міста не завантажені");
+                response.put("data", List.of());
+                response.put("count", 0);
+                return ResponseEntity.ok(response);
+            }
+
+            List<City> filteredCities;
+
+            // ✅ ИСПРАВЛЕНО: обрабатываем пустой запрос для предзагрузки
+            if (query == null || query.trim().isEmpty() || "all".equals(query.trim().toLowerCase())) {
+                // Возвращаем все города для предзагрузки
+                filteredCities = allCities;
+                log.info("Returning all {} cities for preloading", filteredCities.size());
+            } else if (query.trim().length() < 2) {
+                response.put("success", false);
+                response.put("message", "Запит має містити мінімум 2 символи");
+                response.put("data", List.of());
+                response.put("count", 0);
+                return ResponseEntity.badRequest().body(response);
+            } else {
+                // Фильтруем по запросу
+                String searchQuery = query.trim().toLowerCase();
+                filteredCities = allCities.stream()
+                        .filter(city ->
+                                city.getDescription().toLowerCase().contains(searchQuery) ||
+                                        (city.getDescriptionRu() != null &&
+                                                city.getDescriptionRu().toLowerCase().contains(searchQuery))
+                        )
+                        .limit(50) // Ограничиваем результат
+                        .toList();
+            }
 
             response.put("success", true);
-            response.put("message", String.format("Знайдено %d міст за запитом '%s'", filteredCities.size(), query));
+            response.put("message", String.format("Знайдено %d міст за запитом '%s'",
+                    filteredCities.size(), query));
             response.put("data", filteredCities);
             response.put("count", filteredCities.size());
             response.put("query", query);
@@ -277,6 +297,52 @@ public class NovaPoshtaController {
             response.put("count", 0);
 
             return ResponseEntity.status(500).body(response);
+        }
+    }
+
+
+    /**
+     * ✅ Альтернативный эндпоинт с дефисом для совместимости с JS
+     */
+    @GetMapping("/warehouses")
+    public ResponseEntity<?> getWarehouses(@RequestParam String cityRef) {
+        log.info("API: Getting warehouses (alias) for city: {}", cityRef);
+        return getDepartments(cityRef);
+    }
+
+    /**
+     * ✅ Упрощенный поиск городов без обертки для JS
+     */
+    @GetMapping("/cities/search/simple")
+    public ResponseEntity<List<City>> searchCitiesSimple(@RequestParam(required = false, defaultValue = "") String query) {
+        log.debug("API: Simple search for cities with query: '{}'", query);
+
+        try {
+            List<City> allCities = poshtaService.getCities();
+
+            if (allCities == null || allCities.isEmpty()) {
+                return ResponseEntity.ok(List.of());
+            }
+
+            if (query == null || query.trim().isEmpty()) {
+                // Возвращаем все города для предзагрузки
+                return ResponseEntity.ok(allCities);
+            }
+
+            String searchQuery = query.trim().toLowerCase();
+            List<City> filteredCities = allCities.stream()
+                    .filter(city ->
+                            city.getDescription().toLowerCase().contains(searchQuery) ||
+                                    (city.getDescriptionRu() != null && city.getDescriptionRu().toLowerCase().contains(searchQuery))
+                    )
+                    .limit(50)
+                    .toList();
+
+            return ResponseEntity.ok(filteredCities);
+
+        } catch (Exception e) {
+            log.error("API: Error in simple search for cities", e);
+            return ResponseEntity.ok(List.of());
         }
     }
 }

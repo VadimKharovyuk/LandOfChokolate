@@ -18,17 +18,21 @@ public class NovaPoshtaConfig {
     @Value("${novaposhta.api.url:https://api.novaposhta.ua/v2.0/json/}")
     private String apiUrl;
 
-    @Value("${novaposhta.sender-ref:}")
+    @Value("${novaposhta.sender:}")
     private String senderRef;
 
-    @Value("${novaposhta.contact-sender-ref:}")
+    @Value("${novaposhta.contact-sender:}")
     private String contactSenderRef;
+
 
     @Value("${novaposhta.city-sender:}")
     private String citySender;
 
     @Value("${novaposhta.sender-address:}")
     private String senderAddress;
+
+    @Value("${novaposhta.sender-phone:}")
+    private String senderPhone;
 
     @PostConstruct
     public void validateConfiguration() {
@@ -42,6 +46,7 @@ public class NovaPoshtaConfig {
         log.info("- Contact Sender Ref: {}", contactSenderRef != null && !contactSenderRef.isEmpty() ? contactSenderRef : "<не встановлено>");
         log.info("- City Sender Ref: {}", citySender != null && !citySender.isEmpty() ? citySender : "<не встановлено>");
         log.info("- Sender Address Ref: {}", senderAddress != null && !senderAddress.isEmpty() ? senderAddress : "<не встановлено>");
+        log.info("- Sender Phone: {}", senderPhone != null && !senderPhone.isEmpty() ? senderPhone : "<не встановлено>");
     }
 }
 

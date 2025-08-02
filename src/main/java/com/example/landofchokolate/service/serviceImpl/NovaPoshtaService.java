@@ -30,6 +30,7 @@ public class NovaPoshtaService implements PoshtaService {
 
     private final NovaPoshtaConfig config;
     private final RestTemplate restTemplate;
+    private  final ObjectMapper objectMapper;
 
     // Кэш для городов
     private volatile List<City> cachedCities = new ArrayList<>();
@@ -378,8 +379,16 @@ public class NovaPoshtaService implements PoshtaService {
                     methodProperties
             );
 
+            // Логируем JSON запроса
+            String requestJson = objectMapper.writeValueAsString(request);
+            log.info("Sending request to NovaPoshta: {}", requestJson);
+
             NovaPoshtaResponse<CreateDeliveryResponse> response = sendRequest(request,
                     new ParameterizedTypeReference<NovaPoshtaResponse<CreateDeliveryResponse>>() {});
+
+            // Логируем JSON ответа
+            String responseJson = objectMapper.writeValueAsString(response);
+            log.info("Response from NovaPoshta: {}", responseJson);
 
             if (response != null && response.isSuccess() && response.getData() != null && !response.getData().isEmpty()) {
                 CreateDeliveryResponse deliveryResponse = response.getData().get(0);
@@ -443,108 +452,131 @@ public class NovaPoshtaService implements PoshtaService {
     private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
         Map<String, Object> properties = new HashMap<>();
 
-        properties.put("PayerType", "Sender");
-        properties.put("PaymentMethod", "NonCash");
+        // ✅ Валидация обязательных полей
+        validateOrderForDelivery(order);
+
+        // ✅ ИСПРАВЛЕНО: Основные параметры отправления
+        properties.put("PayerType", "Recipient");      // Получатель платит ✅
+        properties.put("PaymentMethod", "Cash");       // Наличные при получении ✅
         properties.put("DateTime", "");
-        properties.put("CargoType", "Cargo");
+        properties.put("CargoType", "Parcel");         // ✅ ВАЖНО: Parcel вместо Cargo!
         properties.put("Weight", "1");
         properties.put("ServiceType", "WarehouseWarehouse");
         properties.put("SeatsAmount", "1");
         properties.put("Description", "Заказ шоколада #" + order.getId());
-        properties.put("Cost", order.getTotalAmount().toString());
+        properties.put("Cost", order.getTotalAmount() != null ? order.getTotalAmount().toString() : "0");
 
-        // Получаем из конфигурации
-        properties.put("CitySender", config.getCitySender());           // Ref города отправителя — откуда посылка уходит (например, Киев)
-        properties.put("SenderAddress", config.getSenderAddress());     // Ref склада или отделения отправителя в этом городе
-        properties.put("Sender", config.getSenderRef());                // Ref отправителя (юридического лица или физлица, зарегистрированного в Новой Почте)
-        properties.put("ContactSender", config.getContactSenderRef());  // Ref контактного лица отправителя (человека, который будет заниматься отправкой)
-        properties.put("SendersPhone", "+380000000000");                // Телефон отправителя для связи (можно использовать корпоративный номер)
+        // ✅ Отправитель из конфигурации
+        properties.put("CitySender", config.getCitySender());
+        properties.put("SenderAddress", config.getSenderAddress());
+        properties.put("Sender", config.getSenderRef());
+        properties.put("ContactSender", config.getContactSenderRef());
+        properties.put("SendersPhone", formatPhoneNumber(config.getSenderPhone()));
 
-        properties.put("CityRecipient", "");
-        properties.put("RecipientAddress", "");
-        properties.put("ContactRecipient", "");
-        properties.put("RecipientsPhone", order.getPhoneNumber());
+        // ✅ Получатель из заказа
+        properties.put("CityRecipient", order.getRecipientCityRef());
+        properties.put("RecipientAddress", order.getRecipientAddress());
 
-        properties.put("NewAddress", "1");
+        // Формируем полное имя получателя
+        String recipientName = buildRecipientName(order);
+        properties.put("RecipientName", recipientName);
+
+        // Телефон получателя
+        String recipientPhone = order.getRecipientPhone() != null && !order.getRecipientPhone().trim().isEmpty()
+                ? order.getRecipientPhone()
+                : order.getPhoneNumber();
+        properties.put("RecipientsPhone", formatPhoneNumber(recipientPhone));
+
+        // ✅ ИСПРАВЛЕНО: Контакт получателя для частных лиц
+        properties.put("ContactRecipient", "");        // Пустой для автоматического создания
+        properties.put("NewAddress", "1");             // Создать новый адрес
+        properties.put("RecipientType", "PrivatePerson"); // ✅ ДОБАВЛЕНО: Тип получателя
+
+        // Дополнительные поля (обычно пустые для склад-склад)
         properties.put("RecipientCityName", "");
         properties.put("RecipientArea", "");
         properties.put("RecipientAreaRegions", "");
         properties.put("RecipientHouse", "");
         properties.put("RecipientFlat", "");
-        properties.put("RecipientName", order.getCustomerName());
+
+        log.info("✅ Built delivery properties for order {}: Recipient={}, PayerType=Recipient, PaymentMethod=Cash",
+                order.getId(), recipientName);
 
         return properties;
     }
 
-//    private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
-//        Map<String, Object> properties = new HashMap<>();
-//
-//        properties.put("PayerType", "Sender");
-//        properties.put("PaymentMethod", "NonCash");
-//        properties.put("DateTime", "");
-//        properties.put("CargoType", "Cargo");
-//        properties.put("Weight", "1");
-//        properties.put("ServiceType", "WarehouseWarehouse");
-//        properties.put("SeatsAmount", "1");
-//        properties.put("Description", "Заказ шоколада #" + order.getId());
-//        properties.put("Cost", order.getTotalAmount().toString());
-//
-//        // Заглушки — использовать реальные данные в продакшене!
-//        properties.put("CitySender", "8d5a980d-391c-11dd-90d9-001a92567626"); // Киев
-//        properties.put("SenderAddress", "1ec09d88-e1c2-11e3-8c4a-0050568002cf"); // Адрес склада в Киеве
-//        properties.put("Sender", "00000000-0000-0000-0000-000000000001"); // Заглушка SenderRef
-//        properties.put("ContactSender", "00000000-0000-0000-0000-000000000002"); // Заглушка ContactSenderRef
-//        properties.put("SendersPhone", "+380000000000");
-//
-//        properties.put("CityRecipient", "");
-//        properties.put("RecipientAddress", "");
-//        properties.put("ContactRecipient", "");
-//        properties.put("RecipientsPhone", order.getPhoneNumber());
-//
-//        properties.put("NewAddress", "1");
-//        properties.put("RecipientCityName", "");
-//        properties.put("RecipientArea", "");
-//        properties.put("RecipientAreaRegions", "");
-//        properties.put("RecipientHouse", "");
-//        properties.put("RecipientFlat", "");
-//        properties.put("RecipientName", order.getCustomerName());
-//
-//        return properties;
-//    }
-//
-//    private Map<String, Object> buildDeliveryProperties(OrderDTO order) {
-//        Map<String, Object> properties = new HashMap<>();
-//
-//        properties.put("PayerType", "Sender");
-//        properties.put("PaymentMethod", "NonCash");
-//        properties.put("DateTime", "");
-//        properties.put("CargoType", "Cargo");
-//        properties.put("Weight", "1");
-//        properties.put("ServiceType", "WarehouseWarehouse");
-//        properties.put("SeatsAmount", "1");
-//        properties.put("Description", "Заказ шоколада #" + order.getId());
-//        properties.put("Cost", order.getTotalAmount().toString());
-//
-//        properties.put("CitySender", "8d5a980d-391c-11dd-90d9-001a92567626");
-//        properties.put("SenderAddress", "1ec09d88-e1c2-11e3-8c4a-0050568002cf");
-//        properties.put("ContactSender", "");
-//        properties.put("SendersPhone", "+380000000000");
-//
-//        properties.put("CityRecipient", "");
-//        properties.put("RecipientAddress", "");
-//        properties.put("ContactRecipient", "");
-//        properties.put("RecipientsPhone", order.getPhoneNumber());
-//
-//        properties.put("NewAddress", "1");
-//        properties.put("RecipientCityName", "");
-//        properties.put("RecipientArea", "");
-//        properties.put("RecipientAreaRegions", "");
-//        properties.put("RecipientHouse", "");
-//        properties.put("RecipientFlat", "");
-//        properties.put("RecipientName", order.getCustomerName());
-//
-//        return properties;
-//    }
+    /**
+     * Валидация заказа перед созданием накладной
+     */
+    private void validateOrderForDelivery(OrderDTO order) {
+        if (order.getRecipientCityRef() == null || order.getRecipientCityRef().trim().isEmpty()) {
+            throw new IllegalArgumentException("Не вказано місто отримувача для доставки Новою Поштою");
+        }
+
+        if (order.getRecipientAddress() == null || order.getRecipientAddress().trim().isEmpty()) {
+            throw new IllegalArgumentException("Не вказано відділення отримувача для доставки Новою Поштою");
+        }
+
+        // Проверяем телефон
+        String phone = order.getRecipientPhone() != null ? order.getRecipientPhone() : order.getPhoneNumber();
+        if (phone == null || phone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Не вказано телефон отримувача для доставки Новою Поштою");
+        }
+    }
+
+    /**
+     * Формирует полное имя получателя
+     */
+    private String buildRecipientName(OrderDTO order) {
+        StringBuilder fullName = new StringBuilder();
+
+        if (order.getRecipientFirstName() != null && !order.getRecipientFirstName().trim().isEmpty()) {
+            fullName.append(order.getRecipientFirstName().trim());
+        }
+
+        if (order.getRecipientLastName() != null && !order.getRecipientLastName().trim().isEmpty()) {
+            if (fullName.length() > 0) {
+                fullName.append(" ");
+            }
+            fullName.append(order.getRecipientLastName().trim());
+        }
+
+        // Если имя получателя не указано - используем имя заказчика
+        if (fullName.length() == 0 && order.getCustomerName() != null && !order.getCustomerName().trim().isEmpty()) {
+            fullName.append(order.getCustomerName().trim());
+        }
+
+        // В крайнем случае - дефолтное значение
+        if (fullName.length() == 0) {
+            fullName.append("Покупець");
+        }
+
+        return fullName.toString();
+    }
+
+    /**
+     * Форматирует номер телефона для Nova Poshta
+     */
+    private String formatPhoneNumber(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            return "+380000000000"; // Дефолтный номер
+        }
+
+        // Убираем все лишние символы
+        String cleanPhone = phone.replaceAll("[^0-9+]", "");
+
+        // Если номер начинается с 380, добавляем +
+        if (cleanPhone.startsWith("380") && !cleanPhone.startsWith("+380")) {
+            cleanPhone = "+" + cleanPhone;
+        }
+
+        // Если номер начинается с 0, заменяем на +380
+        if (cleanPhone.startsWith("0")) {
+            cleanPhone = "+38" + cleanPhone;
+        }
+
+        return cleanPhone;
+    }
 
     private <T> NovaPoshtaResponse<T> sendRequest(NovaPoshtaRequest request,
                                                   ParameterizedTypeReference<NovaPoshtaResponse<T>> responseType) {

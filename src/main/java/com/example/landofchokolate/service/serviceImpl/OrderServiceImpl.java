@@ -5,6 +5,7 @@ import com.example.landofchokolate.dto.card.CartItemDto;
 import com.example.landofchokolate.dto.order.CreateOrderRequest;
 import com.example.landofchokolate.dto.order.OrderDTO;
 import com.example.landofchokolate.enums.DeliveryMethod;
+import com.example.landofchokolate.enums.OrderStatus;
 import com.example.landofchokolate.exception.EmptyCartException;
 import com.example.landofchokolate.exception.OrderCreationException;
 import com.example.landofchokolate.exception.OrderNotFoundException;
@@ -85,15 +86,16 @@ public class OrderServiceImpl implements OrderService {
                 } else {
                     log.warn("Failed to create TTN for order {} - empty response from Nova Poshta", createdOrder.getId());
 
-                     savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta");
+                    savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta");
+                    orderRepository.save(savedOrder);
                 }
 
             } catch (Exception e) {
                 log.error("Error creating Nova Poshta delivery for order {}: {}", createdOrder.getId(), e.getMessage(), e);
 
-//                 Можно добавить информацию об ошибке в заказ
-                 savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta: " + e.getMessage());
-                 orderRepository.save(savedOrder);
+                // Можно добавить информацию об ошибке в заказ
+                savedOrder.setSomeNotes("Ошибка создания ТТН Nova Poshta: " + e.getMessage());
+                orderRepository.save(savedOrder);
             }
         }
 
@@ -133,14 +135,38 @@ public class OrderServiceImpl implements OrderService {
 
 
     private Order createOrderEntity(CreateOrderRequest request) {
-        return Order.builder()
+        Order order = Order.builder()
+                .customerName(request.getCustomerName())
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
-                .customerName(request.getCustomerName())
-                .someNotes(request.getSomeNotes())
                 .deliveryMethod(request.getDeliveryMethod())
+                .someNotes(request.getSomeNotes())
+                .status(OrderStatus.NEW)
                 .orderItems(new ArrayList<>())
                 .build();
+
+        // ✅ Заполняем ВСЕ поля Nova Poshta если выбрана соответствующая доставка
+        if (request.getDeliveryMethod() == DeliveryMethod.NOVA_POSHTA) {
+            order.setRecipientCityRef(request.getRecipientCityRef());
+            order.setRecipientAddressRef(request.getRecipientAddressRef());
+
+            // Персональные данные получателя
+            order.setRecipientFirstName(request.getRecipientFirstName());
+            order.setRecipientLastName(request.getRecipientLastName());
+            order.setRecipientPhone(request.getRecipientPhone());
+
+            log.debug("Nova Poshta delivery details set: city={}, address={}, recipient={}",
+                    request.getRecipientCityRef(),
+                    request.getRecipientAddressRef(),
+                    request.getEffectiveRecipientName());
+
+            // Валидация обязательных полей
+            if (!request.isNovaPoshtaFieldsValid()) {
+                throw new IllegalArgumentException("Для доставки Новою Поштою необхідно вказати місто та відділення");
+            }
+        }
+
+        return order;
     }
 
     private BigDecimal createOrderItemsFromCart(Order order, CartDto cartDto) {
