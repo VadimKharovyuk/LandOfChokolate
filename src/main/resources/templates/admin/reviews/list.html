@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Управління відгуками</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <h1 class="mb-4">
+    <i class="bi bi-star-fill text-warning me-2"></i>
+    Управління відгуками
+  </h1>
+
+  <!-- Сообщения -->
+  <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+
+  <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+
+  <!-- Статистика -->
+  <div th:if="${pagedResponse != null and pagedResponse.content.size() > 0}" class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Всього відгуків</h5>
+          <h2 class="text-primary" th:text="${pagedResponse.metadata.totalElements}">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">На сторінці</h5>
+          <h2 class="text-info" th:text="${pagedResponse.content.size()}">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Сторінок</h5>
+          <h2 class="text-success" th:text="${pagedResponse.metadata.totalPages}">0</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Таблица отзывов -->
+  <div th:if="${pagedResponse != null and pagedResponse.content.size() > 0}" class="card">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="bi bi-table me-2"></i>
+        Список відгуків
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Ім'я</th>
+            <th>Оцінка</th>
+            <th>Коментар</th>
+            <th>Дата</th>
+            <th>Дії</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="review : ${pagedResponse.content}">
+            <td th:text="${review.id}"></td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                     style="width: 40px; height: 40px;">
+                  <span th:text="${review.name.substring(0, 1).toUpperCase()}"></span>
+                </div>
+                <span th:text="${review.name}"></span>
+              </div>
+            </td>
+            <td>
+                                <span class="badge bg-warning text-dark">
+                                    <span th:text="${review.starsDisplay}"></span>
+                                    <span th:text="'(' + ${review.rating} + '/5)'"></span>
+                                </span>
+            </td>
+            <td style="max-width: 300px;">
+                                <span th:text="${#strings.length(review.comment) > 100 ?
+                                              #strings.substring(review.comment, 0, 100) + '...' :
+                                              review.comment}"></span>
+            </td>
+            <td>
+              <small th:text="${#temporals.format(review.created, 'dd.MM.yyyy HH:mm')}"></small>
+            </td>
+            <td>
+              <form th:action="@{'/admin/reviews/delete/' + ${review.id}}"
+                    method="post"
+                    style="display: inline;"
+                    onsubmit="return confirm('Ви впевнені, що хочете видалити цей відгук?')">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i>
+                  Видалити
+                </button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Пагинация -->
+  <nav th:if="${pagedResponse != null and pagedResponse.metadata.totalPages > 1}" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <!-- Previous -->
+      <li class="page-item" th:classappend="${!pagedResponse.metadata.hasPrevious} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/admin/reviews(page=${pagedResponse.metadata.page - 1}, size=${pagedResponse.metadata.size})}">
+          <i class="bi bi-chevron-left"></i>
+          Попередня
+        </a>
+      </li>
+
+      <!-- Pages -->
+      <li th:each="pageNum : ${#numbers.sequence(0, pagedResponse.metadata.totalPages - 1)}"
+          class="page-item"
+          th:classappend="${pageNum == pagedResponse.metadata.page} ? 'active'">
+        <a class="page-link"
+           th:href="@{/admin/reviews(page=${pageNum}, size=${pagedResponse.metadata.size})}"
+           th:text="${pageNum + 1}"></a>
+      </li>
+
+      <!-- Next -->
+      <li class="page-item" th:classappend="${!pagedResponse.metadata.hasNext} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/admin/reviews(page=${pagedResponse.metadata.page + 1}, size=${pagedResponse.metadata.size})}">
+          Наступна
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Информация о пагинации -->
+  <div th:if="${pagedResponse != null and pagedResponse.metadata.totalElements > 0}"
+       class="text-center text-muted mt-3">
+    Показано <strong th:text="${pagedResponse.content.size()}"></strong> з
+    <strong th:text="${pagedResponse.metadata.totalElements}"></strong> відгуків
+    (сторінка <strong th:text="${pagedResponse.metadata.page + 1}"></strong> з
+    <strong th:text="${pagedResponse.metadata.totalPages}"></strong>)
+  </div>
+
+  <!-- Пустое состояние -->
+  <div th:if="${pagedResponse == null or pagedResponse.content.size() == 0}"
+       class="text-center py-5">
+    <i class="bi bi-chat-square-quote display-1 text-muted"></i>
+    <h3 class="mt-3">Відгуки не знайдені</h3>
+    <p class="text-muted">Поки що жодного відгуку не створено.</p>
+    <a th:href="@{/store-review}" class="btn btn-primary">
+      <i class="bi bi-eye me-2"></i>
+      Переглянути публічну сторінку
+    </a>
+  </div>
+
+  <!-- Навигация -->
+  <div class="card mt-4">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="bi bi-compass me-2"></i>
+        Навігація
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3">
+          <a th:href="@{/store-review}" class="btn btn-outline-primary w-100 mb-2">
+            <i class="bi bi-eye me-2"></i>
+            Публічна сторінка
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a th:href="@{/admin/reviews}" class="btn btn-outline-secondary w-100 mb-2">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            Оновити
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a th:href="@{/admin}" class="btn btn-outline-success w-100 mb-2">
+            <i class="bi bi-house me-2"></i>
+            Адмін панель
+          </a>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-outline-info w-100 mb-2" disabled>
+            <i class="bi bi-download me-2"></i>
+            Експорт (скоро)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
