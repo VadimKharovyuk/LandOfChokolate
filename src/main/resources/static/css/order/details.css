@@ -66,21 +66,21 @@ body {
     margin-bottom: 2rem;
 }
 
-/*.card-header {*/
-/*    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);*/
-/*    color: white;*/
-/*    padding: 1.5rem 2rem;*/
-/*    border-bottom: none;*/
-/*}*/
-
 .card-header {
-    background: linear-gradient(135deg, #b8944a 0%, #a8874a 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
     color: white;
     padding: 1.5rem 2rem;
     border-bottom: none;
-    position: relative;
-    overflow: hidden;
 }
+
+/*.card-header {*/
+/*    background: linear-gradient(135deg, #b8944a 0%, #a8874a 100%);*/
+/*    color: white;*/
+/*    padding: 1.5rem 2rem;*/
+/*    border-bottom: none;*/
+/*    position: relative;*/
+/*    overflow: hidden;*/
+/*}*/
 
 .card-header::before {
     content: '';

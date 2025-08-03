@@ -47,4 +47,18 @@ public class Brand {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+//
+//    // 🆕 Краткое описание для карточек
+//    @Column(name = "short_description", length = 255)
+//    private String shortDescription;
+
+
+//    // 🆕 Счетчик просмотров
+//    @Column(name = "view_count")
+//    private Long viewCount = 0L;
+
+//    // 🆕 Количество товаров (денормализация для быстрого доступа)
+//    @Column(name = "product_count")
+//    private Integer productCount = 0;
+
 }
