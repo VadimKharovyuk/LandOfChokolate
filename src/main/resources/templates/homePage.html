@@ -74,23 +74,31 @@
     <link rel="canonical" href="https://landofchokolate.onrender.com/">
 
     <!-- Структуровані дані JSON-LD -->
+    <!-- Расширенные структурированные данные для отображения категорий в Google -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@graph": [
                 {
-                    "@type": "Store",
+                    "@type": ["Store", "LocalBusiness", "Organization"],
+                    "@id": "https://landofchokolate.onrender.com/#organization",
                     "name": "Країна шоколаду",
-                    "description": "Преміальні кондитерські вироби та ексклюзивний шоколад",
+                    "alternateName": "Land of Chocolate",
+                    "description": "Преміальні кондитерські вироби та ексклюзивний шоколад. Цукерки ручної роботи, торти на замовлення, подарункові набори.",
                     "url": "https://landofchokolate.onrender.com",
-                    "logo": "https://landofchokolate.onrender.com/images/Logo.jpeg",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://landofchokolate.onrender.com/images/Logo.jpeg",
+                        "width": 600,
+                        "height": 315
+                    },
                     "image": [
                         "https://landofchokolate.onrender.com/images/Logo.jpeg",
                         "https://landofchokolate.onrender.com/images/about.jpg",
                         "https://landofchokolate.onrender.com/images/store-interior.jpg"
                     ],
                     "priceRange": "$$",
-                    "servesCuisine": "Десерти",
+                    "servesCuisine": ["Десерти", "Кондитерські вироби"],
                     "telephone": "+380-XX-XXX-XXXX",
                     "email": "info@landofchocolate.com",
                     "currenciesAccepted": "UAH",
@@ -118,149 +126,129 @@
                         "https://facebook.com/landofchocolate",
                         "https://t.me/landofchocolate"
                     ],
-                    "hasOfferCatalog": {
-                        "@type": "OfferCatalog",
-                        "name": "Каталог кондитерських виробів",
-                        "itemListElement": [
-                            {
-                                "@type": "OfferCatalog",
-                                "name": "Елітний шоколад",
-                                "description": "Преміальний шоколад від відомих виробників",
-                                "image": "https://landofchokolate.onrender.com/images/Logo.jpeg",
-                                "itemListElement": [
-                                    {
-                                        "@type": "Offer",
-                                        "itemOffered": {
-                                            "@type": "Product",
-                                            "name": "Швейцарський темний шоколад",
-                                            "description": "85% какао, преміум якість",
-                                            "image": "https://landofchokolate.onrender.com/images/chocolate-display.jpeg",
-                                            "offers": {
-                                                "@type": "Offer",
-                                                "price": "250",
-                                                "priceCurrency": "UAH",
-                                                "availability": "https://schema.org/InStock"
-                                            },
-                                            "aggregateRating": {
-                                                "@type": "AggregateRating",
-                                                "ratingValue": "4.9",
-                                                "reviewCount": "18"
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "@type": "OfferCatalog",
-                                "name": "Цукерки ручної роботи",
-                                "description": "Авторські цукерки від майстрів кондитерів",
-                                "image": "https://landofchokolate.onrender.com/images/store-interior.jpeg",
-                                "itemListElement": [
-                                    {
-                                        "@type": "Offer",
-                                        "itemOffered": {
-                                            "@type": "Product",
-                                            "name": "Трюфелі з коньяком",
-                                            "description": "Класичні французькі трюфелі",
-                                            "image": "https://landofchokolate.onrender.com/images/store-interior.jpeg",
-                                            "offers": {
-                                                "@type": "Offer",
-                                                "price": "380",
-                                                "priceCurrency": "UAH",
-                                                "availability": "https://schema.org/InStock"
-                                            },
-                                            "aggregateRating": {
-                                                "@type": "AggregateRating",
-                                                "ratingValue": "4.7",
-                                                "reviewCount": "32"
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "@type": "OfferCatalog",
-                                "name": "Торти та десерти",
-                                "description": "Індивідуальні торти на замовлення",
-                                "image": "https://landofchokolate.onrender.com/images/store-interior.jpeg",
-                                "itemListElement": [
-                                    {
-                                        "@type": "Offer",
-                                        "itemOffered": {
-                                            "@type": "Product",
-                                            "name": "Шоколадний торт 'Прага'",
-                                            "description": "Класичний чеський десерт",
-                                            "image": "https://landofchokolate.onrender.com/images/prague-cake.jpg",
-                                            "offers": {
-                                                "@type": "Offer",
-                                                "price": "400",
-                                                "priceCurrency": "UAH",
-                                                "availability": "https://schema.org/InStock"
-                                            },
-                                            "aggregateRating": {
-                                                "@type": "AggregateRating",
-                                                "ratingValue": "4.8",
-                                                "reviewCount": "25"
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "@type": "OfferCatalog",
-                                "name": "Подарункові набори",
-                                "description": "Готові набори для особливих випадків",
-                                "image": "https://landofchokolate.onrender.com/images/chocolate-display.jpeg",
-                                "itemListElement": [
-                                    {
-                                        "@type": "Offer",
-                                        "itemOffered": {
-                                            "@type": "Product",
-                                            "name": "Подарунковий набір 'Делюкс'",
-                                            "description": "Асорті елітних цукерок та шоколаду",
-                                            "image": "https://landofchokolate.onrender.com/images/chocolate-display.jpeg",
-                                            "offers": {
-                                                "@type": "Offer",
-                                                "price": "350",
-                                                "priceCurrency": "UAH",
-                                                "availability": "https://schema.org/InStock"
-                                            },
-                                            "aggregateRating": {
-                                                "@type": "AggregateRating",
-                                                "ratingValue": "4.9",
-                                                "reviewCount": "52"
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    },
                     "aggregateRating": {
                         "@type": "AggregateRating",
                         "ratingValue": "4.8",
                         "reviewCount": "127",
                         "bestRating": "5",
                         "worstRating": "1"
+                    },
+
+                    "hasMenu": {
+                        "@type": "Menu",
+                        "name": "Каталог продукції",
+                        "hasMenuSection": [
+                            {
+                                "@type": "MenuSection",
+                                "name": "Цукерки",
+                                "description": "Авторські цукерки ручної роботи, трюфелі, пралине",
+                                "url": "https://landofchokolate.onrender.com/categories/tsukerki",
+                                "image": "https://landofchokolate.onrender.com/images/candies-category.jpg",
+                                "hasMenuItem": [
+                                    {
+                                        "@type": "MenuItem",
+                                        "name": "Трюфелі з коньяком",
+                                        "description": "Класичні французькі трюфелі",
+                                        "offers": {
+                                            "@type": "Offer",
+                                            "price": "380",
+                                            "priceCurrency": "UAH"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "@type": "MenuSection",
+                                "name": "Торти",
+                                "description": "Індивідуальні торти та десерти на замовлення",
+                                "url": "https://landofchokolate.onrender.com/categories/tort",
+                                "image": "https://landofchokolate.onrender.com/images/store-interior.jpeg",
+                                "hasMenuItem": [
+                                    {
+                                        "@type": "MenuItem",
+                                        "name": "Шоколадний торт 'Прага'",
+                                        "description": "Класичний чеський десерт",
+                                        "offers": {
+                                            "@type": "Offer",
+                                            "price": "400",
+                                            "priceCurrency": "UAH"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "@type": "MenuSection",
+                                "name": "Цукерки",
+                                "description": "Вишукані цукерки ручної роботи з натуральних інгредієнтів",
+                                "url": "https://landofchokolate.onrender.com/categories/tsukerki",
+                                "image": "https://landofchokolate.onrender.com/images/chocolate-display.jpeg"
+                            },
+                            {
+                                "@type": "MenuSection",
+                                "name": "Сезонні солодощі",
+                                "description": "Спеціальні солодощі до святкових подій: Новий рік, Великдень, День Валентина",
+                                "url": "https://landofchokolate.onrender.com/categories/sezonni-solodoschi",
+                                "image": "https://landofchokolate.onrender.com/images/about.jpg"
+                            }
+                        ]
                     }
                 },
+
                 {
-                    "@type": "SiteNavigationElement",
-                    "name": "Цукерки",
-                    "url": "https://landofchokolate.onrender.com/categories/tsukerki",
-                    "description": "Авторські цукерки ручної роботи"
-                },
-                {
-                    "@type": "SiteNavigationElement",
-                    "name": "Сезонні солодощі",
-                    "url": "https://landofchokolate.onrender.com/categories/sezonni-solodoschi",
-                    "description": "Спеціальні солодощі до святкових подій: Новий рік, Великдень, День Валентина"
-                },
-                {
-                    "@type": "SiteNavigationElement",
-                    "name": "Торти",
-                    "url": "https://landofchokolate.onrender.com/categories/tort",
-                    "description": "Індивідуальні торти та десерти на замовлення"
+                    "@type": "WebSite",
+                    "@id": "https://landofchokolate.onrender.com/#website",
+                    "url": "https://landofchokolate.onrender.com",
+                    "name": "Країна шоколаду",
+                    "description": "Преміальні кондитерські вироби та ексклюзивний шоколад",
+                    "publisher": {
+                        "@id": "https://landofchokolate.onrender.com/#organization"
+                    },
+                    "potentialAction": [
+                        {
+                            "@type": "SearchAction",
+                            "target": {
+                                "@type": "EntryPoint",
+                                "urlTemplate": "https://landofchokolate.onrender.com/search?q={search_term_string}"
+                            },
+                            "query-input": "required name=search_term_string"
+                        }
+                    ],
+
+                    "mainEntity": {
+                        "@type": "ItemList",
+                        "name": "Основні категорії",
+                        "itemListElement": [
+                            {
+                                "@type": "SiteNavigationElement",
+                                "position": 1,
+                                "name": "Каталог товарів",
+                                "description": "Повний каталог кондитерських виробів",
+                                "url": "https://landofchokolate.onrender.com/categories"
+                            },
+                            {
+                                "@type": "SiteNavigationElement",
+                                "position": 2,
+                                "name": "Цукерки",
+                                "description": "Авторські цукерки ручної роботи",
+                                "url": "https://landofchokolate.onrender.com/categories/tsukerki"
+                            },
+                            {
+                                "@type": "SiteNavigationElement",
+                                "position": 3,
+                                "name": "Торти",
+                                "description": "Індивідуальні торти на замовлення",
+                                "url": "https://landofchokolate.onrender.com/categories/tort"
+                            },
+
+                            {
+                                "@type": "SiteNavigationElement",
+                                "position": 6,
+                                "name": "Контакти",
+                                "description": "Зв'язок з нами",
+                                "url": "https://landofchokolate.onrender.com/contact"
+                            }
+                        ]
+                    }
                 },
 
                 {
