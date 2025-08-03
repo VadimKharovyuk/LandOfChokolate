@@ -28,10 +28,7 @@ public class StoreReviewController {
             Model model,
             @PageableDefault(size = 10, sort = "created", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        log.info("Запрос списка отзывов: страница {}, размер {}",
-                pageable.getPageNumber(), pageable.getPageSize());
 
-        // Форма для создания нового отзыва
         model.addAttribute("form", new CreateStoreReviewDTO());
 
         // Получаем пагинированные отзывы
@@ -68,15 +65,15 @@ public class StoreReviewController {
 
         try {
             storeReviewService.createReview(form);
-            log.info("Отзыв успешно создан от пользователя: {}", form.getName());
+            log.info("Відгук успішно створений від користувача: {}", form.getName());
 
             redirectAttributes.addFlashAttribute("successMessage",
-                    "Спасибо за ваш отзыв! Он успешно добавлен.");
+                    "Дякуємо за ваш відгук! Його успішно додано.");
 
         } catch (Exception e) {
-            log.error("Ошибка при создании отзыва: {}", e.getMessage());
+            log.error("Помилка при створенні відгуку: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "Произошла ошибка при добавлении отзыва. Попробуйте еще раз.");
+                    "Сталася помилка під час додавання відгуку. Спробуйте ще раз.");
         }
 
         return "redirect:/store-review";

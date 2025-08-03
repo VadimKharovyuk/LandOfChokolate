@@ -286,7 +286,8 @@ public class NovaPoshtaService implements PoshtaService {
     private String makeDirectHttpRequest(NovaPoshtaRequest request) {
         try {
             java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
-                    .connectTimeout(java.time.Duration.ofSeconds(10))
+                    .connectTimeout(java.time.Duration.ofSeconds(30))
+                    .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)  // Следовать редиректам
                     .build();
 
             ObjectMapper mapper = new ObjectMapper();
@@ -296,7 +297,7 @@ public class NovaPoshtaService implements PoshtaService {
                     .uri(java.net.URI.create(config.getApiUrl()))
                     .header("Content-Type", "application/json")
                     .header("User-Agent", "LandOfChokolate/1.0")
-                    .timeout(java.time.Duration.ofSeconds(30))
+                    .timeout(java.time.Duration.ofSeconds(50))
                     .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
