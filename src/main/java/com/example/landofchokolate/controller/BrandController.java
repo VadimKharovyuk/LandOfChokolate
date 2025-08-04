@@ -69,7 +69,8 @@ public class BrandController {
             CreateBrandDto editDto = new CreateBrandDto();
             editDto.setName(brand.getName());
             editDto.setDescription(brand.getDescription());
-            // image остается null, так как это MultipartFile для нового файла
+            editDto.setShortDescription(brand.getShortDescription());
+
 
             model.addAttribute("brand", editDto);
             model.addAttribute("brandId", id);

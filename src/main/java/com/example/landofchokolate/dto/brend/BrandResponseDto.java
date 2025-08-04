@@ -15,6 +15,8 @@ public class BrandResponseDto {
     private String name;
     private String description;
 
+    private String shortDescription;
+
     private String imageUrl;
     private String slug ;
 

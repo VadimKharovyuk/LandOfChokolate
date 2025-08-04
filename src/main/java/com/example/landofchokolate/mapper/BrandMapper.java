@@ -100,6 +100,7 @@ public class BrandMapper {
         brand.setSlug(createBrandDto.getSlug());
         brand.setMetaDescription(createBrandDto.getMetaDescription());
         brand.setMetaTitle(createBrandDto.getMetaTitle());
+        brand.setShortDescription(createBrandDto.getShortDescription());
 
         return brand;
     }
@@ -114,6 +115,7 @@ public class BrandMapper {
         existingBrand.setDescription(dto.getDescription());
         existingBrand.setMetaDescription(dto.getMetaDescription());
         existingBrand.setMetaTitle(dto.getMetaTitle());
+        existingBrand.setShortDescription(dto.getShortDescription());
     }
 
     // Конвертация для админской панели (полная информация)
@@ -132,6 +134,7 @@ public class BrandMapper {
         dto.setMetaTitle(brand.getMetaTitle());
         dto.setCreatedAt(brand.getCreatedAt());
         dto.setUpdatedAt(brand.getUpdatedAt());
+        dto.setShortDescription(brand.getShortDescription());
 
         return dto;
     }

@@ -83,6 +83,25 @@
                             </div>
                         </div>
 
+                        <!-- Краткий опис бренду -->
+                        <div class="mb-3">
+                            <label for="shortDescription" class="form-label fw-bold">
+                                <i class="bi bi-text-left me-1"></i>Краткий опис бренду <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control"
+                                      th:classappend="${#fields.hasErrors('shortDescription')} ? 'is-invalid' : ''"
+                                      id="shortDescription"
+                                      th:field="*{shortDescription}"
+                                      rows="2"
+                                      placeholder="Введіть краткий опис бренду (5-150 символів)"></textarea>
+
+                            <div th:if="${#fields.hasErrors('shortDescription')}" class="invalid-feedback">
+                                <ul class="list-unstyled mb-0">
+                                    <li th:each="error : ${#fields.errors('shortDescription')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <!-- Зображення -->
                         <div class="mb-4">
                             <label for="image" class="form-label fw-bold">

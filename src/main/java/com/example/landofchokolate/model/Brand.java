@@ -24,6 +24,8 @@ public class Brand {
 
     private String description;
 
+    private String shortDescription;
+
     private String imageUrl;
     private String imageId;
 
