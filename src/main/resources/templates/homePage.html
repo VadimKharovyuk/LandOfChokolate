@@ -1261,6 +1261,71 @@
 
 
 
+
+<!-- Секция отзывов на главной -->
+<section th:if="${latestReviews != null and !latestReviews.isEmpty()}" class="reviews-section">
+    <div class="container">
+        <!-- Заголовок секции -->
+        <div class="reviews-header">
+            <div class="section-badge">
+                <i class="fas fa-star"></i>
+                <span>Відгуки</span>
+            </div>
+            <h2 class="section-title">Останні відгуки наших покупців</h2>
+            <p class="section-subtitle">Дізнайтеся, що думають наші клієнти про якість нашої продукції</p>
+        </div>
+
+        <!-- Карточки отзывов -->
+        <div class="reviews-grid">
+            <div th:each="review : ${latestReviews}" class="review-card">
+                <div class="review-header">
+                    <div class="review-avatar">
+                        <span th:text="${review.name.substring(0, 1).toUpperCase()}"></span>
+                    </div>
+                    <div class="review-info">
+                        <h4 class="review-name" th:text="${review.name}"></h4>
+                        <div class="review-rating">
+                            <div class="stars" th:text="${review.starsDisplay}"></div>
+                            <span class="rating-number" th:text="'(' + ${review.rating} + '/5)'"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-content">
+                    <div class="quote-icon">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="review-text" th:text="${review.comment}"></p>
+                </div>
+
+                <div class="review-footer">
+                    <div class="review-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span th:text="${#temporals.format(review.created, 'dd.MM.yyyy')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="reviews-action">
+            <a th:href="@{/store-review}" class="view-more-btn">
+                <span>Всі відгуки</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Подключение CSS для кнопки -->
+<link rel="stylesheet" th:href="@{/css/components/view-more-btn.css}">
+<link rel="stylesheet" th:href="@{/css/reviews/reviews-section.css}">
+
+
+
+
+
+
 <!-- Store Location Section -->
 <section class="store-location-section" id="contact">
     <div class="container">

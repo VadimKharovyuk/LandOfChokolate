@@ -11,7 +11,9 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,5 +58,15 @@ public class StoreReviewServiceImpl implements StoreReviewService {
         log.info("Найдено {} отзывов из {} общих", reviewDTOs.size(), reviewPage.getTotalElements());
 
         return new PagedResponse<>(reviewDTOs, reviewPage);
+    }
+
+    @Override
+    public List<StoreReviewResponseDTO> getLatestReviews(int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("created").descending());
+        Page<StoreReview> reviews = storeReviewRepository.findAll(pageable);
+
+        return reviews.getContent().stream()
+                .map(storeReviewMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 }

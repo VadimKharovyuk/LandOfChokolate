@@ -2,9 +2,11 @@ package com.example.landofchokolate.controller.client;
 import com.example.landofchokolate.dto.brend.BrandClientDto;
 import com.example.landofchokolate.dto.category.CategoryPublicDto;
 import com.example.landofchokolate.dto.product.ProductListRecommendationDto;
+import com.example.landofchokolate.dto.storeReview.StoreReviewResponseDTO;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.ProductService;
+import com.example.landofchokolate.service.StoreReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ public class HomeController {
     private final CategoryService categoryService;
     private final BrandService brandService;
     private final ProductService productService;
+    private final StoreReviewService storeReviewService;
 
     @GetMapping
     public String home(Model model) {
@@ -33,6 +36,10 @@ public class HomeController {
         List<ProductListRecommendationDto> recommendations =
                 productService.getProductListRecommendations( 50);
         model.addAttribute("recommendations", recommendations);
+
+        // Получить последние 3 отзыва
+        List<StoreReviewResponseDTO> latestReviews = storeReviewService.getLatestReviews(3);
+        model.addAttribute("latestReviews", latestReviews);
 
 
         return "homePage";
