@@ -24,9 +24,5 @@ public class ProductBrandClientDto {
     private boolean inStock;
     private boolean lowStock; // если остаток меньше 10
 
-    // В будущем можно добавить специфичные для бренд-страницы поля:
-    // private String shortDescription;
-    // private LocalDateTime addedToBrandDate;
-    // private Boolean isFeatured;
-    // private Integer popularityRank;
+
 }

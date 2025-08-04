@@ -242,29 +242,6 @@ public class BrandServiceImpl implements BrandService {
         return brandMapper.toResponseDtoList(brands);
     }
 
-    // Вспомогательные методы остались без изменений
-    private ProductBrandClientDto convertToProductBrandClientDto(Product product) {
-        ProductBrandClientDto dto = new ProductBrandClientDto();
-
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setPrice(product.getPrice());
-        dto.setImageUrl(product.getImageUrl());
-        dto.setSlug(product.getSlug());
-        dto.setStockQuantity(product.getStockQuantity());
-        dto.setIsActive(product.getIsActive());
-
-        dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
-
-        dto.setInStock(product.getStockQuantity() != null && product.getStockQuantity() > 0);
-        dto.setLowStock(product.getStockQuantity() != null &&
-                product.getStockQuantity() < 10 &&
-                product.getStockQuantity() > 0);
-
-        return dto;
-    }
-
-
 
     private void handleImageUpload(MultipartFile imageFile, Brand brand) {
         if (imageFile == null || imageFile.isEmpty()) {

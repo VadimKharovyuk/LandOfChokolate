@@ -30,6 +30,7 @@ public class HomeController {
         List<BrandClientDto> topBrands = brandService.getBrandByLimit(BRANDS_LIMIT);
         model.addAttribute("brands", topBrands);
 
+
         List<CategoryPublicDto> topCategories = categoryService.getTopCategories(CATEGORIES_LIMIT);
         model.addAttribute("topCategories", topCategories);
 

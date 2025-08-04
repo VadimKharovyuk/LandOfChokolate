@@ -11,10 +11,9 @@ public class BrandClientDto {
     private Long id;
     private String name;
     private String description;
-    private String imageUrl;
-    private String slug;
-
-
-    private String metaTitle;
-    private String metaDescription;
+    private String shortDescription;    // 4-й параметр
+    private String imageUrl;            // 5-й параметр
+    private String slug;                // 6-й параметр
+    private String metaTitle;           // 7-й параметр
+    private String metaDescription;     // 8-й параметр
 }
