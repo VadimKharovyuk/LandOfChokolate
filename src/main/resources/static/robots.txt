@@ -6,7 +6,7 @@ Allow: /images/
 Allow: /css/
 Allow: /js/
 
-# Блокируем служебные файлы (если есть)
+# Блокируем служебные файлы
 Disallow: /admin/
 Disallow: /.git/
 Disallow: /node_modules/
