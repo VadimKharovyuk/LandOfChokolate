@@ -74,7 +74,6 @@
     <link rel="canonical" href="https://landofchokolate.onrender.com/">
 
     <!-- Структуровані дані JSON-LD -->
-    <!-- Расширенные структурированные данные для отображения категорий в Google -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -98,7 +97,6 @@
                         "https://landofchokolate.onrender.com/images/store-interior.jpg"
                     ],
                     "priceRange": "$$",
-                    "servesCuisine": ["Десерти", "Кондитерські вироби"],
                     "telephone": "+380-XX-XXX-XXXX",
                     "email": "info@landofchocolate.com",
                     "currenciesAccepted": "UAH",
@@ -132,68 +130,8 @@
                         "reviewCount": "127",
                         "bestRating": "5",
                         "worstRating": "1"
-                    },
-
-                    "hasMenu": {
-                        "@type": "Menu",
-                        "name": "Каталог продукції",
-                        "hasMenuSection": [
-                            {
-                                "@type": "MenuSection",
-                                "name": "Цукерки",
-                                "description": "Авторські цукерки ручної роботи, трюфелі, пралине",
-                                "url": "https://landofchokolate.onrender.com/categories/tsukerki",
-                                "image": "https://landofchokolate.onrender.com/images/candies-category.jpg",
-                                "hasMenuItem": [
-                                    {
-                                        "@type": "MenuItem",
-                                        "name": "Трюфелі з коньяком",
-                                        "description": "Класичні французькі трюфелі",
-                                        "offers": {
-                                            "@type": "Offer",
-                                            "price": "380",
-                                            "priceCurrency": "UAH"
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "@type": "MenuSection",
-                                "name": "Торти",
-                                "description": "Індивідуальні торти та десерти на замовлення",
-                                "url": "https://landofchokolate.onrender.com/categories/tort",
-                                "image": "https://landofchokolate.onrender.com/images/store-interior.jpeg",
-                                "hasMenuItem": [
-                                    {
-                                        "@type": "MenuItem",
-                                        "name": "Шоколадний торт 'Прага'",
-                                        "description": "Класичний чеський десерт",
-                                        "offers": {
-                                            "@type": "Offer",
-                                            "price": "400",
-                                            "priceCurrency": "UAH"
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "@type": "MenuSection",
-                                "name": "Цукерки",
-                                "description": "Вишукані цукерки ручної роботи з натуральних інгредієнтів",
-                                "url": "https://landofchokolate.onrender.com/categories/tsukerki",
-                                "image": "https://landofchokolate.onrender.com/images/chocolate-display.jpeg"
-                            },
-                            {
-                                "@type": "MenuSection",
-                                "name": "Сезонні солодощі",
-                                "description": "Спеціальні солодощі до святкових подій: Новий рік, Великдень, День Валентина",
-                                "url": "https://landofchokolate.onrender.com/categories/sezonni-solodoschi",
-                                "image": "https://landofchokolate.onrender.com/images/about.jpg"
-                            }
-                        ]
                     }
                 },
-
                 {
                     "@type": "WebSite",
                     "@id": "https://landofchokolate.onrender.com/#website",
@@ -212,45 +150,88 @@
                             },
                             "query-input": "required name=search_term_string"
                         }
-                    ],
-
-                    "mainEntity": {
-                        "@type": "ItemList",
-                        "name": "Основні категорії",
-                        "itemListElement": [
-                            {
-                                "@type": "SiteNavigationElement",
-                                "position": 1,
-                                "name": "Каталог товарів",
-                                "description": "Повний каталог кондитерських виробів",
-                                "url": "https://landofchokolate.onrender.com/categories"
-                            },
-                            {
-                                "@type": "SiteNavigationElement",
-                                "position": 2,
-                                "name": "Цукерки",
-                                "description": "Авторські цукерки ручної роботи",
-                                "url": "https://landofchokolate.onrender.com/categories/tsukerki"
-                            },
-                            {
-                                "@type": "SiteNavigationElement",
-                                "position": 3,
-                                "name": "Торти",
-                                "description": "Індивідуальні торти на замовлення",
-                                "url": "https://landofchokolate.onrender.com/categories/tort"
-                            },
-
-                            {
-                                "@type": "SiteNavigationElement",
-                                "position": 6,
-                                "name": "Контакти",
-                                "description": "Зв'язок з нами",
-                                "url": "https://landofchokolate.onrender.com/contact"
-                            }
-                        ]
-                    }
+                    ]
                 },
-
+                {
+                    "@type": "SiteNavigationElement",
+                    "@id": "https://landofchokolate.onrender.com/#sitenavigation",
+                    "name": "Навігація сайту",
+                    "about": {
+                        "@id": "https://landofchokolate.onrender.com/#organization"
+                    },
+                    "hasPart": [
+                        {
+                            "@type": "WebPage",
+                            "@id": "https://landofchokolate.onrender.com/categories/tsukerki",
+                            "name": "Цукерки",
+                            "description": "Авторські цукерки ручної роботи, трюфелі, пралине",
+                            "url": "https://landofchokolate.onrender.com/categories/tsukerki",
+                            "mainEntity": {
+                                "@type": "CollectionPage",
+                                "name": "Каталог цукерок",
+                                "description": "Ексклюзивні цукерки з натуральних інгредієнтів"
+                            }
+                        },
+                        {
+                            "@type": "WebPage",
+                            "@id": "https://landofchokolate.onrender.com/categories/tort",
+                            "name": "Торти",
+                            "description": "Індивідуальні торти та десерти на замовлення",
+                            "url": "https://landofchokolate.onrender.com/categories/tort",
+                            "mainEntity": {
+                                "@type": "CollectionPage",
+                                "name": "Каталог тортів",
+                                "description": "Торти ручної роботи на будь-який смак"
+                            }
+                        },
+                        {
+                            "@type": "WebPage",
+                            "@id": "https://landofchokolate.onrender.com/categories/podarunkovi-nabori",
+                            "name": "Подарункові набори",
+                            "description": "Готові набори цукерок та шоколаду для подарунків",
+                            "url": "https://landofchokolate.onrender.com/categories/podarunkovi-nabori",
+                            "mainEntity": {
+                                "@type": "CollectionPage",
+                                "name": "Подарункові набори",
+                                "description": "Ідеальні подарунки для близьких"
+                            }
+                        },
+                        {
+                            "@type": "WebPage",
+                            "@id": "https://landofchokolate.onrender.com/categories/sezonni-solodoschi",
+                            "name": "Сезонні солодощі",
+                            "description": "Спеціальні солодощі до святкових подій",
+                            "url": "https://landofchokolate.onrender.com/categories/sezonni-solodoschi",
+                            "mainEntity": {
+                                "@type": "CollectionPage",
+                                "name": "Святкові солодощі",
+                                "description": "До Нового року, Великодня, Дня Валентина"
+                            }
+                        },
+                        {
+                            "@type": "WebPage",
+                            "@id": "https://landofchokolate.onrender.com/contact",
+                            "name": "Контакти",
+                            "description": "Зв'язок з нами, адреса магазину",
+                            "url": "https://landofchokolate.onrender.com/contact",
+                            "mainEntity": {
+                                "@type": "ContactPage",
+                                "name": "Контактна інформація"
+                            }
+                        },
+                        {
+                            "@type": "WebPage",
+                            "@id": "https://landofchokolate.onrender.com/about",
+                            "name": "Про нас",
+                            "description": "Історія та філософія магазину шоколаду",
+                            "url": "https://landofchokolate.onrender.com/about",
+                            "mainEntity": {
+                                "@type": "AboutPage",
+                                "name": "Про компанію"
+                            }
+                        }
+                    ]
+                },
                 {
                     "@type": "BreadcrumbList",
                     "itemListElement": [
@@ -271,6 +252,7 @@
             ]
         }
     </script>
+
 
     <!-- Стили и шрифты -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">

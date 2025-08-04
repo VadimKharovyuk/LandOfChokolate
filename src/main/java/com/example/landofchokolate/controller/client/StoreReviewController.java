@@ -31,11 +31,11 @@ public class StoreReviewController {
 
         model.addAttribute("form", new CreateStoreReviewDTO());
 
-        // Получаем пагинированные отзывы
+
         PagedResponse<StoreReviewResponseDTO> pagedResponse = storeReviewService.getAllReviews(pageable);
         model.addAttribute("pagedResponse", pagedResponse);
 
-        // Дополнительные атрибуты для удобства в шаблоне
+
         model.addAttribute("currentPage", pageable.getPageNumber());
         model.addAttribute("pageSize", pageable.getPageSize());
 
