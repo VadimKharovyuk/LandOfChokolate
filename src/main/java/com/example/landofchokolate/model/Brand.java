@@ -41,6 +41,8 @@ public class Brand {
     private String metaDescription;
 
 
+    private String seoKeywords;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -48,11 +50,6 @@ public class Brand {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-//
-//    // 🆕 Краткое описание для карточек
-//    @Column(name = "short_description", length = 255)
-//    private String shortDescription;
 
 
 //    // 🆕 Счетчик просмотров

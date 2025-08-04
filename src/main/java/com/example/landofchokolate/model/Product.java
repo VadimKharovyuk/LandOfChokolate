@@ -33,14 +33,6 @@ public class Product {
     @Column(unique = true)
     private String slug;
 
-    //    // 🆕 Рейтинг товара
-//    @Column(name = "rating")
-//    private BigDecimal rating = BigDecimal.ZERO;
-
-
-//    // 🆕 Количество отзывов
-//    @Column(name = "review_count")
-//    private Integer reviewCount = 0;
 
     // 🆕 SEO поля
     @Column(name = "meta_title", length = 60)
@@ -51,6 +43,8 @@ public class Product {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    private String seoKeywords;
 
 
     private Boolean isActive = true;
@@ -82,7 +76,14 @@ public class Product {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    //    // 🆕 Рейтинг товара
+//    @Column(name = "rating")
+//    private BigDecimal rating = BigDecimal.ZERO;
 
+
+//    // 🆕 Количество отзывов
+//    @Column(name = "review_count")
+//    private Integer reviewCount = 0;
 
 //    // 🆕 Новинка
 //    @Column(name = "is_new")

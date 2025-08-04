@@ -4,17 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${brand.metaTitle != null and !brand.metaTitle.isEmpty()}
-                    ? ${brand.metaTitle}
-                    : ${brand.name} + ' - Країна шоколаду'">
+
+    <!-- Title должен быть ПЕРЕД meta тегами -->
+    <title th:text="${brand.metaTitle != null and !#strings.isEmpty(brand.metaTitle)}
+            ? ${brand.metaTitle}
+            : ${brand.name} + ' - Країна шоколаду'">
         Brand - Land of Chocolate
     </title>
 
-    <!-- Додаємо meta description для SEO -->
-    <meta th:if="${brand.metaDescription != null and !brand.metaDescription.isEmpty()}"
+    <!-- Meta description -->
+    <meta th:if="${brand.metaDescription != null and !#strings.isEmpty(brand.metaDescription)}"
           name="description"
           th:content="${brand.metaDescription}">
 
+    <!-- Fallback meta description если основное пустое -->
+    <meta th:unless="${brand.metaDescription != null and !#strings.isEmpty(brand.metaDescription)}"
+          name="description"
+          th:content="${brand.name} + ' - ' + ${brand.shortDescription} + ' | Країна шоколаду'">
+
+    <!-- Open Graph для соцсетей -->
+    <meta property="og:title" th:content="${brand.metaTitle ?: brand.name}">
+    <meta property="og:description" th:content="${brand.metaDescription ?: brand.shortDescription}">
+    <meta property="og:image" th:content="${brand.imageUrl}" th:if="${brand.imageUrl}">
+    <meta property="og:type" content="website">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" th:href="@{/brands/{slug}(slug=${brand.slug})}">
+
+    <!-- Для лучшего SEO -->
+    <meta name="robots" content="index, follow">
+    <meta property="og:url" th:content="@{/brands/{slug}(slug=${brand.slug})}">
+    <meta property="og:site_name" content="Країна шоколаду">
     <!-- Fragment CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">

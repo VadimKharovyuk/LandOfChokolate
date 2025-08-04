@@ -44,6 +44,7 @@ public class Category {
     // Для SEO
     private String metaTitle;
     private String metaDescription;
+    private String seoKeywords;
 
     // Временные метки
     @CreationTimestamp
