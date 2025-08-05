@@ -5,6 +5,9 @@ import com.example.landofchokolate.model.VisitorLog;
 import com.example.landofchokolate.repository.VisitorLogRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@CacheConfig(cacheManager = "visitorAnalyticsCacheManager")
 public class VisitorTrackingService {
 
     private final VisitorLogRepository visitorLogRepository;
@@ -27,7 +31,7 @@ public class VisitorTrackingService {
         this.visitorLogRepository = repository;
         this.geoLocationService = geoLocationService;
     }
-
+    @CacheEvict(value = {"visitorBasicStats", "visitorsList"}, allEntries = true)
     public void logVisit(String requestUrl, HttpServletRequest request) {
         try {
             VisitorLog visitorLog = new VisitorLog();
@@ -154,6 +158,8 @@ public class VisitorTrackingService {
     /**
      * 📊 Простая статистика
      */
+    // 📊 Кешируем базовую статистику
+    @Cacheable(value = "visitorBasicStats", key = "'basicStats'")
     public Map<String, Object> getBasicStats() {
         Map<String, Object> stats = new HashMap<>();
 
@@ -189,7 +195,7 @@ public class VisitorTrackingService {
                 stats.put("topCountries", new ArrayList<>());
                 stats.put("topPages", new ArrayList<>());
             }
-
+            log.info("📊 Базова статистика розрахована та збережена в кеш");
             return stats;
 
         } catch (Exception e) {
@@ -211,11 +217,15 @@ public class VisitorTrackingService {
     /**
      * 🔍 Получить все страницы посещенные конкретным IP
      */
+    // 📄 Кешируем список по IP
+    @Cacheable(value = "visitorIpStats", key = "#ipAddress + '_pages'")
     public List<VisitorLog> getPagesByIp(String ipAddress) {
         try {
+            log.info("🔍 Получаем все страницы для IP: {}", ipAddress);
 
             List<VisitorLog> visits = visitorLogRepository.findByIpAddressOrderByVisitTimeDesc(ipAddress);
 
+            log.info("📊 Найдено {} посещений для IP {} (сохранено в кеш)", visits.size(), ipAddress);
             return visits;
 
         } catch (Exception e) {
@@ -227,6 +237,7 @@ public class VisitorTrackingService {
     /**
      * 📈 Статистика по IP с группировкой страниц
      */
+    @Cacheable(value = "visitorIpStats", key = "#ipAddress")
     public Map<String, Object> getIpStatistics(String ipAddress) {
         try {
             Map<String, Object> stats = new HashMap<>();
@@ -275,7 +286,7 @@ public class VisitorTrackingService {
 
             stats.put("uniquePages", pageVisits.size());
             stats.put("pageStats", pageStats);
-
+            log.info("🔍 Статистика для IP {} розрахована та збережена в кеш", ipAddress);
             return stats;
 
         } catch (Exception e) {
@@ -287,10 +298,11 @@ public class VisitorTrackingService {
     /**
      * 🕐 Хронология посещений IP
      */
+    @Cacheable(value = "visitorIpTimeline", key = "#ipAddress + '_' + #limit")
     public List<Map<String, Object>> getIpTimeline(String ipAddress, int limit) {
         try {
             List<VisitorLog> visits = visitorLogRepository.findByIpAddressOrderByVisitTimeDesc(ipAddress);
-
+            log.info("🕐 Хронологія для IP {} (ліміт: {}) збережена в кеш", ipAddress, limit);
             return visits.stream()
                     .limit(limit)
                     .map(visit -> {

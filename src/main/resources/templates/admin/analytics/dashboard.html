@@ -306,127 +306,308 @@
 <!--</html>-->
 
 
-<!-- В admin/analytics/dashboard.html добавьте после таблицы посетителей: -->
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналитика посетителей - Панель управления</title>
+</head>
+<body>
+
+<h1>📊 Аналитика посетителей</h1>
+
+<!-- Навигация -->
+<p>
+    <a href="/analytics/countries">🌍 Страны</a> |
+    <a href="/analytics/ip">🔍 Поиск по IP</a> |
+    <a href="/analytics/top-ips">👥 Топ IP</a> |
+    <a href="/analytics/visitors">📄 Все посетители</a>
+</p>
+
+<hr>
+
+<!-- Основная статистика -->
+<h2>📈 Основная статистика</h2>
+<table border="2" cellpadding="10" width="100%">
+    <tr>
+        <td style="text-align: center; background-color: #e3f2fd;">
+            <h3>👥 Всего посещений</h3>
+            <strong style="font-size: 2em; color: #1976d2;" th:text="${stats.totalVisits ?: 0}">1,234</strong>
+            <br><small>За все время</small>
+        </td>
+        <td style="text-align: center; background-color: #e8f5e8;">
+            <h3>📅 За неделю</h3>
+            <strong style="font-size: 2em; color: #388e3c;" th:text="${stats.weeklyVisits ?: 0}">156</strong>
+            <br><small>Последние 7 дней</small>
+        </td>
+        <td style="text-align: center; background-color: #fff3e0;">
+            <h3>📱 Мобильных</h3>
+            <strong style="font-size: 2em; color: #f57c00;" th:text="${#numbers.formatDecimal(stats.mobilePercentage ?: 0, 1, 1)} + '%'">45.2%</strong>
+            <br><small>От всех посещений</small>
+        </td>
+        <td style="text-align: center; background-color: #f3e5f5;">
+            <h3>🕐 Сегодня</h3>
+            <strong style="font-size: 2em; color: #7b1fa2;" th:text="${todayVisits ?: 0}">23</strong>
+            <br><small>Уникальных: <span th:text="${todayUnique ?: 0}">15</span></small>
+        </td>
+    </tr>
+</table>
+
+<hr>
+
+<!-- Топ страны и страницы -->
+<table width="100%">
+    <tr>
+        <td width="50%" valign="top">
+            <!-- Топ страны -->
+            <h3>🌍 Топ страны (неделя)</h3>
+            <div th:if="${topCountries != null and !topCountries.isEmpty()}">
+                <table border="1" cellpadding="5" width="100%">
+                    <thead>
+                    <tr style="background-color: #f0f0f0;">
+                        <th>Место</th>
+                        <th>Страна</th>
+                        <th>Посещений</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="country, countryStat : ${topCountries}">
+                        <td style="text-align: center;">
+                            <strong th:text="${countryStat.count}">1</strong>
+                        </td>
+                        <td>
+                                    <span th:switch="${country[0]}">
+                                        <span th:case="'Ukraine'">🇺🇦</span>
+                                        <span th:case="'Poland'">🇵🇱</span>
+                                        <span th:case="'Germany'">🇩🇪</span>
+                                        <span th:case="'United States'">🇺🇸</span>
+                                        <span th:case="'Canada'">🇨🇦</span>
+                                        <span th:case="'France'">🇫🇷</span>
+                                        <span th:case="*">🌍</span>
+                                    </span>
+                            <strong th:text="${country[0] ?: 'Невідомо'}">Ukraine</strong>
+                        </td>
+                        <td style="text-align: center;">
+                            <strong th:text="${country[1]}">45</strong>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${topCountries == null or topCountries.isEmpty()}">
+                <p style="color: gray; text-align: center;">Поки немає даних по країнах</p>
+            </div>
+            <p><a href="/analytics/countries">📊 Детальна статистика по країнах →</a></p>
+        </td>
+
+        <td width="50%" valign="top">
+            <!-- Топ страницы -->
+            <h3>📄 Популярні сторінки</h3>
+            <div th:if="${topPages != null and !topPages.isEmpty()}">
+                <table border="1" cellpadding="5" width="100%">
+                    <thead>
+                    <tr style="background-color: #f0f0f0;">
+                        <th>Место</th>
+                        <th>Страница</th>
+                        <th>Посещений</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="page, pageStat : ${topPages}">
+                        <td style="text-align: center;">
+                            <strong th:text="${pageStat.count}">1</strong>
+                        </td>
+                        <td>
+                            <code style="font-size: 0.9em;" th:text="${page[0] ?: '/'}"></code>
+                        </td>
+                        <td style="text-align: center;">
+                            <strong th:text="${page[1]}">12</strong>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${topPages == null or topPages.isEmpty()}">
+                <p style="color: gray; text-align: center;">Поки немає даних по сторінках</p>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<hr>
 
 <!-- Последние посетители -->
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-clock-history text-primary me-2"></i>
-                    Останні відвідувачі
-                </h5>
-                <div>
-                    <span class="badge bg-info" th:text="${totalElements} + ' записів'">20 записів</span>
-                    <a href="/analytics/visitors" class="btn btn-sm btn-outline-primary ms-2">
-                        Показать все
-                    </a>
+<h2>👥 Останні відвідувачі</h2>
+
+<!-- Информация о пагинации -->
+<p>
+    <strong>Показано:</strong>
+    <span th:text="${#lists.size(recentVisitors)}">20</span> записей
+    (страница <span th:text="${currentPage + 1}">1</span> из <span th:text="${totalPages}">3</span>)
+    | <strong>Всего записей в ограничении:</strong> <span th:text="${totalElements}">50</span>
+    | <a href="/analytics/visitors">📄 Посмотреть все записи →</a>
+</p>
+
+<!-- Размер страницы -->
+<p>
+    <strong>Записей на странице:</strong>
+    <a th:href="@{/analytics(page=0, size=10)}"
+       th:style="${pageSize == 10} ? 'font-weight: bold; color: blue;' : ''">10</a> |
+    <a th:href="@{/analytics(page=0, size=20)}"
+       th:style="${pageSize == 20} ? 'font-weight: bold; color: blue;' : ''">20</a> |
+    <a th:href="@{/analytics(page=0, size=50)}"
+       th:style="${pageSize == 50} ? 'font-weight: bold; color: blue;' : ''">50</a>
+</p>
+
+<!-- Таблица посетителей -->
+<div th:if="${recentVisitors != null and !recentVisitors.isEmpty()}">
+    <table border="1" cellpadding="5" width="100%">
+        <thead>
+        <tr style="background-color: #f5f5f5;">
+            <th width="15%">Время</th>
+            <th width="15%">IP Адрес</th>
+            <th width="20%">Локация</th>
+            <th width="15%">Устройство</th>
+            <th width="25%">Страница</th>
+            <th width="10%">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visitor : ${recentVisitors}">
+            <!-- Время -->
+            <td>
+                <strong th:text="${#temporals.format(visitor.visitTime, 'HH:mm:ss')}">12:34:56</strong>
+                <br>
+                <small th:text="${#temporals.format(visitor.visitTime, 'dd.MM.yyyy')}">15.08.2024</small>
+            </td>
+
+            <!-- IP адрес -->
+            <td>
+                <a th:href="@{/analytics/ip(ip=${visitor.ipAddress})}">
+                    <code th:text="${visitor.ipAddress}">192.168.1.1</code>
+                </a>
+            </td>
+
+            <!-- Локация -->
+            <td>
+                <strong th:text="${visitor.country ?: 'Невідомо'}">Ukraine</strong>
+                <span th:if="${visitor.isBot}" style="color: red;">🤖</span>
+                <br>
+                <small th:text="${visitor.city ?: 'Місто невідоме'}">Kyiv</small>
+            </td>
+
+            <!-- Устройство -->
+            <td>
+                <span th:if="${visitor.isMobile}" style="color: green;">📱 Mobile</span>
+                <span th:unless="${visitor.isMobile}" style="color: blue;">💻 Desktop</span>
+                <br>
+                <small th:text="${visitor.operatingSystem ?: 'Unknown'}">Windows</small>
+            </td>
+
+            <!-- Страница -->
+            <td>
+                <code style="font-size: 0.9em;" th:text="${visitor.requestedUrl ?: '/'}"></code>
+                <div th:if="${visitor.refererUrl}" style="margin-top: 3px;">
+                    <small style="color: gray;">
+                        від: <span th:text="${visitor.refererUrl}"></span>
+                    </small>
                 </div>
-            </div>
-            <div class="card-body p-0">
-                <div th:if="${recentVisitors != null and !recentVisitors.isEmpty()}">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                            <tr>
-                                <th width="15%">Час</th>
-                                <th width="15%">IP адреса</th>
-                                <th width="20%">Локація</th>
-                                <th width="20%">Пристрій</th>
-                                <th width="30%">Сторінка</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="visitor : ${recentVisitors}">
-                                <!-- Время -->
-                                <td>
-                                    <div class="fw-bold" th:text="${#temporals.format(visitor.visitTime, 'HH:mm:ss')}">12:34:56</div>
-                                    <small class="text-muted" th:text="${#temporals.format(visitor.visitTime, 'dd.MM.yyyy')}">15.08.2024</small>
-                                </td>
+            </td>
 
-                                <!-- IP адрес с ссылкой на детали -->
-                                <td>
-                                    <a th:href="@{/analytics/ip(ip=${visitor.ipAddress})}" class="text-decoration-none">
-                                        <code class="text-primary" th:text="${visitor.ipAddress}">192.168.1.1</code>
-                                    </a>
-                                </td>
-
-                                <!-- Локация -->
-                                <td>
-                                    <div>
-                                        <strong th:text="${visitor.country ?: 'Невідомо'}">Ukraine</strong>
-                                        <span th:if="${visitor.isBot}" class="badge bg-warning ms-1">🤖 BOT</span>
-                                    </div>
-                                    <small class="text-muted" th:text="${visitor.city ?: 'Місто невідоме'}">Kyiv</small>
-                                </td>
-
-                                <!-- Устройство -->
-                                <td>
-                                    <div>
-                                        <span th:if="${visitor.isMobile}" class="badge bg-success">📱 Mobile</span>
-                                        <span th:unless="${visitor.isMobile}" class="badge bg-primary">💻 Desktop</span>
-                                    </div>
-                                    <small class="text-muted">
-                                        <span th:text="${visitor.operatingSystem ?: 'Unknown OS'}">Windows</span>
-                                        <span th:if="${visitor.browserName}"> • <span th:text="${visitor.browserName}">Chrome</span></span>
-                                    </small>
-                                </td>
-
-                                <!-- Страница -->
-                                <td>
-                                    <div class="text-truncate">
-                                        <code class="text-primary" th:text="${visitor.requestedUrl ?: '/'}"></code>
-                                    </div>
-                                    <small class="text-muted" th:if="${visitor.refererUrl}">
-                                        від: <span th:text="${visitor.refererUrl}"></span>
-                                    </small>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Простая пагинация -->
-                    <div class="card-footer bg-light" th:if="${totalPages > 1}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <small class="text-muted">
-                                    Показано <span th:text="${#lists.size(recentVisitors)}">20</span>
-                                    из <span th:text="${totalElements}">50</span> записей
-                                </small>
-                            </div>
-                            <div>
-                                <!-- Предыдущая страница -->
-                                <a th:if="${hasPrevious}"
-                                   th:href="@{/analytics(page=${prevPage}, size=${pageSize})}"
-                                   class="btn btn-sm btn-outline-secondary me-2">
-                                    ← Предыдущие
-                                </a>
-
-                                <!-- Номер страницы -->
-                                <span class="badge bg-secondary me-2">
-                                    Страница <span th:text="${currentPage + 1}">1</span>
-                                    из <span th:text="${totalPages}">3</span>
-                                </span>
-
-                                <!-- Следующая страница -->
-                                <a th:if="${hasNext}"
-                                   th:href="@{/analytics(page=${nextPage}, size=${pageSize})}"
-                                   class="btn btn-sm btn-outline-secondary">
-                                    Следующие →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div th:if="${recentVisitors == null or recentVisitors.isEmpty()}"
-                     class="text-center py-5 text-muted">
-                    <i class="bi bi-info-circle me-2" style="font-size: 2rem;"></i>
-                    <div class="mt-2">Поки немає відвідувачів</div>
-                </div>
-            </div>
-        </div>
-    </div>
+            <!-- Действия -->
+            <td style="text-align: center;">
+                <a th:href="@{/analytics/ip(ip=${visitor.ipAddress})}">🔍</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
+
+<!-- Нет посетителей -->
+<div th:if="${recentVisitors == null or recentVisitors.isEmpty()}">
+    <p style="color: orange; text-align: center; font-size: 1.2em;">
+        🚫 Поки немає відвідувачів
+    </p>
+    <p style="text-align: center;">В базі даних поки немає записів про відвідувачів.</p>
+</div>
+
+<!-- Пагинация -->
+<div th:if="${totalPages > 1}">
+    <hr>
+    <h3>📄 Навигация по страницам</h3>
+    <p>
+        <!-- Предыдущая страница -->
+        <span th:if="${hasPrevious}">
+                <a th:href="@{/analytics(page=${prevPage}, size=${pageSize})}">← Предыдущие</a>
+            </span>
+
+        <!-- Информация о странице -->
+        <strong>
+            Страница <span th:text="${currentPage + 1}">1</span>
+            из <span th:text="${totalPages}">3</span>
+        </strong>
+
+        <!-- Следующая страница -->
+        <span th:if="${hasNext}">
+                <a th:href="@{/analytics(page=${nextPage}, size=${pageSize})}">Следующие →</a>
+            </span>
+    </p>
+
+    <!-- Показать номера страниц -->
+    <p>
+        <strong>Перейти:</strong>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:if="${i != currentPage}"
+                   th:href="@{/analytics(page=${i}, size=${pageSize})}"
+                   th:text="${i + 1}">1</a>
+                <strong th:if="${i == currentPage}" th:text="${i + 1}">1</strong>
+                <span> </span>
+            </span>
+    </p>
+</div>
+
+<!-- Ошибки -->
+<div th:if="${error}" style="color: red; border: 2px solid red; padding: 15px; margin: 10px 0; background-color: #ffe6e6;">
+    <h3>❌ Ошибка</h3>
+    <p th:text="${error}">Произошла ошибка загрузки аналитики</p>
+</div>
+
+<hr>
+
+<!-- Быстрые действия -->
+<h3>🚀 Быстрые действия</h3>
+<ul>
+    <li><a href="/analytics/countries">🌍 Подробная статистика по странам</a></li>
+    <li><a href="/analytics/ip">🔍 Найти конкретный IP адрес</a></li>
+    <li><a href="/analytics/top-ips">👥 Посмотреть топ IP адресов</a></li>
+    <li><a href="/analytics/visitors">📄 Все посетители с полной пагинацией</a></li>
+</ul>
+
+<hr>
+
+<!-- Автообновление -->
+<p style="text-align: center;">
+    <small style="color: gray;">
+        🔄 Страница автоматически обновится через <span id="countdown">60</span> секунд
+        | <button onclick="location.reload()">🔄 Обновить сейчас</button>
+    </small>
+</p>
+
+<script>
+    // Обратный отсчет и автообновление
+    let countdown = 60;
+    const countdownElement = document.getElementById('countdown');
+
+    setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+
+        if (countdown <= 0) {
+            location.reload();
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
