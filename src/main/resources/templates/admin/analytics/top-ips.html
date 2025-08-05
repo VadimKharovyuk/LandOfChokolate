@@ -1,207 +1,650 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Топ IP адресов - Аналитика</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>Топ IP адресов</h1>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<p>-->
+<!--  <a href="/analytics">← Назад к аналитике</a> |-->
+<!--  <a href="/analytics/countries">Страны</a> |-->
+<!--  <a href="/analytics/ip">Поиск по IP</a>-->
+<!--</p>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Селектор периода &ndash;&gt;-->
+<!--<h2>Период анализа</h2>-->
+<!--<p>-->
+<!--  <strong>Показать данные за:</strong>-->
+<!--  <a th:href="@{/analytics/top-ips(days=1)}"-->
+<!--     th:style="${selectedDays == 1} ? 'font-weight: bold; color: blue;' : ''">1 день</a> |-->
+<!--  <a th:href="@{/analytics/top-ips(days=7)}"-->
+<!--     th:style="${selectedDays == 7} ? 'font-weight: bold; color: blue;' : ''">7 дней</a> |-->
+<!--  <a th:href="@{/analytics/top-ips(days=30)}"-->
+<!--     th:style="${selectedDays == 30} ? 'font-weight: bold; color: blue;' : ''">30 дней</a> |-->
+<!--  <a th:href="@{/analytics/top-ips(days=90)}"-->
+<!--     th:style="${selectedDays == 90} ? 'font-weight: bold; color: blue;' : ''">90 дней</a>-->
+<!--</p>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Общая статистика &ndash;&gt;-->
+<!--<h2>Общая статистика за <span th:text="${selectedDays}">7</span> дней</h2>-->
+<!--<table border="1" cellpadding="5">-->
+<!--  <tr>-->
+<!--    <td><strong>Всего посещений:</strong></td>-->
+<!--    <td th:text="${totalVisits}">123</td>-->
+<!--  </tr>-->
+<!--  <tr>-->
+<!--    <td><strong>Уникальных IP:</strong></td>-->
+<!--    <td th:text="${uniqueIps}">45</td>-->
+<!--  </tr>-->
+<!--  <tr>-->
+<!--    <td><strong>Среднее посещений на IP:</strong></td>-->
+<!--    <td th:text="${uniqueIps > 0 ? #numbers.formatDecimal(totalVisits / uniqueIps, 1, 1) : 0}">2.7</td>-->
+<!--  </tr>-->
+<!--</table>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Топ IP адресов &ndash;&gt;-->
+<!--<h2>Топ 50 самых активных IP адресов</h2>-->
+
+<!--<div th:if="${topIps != null and !topIps.isEmpty()}">-->
+<!--  <p><strong>Найдено IP адресов:</strong> <span th:text="${#lists.size(topIps)}">25</span></p>-->
+
+<!--  <table border="1" cellpadding="5" width="100%">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--      <th>Место</th>-->
+<!--      <th>IP Адрес</th>-->
+<!--      <th>Посещений</th>-->
+<!--      <th>% от общего</th>-->
+<!--      <th>Страна</th>-->
+<!--      <th>Город</th>-->
+<!--      <th>Действия</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="ip, ipStat : ${topIps}">-->
+<!--      <td>-->
+<!--        <strong th:text="${ipStat.count}">1</strong>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <code th:text="${ip[0]}">192.168.1.1</code>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <strong th:text="${ip[1]}">25</strong>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <span th:text="${#numbers.formatDecimal((ip[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</span>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <span th:text="${ip[2] ?: 'Unknown'}">Ukraine</span>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <span th:text="${ip[3] ?: 'Unknown'}">Kyiv</span>-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        <a th:href="@{/analytics/ip(ip=${ip[0]})}">📊 Детали</a>-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--  </table>-->
+
+<!--  <hr>-->
+
+<!--  &lt;!&ndash; Дополнительная статистика &ndash;&gt;-->
+<!--  <h3>Анализ активности IP</h3>-->
+<!--  <table border="1" cellpadding="5">-->
+<!--    <tr>-->
+<!--      <td><strong>Самый активный IP:</strong></td>-->
+<!--      <td>-->
+<!--        <code th:text="${topIps[0][0]}">192.168.1.1</code>-->
+<!--        (<span th:text="${topIps[0][1]}">50</span> посещений)-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td><strong>IP с 1 посещением:</strong></td>-->
+<!--      <td>-->
+<!--        <span th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] == 1))}">12</span>-->
+<!--        (<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] == 1)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">24%</span>)-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td><strong>IP с 5+ посещениями:</strong></td>-->
+<!--      <td>-->
+<!--        <span th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] >= 5))}">8</span>-->
+<!--        (<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] >= 5)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">16%</span>)-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--  </table>-->
+
+<!--  <hr>-->
+
+<!--  &lt;!&ndash; Топ страны по IP &ndash;&gt;-->
+<!--  <h3>Распределение по странам (топ IP)</h3>-->
+<!--  <table border="1" cellpadding="5">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--      <th>Страна</th>-->
+<!--      <th>Количество IP</th>-->
+<!--      <th>% от топа</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; Группируем по странам &ndash;&gt;-->
+<!--    <tr th:each="country : ${#lists.toSet(#lists.select(topIps, ip -> ip[2]))}">-->
+<!--      <td th:text="${country ?: 'Unknown'}">Ukraine</td>-->
+<!--      <td th:text="${#lists.size(#lists.select(topIps, ip -> ip[2] == country))}">15</td>-->
+<!--      <td th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[2] == country)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">60%</td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--  </table>-->
+
+<!--</div>-->
+
+<!--&lt;!&ndash; Нет данных &ndash;&gt;-->
+<!--<div th:if="${topIps == null or topIps.isEmpty()}">-->
+<!--  <h3 style="color: orange;">Нет данных за выбранный период</h3>-->
+<!--  <p>За последние <span th:text="${selectedDays}">7</span> дней не было посещений.</p>-->
+<!--  <p>Попробуйте выбрать больший период или проверьте работу системы трекинга.</p>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Ошибки &ndash;&gt;-->
+<!--<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--  <h3>Ошибка</h3>-->
+<!--  <p th:text="${error}">Произошла ошибка</p>-->
+<!--</div>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Быстрые действия &ndash;&gt;-->
+<!--<h3>Быстрые действия</h3>-->
+<!--<ul>-->
+<!--  <li>-->
+<!--    <a href="/analytics/ip">🔍 Найти конкретный IP</a>-->
+<!--  </li>-->
+<!--  <li>-->
+<!--    <a th:href="@{/analytics/ip(ip=${topIps != null and !topIps.isEmpty() ? topIps[0][0] : ''})}">-->
+<!--      📊 Подробно о самом активном IP-->
+<!--    </a>-->
+<!--  </li>-->
+<!--  <li>-->
+<!--    <a href="/analytics/countries">🌍 Анализ по странам</a>-->
+<!--  </li>-->
+<!--  <li>-->
+<!--    <a href="/analytics">📈 Общая аналитика</a>-->
+<!--  </li>-->
+<!--</ul>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Пояснения &ndash;&gt;-->
+<!--<h3>Пояснения</h3>-->
+<!--<ul>-->
+<!--  <li><strong>IP адрес</strong> - уникальный адрес устройства в интернете</li>-->
+<!--  <li><strong>Посещения</strong> - количество страниц, которые посетил данный IP</li>-->
+<!--  <li><strong>% от общего</strong> - доля от всех посещений за период</li>-->
+<!--  <li><strong>Детали</strong> - подробная информация о всех посещениях IP</li>-->
+<!--</ul>-->
+
+<!--<hr>-->
+
+<!--<p>-->
+<!--  <small>-->
+<!--    <a href="/analytics">← Вернуться к главной аналитике</a>-->
+<!--  </small>-->
+<!--</p>-->
+
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Топ IP адресов - Аналитика</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles -->
+  <style>
+    .period-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .period-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+    .period-card.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .ip-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-left: 4px solid transparent;
+    }
+    .ip-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-left-color: #007bff;
+    }
+    .top-ip-card {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      border: 2px solid #FFD700;
+    }
+    .top-ip-card .ip-address {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      color: #8B4513;
+    }
+    .stats-header {
+      background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+      color: white;
+      border-radius: 15px 15px 0 0;
+    }
+    .ip-address {
+      font-family: 'Courier New', monospace;
+      background: #f8f9fa;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+    }
+    .activity-badge {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+    }
+    .country-card {
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      color: white;
+      border-radius: 10px;
+    }
+    .analysis-card {
+      background: linear-gradient(135deg, #00cec9 0%, #55a3ff 100%);
+      color: white;
+      border-radius: 15px;
+    }
+    @media (max-width: 576px) {
+      .ip-address {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Топ IP адресов</h1>
+<div class="container-fluid py-3">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6">👥 Топ IP адресов</h1>
+        <a href="/analytics" class="btn btn-outline-primary">← Назад к аналитике</a>
+      </div>
 
-<!-- Навигация -->
-<p>
-  <a href="/analytics">← Назад к аналитике</a> |
-  <a href="/analytics/countries">Страны</a> |
-  <a href="/analytics/ip">Поиск по IP</a>
-</p>
+      <!-- Навигация -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/analytics">🏠 Главная</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/analytics/countries">🌍 Страны</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/analytics/ip">🔍 Поиск по IP</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/analytics/visitors">📄 Все посетители</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
 
-<hr>
+      <!-- Селектор периода -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">📅 Период анализа</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6 col-md-3">
+              <a th:href="@{/analytics/top-ips(days=1)}" class="text-decoration-none">
+                <div th:class="${selectedDays == 1} ? 'card period-card active h-100' : 'card period-card h-100'">
+                  <div class="card-body text-center">
+                    <h6 class="card-title">1 день</h6>
+                    <small>Сегодня</small>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a th:href="@{/analytics/top-ips(days=7)}" class="text-decoration-none">
+                <div th:class="${selectedDays == 7} ? 'card period-card active h-100' : 'card period-card h-100'">
+                  <div class="card-body text-center">
+                    <h6 class="card-title">7 дней</h6>
+                    <small>Неделя</small>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a th:href="@{/analytics/top-ips(days=30)}" class="text-decoration-none">
+                <div th:class="${selectedDays == 30} ? 'card period-card active h-100' : 'card period-card h-100'">
+                  <div class="card-body text-center">
+                    <h6 class="card-title">30 дней</h6>
+                    <small>Месяц</small>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a th:href="@{/analytics/top-ips(days=90)}" class="text-decoration-none">
+                <div th:class="${selectedDays == 90} ? 'card period-card active h-100' : 'card period-card h-100'">
+                  <div class="card-body text-center">
+                    <h6 class="card-title">90 дней</h6>
+                    <small>Квартал</small>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<!-- Селектор периода -->
-<h2>Период анализа</h2>
-<p>
-  <strong>Показать данные за:</strong>
-  <a th:href="@{/analytics/top-ips(days=1)}"
-     th:style="${selectedDays == 1} ? 'font-weight: bold; color: blue;' : ''">1 день</a> |
-  <a th:href="@{/analytics/top-ips(days=7)}"
-     th:style="${selectedDays == 7} ? 'font-weight: bold; color: blue;' : ''">7 дней</a> |
-  <a th:href="@{/analytics/top-ips(days=30)}"
-     th:style="${selectedDays == 30} ? 'font-weight: bold; color: blue;' : ''">30 дней</a> |
-  <a th:href="@{/analytics/top-ips(days=90)}"
-     th:style="${selectedDays == 90} ? 'font-weight: bold; color: blue;' : ''">90 дней</a>
-</p>
+      <!-- Общая статистика -->
+      <div class="card mb-4">
+        <div class="card-header stats-header">
+          <h5 class="card-title text-white mb-0">📊 Общая статистика за <span th:text="${selectedDays}">7</span> дней</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3 text-center">
+            <div class="col-12 col-md-4">
+              <div class="h3 text-primary mb-0" th:text="${totalVisits}">123</div>
+              <small class="text-muted">Всего посещений</small>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="h3 text-success mb-0" th:text="${uniqueIps}">45</div>
+              <small class="text-muted">Уникальных IP</small>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="h3 text-info mb-0" th:text="${uniqueIps > 0 ? #numbers.formatDecimal(totalVisits / uniqueIps, 1, 1) : 0}">2.7</div>
+              <small class="text-muted">Среднее на IP</small>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<hr>
+      <!-- Контент с данными или без данных -->
+      <div th:if="${topIps != null and !topIps.isEmpty()}">
 
-<!-- Общая статистика -->
-<h2>Общая статистика за <span th:text="${selectedDays}">7</span> дней</h2>
-<table border="1" cellpadding="5">
-  <tr>
-    <td><strong>Всего посещений:</strong></td>
-    <td th:text="${totalVisits}">123</td>
-  </tr>
-  <tr>
-    <td><strong>Уникальных IP:</strong></td>
-    <td th:text="${uniqueIps}">45</td>
-  </tr>
-  <tr>
-    <td><strong>Среднее посещений на IP:</strong></td>
-    <td th:text="${uniqueIps > 0 ? #numbers.formatDecimal(totalVisits / uniqueIps, 1, 1) : 0}">2.7</td>
-  </tr>
-</table>
+        <!-- Топ 3 IP -->
+        <div th:if="${#lists.size(topIps) >= 3}" class="mb-4">
+          <h3 class="mb-3">🏆 Топ 3 самых активных IP</h3>
+          <div class="row g-3">
+            <div th:each="ip, ipStat : ${topIps}" th:if="${ipStat.count <= 3}" class="col-12 col-lg-4">
+              <div class="card top-ip-card ip-card h-100">
+                <div class="card-body text-center">
+                  <div class="mb-2">
+                    <span th:if="${ipStat.count == 1}" class="h1">🥇</span>
+                    <span th:if="${ipStat.count == 2}" class="h1">🥈</span>
+                    <span th:if="${ipStat.count == 3}" class="h1">🥉</span>
+                  </div>
+                  <div class="ip-address mb-3" th:text="${ip[0]}">192.168.1.1</div>
+                  <div class="h4 text-dark mb-2" th:text="${ip[1]}">25</div>
+                  <div class="h6 text-secondary mb-2" th:text="${#numbers.formatDecimal((ip[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</div>
+                  <div class="small">
+                    <div th:text="${ip[2] ?: 'Unknown'}">Ukraine</div>
+                    <div class="text-muted" th:text="${ip[3] ?: 'Unknown'}">Kyiv</div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <a th:href="@{/analytics/ip(ip=${ip[0]})}" class="btn btn-outline-dark btn-sm w-100">📊 Детали</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<hr>
+        <!-- Полный список IP -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="card-title mb-0">📋 Топ 50 самых активных IP адресов</h5>
+            <small class="text-muted">Найдено IP адресов: <span th:text="${#lists.size(topIps)}">25</span></small>
+          </div>
+          <div class="card-body">
 
-<!-- Топ IP адресов -->
-<h2>Топ 50 самых активных IP адресов</h2>
+            <!-- Мобильная версия (карточки) -->
+            <div class="d-block d-lg-none">
+              <div class="row g-3">
+                <div th:each="ip, ipStat : ${topIps}" class="col-12 col-md-6">
+                  <div class="card ip-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-secondary" th:text="${ipStat.count}">1</span>
+                        <span class="badge bg-primary activity-badge" th:text="${ip[1]}">25</span>
+                      </div>
+                      <div class="ip-address mb-3 text-center" th:text="${ip[0]}">192.168.1.1</div>
+                      <div class="row text-center">
+                        <div class="col-6">
+                          <div class="h6 text-success mb-0" th:text="${#numbers.formatDecimal((ip[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</div>
+                          <small class="text-muted">% от общего</small>
+                        </div>
+                        <div class="col-6">
+                          <div class="h6 text-info mb-0" th:text="${ip[2] ?: 'Unknown'}">Ukraine</div>
+                          <small class="text-muted" th:text="${ip[3] ?: 'Unknown'}">Kyiv</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <a th:href="@{/analytics/ip(ip=${ip[0]})}" class="btn btn-outline-primary btn-sm w-100">📊 Детали</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-<div th:if="${topIps != null and !topIps.isEmpty()}">
-  <p><strong>Найдено IP адресов:</strong> <span th:text="${#lists.size(topIps)}">25</span></p>
+            <!-- Десктопная версия (таблица) -->
+            <div class="d-none d-lg-block">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="table-dark">
+                  <tr>
+                    <th>Место</th>
+                    <th>IP Адрес</th>
+                    <th>Посещений</th>
+                    <th>% от общего</th>
+                    <th>Страна</th>
+                    <th>Город</th>
+                    <th>Действия</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="ip, ipStat : ${topIps}">
+                    <td>
+                      <span class="badge bg-secondary" th:text="${ipStat.count}">1</span>
+                    </td>
+                    <td>
+                      <code th:text="${ip[0]}">192.168.1.1</code>
+                    </td>
+                    <td>
+                      <strong th:text="${ip[1]}">25</strong>
+                    </td>
+                    <td>
+                      <span th:text="${#numbers.formatDecimal((ip[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</span>
+                    </td>
+                    <td>
+                      <span th:text="${ip[2] ?: 'Unknown'}">Ukraine</span>
+                    </td>
+                    <td>
+                      <span th:text="${ip[3] ?: 'Unknown'}">Kyiv</span>
+                    </td>
+                    <td>
+                      <a th:href="@{/analytics/ip(ip=${ip[0]})}" class="btn btn-outline-primary btn-sm">📊 Детали</a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <table border="1" cellpadding="5" width="100%">
-    <thead>
-    <tr>
-      <th>Место</th>
-      <th>IP Адрес</th>
-      <th>Посещений</th>
-      <th>% от общего</th>
-      <th>Страна</th>
-      <th>Город</th>
-      <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="ip, ipStat : ${topIps}">
-      <td>
-        <strong th:text="${ipStat.count}">1</strong>
-      </td>
-      <td>
-        <code th:text="${ip[0]}">192.168.1.1</code>
-      </td>
-      <td>
-        <strong th:text="${ip[1]}">25</strong>
-      </td>
-      <td>
-        <span th:text="${#numbers.formatDecimal((ip[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</span>
-      </td>
-      <td>
-        <span th:text="${ip[2] ?: 'Unknown'}">Ukraine</span>
-      </td>
-      <td>
-        <span th:text="${ip[3] ?: 'Unknown'}">Kyiv</span>
-      </td>
-      <td>
-        <a th:href="@{/analytics/ip(ip=${ip[0]})}">📊 Детали</a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+        <!-- Анализ активности IP -->
+        <div class="card analysis-card mb-4">
+          <div class="card-header">
+            <h5 class="card-title text-white mb-0">📈 Анализ активности IP</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12 col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white">Самый активный IP:</h6>
+                  <code class="bg-light text-dark p-2 rounded" th:text="${topIps[0][0]}">192.168.1.1</code>
+                  <br><small class="text-white-50">(<span th:text="${topIps[0][1]}">50</span> посещений)</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white">IP с 1 посещением:</h6>
+                  <div class="h4 text-white" th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] == 1))}">12</div>
+                  <small class="text-white-50">(<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] == 1)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">24%</span>)</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white">IP с 5+ посещениями:</h6>
+                  <div class="h4 text-white" th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] >= 5))}">8</div>
+                  <small class="text-white-50">(<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] >= 5)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">16%</span>)</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <hr>
+        <!-- Распределение по странам -->
+        <div class="card mb-4">
+          <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">🌍 Распределение по странам (топ IP)</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div th:each="country : ${#lists.toSet(#lists.select(topIps, ip -> ip[2]))}" class="col-12 col-md-6 col-lg-4">
+                <div class="country-card p-3 text-center">
+                  <h6 class="text-white mb-2" th:text="${country ?: 'Unknown'}">Ukraine</h6>
+                  <div class="h4 text-white mb-1" th:text="${#lists.size(#lists.select(topIps, ip -> ip[2] == country))}">15</div>
+                  <small class="text-white-50">IP адресов</small>
+                  <div class="mt-2">
+                    <span class="badge bg-light text-dark" th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[2] == country)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">60%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <!-- Дополнительная статистика -->
-  <h3>Анализ активности IP</h3>
-  <table border="1" cellpadding="5">
-    <tr>
-      <td><strong>Самый активный IP:</strong></td>
-      <td>
-        <code th:text="${topIps[0][0]}">192.168.1.1</code>
-        (<span th:text="${topIps[0][1]}">50</span> посещений)
-      </td>
-    </tr>
-    <tr>
-      <td><strong>IP с 1 посещением:</strong></td>
-      <td>
-        <span th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] == 1))}">12</span>
-        (<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] == 1)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">24%</span>)
-      </td>
-    </tr>
-    <tr>
-      <td><strong>IP с 5+ посещениями:</strong></td>
-      <td>
-        <span th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] >= 5))}">8</span>
-        (<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] >= 5)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">16%</span>)
-      </td>
-    </tr>
-  </table>
+      <!-- Нет данных -->
+      <div th:if="${topIps == null or topIps.isEmpty()}" class="text-center my-5">
+        <div class="card border-warning">
+          <div class="card-body">
+            <h3 class="text-warning">🚫 Нет данных за выбранный период</h3>
+            <p class="text-muted">За последние <span th:text="${selectedDays}">7</span> дней не было посещений.</p>
+            <p class="text-muted">Попробуйте выбрать больший период или проверьте работу системы трекинга.</p>
+            <a href="/analytics/top-ips?days=30" class="btn btn-warning me-2">Попробовать 30 дней</a>
+            <a href="/analytics" class="btn btn-primary">Вернуться к аналитике</a>
+          </div>
+        </div>
+      </div>
 
-  <hr>
+      <!-- Ошибки -->
+      <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 class="alert-heading">❌ Ошибка</h5>
+        <p th:text="${error}" class="mb-0">Произошла ошибка</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
 
-  <!-- Топ страны по IP -->
-  <h3>Распределение по странам (топ IP)</h3>
-  <table border="1" cellpadding="5">
-    <thead>
-    <tr>
-      <th>Страна</th>
-      <th>Количество IP</th>
-      <th>% от топа</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Группируем по странам -->
-    <tr th:each="country : ${#lists.toSet(#lists.select(topIps, ip -> ip[2]))}">
-      <td th:text="${country ?: 'Unknown'}">Ukraine</td>
-      <td th:text="${#lists.size(#lists.select(topIps, ip -> ip[2] == country))}">15</td>
-      <td th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[2] == country)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">60%</td>
-    </tr>
-    </tbody>
-  </table>
+      <!-- Быстрые действия -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">🚀 Быстрые действия</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-6 col-md-3">
+              <a href="/analytics/ip" class="btn btn-outline-info w-100">
+                <small>🔍 Найти IP</small>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a th:href="@{/analytics/ip(ip=${topIps != null and !topIps.isEmpty() ? topIps[0][0] : ''})}"
+                 class="btn btn-outline-success w-100" th:if="${topIps != null and !topIps.isEmpty()}">
+                <small>📊 Топ IP</small>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a href="/analytics/countries" class="btn btn-outline-warning w-100">
+                <small>🌍 По странам</small>
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a href="/analytics" class="btn btn-outline-primary w-100">
+                <small>📈 Общая аналитика</small>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Пояснения -->
+      <div class="card mb-4" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white;">
+        <div class="card-header bg-transparent border-0">
+          <h5 class="card-title text-white mb-0">ℹ️ Пояснения</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-2"><strong>IP адрес</strong> - уникальный адрес устройства в интернете</li>
+                <li class="mb-2"><strong>Посещения</strong> - количество страниц, которые посетил данный IP</li>
+              </ul>
+            </div>
+            <div class="col-12 col-md-6">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-2"><strong>% от общего</strong> - доля от всех посещений за период</li>
+                <li class="mb-2"><strong>Детали</strong> - подробная информация о всех посещениях IP</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Назад -->
+      <div class="text-center">
+        <a href="/analytics" class="btn btn-outline-primary">
+          ← Вернуться к главной аналитике
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Нет данных -->
-<div th:if="${topIps == null or topIps.isEmpty()}">
-  <h3 style="color: orange;">Нет данных за выбранный период</h3>
-  <p>За последние <span th:text="${selectedDays}">7</span> дней не было посещений.</p>
-  <p>Попробуйте выбрать больший период или проверьте работу системы трекинга.</p>
-</div>
-
-<!-- Ошибки -->
-<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-  <h3>Ошибка</h3>
-  <p th:text="${error}">Произошла ошибка</p>
-</div>
-
-<hr>
-
-<!-- Быстрые действия -->
-<h3>Быстрые действия</h3>
-<ul>
-  <li>
-    <a href="/analytics/ip">🔍 Найти конкретный IP</a>
-  </li>
-  <li>
-    <a th:href="@{/analytics/ip(ip=${topIps != null and !topIps.isEmpty() ? topIps[0][0] : ''})}">
-      📊 Подробно о самом активном IP
-    </a>
-  </li>
-  <li>
-    <a href="/analytics/countries">🌍 Анализ по странам</a>
-  </li>
-  <li>
-    <a href="/analytics">📈 Общая аналитика</a>
-  </li>
-</ul>
-
-<hr>
-
-<!-- Пояснения -->
-<h3>Пояснения</h3>
-<ul>
-  <li><strong>IP адрес</strong> - уникальный адрес устройства в интернете</li>
-  <li><strong>Посещения</strong> - количество страниц, которые посетил данный IP</li>
-  <li><strong>% от общего</strong> - доля от всех посещений за период</li>
-  <li><strong>Детали</strong> - подробная информация о всех посещениях IP</li>
-</ul>
-
-<hr>
-
-<p>
-  <small>
-    <a href="/analytics">← Вернуться к главной аналитике</a>
-  </small>
-</p>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

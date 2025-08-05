@@ -230,6 +230,7 @@ public class VisitorAnalyticsController {
         return "admin/analytics/dashboard";
     }
 
+
     // ✅ ДОПОЛНИТЕЛЬНЫЙ МЕТОД: Показать все последние посетители отдельно
     @GetMapping("/visitors")
     public String allVisitors(@RequestParam(defaultValue = "0") int page,

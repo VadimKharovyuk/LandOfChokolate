@@ -1,211 +1,826 @@
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html lang="uk" xmlns:th="http://www.thymeleaf.org">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;    <meta charset="UTF-8">&ndash;&gt;-->
+<!--&lt;!&ndash;    <meta name="viewport" content="width=device-width, initial-scale=1.0">&ndash;&gt;-->
+<!--&lt;!&ndash;    <title>Поиск по IP - Аналитика</title>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<h1>Поиск по IP адресу</h1>&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash; Навигация &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;<p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <a href="/analytics">← Назад к аналитике</a> |&ndash;&gt;-->
+<!--&lt;!&ndash;    <a href="/analytics/countries">Страны</a> |&ndash;&gt;-->
+<!--&lt;!&ndash;    <a href="/analytics/top-ips">Топ IP</a>&ndash;&gt;-->
+<!--&lt;!&ndash;</p>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash; Форма поиска &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;<h2>Поиск посещений по IP</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;<form method="get" action="/analytics/ip">&ndash;&gt;-->
+<!--&lt;!&ndash;    <label for="ip">Введите IP адрес:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;    <input type="text"&ndash;&gt;-->
+<!--&lt;!&ndash;           id="ip"&ndash;&gt;-->
+<!--&lt;!&ndash;           name="ip"&ndash;&gt;-->
+<!--&lt;!&ndash;           th:value="${searchIp}"&ndash;&gt;-->
+<!--&lt;!&ndash;           placeholder="Например: 192.168.1.1"&ndash;&gt;-->
+<!--&lt;!&ndash;           size="20">&ndash;&gt;-->
+<!--&lt;!&ndash;    <button type="submit">Найти</button>&ndash;&gt;-->
+<!--&lt;!&ndash;</form>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash; Результаты поиска &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;<div th:if="${searchIp != null and !searchIp.isEmpty()}">&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <h2>Результаты для IP: <span th:text="${searchIp}"></span></h2>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Сообщение если нет данных &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div th:if="${noDataMessage}" style="color: red;">&ndash;&gt;-->
+<!--&lt;!&ndash;        <h3 th:text="${noDataMessage}"></h3>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p>Попробуйте найти другой IP адрес.</p>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Общая статистика по IP &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div th:if="${ipStats != null and ipStats.totalVisits > 0}">&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <h3>Общая информация</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;        <table border="1" cellpadding="5">&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Всего посещений:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${ipStats.totalVisits}">0</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Уникальных страниц:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${ipStats.uniquePages}">0</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Первое посещение:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${#temporals.format(ipStats.firstVisit, 'dd.MM.yyyy HH:mm')}">-</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Последнее посещение:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${#temporals.format(ipStats.lastVisit, 'dd.MM.yyyy HH:mm')}">-</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Страна:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${ipStats.country}">Unknown</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Город:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${ipStats.city}">Unknown</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Устройство:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span th:if="${ipStats.isMobile}">📱 Мобильное</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span th:unless="${ipStats.isMobile}">💻 Десктоп</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Операционная система:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${ipStats.operatingSystem}">Unknown</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td><strong>Браузер:</strong></td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${ipStats.browserName}">Unknown</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;        </table>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        &lt;!&ndash; Статистика по страницам &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <h3>Статистика по страницам</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;        <table border="1" cellpadding="5">&ndash;&gt;-->
+<!--&lt;!&ndash;            <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>№</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Страница</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Посещений</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr th:each="page, pageStat : ${ipStats.pageStats}">&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${pageStat.count}">1</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <code th:text="${page.url}"></code>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${page.visits}">5</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;        </table>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        &lt;!&ndash; Хронология посещений &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <h3>Хронология посещений (последние 50)</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;        <table border="1" cellpadding="5">&ndash;&gt;-->
+<!--&lt;!&ndash;            <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>№</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Время</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Страница</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Откуда пришел</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Сессия</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr th:each="visit, visitStat : ${timeline}">&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${visitStat.count}">1</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <code th:text="${visit.requestedUrl}"></code>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <span th:if="${visit.refererUrl}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <small th:text="${visit.refererUrl}"></small>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span th:unless="${visit.refererUrl}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <em>Прямой заход</em>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <small th:text="${visit.sessionId}"></small>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;        </table>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        &lt;!&ndash; Все посещения (полный список) &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <h3>Все посещения (полный список)</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;        <table border="1" cellpadding="5">&ndash;&gt;-->
+<!--&lt;!&ndash;            <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>ID</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Время</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Страница</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>User-Agent</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <th>Бот?</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr th:each="visit : ${ipVisits}">&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${visit.id}">123</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <code th:text="${visit.requestedUrl}"></code>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <small th:text="${visit.userAgent}"></small>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span th:if="${visit.isBot}" style="color: red;">🤖 ДА</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span th:unless="${visit.isBot}" style="color: green;">👤 НЕТ</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;        </table>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash; Ошибки &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">&ndash;&gt;-->
+<!--&lt;!&ndash;    <h3>Ошибка</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p th:text="${error}">Произошла ошибка</p>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;&lt;!&ndash; Подсказки &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;<h3>Примеры поиска:</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;<ul>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li><a href="/analytics/ip?ip=0:0:0:0:0:0:0:1">0:0:0:0:0:0:0:1</a> (localhost IPv6)</li>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li><a href="/analytics/ip?ip=127.0.0.1">127.0.0.1</a> (localhost IPv4)</li>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li><a href="/analytics/ip?ip=192.168">192.168</a> (поиск по началу IP)</li>&ndash;&gt;-->
+<!--&lt;!&ndash;</ul>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<hr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <small>&ndash;&gt;-->
+<!--&lt;!&ndash;        <a href="/analytics">← Вернуться к главной аналитике</a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </small>&ndash;&gt;-->
+<!--&lt;!&ndash;</p>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Поиск по IP - Аналитика</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>Поиск по IP адресу</h1>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<p>-->
+<!--    <a href="/analytics">← Назад к аналитике</a> |-->
+<!--    <a href="/analytics/countries">Страны</a> |-->
+<!--    <a href="/analytics/top-ips">Топ IP</a>-->
+<!--</p>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Форма поиска &ndash;&gt;-->
+<!--<h2>Поиск посещений по IP</h2>-->
+<!--<form method="get" action="/analytics/ip">-->
+<!--    <label for="ip">Введите IP адрес:</label>-->
+<!--    <input type="text"-->
+<!--           id="ip"-->
+<!--           name="ip"-->
+<!--           th:value="${searchIp}"-->
+<!--           placeholder="Например: 192.168.1.1"-->
+<!--           size="20">-->
+<!--    <button type="submit">Найти</button>-->
+<!--</form>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Результаты поиска &ndash;&gt;-->
+<!--<div th:if="${searchIp != null and !searchIp.isEmpty()}">-->
+
+<!--    <h2>Результаты для IP: <span th:text="${searchIp}"></span></h2>-->
+
+<!--    &lt;!&ndash; Сообщение если нет данных &ndash;&gt;-->
+<!--    <div th:if="${noDataMessage}" style="color: red;">-->
+<!--        <h3 th:text="${noDataMessage}"></h3>-->
+<!--        <p>Попробуйте найти другой IP адрес.</p>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Общая статистика по IP &ndash;&gt;-->
+<!--    <div th:if="${ipStats != null and ipStats.totalVisits > 0}">-->
+
+<!--        <h3>Общая информация</h3>-->
+<!--        <table border="1" cellpadding="5">-->
+<!--            <tr>-->
+<!--                <td><strong>Всего посещений:</strong></td>-->
+<!--                <td th:text="${ipStats.totalVisits}">0</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Уникальных страниц:</strong></td>-->
+<!--                <td th:text="${ipStats.uniquePages}">0</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Первое посещение:</strong></td>-->
+<!--                <td th:text="${#temporals.format(ipStats.firstVisit, 'dd.MM.yyyy HH:mm')}">-</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Последнее посещение:</strong></td>-->
+<!--                <td th:text="${#temporals.format(ipStats.lastVisit, 'dd.MM.yyyy HH:mm')}">-</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Страна:</strong></td>-->
+<!--                <td th:text="${ipStats.country}">Unknown</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Город:</strong></td>-->
+<!--                <td th:text="${ipStats.city}">Unknown</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Устройство:</strong></td>-->
+<!--                <td>-->
+<!--                    <span th:if="${ipStats.isMobile}">📱 Мобильное</span>-->
+<!--                    <span th:unless="${ipStats.isMobile}">💻 Десктоп</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Операционная система:</strong></td>-->
+<!--                <td th:text="${ipStats.operatingSystem}">Unknown</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td><strong>Браузер:</strong></td>-->
+<!--                <td th:text="${ipStats.browserName}">Unknown</td>-->
+<!--            </tr>-->
+<!--        </table>-->
+
+<!--        <hr>-->
+
+<!--        &lt;!&ndash; Статистика по страницам &ndash;&gt;-->
+<!--        <h3>Статистика по страницам</h3>-->
+<!--        <table border="1" cellpadding="5">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>№</th>-->
+<!--                <th>Страница</th>-->
+<!--                <th>Посещений</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="page, pageStat : ${ipStats.pageStats}">-->
+<!--                <td th:text="${pageStat.count}">1</td>-->
+<!--                <td>-->
+<!--                    <code th:text="${page.url}"></code>-->
+<!--                </td>-->
+<!--                <td th:text="${page.visits}">5</td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+
+<!--        <hr>-->
+
+<!--        &lt;!&ndash; Хронология посещений &ndash;&gt;-->
+<!--        <h3>Хронология посещений (последние 50)</h3>-->
+<!--        <table border="1" cellpadding="5">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>№</th>-->
+<!--                <th>Время</th>-->
+<!--                <th>Страница</th>-->
+<!--                <th>Откуда пришел</th>-->
+<!--                <th>Сессия</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="visit, visitStat : ${timeline}">-->
+<!--                <td th:text="${visitStat.count}">1</td>-->
+<!--                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>-->
+<!--                <td>-->
+<!--                    <code th:text="${visit.requestedUrl}"></code>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                            <span th:if="${visit.refererUrl}">-->
+<!--                                <small th:text="${visit.refererUrl}"></small>-->
+<!--                            </span>-->
+<!--                    <span th:unless="${visit.refererUrl}">-->
+<!--                                <em>Прямой заход</em>-->
+<!--                            </span>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <small th:text="${visit.sessionId}"></small>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+
+<!--        <hr>-->
+
+<!--        &lt;!&ndash; Все посещения (полный список) &ndash;&gt;-->
+<!--        <h3>Все посещения (полный список)</h3>-->
+<!--        <table border="1" cellpadding="5">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>ID</th>-->
+<!--                <th>Время</th>-->
+<!--                <th>Страница</th>-->
+<!--                <th>User-Agent</th>-->
+<!--                <th>Бот?</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="visit : ${ipVisits}">-->
+<!--                <td th:text="${visit.id}">123</td>-->
+<!--                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>-->
+<!--                <td>-->
+<!--                    <code th:text="${visit.requestedUrl}"></code>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <small th:text="${visit.userAgent}"></small>-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <span th:if="${visit.isBot}" style="color: red;">🤖 ДА</span>-->
+<!--                    <span th:unless="${visit.isBot}" style="color: green;">👤 НЕТ</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Ошибки &ndash;&gt;-->
+<!--<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
+<!--    <h3>Ошибка</h3>-->
+<!--    <p th:text="${error}">Произошла ошибка</p>-->
+<!--</div>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Подсказки &ndash;&gt;-->
+<!--<h3>Примеры поиска:</h3>-->
+<!--<ul>-->
+<!--    <li><a href="/analytics/ip?ip=0:0:0:0:0:0:0:1">0:0:0:0:0:0:0:1</a> (localhost IPv6)</li>-->
+<!--    <li><a href="/analytics/ip?ip=127.0.0.1">127.0.0.1</a> (localhost IPv4)</li>-->
+<!--    <li><a href="/analytics/ip?ip=192.168">192.168</a> (поиск по началу IP)</li>-->
+<!--</ul>-->
+
+<!--<hr>-->
+
+<!--<p>-->
+<!--    <small>-->
+<!--        <a href="/analytics">← Вернуться к главной аналитике</a>-->
+<!--    </small>-->
+<!--</p>-->
+
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поиск по IP - Аналитика</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <style>
+        .search-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        .search-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        .search-btn:hover {
+            background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .stats-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid #007bff;
+        }
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .timeline-card {
+            border-left: 4px solid #6c757d;
+            background: #f8f9fa;
+        }
+        .timeline-card:hover {
+            border-left-color: #007bff;
+            background: #e3f2fd;
+        }
+        .ip-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .page-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .page-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.1);
+        }
+        .visits-timeline {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .device-badge {
+            font-size: 1.2rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+        @media (max-width: 576px) {
+            .ip-badge {
+                font-size: 0.9rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Поиск по IP адресу</h1>
+<div class="container-fluid py-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-6">🔍 Поиск по IP адресу</h1>
+                <a href="/analytics" class="btn btn-outline-primary">← Назад к аналитике</a>
+            </div>
 
-<!-- Навигация -->
-<p>
-    <a href="/analytics">← Назад к аналитике</a> |
-    <a href="/analytics/countries">Страны</a> |
-    <a href="/analytics/top-ips">Топ IP</a>
-</p>
+            <!-- Навигация -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics">🏠 Главная</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics/countries">🌍 Страны</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics/top-ips">👥 Топ IP</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics/visitors">📄 Все посетители</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
 
-<hr>
+            <!-- Форма поиска -->
+            <div class="card search-card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-white mb-3">🎯 Поиск посещений по IP</h5>
+                    <form method="get" action="/analytics/ip">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-12 col-md-8">
+                                <label for="ip" class="form-label text-white">Введите IP адрес:</label>
+                                <input type="text" id="ip" name="ip" class="form-control form-control-lg"
+                                       th:value="${searchIp}" placeholder="Например: 192.168.1.1 или 127.0.0.1">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <button type="submit" class="btn search-btn btn-lg w-100">
+                                    🔍 Найти
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-<!-- Форма поиска -->
-<h2>Поиск посещений по IP</h2>
-<form method="get" action="/analytics/ip">
-    <label for="ip">Введите IP адрес:</label>
-    <input type="text"
-           id="ip"
-           name="ip"
-           th:value="${searchIp}"
-           placeholder="Например: 192.168.1.1"
-           size="20">
-    <button type="submit">Найти</button>
-</form>
+            <!-- Результаты поиска -->
+            <div th:if="${searchIp != null and !searchIp.isEmpty()}">
 
-<hr>
+                <!-- Заголовок результатов -->
+                <div class="d-flex align-items-center justify-content-center mb-4">
+                    <h2 class="me-3">Результаты для IP:</h2>
+                    <span class="ip-badge" th:text="${searchIp}"></span>
+                </div>
 
-<!-- Результаты поиска -->
-<div th:if="${searchIp != null and !searchIp.isEmpty()}">
+                <!-- Сообщение если нет данных -->
+                <div th:if="${noDataMessage}" class="alert alert-warning text-center" role="alert">
+                    <h4 class="alert-heading" th:text="${noDataMessage}"></h4>
+                    <p class="mb-2">Попробуйте найти другой IP адрес.</p>
+                    <hr>
+                    <a href="/analytics/ip" class="btn btn-outline-warning">🔄 Новый поиск</a>
+                </div>
 
-    <h2>Результаты для IP: <span th:text="${searchIp}"></span></h2>
+                <!-- Общая статистика по IP -->
+                <div th:if="${ipStats != null and ipStats.totalVisits > 0}">
 
-    <!-- Сообщение если нет данных -->
-    <div th:if="${noDataMessage}" style="color: red;">
-        <h3 th:text="${noDataMessage}"></h3>
-        <p>Попробуйте найти другой IP адрес.</p>
-    </div>
+                    <!-- Основная информация -->
+                    <div class="card stats-card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">📊 Общая информация</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="text-center">
+                                        <div class="h4 text-primary mb-0" th:text="${ipStats.totalVisits}">0</div>
+                                        <small class="text-muted">Всего посещений</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="text-center">
+                                        <div class="h4 text-success mb-0" th:text="${ipStats.uniquePages}">0</div>
+                                        <small class="text-muted">Уникальных страниц</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="text-center">
+                                        <div class="h6 text-info mb-0" th:text="${#temporals.format(ipStats.firstVisit, 'dd.MM.yyyy')}">-</div>
+                                        <small class="text-muted">Первое посещение</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="text-center">
+                                        <div class="h6 text-warning mb-0" th:text="${#temporals.format(ipStats.lastVisit, 'dd.MM.yyyy')}">-</div>
+                                        <small class="text-muted">Последнее посещение</small>
+                                    </div>
+                                </div>
+                            </div>
 
-    <!-- Общая статистика по IP -->
-    <div th:if="${ipStats != null and ipStats.totalVisits > 0}">
+                            <hr>
 
-        <h3>Общая информация</h3>
-        <table border="1" cellpadding="5">
-            <tr>
-                <td><strong>Всего посещений:</strong></td>
-                <td th:text="${ipStats.totalVisits}">0</td>
-            </tr>
-            <tr>
-                <td><strong>Уникальных страниц:</strong></td>
-                <td th:text="${ipStats.uniquePages}">0</td>
-            </tr>
-            <tr>
-                <td><strong>Первое посещение:</strong></td>
-                <td th:text="${#temporals.format(ipStats.firstVisit, 'dd.MM.yyyy HH:mm')}">-</td>
-            </tr>
-            <tr>
-                <td><strong>Последнее посещение:</strong></td>
-                <td th:text="${#temporals.format(ipStats.lastVisit, 'dd.MM.yyyy HH:mm')}">-</td>
-            </tr>
-            <tr>
-                <td><strong>Страна:</strong></td>
-                <td th:text="${ipStats.country}">Unknown</td>
-            </tr>
-            <tr>
-                <td><strong>Город:</strong></td>
-                <td th:text="${ipStats.city}">Unknown</td>
-            </tr>
-            <tr>
-                <td><strong>Устройство:</strong></td>
-                <td>
-                    <span th:if="${ipStats.isMobile}">📱 Мобильное</span>
-                    <span th:unless="${ipStats.isMobile}">💻 Десктоп</span>
-                </td>
-            </tr>
-            <tr>
-                <td><strong>Операционная система:</strong></td>
-                <td th:text="${ipStats.operatingSystem}">Unknown</td>
-            </tr>
-            <tr>
-                <td><strong>Браузер:</strong></td>
-                <td th:text="${ipStats.browserName}">Unknown</td>
-            </tr>
-        </table>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <h6>🌍 Геолокация:</h6>
+                                    <p class="mb-1"><strong>Страна:</strong> <span th:text="${ipStats.country}">Unknown</span></p>
+                                    <p class="mb-0"><strong>Город:</strong> <span th:text="${ipStats.city}">Unknown</span></p>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <h6>💻 Техническая информация:</h6>
+                                    <p class="mb-1">
+                                        <strong>Устройство:</strong>
+                                        <span th:if="${ipStats.isMobile}" class="badge device-badge bg-success">📱 Мобильное</span>
+                                        <span th:unless="${ipStats.isMobile}" class="badge device-badge bg-primary">💻 Десктоп</span>
+                                    </p>
+                                    <p class="mb-1"><strong>ОС:</strong> <span th:text="${ipStats.operatingSystem}">Unknown</span></p>
+                                    <p class="mb-0"><strong>Браузер:</strong> <span th:text="${ipStats.browserName}">Unknown</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <hr>
+                    <!-- Статистика по страницам -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="card-title mb-0">📄 Статистика по страницам</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div th:each="page, pageStat : ${ipStats.pageStats}" class="col-12 col-md-6 col-lg-4">
+                                    <div class="page-card p-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-secondary" th:text="${pageStat.count}">1</span>
+                                            <span class="badge bg-primary" th:text="${page.visits}">5</span>
+                                        </div>
+                                        <code class="text-break small" th:text="${page.url}"></code>
+                                        <div class="mt-2">
+                                            <small class="text-muted">посещений</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Статистика по страницам -->
-        <h3>Статистика по страницам</h3>
-        <table border="1" cellpadding="5">
-            <thead>
-            <tr>
-                <th>№</th>
-                <th>Страница</th>
-                <th>Посещений</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="page, pageStat : ${ipStats.pageStats}">
-                <td th:text="${pageStat.count}">1</td>
-                <td>
-                    <code th:text="${page.url}"></code>
-                </td>
-                <td th:text="${page.visits}">5</td>
-            </tr>
-            </tbody>
-        </table>
+                    <!-- Хронология посещений -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="card-title mb-0">⏰ Хронология посещений (последние 50)</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="visits-timeline">
+                                <div th:each="visit, visitStat : ${timeline}" class="timeline-card p-3 border-bottom">
+                                    <div class="row align-items-center">
+                                        <div class="col-2 col-md-1">
+                                            <span class="badge bg-secondary" th:text="${visitStat.count}">1</span>
+                                        </div>
+                                        <div class="col-10 col-md-3">
+                                            <div class="fw-bold" th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy')}">01.08.2025</div>
+                                            <small class="text-muted" th:text="${#temporals.format(visit.visitTime, 'HH:mm:ss')}">12:34:56</small>
+                                        </div>
+                                        <div class="col-12 col-md-4 mt-2 mt-md-0">
+                                            <code class="text-break small" th:text="${visit.requestedUrl}"></code>
+                                        </div>
+                                        <div class="col-12 col-md-4 mt-2 mt-md-0">
+                                            <span th:if="${visit.refererUrl}">
+                                                <small class="text-muted">От: </small>
+                                                <small class="text-break" th:text="${visit.refererUrl}"></small>
+                                            </span>
+                                            <span th:unless="${visit.refererUrl}">
+                                                <em class="text-muted">Прямой заход</em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div th:if="${visit.sessionId}" class="row mt-2">
+                                        <div class="col-12">
+                                            <small class="text-muted">Сессия: <code th:text="${visit.sessionId}"></code></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <hr>
+                    <!-- Все посещения (полный список) -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning">
+                            <h5 class="card-title mb-0">📋 Все посещения (полный список)</h5>
+                        </div>
+                        <div class="card-body">
 
-        <!-- Хронология посещений -->
-        <h3>Хронология посещений (последние 50)</h3>
-        <table border="1" cellpadding="5">
-            <thead>
-            <tr>
-                <th>№</th>
-                <th>Время</th>
-                <th>Страница</th>
-                <th>Откуда пришел</th>
-                <th>Сессия</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="visit, visitStat : ${timeline}">
-                <td th:text="${visitStat.count}">1</td>
-                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>
-                <td>
-                    <code th:text="${visit.requestedUrl}"></code>
-                </td>
-                <td>
-                            <span th:if="${visit.refererUrl}">
-                                <small th:text="${visit.refererUrl}"></small>
-                            </span>
-                    <span th:unless="${visit.refererUrl}">
-                                <em>Прямой заход</em>
-                            </span>
-                </td>
-                <td>
-                    <small th:text="${visit.sessionId}"></small>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                            <!-- Мобильная версия (карточки) -->
+                            <div class="d-block d-lg-none">
+                                <div class="row g-3">
+                                    <div th:each="visit : ${ipVisits}" class="col-12">
+                                        <div class="card border-start border-primary border-3">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <small class="text-muted">ID:</small> <span th:text="${visit.id}">123</span>
+                                                    </div>
+                                                    <div class="col-6 text-end">
+                                                        <span th:if="${visit.isBot}" class="badge bg-danger">🤖 БОТ</span>
+                                                        <span th:unless="${visit.isBot}" class="badge bg-success">👤 ЧЕЛОВЕК</span>
+                                                    </div>
+                                                </div>
+                                                <hr class="my-2">
+                                                <div class="mb-2">
+                                                    <strong th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</strong>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <code class="text-break small" th:text="${visit.requestedUrl}"></code>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted text-break" th:text="${visit.userAgent}"></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <hr>
+                            <!-- Десктопная версия (таблица) -->
+                            <div class="d-none d-lg-block">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Время</th>
+                                            <th>Страница</th>
+                                            <th>User-Agent</th>
+                                            <th>Бот?</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="visit : ${ipVisits}">
+                                            <td>
+                                                <small class="text-muted" th:text="${visit.id}">123</small>
+                                            </td>
+                                            <td>
+                                                <div th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy')}">01.08.2025</div>
+                                                <small class="text-muted" th:text="${#temporals.format(visit.visitTime, 'HH:mm:ss')}">12:34:56</small>
+                                            </td>
+                                            <td>
+                                                <code class="small text-break" th:text="${visit.requestedUrl}"></code>
+                                            </td>
+                                            <td>
+                                                <small class="text-break" th:text="${visit.userAgent}"></small>
+                                            </td>
+                                            <td>
+                                                <span th:if="${visit.isBot}" class="badge bg-danger">🤖 ДА</span>
+                                                <span th:unless="${visit.isBot}" class="badge bg-success">👤 НЕТ</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Все посещения (полный список) -->
-        <h3>Все посещения (полный список)</h3>
-        <table border="1" cellpadding="5">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Время</th>
-                <th>Страница</th>
-                <th>User-Agent</th>
-                <th>Бот?</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="visit : ${ipVisits}">
-                <td th:text="${visit.id}">123</td>
-                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>
-                <td>
-                    <code th:text="${visit.requestedUrl}"></code>
-                </td>
-                <td>
-                    <small th:text="${visit.userAgent}"></small>
-                </td>
-                <td>
-                    <span th:if="${visit.isBot}" style="color: red;">🤖 ДА</span>
-                    <span th:unless="${visit.isBot}" style="color: green;">👤 НЕТ</span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <!-- Ошибки -->
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h5 class="alert-heading">❌ Ошибка</h5>
+                <p th:text="${error}" class="mb-0">Произошла ошибка</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Подсказки -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">💡 Примеры поиска</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <a href="/analytics/ip?ip=0:0:0:0:0:0:0:1" class="btn btn-outline-secondary w-100 text-start">
+                                <code>0:0:0:0:0:0:0:1</code><br>
+                                <small class="text-muted">localhost IPv6</small>
+                            </a>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <a href="/analytics/ip?ip=127.0.0.1" class="btn btn-outline-secondary w-100 text-start">
+                                <code>127.0.0.1</code><br>
+                                <small class="text-muted">localhost IPv4</small>
+                            </a>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <a href="/analytics/ip?ip=192.168" class="btn btn-outline-secondary w-100 text-start">
+                                <code>192.168</code><br>
+                                <small class="text-muted">поиск по началу IP</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Назад -->
+            <div class="text-center">
+                <a href="/analytics" class="btn btn-outline-primary">
+                    ← Вернуться к главной аналитике
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Ошибки -->
-<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
-    <h3>Ошибка</h3>
-    <p th:text="${error}">Произошла ошибка</p>
-</div>
-
-<hr>
-
-<!-- Подсказки -->
-<h3>Примеры поиска:</h3>
-<ul>
-    <li><a href="/analytics/ip?ip=0:0:0:0:0:0:0:1">0:0:0:0:0:0:0:1</a> (localhost IPv6)</li>
-    <li><a href="/analytics/ip?ip=127.0.0.1">127.0.0.1</a> (localhost IPv4)</li>
-    <li><a href="/analytics/ip?ip=192.168">192.168</a> (поиск по началу IP)</li>
-</ul>
-
-<hr>
-
-<p>
-    <small>
-        <a href="/analytics">← Вернуться к главной аналитике</a>
-    </small>
-</p>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

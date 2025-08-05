@@ -1,276 +1,755 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Аналитика по странам - Аналитика</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>Аналитика по странам</h1>-->
+
+<!--&lt;!&ndash; Навигация &ndash;&gt;-->
+<!--<p>-->
+<!--    <a href="/analytics">← Назад к аналитике</a> |-->
+<!--    <a href="/analytics/ip">Поиск по IP</a> |-->
+<!--    <a href="/analytics/top-ips">Топ IP</a> |-->
+<!--    <a href="/analytics/visitors">Все посетители</a>-->
+<!--</p>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Селектор периода &ndash;&gt;-->
+<!--<h2>Период анализа</h2>-->
+<!--<p>-->
+<!--    <strong>Показать данные за:</strong>-->
+<!--    <a th:href="@{/analytics/countries(days=1)}"-->
+<!--       th:style="${selectedDays == 1} ? 'font-weight: bold; color: blue;' : ''">1 день</a> |-->
+<!--    <a th:href="@{/analytics/countries(days=7)}"-->
+<!--       th:style="${selectedDays == 7} ? 'font-weight: bold; color: blue;' : ''">7 дней</a> |-->
+<!--    <a th:href="@{/analytics/countries(days=30)}"-->
+<!--       th:style="${selectedDays == 30} ? 'font-weight: bold; color: blue;' : ''">30 дней</a> |-->
+<!--    <a th:href="@{/analytics/countries(days=90)}"-->
+<!--       th:style="${selectedDays == 90} ? 'font-weight: bold; color: blue;' : ''">90 дней</a>-->
+<!--</p>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Общая статистика &ndash;&gt;-->
+<!--<h2>Общая статистика за <span th:text="${selectedDays}">7</span> дней</h2>-->
+<!--<table border="1" cellpadding="5">-->
+<!--    <tr>-->
+<!--        <td><strong>Всего посещений:</strong></td>-->
+<!--        <td th:text="${totalVisits}">123</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td><strong>Уникальных стран:</strong></td>-->
+<!--        <td th:text="${#lists.size(countriesStats)}">8</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td><strong>Среднее посещений на страну:</strong></td>-->
+<!--        <td th:text="${#lists.size(countriesStats) > 0 ? #numbers.formatDecimal(totalVisits / #lists.size(countriesStats), 1, 1) : 0}">15.4</td>-->
+<!--    </tr>-->
+<!--</table>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Статистика по странам &ndash;&gt;-->
+<!--<h2>Детальная статистика по странам</h2>-->
+
+<!--<div th:if="${countriesStats != null and !countriesStats.isEmpty()}">-->
+<!--    <p><strong>Найдено стран:</strong> <span th:text="${#lists.size(countriesStats)}">8</span></p>-->
+
+<!--    &lt;!&ndash; Топ 3 страны - выделенно &ndash;&gt;-->
+<!--    <h3>🏆 Топ 3 страны</h3>-->
+<!--    <table border="2" cellpadding="10" width="100%" th:if="${#lists.size(countriesStats) >= 3}">-->
+<!--        <thead>-->
+<!--        <tr style="background-color: #f0f0f0;">-->
+<!--            <th>🥇🥈🥉 Место</th>-->
+<!--            <th>🌍 Страна</th>-->
+<!--            <th>📊 Посещений</th>-->
+<!--            <th>📈 % от общего</th>-->
+<!--            <th>🔍 Действия</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="country, countryStat : ${countriesStats}" th:if="${countryStat.count <= 3}">-->
+<!--            <td style="text-align: center;">-->
+<!--                <strong>-->
+<!--                    <span th:if="${countryStat.count == 1}">🥇 1</span>-->
+<!--                    <span th:if="${countryStat.count == 2}">🥈 2</span>-->
+<!--                    <span th:if="${countryStat.count == 3}">🥉 3</span>-->
+<!--                </strong>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <strong th:text="${country[0] ?: 'Невідома країна'}">Ukraine</strong>-->
+<!--                <br>-->
+<!--                <small style="color: gray;">-->
+<!--                            <span th:switch="${country[0]}">-->
+<!--                                <span th:case="'Ukraine'">🇺🇦</span>-->
+<!--                                <span th:case="'Poland'">🇵🇱</span>-->
+<!--                                <span th:case="'Germany'">🇩🇪</span>-->
+<!--                                <span th:case="'United States'">🇺🇸</span>-->
+<!--                                <span th:case="'Canada'">🇨🇦</span>-->
+<!--                                <span th:case="'France'">🇫🇷</span>-->
+<!--                                <span th:case="'United Kingdom'">🇬🇧</span>-->
+<!--                                <span th:case="'Italy'">🇮🇹</span>-->
+<!--                                <span th:case="'Spain'">🇪🇸</span>-->
+<!--                                <span th:case="'Netherlands'">🇳🇱</span>-->
+<!--                                <span th:case="*">🌍</span>-->
+<!--                            </span>-->
+<!--                </small>-->
+<!--            </td>-->
+<!--            <td style="text-align: center;">-->
+<!--                <strong style="font-size: 1.2em;" th:text="${country[1]}">150</strong>-->
+<!--            </td>-->
+<!--            <td style="text-align: center;">-->
+<!--                <strong th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</strong>-->
+<!--            </td>-->
+<!--            <td style="text-align: center;">-->
+<!--                <a href="#">📊 Детали</a>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+
+<!--    <hr>-->
+
+<!--    &lt;!&ndash; Полный список стран &ndash;&gt;-->
+<!--    <h3>📋 Полный список всех стран</h3>-->
+<!--    <table border="1" cellpadding="5" width="100%">-->
+<!--        <thead>-->
+<!--        <tr style="background-color: #f9f9f9;">-->
+<!--            <th width="10%">#</th>-->
+<!--            <th width="10%">Флаг</th>-->
+<!--            <th width="30%">Страна</th>-->
+<!--            <th width="20%">Посещений</th>-->
+<!--            <th width="20%">% от общего</th>-->
+<!--            <th width="10%">График</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="country, countryStat : ${countriesStats}">-->
+<!--            <td style="text-align: center;">-->
+<!--                <strong th:text="${countryStat.count}">1</strong>-->
+<!--            </td>-->
+<!--            <td style="text-align: center; font-size: 1.5em;">-->
+<!--                        <span th:switch="${country[0]}">-->
+<!--                            <span th:case="'Ukraine'">🇺🇦</span>-->
+<!--                            <span th:case="'Poland'">🇵🇱</span>-->
+<!--                            <span th:case="'Germany'">🇩🇪</span>-->
+<!--                            <span th:case="'United States'">🇺🇸</span>-->
+<!--                            <span th:case="'Canada'">🇨🇦</span>-->
+<!--                            <span th:case="'France'">🇫🇷</span>-->
+<!--                            <span th:case="'United Kingdom'">🇬🇧</span>-->
+<!--                            <span th:case="'Italy'">🇮🇹</span>-->
+<!--                            <span th:case="'Spain'">🇪🇸</span>-->
+<!--                            <span th:case="'Netherlands'">🇳🇱</span>-->
+<!--                            <span th:case="'Austria'">🇦🇹</span>-->
+<!--                            <span th:case="'Belgium'">🇧🇪</span>-->
+<!--                            <span th:case="'Czech Republic'">🇨🇿</span>-->
+<!--                            <span th:case="'Denmark'">🇩🇰</span>-->
+<!--                            <span th:case="'Finland'">🇫🇮</span>-->
+<!--                            <span th:case="'Norway'">🇳🇴</span>-->
+<!--                            <span th:case="'Sweden'">🇸🇪</span>-->
+<!--                            <span th:case="'Switzerland'">🇨🇭</span>-->
+<!--                            <span th:case="*">🌍</span>-->
+<!--                        </span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <strong th:text="${country[0] ?: 'Невідома країна'}">Ukraine</strong>-->
+<!--            </td>-->
+<!--            <td style="text-align: center;">-->
+<!--                <strong th:text="${country[1]}">150</strong>-->
+<!--            </td>-->
+<!--            <td style="text-align: center;">-->
+<!--                <span th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                &lt;!&ndash; Простой текстовый график &ndash;&gt;-->
+<!--                <div style="background-color: #e0e0e0; width: 100%; height: 20px; position: relative;">-->
+<!--                    <div th:style="'background-color: #4CAF50; height: 20px; width: ' + ${country[1] * 100.0 / totalVisits} + '%;'"></div>-->
+<!--                </div>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+
+<!--    <hr>-->
+
+<!--    &lt;!&ndash; Дополнительная аналитика &ndash;&gt;-->
+<!--    <h3>📊 Дополнительная аналитика</h3>-->
+<!--    <table border="1" cellpadding="5">-->
+<!--        <tr>-->
+<!--            <td><strong>Самая активная страна:</strong></td>-->
+<!--            <td>-->
+<!--                <strong th:text="${countriesStats[0][0]}">Ukraine</strong>-->
+<!--                (<span th:text="${countriesStats[0][1]}">150</span> посещений - -->
+<!--                <span th:text="${#numbers.formatDecimal((countriesStats[0][1] * 100.0 / totalVisits), 1, 1)} + '%'">60%</span>)-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td><strong>Всего стран:</strong></td>-->
+<!--            <td>-->
+<!--                <span th:text="${#lists.size(countriesStats)}">8</span> стран-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td><strong>Средние посещения на страну:</strong></td>-->
+<!--            <td>-->
+<!--                <span th:text="${#numbers.formatDecimal(totalVisits / #lists.size(countriesStats), 1, 1)}">18.7</span> посещений-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td><strong>Доминирование лидера:</strong></td>-->
+<!--            <td>-->
+<!--                <span th:text="${#numbers.formatDecimal((countriesStats[0][1] * 100.0 / totalVisits), 1, 1)} + '%'">60%</span>-->
+<!--                от всех посещений-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
+
+<!--</div>-->
+
+<!--&lt;!&ndash; Нет данных &ndash;&gt;-->
+<!--<div th:if="${countriesStats == null or countriesStats.isEmpty()}">-->
+<!--    <h3 style="color: orange;">🚫 Нет данных по странам</h3>-->
+<!--    <p>За выбранный период <strong th:text="${selectedDays}">7</strong> дней не было посещений из определенных стран.</p>-->
+<!--    <p>Возможные причины:</p>-->
+<!--    <ul>-->
+<!--        <li>Период слишком короткий</li>-->
+<!--        <li>Проблемы с определением геолокации</li>-->
+<!--        <li>Система трекинга была отключена</li>-->
+<!--    </ul>-->
+<!--    <p>-->
+<!--        <a href="/analytics/countries?days=30">Попробуйте период 30 дней</a> |-->
+<!--        <a href="/analytics">Вернуться к главной аналитике</a>-->
+<!--    </p>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Ошибки &ndash;&gt;-->
+<!--<div th:if="${error}" style="color: red; border: 2px solid red; padding: 15px; margin: 10px 0; background-color: #ffe6e6;">-->
+<!--    <h3>❌ Ошибка</h3>-->
+<!--    <p th:text="${error}">Произошла ошибка загрузки</p>-->
+<!--    <p><a href="/analytics">← Вернуться к главной аналитике</a></p>-->
+<!--</div>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Быстрые действия &ndash;&gt;-->
+<!--<h3>🚀 Быстрые действия</h3>-->
+<!--<ul>-->
+<!--    <li>-->
+<!--        <a href="/analytics/ip">🔍 Найти конкретный IP адрес</a>-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        <a href="/analytics/top-ips">👥 Посмотреть топ IP адресов</a>-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        <a href="/analytics/visitors">📄 Все посетители</a>-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        <a href="/analytics">📈 Общая аналитика</a>-->
+<!--    </li>-->
+<!--</ul>-->
+
+<!--<hr>-->
+
+<!--&lt;!&ndash; Пояснения &ndash;&gt;-->
+<!--<h3>ℹ️ Пояснения</h3>-->
+<!--<ul>-->
+<!--    <li><strong>Страна</strong> - определяется по IP адресу посетителя</li>-->
+<!--    <li><strong>Посещения</strong> - количество страниц, просмотренных из данной страны</li>-->
+<!--    <li><strong>% от общего</strong> - доля посещений от общего количества за период</li>-->
+<!--    <li><strong>График</strong> - визуальное представление доли страны</li>-->
+<!--</ul>-->
+
+<!--<hr>-->
+
+<!--<p>-->
+<!--    <small>-->
+<!--        <a href="/analytics">← Вернуться к главной аналитике</a>-->
+<!--    </small>-->
+<!--</p>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Аналитика по странам - Аналитика</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <style>
+        .period-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .period-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        .period-card.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        .country-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .country-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .medal-card {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: 3px solid #FFD700;
+        }
+        .progress-bar-custom {
+            height: 25px;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+            border-radius: 15px;
+        }
+        .stats-header {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        .info-card {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border-radius: 15px;
+        }
+        .flag-emoji {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        @media (max-width: 576px) {
+            .flag-emoji {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Аналитика по странам</h1>
+<div class="container-fluid py-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-6">🌍 Аналитика по странам</h1>
+                <a href="/analytics" class="btn btn-outline-primary">← Назад к аналитике</a>
+            </div>
 
-<!-- Навигация -->
-<p>
-    <a href="/analytics">← Назад к аналитике</a> |
-    <a href="/analytics/ip">Поиск по IP</a> |
-    <a href="/analytics/top-ips">Топ IP</a> |
-    <a href="/analytics/visitors">Все посетители</a>
-</p>
-
-<hr>
-
-<!-- Селектор периода -->
-<h2>Период анализа</h2>
-<p>
-    <strong>Показать данные за:</strong>
-    <a th:href="@{/analytics/countries(days=1)}"
-       th:style="${selectedDays == 1} ? 'font-weight: bold; color: blue;' : ''">1 день</a> |
-    <a th:href="@{/analytics/countries(days=7)}"
-       th:style="${selectedDays == 7} ? 'font-weight: bold; color: blue;' : ''">7 дней</a> |
-    <a th:href="@{/analytics/countries(days=30)}"
-       th:style="${selectedDays == 30} ? 'font-weight: bold; color: blue;' : ''">30 дней</a> |
-    <a th:href="@{/analytics/countries(days=90)}"
-       th:style="${selectedDays == 90} ? 'font-weight: bold; color: blue;' : ''">90 дней</a>
-</p>
-
-<hr>
-
-<!-- Общая статистика -->
-<h2>Общая статистика за <span th:text="${selectedDays}">7</span> дней</h2>
-<table border="1" cellpadding="5">
-    <tr>
-        <td><strong>Всего посещений:</strong></td>
-        <td th:text="${totalVisits}">123</td>
-    </tr>
-    <tr>
-        <td><strong>Уникальных стран:</strong></td>
-        <td th:text="${#lists.size(countriesStats)}">8</td>
-    </tr>
-    <tr>
-        <td><strong>Среднее посещений на страну:</strong></td>
-        <td th:text="${#lists.size(countriesStats) > 0 ? #numbers.formatDecimal(totalVisits / #lists.size(countriesStats), 1, 1) : 0}">15.4</td>
-    </tr>
-</table>
-
-<hr>
-
-<!-- Статистика по странам -->
-<h2>Детальная статистика по странам</h2>
-
-<div th:if="${countriesStats != null and !countriesStats.isEmpty()}">
-    <p><strong>Найдено стран:</strong> <span th:text="${#lists.size(countriesStats)}">8</span></p>
-
-    <!-- Топ 3 страны - выделенно -->
-    <h3>🏆 Топ 3 страны</h3>
-    <table border="2" cellpadding="10" width="100%" th:if="${#lists.size(countriesStats) >= 3}">
-        <thead>
-        <tr style="background-color: #f0f0f0;">
-            <th>🥇🥈🥉 Место</th>
-            <th>🌍 Страна</th>
-            <th>📊 Посещений</th>
-            <th>📈 % от общего</th>
-            <th>🔍 Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="country, countryStat : ${countriesStats}" th:if="${countryStat.count <= 3}">
-            <td style="text-align: center;">
-                <strong>
-                    <span th:if="${countryStat.count == 1}">🥇 1</span>
-                    <span th:if="${countryStat.count == 2}">🥈 2</span>
-                    <span th:if="${countryStat.count == 3}">🥉 3</span>
-                </strong>
-            </td>
-            <td>
-                <strong th:text="${country[0] ?: 'Невідома країна'}">Ukraine</strong>
-                <br>
-                <small style="color: gray;">
-                            <span th:switch="${country[0]}">
-                                <span th:case="'Ukraine'">🇺🇦</span>
-                                <span th:case="'Poland'">🇵🇱</span>
-                                <span th:case="'Germany'">🇩🇪</span>
-                                <span th:case="'United States'">🇺🇸</span>
-                                <span th:case="'Canada'">🇨🇦</span>
-                                <span th:case="'France'">🇫🇷</span>
-                                <span th:case="'United Kingdom'">🇬🇧</span>
-                                <span th:case="'Italy'">🇮🇹</span>
-                                <span th:case="'Spain'">🇪🇸</span>
-                                <span th:case="'Netherlands'">🇳🇱</span>
-                                <span th:case="*">🌍</span>
-                            </span>
-                </small>
-            </td>
-            <td style="text-align: center;">
-                <strong style="font-size: 1.2em;" th:text="${country[1]}">150</strong>
-            </td>
-            <td style="text-align: center;">
-                <strong th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</strong>
-            </td>
-            <td style="text-align: center;">
-                <a href="#">📊 Детали</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <hr>
-
-    <!-- Полный список стран -->
-    <h3>📋 Полный список всех стран</h3>
-    <table border="1" cellpadding="5" width="100%">
-        <thead>
-        <tr style="background-color: #f9f9f9;">
-            <th width="10%">#</th>
-            <th width="10%">Флаг</th>
-            <th width="30%">Страна</th>
-            <th width="20%">Посещений</th>
-            <th width="20%">% от общего</th>
-            <th width="10%">График</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="country, countryStat : ${countriesStats}">
-            <td style="text-align: center;">
-                <strong th:text="${countryStat.count}">1</strong>
-            </td>
-            <td style="text-align: center; font-size: 1.5em;">
-                        <span th:switch="${country[0]}">
-                            <span th:case="'Ukraine'">🇺🇦</span>
-                            <span th:case="'Poland'">🇵🇱</span>
-                            <span th:case="'Germany'">🇩🇪</span>
-                            <span th:case="'United States'">🇺🇸</span>
-                            <span th:case="'Canada'">🇨🇦</span>
-                            <span th:case="'France'">🇫🇷</span>
-                            <span th:case="'United Kingdom'">🇬🇧</span>
-                            <span th:case="'Italy'">🇮🇹</span>
-                            <span th:case="'Spain'">🇪🇸</span>
-                            <span th:case="'Netherlands'">🇳🇱</span>
-                            <span th:case="'Austria'">🇦🇹</span>
-                            <span th:case="'Belgium'">🇧🇪</span>
-                            <span th:case="'Czech Republic'">🇨🇿</span>
-                            <span th:case="'Denmark'">🇩🇰</span>
-                            <span th:case="'Finland'">🇫🇮</span>
-                            <span th:case="'Norway'">🇳🇴</span>
-                            <span th:case="'Sweden'">🇸🇪</span>
-                            <span th:case="'Switzerland'">🇨🇭</span>
-                            <span th:case="*">🌍</span>
-                        </span>
-            </td>
-            <td>
-                <strong th:text="${country[0] ?: 'Невідома країна'}">Ukraine</strong>
-            </td>
-            <td style="text-align: center;">
-                <strong th:text="${country[1]}">150</strong>
-            </td>
-            <td style="text-align: center;">
-                <span th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</span>
-            </td>
-            <td>
-                <!-- Простой текстовый график -->
-                <div style="background-color: #e0e0e0; width: 100%; height: 20px; position: relative;">
-                    <div th:style="'background-color: #4CAF50; height: 20px; width: ' + ${country[1] * 100.0 / totalVisits} + '%;'"></div>
+            <!-- Навигация -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics">🏠 Главная</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics/ip">🔍 Поиск по IP</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics/top-ips">👥 Топ IP</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/analytics/visitors">📄 Все посетители</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            </nav>
 
-    <hr>
+            <!-- Селектор периода -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">📅 Период анализа</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <a th:href="@{/analytics/countries(days=1)}" class="text-decoration-none">
+                                <div th:class="${selectedDays == 1} ? 'card period-card active h-100' : 'card period-card h-100'">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">1 день</h6>
+                                        <small>Сегодня</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a th:href="@{/analytics/countries(days=7)}" class="text-decoration-none">
+                                <div th:class="${selectedDays == 7} ? 'card period-card active h-100' : 'card period-card h-100'">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">7 дней</h6>
+                                        <small>Неделя</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a th:href="@{/analytics/countries(days=30)}" class="text-decoration-none">
+                                <div th:class="${selectedDays == 30} ? 'card period-card active h-100' : 'card period-card h-100'">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">30 дней</h6>
+                                        <small>Месяц</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a th:href="@{/analytics/countries(days=90)}" class="text-decoration-none">
+                                <div th:class="${selectedDays == 90} ? 'card period-card active h-100' : 'card period-card h-100'">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">90 дней</h6>
+                                        <small>Квартал</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Дополнительная аналитика -->
-    <h3>📊 Дополнительная аналитика</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <td><strong>Самая активная страна:</strong></td>
-            <td>
-                <strong th:text="${countriesStats[0][0]}">Ukraine</strong>
-                (<span th:text="${countriesStats[0][1]}">150</span> посещений -
-                <span th:text="${#numbers.formatDecimal((countriesStats[0][1] * 100.0 / totalVisits), 1, 1)} + '%'">60%</span>)
-            </td>
-        </tr>
-        <tr>
-            <td><strong>Всего стран:</strong></td>
-            <td>
-                <span th:text="${#lists.size(countriesStats)}">8</span> стран
-            </td>
-        </tr>
-        <tr>
-            <td><strong>Средние посещения на страну:</strong></td>
-            <td>
-                <span th:text="${#numbers.formatDecimal(totalVisits / #lists.size(countriesStats), 1, 1)}">18.7</span> посещений
-            </td>
-        </tr>
-        <tr>
-            <td><strong>Доминирование лидера:</strong></td>
-            <td>
-                <span th:text="${#numbers.formatDecimal((countriesStats[0][1] * 100.0 / totalVisits), 1, 1)} + '%'">60%</span>
-                от всех посещений
-            </td>
-        </tr>
-    </table>
+            <!-- Общая статистика -->
+            <div class="card mb-4">
+                <div class="card-header stats-header">
+                    <h5 class="card-title text-white mb-0">📊 Общая статистика за <span th:text="${selectedDays}">7</span> дней</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6 col-md-4">
+                            <div class="text-center">
+                                <div class="h3 text-primary mb-0" th:text="${totalVisits}">123</div>
+                                <small class="text-muted">Всего посещений</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="text-center">
+                                <div class="h3 text-success mb-0" th:text="${#lists.size(countriesStats)}">8</div>
+                                <small class="text-muted">Уникальных стран</small>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="text-center">
+                                <div class="h3 text-info mb-0" th:text="${#lists.size(countriesStats) > 0 ? #numbers.formatDecimal(totalVisits / #lists.size(countriesStats), 1, 1) : 0}">15.4</div>
+                                <small class="text-muted">Среднее на страну</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Контент с данными или без данных -->
+            <div th:if="${countriesStats != null and !countriesStats.isEmpty()}">
+
+                <!-- Топ 3 страны -->
+                <div th:if="${#lists.size(countriesStats) >= 3}" class="mb-4">
+                    <h3 class="mb-3">🏆 Топ 3 страны</h3>
+                    <div class="row g-3">
+                        <div th:each="country, countryStat : ${countriesStats}" th:if="${countryStat.count <= 3}" class="col-12 col-lg-4">
+                            <div class="card medal-card country-card h-100">
+                                <div class="card-body text-center">
+                                    <div class="mb-2">
+                                        <span th:if="${countryStat.count == 1}" class="h1">🥇</span>
+                                        <span th:if="${countryStat.count == 2}" class="h1">🥈</span>
+                                        <span th:if="${countryStat.count == 3}" class="h1">🥉</span>
+                                    </div>
+                                    <div class="flag-emoji mb-2">
+                                        <span th:switch="${country[0]}">
+                                            <span th:case="'Ukraine'">🇺🇦</span>
+                                            <span th:case="'Poland'">🇵🇱</span>
+                                            <span th:case="'Germany'">🇩🇪</span>
+                                            <span th:case="'United States'">🇺🇸</span>
+                                            <span th:case="'Canada'">🇨🇦</span>
+                                            <span th:case="'France'">🇫🇷</span>
+                                            <span th:case="'United Kingdom'">🇬🇧</span>
+                                            <span th:case="'Italy'">🇮🇹</span>
+                                            <span th:case="'Spain'">🇪🇸</span>
+                                            <span th:case="'Netherlands'">🇳🇱</span>
+                                            <span th:case="*">🌍</span>
+                                        </span>
+                                    </div>
+                                    <h5 class="card-title" th:text="${country[0] ?: 'Невідома країна'}">Ukraine</h5>
+                                    <div class="h4 text-dark mb-2" th:text="${country[1]}">150</div>
+                                    <div class="h5 text-secondary" th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-outline-dark btn-sm w-100">📊 Детали</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Полный список стран -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📋 Полный список всех стран</h5>
+                        <small class="text-muted">Найдено стран: <span th:text="${#lists.size(countriesStats)}">8</span></small>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- Мобильная версия (карточки) -->
+                        <div class="d-block d-lg-none">
+                            <div class="row g-3">
+                                <div th:each="country, countryStat : ${countriesStats}" class="col-12 col-md-6">
+                                    <div class="card country-card h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="badge bg-secondary me-2" th:text="${countryStat.count}">1</div>
+                                                <div class="flag-emoji me-2">
+                                                    <span th:switch="${country[0]}">
+                                                        <span th:case="'Ukraine'">🇺🇦</span>
+                                                        <span th:case="'Poland'">🇵🇱</span>
+                                                        <span th:case="'Germany'">🇩🇪</span>
+                                                        <span th:case="'United States'">🇺🇸</span>
+                                                        <span th:case="'Canada'">🇨🇦</span>
+                                                        <span th:case="'France'">🇫🇷</span>
+                                                        <span th:case="'United Kingdom'">🇬🇧</span>
+                                                        <span th:case="'Italy'">🇮🇹</span>
+                                                        <span th:case="'Spain'">🇪🇸</span>
+                                                        <span th:case="'Netherlands'">🇳🇱</span>
+                                                        <span th:case="'Austria'">🇦🇹</span>
+                                                        <span th:case="'Belgium'">🇧🇪</span>
+                                                        <span th:case="'Czech Republic'">🇨🇿</span>
+                                                        <span th:case="'Denmark'">🇩🇰</span>
+                                                        <span th:case="'Finland'">🇫🇮</span>
+                                                        <span th:case="'Norway'">🇳🇴</span>
+                                                        <span th:case="'Sweden'">🇸🇪</span>
+                                                        <span th:case="'Switzerland'">🇨🇭</span>
+                                                        <span th:case="*">🌍</span>
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0" th:text="${country[0] ?: 'Невідома країна'}">Ukraine</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row text-center">
+                                                <div class="col-6">
+                                                    <div class="h5 text-primary mb-0" th:text="${country[1]}">150</div>
+                                                    <small class="text-muted">Посещений</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="h5 text-success mb-0" th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</div>
+                                                    <small class="text-muted">% от общего</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-bar-custom"
+                                                         th:style="'width: ' + ${country[1] * 100.0 / totalVisits} + '%;'"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Десктопная версия (таблица) -->
+                        <div class="d-none d-lg-block">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                    <tr>
+                                        <th width="10%">#</th>
+                                        <th width="10%">Флаг</th>
+                                        <th width="30%">Страна</th>
+                                        <th width="20%">Посещений</th>
+                                        <th width="15%">% от общего</th>
+                                        <th width="15%">График</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="country, countryStat : ${countriesStats}">
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary" th:text="${countryStat.count}">1</span>
+                                        </td>
+                                        <td class="text-center">
+                                                <span class="flag-emoji">
+                                                    <span th:switch="${country[0]}">
+                                                        <span th:case="'Ukraine'">🇺🇦</span>
+                                                        <span th:case="'Poland'">🇵🇱</span>
+                                                        <span th:case="'Germany'">🇩🇪</span>
+                                                        <span th:case="'United States'">🇺🇸</span>
+                                                        <span th:case="'Canada'">🇨🇦</span>
+                                                        <span th:case="'France'">🇫🇷</span>
+                                                        <span th:case="'United Kingdom'">🇬🇧</span>
+                                                        <span th:case="'Italy'">🇮🇹</span>
+                                                        <span th:case="'Spain'">🇪🇸</span>
+                                                        <span th:case="'Netherlands'">🇳🇱</span>
+                                                        <span th:case="'Austria'">🇦🇹</span>
+                                                        <span th:case="'Belgium'">🇧🇪</span>
+                                                        <span th:case="'Czech Republic'">🇨🇿</span>
+                                                        <span th:case="'Denmark'">🇩🇰</span>
+                                                        <span th:case="'Finland'">🇫🇮</span>
+                                                        <span th:case="'Norway'">🇳🇴</span>
+                                                        <span th:case="'Sweden'">🇸🇪</span>
+                                                        <span th:case="'Switzerland'">🇨🇭</span>
+                                                        <span th:case="*">🌍</span>
+                                                    </span>
+                                                </span>
+                                        </td>
+                                        <td>
+                                            <strong th:text="${country[0] ?: 'Невідома країна'}">Ukraine</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <strong th:text="${country[1]}">150</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">60.5%</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-custom"
+                                                     th:style="'width: ' + ${country[1] * 100.0 / totalVisits} + '%;'"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Дополнительная аналитика -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📊 Дополнительная аналитика</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 bg-light rounded">
+                                    <strong>Самая активная страна:</strong><br>
+                                    <span class="h6 text-primary" th:text="${countriesStats[0][0]}">Ukraine</span>
+                                    (<span th:text="${countriesStats[0][1]}">150</span> посещений -
+                                    <span th:text="${#numbers.formatDecimal((countriesStats[0][1] * 100.0 / totalVisits), 1, 1)} + '%'">60%</span>)
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 bg-light rounded">
+                                    <strong>Доминирование лидера:</strong><br>
+                                    <span class="h6 text-success" th:text="${#numbers.formatDecimal((countriesStats[0][1] * 100.0 / totalVisits), 1, 1)} + '%'">60%</span>
+                                    от всех посещений
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Нет данных -->
+            <div th:if="${countriesStats == null or countriesStats.isEmpty()}" class="text-center my-5">
+                <div class="card border-warning">
+                    <div class="card-body">
+                        <h3 class="text-warning">🚫 Нет данных по странам</h3>
+                        <p class="text-muted">За выбранный период <strong th:text="${selectedDays}">7</strong> дней не было посещений из определенных стран.</p>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-12 col-md-4">
+                                <h6>Возможные причины:</h6>
+                                <ul class="list-unstyled text-start">
+                                    <li>• Период слишком короткий</li>
+                                    <li>• Проблемы с геолокацией</li>
+                                    <li>• Система трекинга отключена</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <a href="/analytics/countries?days=30" class="btn btn-warning me-2">Попробовать 30 дней</a>
+                            <a href="/analytics" class="btn btn-primary">Вернуться к аналитике</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ошибки -->
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h5 class="alert-heading">❌ Ошибка</h5>
+                <p th:text="${error}" class="mb-0">Произошла ошибка загрузки</p>
+                <hr>
+                <p class="mb-0"><a href="/analytics" class="btn btn-outline-danger btn-sm">← Вернуться к аналитике</a></p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Быстрые действия -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🚀 Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3">
+                            <a href="/analytics/ip" class="btn btn-outline-info w-100">
+                                <small>🔍 Поиск IP</small>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/analytics/top-ips" class="btn btn-outline-success w-100">
+                                <small>👥 Топ IP</small>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/analytics/visitors" class="btn btn-outline-warning w-100">
+                                <small>📄 Все посетители</small>
+                            </a>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a href="/analytics" class="btn btn-outline-primary w-100">
+                                <small>📈 Общая аналитика</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информационная секция -->
+            <div class="info-card p-4 mb-4">
+                <h5 class="text-white mb-3">ℹ️ Пояснения</h5>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <ul class="list-unstyled text-white-50 mb-0">
+                            <li><strong class="text-white">Страна</strong> - определяется по IP адресу посетителя</li>
+                            <li><strong class="text-white">Посещения</strong> - количество страниц, просмотренных из данной страны</li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <ul class="list-unstyled text-white-50 mb-0">
+                            <li><strong class="text-white">% от общего</strong> - доля посещений от общего количества за период</li>
+                            <li><strong class="text-white">График</strong> - визуальное представление доли страны</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Назад -->
+            <div class="text-center">
+                <a href="/analytics" class="btn btn-outline-primary">
+                    ← Вернуться к главной аналитике
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Нет данных -->
-<div th:if="${countriesStats == null or countriesStats.isEmpty()}">
-    <h3 style="color: orange;">🚫 Нет данных по странам</h3>
-    <p>За выбранный период <strong th:text="${selectedDays}">7</strong> дней не было посещений из определенных стран.</p>
-    <p>Возможные причины:</p>
-    <ul>
-        <li>Период слишком короткий</li>
-        <li>Проблемы с определением геолокации</li>
-        <li>Система трекинга была отключена</li>
-    </ul>
-    <p>
-        <a href="/analytics/countries?days=30">Попробуйте период 30 дней</a> |
-        <a href="/analytics">Вернуться к главной аналитике</a>
-    </p>
-</div>
-
-<!-- Ошибки -->
-<div th:if="${error}" style="color: red; border: 2px solid red; padding: 15px; margin: 10px 0; background-color: #ffe6e6;">
-    <h3>❌ Ошибка</h3>
-    <p th:text="${error}">Произошла ошибка загрузки</p>
-    <p><a href="/analytics">← Вернуться к главной аналитике</a></p>
-</div>
-
-<hr>
-
-<!-- Быстрые действия -->
-<h3>🚀 Быстрые действия</h3>
-<ul>
-    <li>
-        <a href="/analytics/ip">🔍 Найти конкретный IP адрес</a>
-    </li>
-    <li>
-        <a href="/analytics/top-ips">👥 Посмотреть топ IP адресов</a>
-    </li>
-    <li>
-        <a href="/analytics/visitors">📄 Все посетители</a>
-    </li>
-    <li>
-        <a href="/analytics">📈 Общая аналитика</a>
-    </li>
-</ul>
-
-<hr>
-
-<!-- Пояснения -->
-<h3>ℹ️ Пояснения</h3>
-<ul>
-    <li><strong>Страна</strong> - определяется по IP адресу посетителя</li>
-    <li><strong>Посещения</strong> - количество страниц, просмотренных из данной страны</li>
-    <li><strong>% от общего</strong> - доля посещений от общего количества за период</li>
-    <li><strong>График</strong> - визуальное представление доли страны</li>
-</ul>
-
-<hr>
-
-<p>
-    <small>
-        <a href="/analytics">← Вернуться к главной аналитике</a>
-    </small>
-</p>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
