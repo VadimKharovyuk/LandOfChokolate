@@ -1,0 +1,432 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Аналітика відвідувачів - Країна шоколаду</title>-->
+
+<!--    &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; Bootstrap Icons &ndash;&gt;-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">-->
+
+<!--    <style>-->
+<!--        .stat-card {-->
+<!--            transition: transform 0.2s;-->
+<!--            border-left: 4px solid #007bff;-->
+<!--        }-->
+<!--        .stat-card:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--        }-->
+<!--        .stat-number {-->
+<!--            font-size: 2rem;-->
+<!--            font-weight: bold;-->
+<!--            color: #007bff;-->
+<!--        }-->
+<!--        .table-hover tbody tr:hover {-->
+<!--            background-color: #f8f9fa;-->
+<!--        }-->
+<!--        .badge-country {-->
+<!--            background: linear-gradient(45deg, #007bff, #28a745);-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body class="bg-light">-->
+<!--<div class="container-fluid py-4">-->
+
+<!--    &lt;!&ndash; Заголовок &ndash;&gt;-->
+<!--    <div class="row mb-4">-->
+<!--        <div class="col">-->
+<!--            <h1 class="h3 mb-0">-->
+<!--                <i class="bi bi-graph-up-arrow text-primary me-2"></i>-->
+<!--                Аналітика відвідувачів-->
+<!--            </h1>-->
+<!--            <p class="text-muted mb-0">Статистика відвідувань інтернет-магазину</p>-->
+<!--        </div>-->
+
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Основная статистика &ndash;&gt;-->
+<!--    <div class="row mb-4">-->
+<!--        &lt;!&ndash; Всего посещений &ndash;&gt;-->
+<!--        <div class="col-lg-3 col-md-6 mb-3">-->
+<!--            <div class="card stat-card h-100 shadow-sm">-->
+<!--                <div class="card-body text-center">-->
+<!--                    <i class="bi bi-people-fill text-primary mb-2" style="font-size: 2.5rem;"></i>-->
+<!--&lt;!&ndash;                    <div class="stat-number" th:text="${stats.totalVisits ?: 0}">1,234</div>&ndash;&gt;-->
+<!--                    <h6 class="text-muted mb-0">Всього відвідувань</h6>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; За неделю &ndash;&gt;-->
+<!--        <div class="col-lg-3 col-md-6 mb-3">-->
+<!--            <div class="card stat-card h-100 shadow-sm">-->
+<!--                <div class="card-body text-center">-->
+<!--                    <i class="bi bi-calendar-week-fill text-success mb-2" style="font-size: 2.5rem;"></i>-->
+<!--&lt;!&ndash;                    <div class="stat-number text-success" th:text="${stats.weeklyVisits ?: 0}">156</div>&ndash;&gt;-->
+<!--                    <h6 class="text-muted mb-0">За тиждень</h6>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Сегодня &ndash;&gt;-->
+<!--        <div class="col-lg-3 col-md-6 mb-3">-->
+<!--            <div class="card stat-card h-100 shadow-sm">-->
+<!--                <div class="card-body text-center">-->
+<!--                    <i class="bi bi-calendar-day-fill text-info mb-2" style="font-size: 2.5rem;"></i>-->
+<!--                    <div class="stat-number text-info" th:text="${todayVisits ?: 0}">23</div>-->
+<!--                    <h6 class="text-muted mb-0">Сьогодні</h6>-->
+<!--                    <small class="text-muted">Унікальних: <span th:text="${todayUnique ?: 0}">15</span></small>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Мобильные &ndash;&gt;-->
+<!--        <div class="col-lg-3 col-md-6 mb-3">-->
+<!--            <div class="card stat-card h-100 shadow-sm">-->
+<!--                <div class="card-body text-center">-->
+<!--                    <i class="bi bi-phone-fill text-warning mb-2" style="font-size: 2.5rem;"></i>-->
+<!--                    <div class="stat-number text-warning" th:text="${#numbers.formatDecimal(stats.mobilePercentage ?: 0, 1, 1)}">45.2</div>-->
+<!--                    <h6 class="text-muted mb-0">% мобільних</h6>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="row">-->
+<!--        &lt;!&ndash; Топ страны &ndash;&gt;-->
+<!--        <div class="col-lg-6 mb-4">-->
+<!--            <div class="card shadow-sm">-->
+<!--                <div class="card-header bg-white">-->
+<!--                    <h5 class="card-title mb-0">-->
+<!--                        <i class="bi bi-globe2 text-primary me-2"></i>-->
+<!--                        Топ країни (тиждень)-->
+<!--                    </h5>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <div th:if="${topCountries != null and !topCountries.isEmpty()}">-->
+<!--                        <div th:each="country, countryStat : ${topCountries}"-->
+<!--                             class="d-flex justify-content-between align-items-center py-2 border-bottom">-->
+<!--                            <div class="d-flex align-items-center">-->
+<!--                                    <span class="me-3" style="font-size: 1.5rem;">-->
+<!--                                        &lt;!&ndash; Простые эмодзи флагов &ndash;&gt;-->
+<!--                                        <span th:switch="${country[0]}">-->
+<!--                                            <span th:case="'Ukraine'">🇺🇦</span>-->
+<!--                                            <span th:case="'Poland'">🇵🇱</span>-->
+<!--                                            <span th:case="'Germany'">🇩🇪</span>-->
+<!--                                            <span th:case="'United States'">🇺🇸</span>-->
+<!--                                            <span th:case="'Canada'">🇨🇦</span>-->
+<!--                                            <span th:case="*">🌍</span>-->
+<!--                                        </span>-->
+<!--                                    </span>-->
+<!--                                <div>-->
+<!--                                    <strong th:text="${country[0] ?: 'Невідомо'}">Ukraine</strong>-->
+<!--                                    <br>-->
+<!--                                    <small class="text-muted">-->
+<!--                                        Позиція #<span th:text="${countryStat.count}">1</span>-->
+<!--                                    </small>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <span class="badge badge-country text-white fs-6" th:text="${country[1]} + ' відвідувань'">45 відвідувань</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div th:if="${topCountries == null or topCountries.isEmpty()}"-->
+<!--                         class="text-center py-4 text-muted">-->
+<!--                        <i class="bi bi-info-circle me-2"></i>-->
+<!--                        Поки немає даних по країнах-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Топ страницы &ndash;&gt;-->
+<!--        <div class="col-lg-6 mb-4">-->
+<!--            <div class="card shadow-sm">-->
+<!--                <div class="card-header bg-white">-->
+<!--                    <h5 class="card-title mb-0">-->
+<!--                        <i class="bi bi-file-earmark-text text-primary me-2"></i>-->
+<!--                        Популярні сторінки-->
+<!--                    </h5>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <div th:if="${topPages != null and !topPages.isEmpty()}">-->
+<!--                        <div th:each="page, pageStat : ${topPages}"-->
+<!--                             class="d-flex justify-content-between align-items-center py-2 border-bottom">-->
+<!--                            <div class="flex-grow-1 me-3">-->
+<!--                                <div class="text-truncate">-->
+<!--                                    <i class="bi bi-link-45deg text-muted me-1"></i>-->
+<!--                                    <code class="text-primary" th:text="${page[0] ?: '/'}"></code>-->
+<!--                                </div>-->
+<!--                                <small class="text-muted">-->
+<!--                                    Позиція #<span th:text="${pageStat.count}">1</span>-->
+<!--                                </small>-->
+<!--                            </div>-->
+<!--                            <span class="badge bg-secondary" th:text="${page[1]}">12</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div th:if="${topPages == null or topPages.isEmpty()}"-->
+<!--                         class="text-center py-4 text-muted">-->
+<!--                        <i class="bi bi-info-circle me-2"></i>-->
+<!--                        Поки немає даних по сторінках-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Последние посетители &ndash;&gt;-->
+<!--    <div class="row">-->
+<!--        <div class="col-12">-->
+<!--            <div class="card shadow-sm">-->
+<!--                <div class="card-header bg-white d-flex justify-content-between align-items-center">-->
+<!--                    <h5 class="card-title mb-0">-->
+<!--                        <i class="bi bi-clock-history text-primary me-2"></i>-->
+<!--                        Останні відвідувачі-->
+<!--                    </h5>-->
+<!--                    <span class="badge bg-info" th:text="${#lists.size(recentVisitors)} + ' записів'">20 записів</span>-->
+<!--                </div>-->
+<!--                <div class="card-body p-0">-->
+<!--                    <div th:if="${recentVisitors != null and !recentVisitors.isEmpty()}">-->
+<!--                        <div class="table-responsive">-->
+<!--                            <table class="table table-hover mb-0">-->
+<!--                                <thead class="table-light">-->
+<!--                                <tr>-->
+<!--                                    <th width="15%">-->
+<!--                                        <i class="bi bi-clock me-1"></i>Час-->
+<!--                                    </th>-->
+<!--                                    <th width="15%">-->
+<!--                                        <i class="bi bi-router me-1"></i>IP адреса-->
+<!--                                    </th>-->
+<!--                                    <th width="20%">-->
+<!--                                        <i class="bi bi-geo-alt me-1"></i>Локація-->
+<!--                                    </th>-->
+<!--                                    <th width="20%">-->
+<!--                                        <i class="bi bi-device-ssd me-1"></i>Пристрій-->
+<!--                                    </th>-->
+<!--                                    <th width="30%">-->
+<!--                                        <i class="bi bi-link me-1"></i>Сторінка-->
+<!--                                    </th>-->
+<!--                                </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                <tr th:each="visitor : ${recentVisitors}">-->
+<!--                                    &lt;!&ndash; Время &ndash;&gt;-->
+<!--                                    <td>-->
+<!--                                        <div class="fw-bold" th:text="${#temporals.format(visitor.visitTime, 'HH:mm:ss')}">12:34:56</div>-->
+<!--                                        <small class="text-muted" th:text="${#temporals.format(visitor.visitTime, 'dd.MM.yyyy')}">15.08.2024</small>-->
+<!--                                    </td>-->
+
+<!--                                    &lt;!&ndash; IP адрес &ndash;&gt;-->
+<!--                                    <td>-->
+<!--                                        <code class="text-primary" th:text="${visitor.ipAddress}">192.168.1.1</code>-->
+<!--                                    </td>-->
+
+<!--                                    &lt;!&ndash; Локация &ndash;&gt;-->
+<!--                                    <td>-->
+<!--                                        <div>-->
+<!--                                            <strong th:text="${visitor.country ?: 'Невідомо'}">Ukraine</strong>-->
+<!--                                            <span th:if="${visitor.isBot}" class="badge bg-warning ms-1">🤖 BOT</span>-->
+<!--                                        </div>-->
+<!--                                        <small class="text-muted" th:text="${visitor.city ?: 'Місто невідоме'}">Kyiv</small>-->
+<!--                                    </td>-->
+
+<!--                                    &lt;!&ndash; Устройство &ndash;&gt;-->
+<!--                                    <td>-->
+<!--                                        <div>-->
+<!--                                            <span th:if="${visitor.isMobile}" class="badge bg-success">📱 Mobile</span>-->
+<!--                                            <span th:unless="${visitor.isMobile}" class="badge bg-primary">💻 Desktop</span>-->
+<!--                                        </div>-->
+<!--                                        <small class="text-muted">-->
+<!--                                            <span th:text="${visitor.operatingSystem ?: 'Unknown OS'}">Windows</span>-->
+<!--                                            <span th:if="${visitor.browserName}"> • <span th:text="${visitor.browserName}">Chrome</span></span>-->
+<!--                                        </small>-->
+<!--                                    </td>-->
+
+<!--                                    &lt;!&ndash; Страница &ndash;&gt;-->
+<!--                                    <td>-->
+<!--                                        <div class="text-truncate">-->
+<!--                                            <code class="text-primary" th:text="${visitor.requestedUrl ?: '/'}"></code>-->
+<!--                                        </div>-->
+<!--                                        <small class="text-muted" th:if="${visitor.refererUrl}">-->
+<!--                                            від: <span th:text="${visitor.refererUrl}"></span>-->
+<!--                                        </small>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div th:if="${recentVisitors == null or recentVisitors.isEmpty()}"-->
+<!--                         class="text-center py-5 text-muted">-->
+<!--                        <i class="bi bi-info-circle me-2" style="font-size: 2rem;"></i>-->
+<!--                        <div class="mt-2">Поки немає відвідувачів</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Ошибки &ndash;&gt;-->
+<!--    <div th:if="${error}" class="alert alert-danger mt-4">-->
+<!--        <i class="bi bi-exclamation-triangle-fill me-2"></i>-->
+<!--        <strong>Помилка:</strong> <span th:text="${error}">Ошибка загрузки данных</span>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Футер с обновлением &ndash;&gt;-->
+<!--    <div class="row mt-5">-->
+<!--        <div class="col text-center">-->
+<!--            <small class="text-muted">-->
+<!--                <i class="bi bi-arrow-clockwise me-1"></i>-->
+<!--                Останнє оновлення: <span id="lastUpdate"></span>-->
+<!--                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="location.reload()">-->
+<!--                    <i class="bi bi-arrow-clockwise"></i> Оновити-->
+<!--                </button>-->
+<!--            </small>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>-->
+
+<!--<script>-->
+<!--    // Показываем время последнего обновления-->
+<!--    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('uk-UA');-->
+
+<!--    // Автообновление каждые 60 секунд-->
+<!--    setInterval(function() {-->
+<!--        location.reload();-->
+<!--    }, 60000);-->
+
+<!--    // Уведомление о загрузке-->
+<!--    console.log('📊 Аналітика відвідувачів завантажена успішно');-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!-- В admin/analytics/dashboard.html добавьте после таблицы посетителей: -->
+
+<!-- Последние посетители -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history text-primary me-2"></i>
+                    Останні відвідувачі
+                </h5>
+                <div>
+                    <span class="badge bg-info" th:text="${totalElements} + ' записів'">20 записів</span>
+                    <a href="/analytics/visitors" class="btn btn-sm btn-outline-primary ms-2">
+                        Показать все
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div th:if="${recentVisitors != null and !recentVisitors.isEmpty()}">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th width="15%">Час</th>
+                                <th width="15%">IP адреса</th>
+                                <th width="20%">Локація</th>
+                                <th width="20%">Пристрій</th>
+                                <th width="30%">Сторінка</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="visitor : ${recentVisitors}">
+                                <!-- Время -->
+                                <td>
+                                    <div class="fw-bold" th:text="${#temporals.format(visitor.visitTime, 'HH:mm:ss')}">12:34:56</div>
+                                    <small class="text-muted" th:text="${#temporals.format(visitor.visitTime, 'dd.MM.yyyy')}">15.08.2024</small>
+                                </td>
+
+                                <!-- IP адрес с ссылкой на детали -->
+                                <td>
+                                    <a th:href="@{/analytics/ip(ip=${visitor.ipAddress})}" class="text-decoration-none">
+                                        <code class="text-primary" th:text="${visitor.ipAddress}">192.168.1.1</code>
+                                    </a>
+                                </td>
+
+                                <!-- Локация -->
+                                <td>
+                                    <div>
+                                        <strong th:text="${visitor.country ?: 'Невідомо'}">Ukraine</strong>
+                                        <span th:if="${visitor.isBot}" class="badge bg-warning ms-1">🤖 BOT</span>
+                                    </div>
+                                    <small class="text-muted" th:text="${visitor.city ?: 'Місто невідоме'}">Kyiv</small>
+                                </td>
+
+                                <!-- Устройство -->
+                                <td>
+                                    <div>
+                                        <span th:if="${visitor.isMobile}" class="badge bg-success">📱 Mobile</span>
+                                        <span th:unless="${visitor.isMobile}" class="badge bg-primary">💻 Desktop</span>
+                                    </div>
+                                    <small class="text-muted">
+                                        <span th:text="${visitor.operatingSystem ?: 'Unknown OS'}">Windows</span>
+                                        <span th:if="${visitor.browserName}"> • <span th:text="${visitor.browserName}">Chrome</span></span>
+                                    </small>
+                                </td>
+
+                                <!-- Страница -->
+                                <td>
+                                    <div class="text-truncate">
+                                        <code class="text-primary" th:text="${visitor.requestedUrl ?: '/'}"></code>
+                                    </div>
+                                    <small class="text-muted" th:if="${visitor.refererUrl}">
+                                        від: <span th:text="${visitor.refererUrl}"></span>
+                                    </small>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Простая пагинация -->
+                    <div class="card-footer bg-light" th:if="${totalPages > 1}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">
+                                    Показано <span th:text="${#lists.size(recentVisitors)}">20</span>
+                                    из <span th:text="${totalElements}">50</span> записей
+                                </small>
+                            </div>
+                            <div>
+                                <!-- Предыдущая страница -->
+                                <a th:if="${hasPrevious}"
+                                   th:href="@{/analytics(page=${prevPage}, size=${pageSize})}"
+                                   class="btn btn-sm btn-outline-secondary me-2">
+                                    ← Предыдущие
+                                </a>
+
+                                <!-- Номер страницы -->
+                                <span class="badge bg-secondary me-2">
+                                    Страница <span th:text="${currentPage + 1}">1</span>
+                                    из <span th:text="${totalPages}">3</span>
+                                </span>
+
+                                <!-- Следующая страница -->
+                                <a th:if="${hasNext}"
+                                   th:href="@{/analytics(page=${nextPage}, size=${pageSize})}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    Следующие →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${recentVisitors == null or recentVisitors.isEmpty()}"
+                     class="text-center py-5 text-muted">
+                    <i class="bi bi-info-circle me-2" style="font-size: 2rem;"></i>
+                    <div class="mt-2">Поки немає відвідувачів</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

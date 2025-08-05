@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Топ IP адресов - Аналитика</title>
+</head>
+<body>
+
+<h1>Топ IP адресов</h1>
+
+<!-- Навигация -->
+<p>
+  <a href="/analytics">← Назад к аналитике</a> |
+  <a href="/analytics/countries">Страны</a> |
+  <a href="/analytics/ip">Поиск по IP</a>
+</p>
+
+<hr>
+
+<!-- Селектор периода -->
+<h2>Период анализа</h2>
+<p>
+  <strong>Показать данные за:</strong>
+  <a th:href="@{/analytics/top-ips(days=1)}"
+     th:style="${selectedDays == 1} ? 'font-weight: bold; color: blue;' : ''">1 день</a> |
+  <a th:href="@{/analytics/top-ips(days=7)}"
+     th:style="${selectedDays == 7} ? 'font-weight: bold; color: blue;' : ''">7 дней</a> |
+  <a th:href="@{/analytics/top-ips(days=30)}"
+     th:style="${selectedDays == 30} ? 'font-weight: bold; color: blue;' : ''">30 дней</a> |
+  <a th:href="@{/analytics/top-ips(days=90)}"
+     th:style="${selectedDays == 90} ? 'font-weight: bold; color: blue;' : ''">90 дней</a>
+</p>
+
+<hr>
+
+<!-- Общая статистика -->
+<h2>Общая статистика за <span th:text="${selectedDays}">7</span> дней</h2>
+<table border="1" cellpadding="5">
+  <tr>
+    <td><strong>Всего посещений:</strong></td>
+    <td th:text="${totalVisits}">123</td>
+  </tr>
+  <tr>
+    <td><strong>Уникальных IP:</strong></td>
+    <td th:text="${uniqueIps}">45</td>
+  </tr>
+  <tr>
+    <td><strong>Среднее посещений на IP:</strong></td>
+    <td th:text="${uniqueIps > 0 ? #numbers.formatDecimal(totalVisits / uniqueIps, 1, 1) : 0}">2.7</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- Топ IP адресов -->
+<h2>Топ 50 самых активных IP адресов</h2>
+
+<div th:if="${topIps != null and !topIps.isEmpty()}">
+  <p><strong>Найдено IP адресов:</strong> <span th:text="${#lists.size(topIps)}">25</span></p>
+
+  <table border="1" cellpadding="5" width="100%">
+    <thead>
+    <tr>
+      <th>Место</th>
+      <th>IP Адрес</th>
+      <th>Посещений</th>
+      <th>% от общего</th>
+      <th>Страна</th>
+      <th>Город</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ip, ipStat : ${topIps}">
+      <td>
+        <strong th:text="${ipStat.count}">1</strong>
+      </td>
+      <td>
+        <code th:text="${ip[0]}">192.168.1.1</code>
+      </td>
+      <td>
+        <strong th:text="${ip[1]}">25</strong>
+      </td>
+      <td>
+        <span th:text="${#numbers.formatDecimal((ip[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</span>
+      </td>
+      <td>
+        <span th:text="${ip[2] ?: 'Unknown'}">Ukraine</span>
+      </td>
+      <td>
+        <span th:text="${ip[3] ?: 'Unknown'}">Kyiv</span>
+      </td>
+      <td>
+        <a th:href="@{/analytics/ip(ip=${ip[0]})}">📊 Детали</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <!-- Дополнительная статистика -->
+  <h3>Анализ активности IP</h3>
+  <table border="1" cellpadding="5">
+    <tr>
+      <td><strong>Самый активный IP:</strong></td>
+      <td>
+        <code th:text="${topIps[0][0]}">192.168.1.1</code>
+        (<span th:text="${topIps[0][1]}">50</span> посещений)
+      </td>
+    </tr>
+    <tr>
+      <td><strong>IP с 1 посещением:</strong></td>
+      <td>
+        <span th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] == 1))}">12</span>
+        (<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] == 1)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">24%</span>)
+      </td>
+    </tr>
+    <tr>
+      <td><strong>IP с 5+ посещениями:</strong></td>
+      <td>
+        <span th:text="${#lists.size(#lists.select(topIps, ip -> ip[1] >= 5))}">8</span>
+        (<span th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[1] >= 5)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">16%</span>)
+      </td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <!-- Топ страны по IP -->
+  <h3>Распределение по странам (топ IP)</h3>
+  <table border="1" cellpadding="5">
+    <thead>
+    <tr>
+      <th>Страна</th>
+      <th>Количество IP</th>
+      <th>% от топа</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Группируем по странам -->
+    <tr th:each="country : ${#lists.toSet(#lists.select(topIps, ip -> ip[2]))}">
+      <td th:text="${country ?: 'Unknown'}">Ukraine</td>
+      <td th:text="${#lists.size(#lists.select(topIps, ip -> ip[2] == country))}">15</td>
+      <td th:text="${#numbers.formatDecimal((#lists.size(#lists.select(topIps, ip -> ip[2] == country)) * 100.0 / #lists.size(topIps)), 1, 1)} + '%'">60%</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- Нет данных -->
+<div th:if="${topIps == null or topIps.isEmpty()}">
+  <h3 style="color: orange;">Нет данных за выбранный период</h3>
+  <p>За последние <span th:text="${selectedDays}">7</span> дней не было посещений.</p>
+  <p>Попробуйте выбрать больший период или проверьте работу системы трекинга.</p>
+</div>
+
+<!-- Ошибки -->
+<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+  <h3>Ошибка</h3>
+  <p th:text="${error}">Произошла ошибка</p>
+</div>
+
+<hr>
+
+<!-- Быстрые действия -->
+<h3>Быстрые действия</h3>
+<ul>
+  <li>
+    <a href="/analytics/ip">🔍 Найти конкретный IP</a>
+  </li>
+  <li>
+    <a th:href="@{/analytics/ip(ip=${topIps != null and !topIps.isEmpty() ? topIps[0][0] : ''})}">
+      📊 Подробно о самом активном IP
+    </a>
+  </li>
+  <li>
+    <a href="/analytics/countries">🌍 Анализ по странам</a>
+  </li>
+  <li>
+    <a href="/analytics">📈 Общая аналитика</a>
+  </li>
+</ul>
+
+<hr>
+
+<!-- Пояснения -->
+<h3>Пояснения</h3>
+<ul>
+  <li><strong>IP адрес</strong> - уникальный адрес устройства в интернете</li>
+  <li><strong>Посещения</strong> - количество страниц, которые посетил данный IP</li>
+  <li><strong>% от общего</strong> - доля от всех посещений за период</li>
+  <li><strong>Детали</strong> - подробная информация о всех посещениях IP</li>
+</ul>
+
+<hr>
+
+<p>
+  <small>
+    <a href="/analytics">← Вернуться к главной аналитике</a>
+  </small>
+</p>
+
+</body>
+</html>

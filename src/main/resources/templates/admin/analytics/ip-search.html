@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск по IP - Аналитика</title>
+</head>
+<body>
+
+<h1>Поиск по IP адресу</h1>
+
+<!-- Навигация -->
+<p>
+    <a href="/analytics">← Назад к аналитике</a> |
+    <a href="/analytics/countries">Страны</a> |
+    <a href="/analytics/top-ips">Топ IP</a>
+</p>
+
+<hr>
+
+<!-- Форма поиска -->
+<h2>Поиск посещений по IP</h2>
+<form method="get" action="/analytics/ip">
+    <label for="ip">Введите IP адрес:</label>
+    <input type="text"
+           id="ip"
+           name="ip"
+           th:value="${searchIp}"
+           placeholder="Например: 192.168.1.1"
+           size="20">
+    <button type="submit">Найти</button>
+</form>
+
+<hr>
+
+<!-- Результаты поиска -->
+<div th:if="${searchIp != null and !searchIp.isEmpty()}">
+
+    <h2>Результаты для IP: <span th:text="${searchIp}"></span></h2>
+
+    <!-- Сообщение если нет данных -->
+    <div th:if="${noDataMessage}" style="color: red;">
+        <h3 th:text="${noDataMessage}"></h3>
+        <p>Попробуйте найти другой IP адрес.</p>
+    </div>
+
+    <!-- Общая статистика по IP -->
+    <div th:if="${ipStats != null and ipStats.totalVisits > 0}">
+
+        <h3>Общая информация</h3>
+        <table border="1" cellpadding="5">
+            <tr>
+                <td><strong>Всего посещений:</strong></td>
+                <td th:text="${ipStats.totalVisits}">0</td>
+            </tr>
+            <tr>
+                <td><strong>Уникальных страниц:</strong></td>
+                <td th:text="${ipStats.uniquePages}">0</td>
+            </tr>
+            <tr>
+                <td><strong>Первое посещение:</strong></td>
+                <td th:text="${#temporals.format(ipStats.firstVisit, 'dd.MM.yyyy HH:mm')}">-</td>
+            </tr>
+            <tr>
+                <td><strong>Последнее посещение:</strong></td>
+                <td th:text="${#temporals.format(ipStats.lastVisit, 'dd.MM.yyyy HH:mm')}">-</td>
+            </tr>
+            <tr>
+                <td><strong>Страна:</strong></td>
+                <td th:text="${ipStats.country}">Unknown</td>
+            </tr>
+            <tr>
+                <td><strong>Город:</strong></td>
+                <td th:text="${ipStats.city}">Unknown</td>
+            </tr>
+            <tr>
+                <td><strong>Устройство:</strong></td>
+                <td>
+                    <span th:if="${ipStats.isMobile}">📱 Мобильное</span>
+                    <span th:unless="${ipStats.isMobile}">💻 Десктоп</span>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Операционная система:</strong></td>
+                <td th:text="${ipStats.operatingSystem}">Unknown</td>
+            </tr>
+            <tr>
+                <td><strong>Браузер:</strong></td>
+                <td th:text="${ipStats.browserName}">Unknown</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <!-- Статистика по страницам -->
+        <h3>Статистика по страницам</h3>
+        <table border="1" cellpadding="5">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Страница</th>
+                <th>Посещений</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="page, pageStat : ${ipStats.pageStats}">
+                <td th:text="${pageStat.count}">1</td>
+                <td>
+                    <code th:text="${page.url}"></code>
+                </td>
+                <td th:text="${page.visits}">5</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <!-- Хронология посещений -->
+        <h3>Хронология посещений (последние 50)</h3>
+        <table border="1" cellpadding="5">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Время</th>
+                <th>Страница</th>
+                <th>Откуда пришел</th>
+                <th>Сессия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="visit, visitStat : ${timeline}">
+                <td th:text="${visitStat.count}">1</td>
+                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>
+                <td>
+                    <code th:text="${visit.requestedUrl}"></code>
+                </td>
+                <td>
+                            <span th:if="${visit.refererUrl}">
+                                <small th:text="${visit.refererUrl}"></small>
+                            </span>
+                    <span th:unless="${visit.refererUrl}">
+                                <em>Прямой заход</em>
+                            </span>
+                </td>
+                <td>
+                    <small th:text="${visit.sessionId}"></small>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <!-- Все посещения (полный список) -->
+        <h3>Все посещения (полный список)</h3>
+        <table border="1" cellpadding="5">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Время</th>
+                <th>Страница</th>
+                <th>User-Agent</th>
+                <th>Бот?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="visit : ${ipVisits}">
+                <td th:text="${visit.id}">123</td>
+                <td th:text="${#temporals.format(visit.visitTime, 'dd.MM.yyyy HH:mm:ss')}">01.08.2025 12:34:56</td>
+                <td>
+                    <code th:text="${visit.requestedUrl}"></code>
+                </td>
+                <td>
+                    <small th:text="${visit.userAgent}"></small>
+                </td>
+                <td>
+                    <span th:if="${visit.isBot}" style="color: red;">🤖 ДА</span>
+                    <span th:unless="${visit.isBot}" style="color: green;">👤 НЕТ</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Ошибки -->
+<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+    <h3>Ошибка</h3>
+    <p th:text="${error}">Произошла ошибка</p>
+</div>
+
+<hr>
+
+<!-- Подсказки -->
+<h3>Примеры поиска:</h3>
+<ul>
+    <li><a href="/analytics/ip?ip=0:0:0:0:0:0:0:1">0:0:0:0:0:0:0:1</a> (localhost IPv6)</li>
+    <li><a href="/analytics/ip?ip=127.0.0.1">127.0.0.1</a> (localhost IPv4)</li>
+    <li><a href="/analytics/ip?ip=192.168">192.168</a> (поиск по началу IP)</li>
+</ul>
+
+<hr>
+
+<p>
+    <small>
+        <a href="/analytics">← Вернуться к главной аналитике</a>
+    </small>
+</p>
+
+</body>
+</html>

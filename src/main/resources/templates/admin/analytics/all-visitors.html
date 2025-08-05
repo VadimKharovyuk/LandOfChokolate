@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все посетители - Аналитика</title>
+</head>
+<body>
+
+<h1>Все посетители</h1>
+
+<!-- Навигация -->
+<p>
+    <a href="/analytics">← Назад к аналитике</a> |
+    <a href="/analytics/countries">Страны</a> |
+    <a href="/analytics/ip">Поиск по IP</a> |
+    <a href="/analytics/top-ips">Топ IP</a>
+</p>
+
+<hr>
+
+<!-- Информация о пагинации -->
+<h2>Список всех посетителей</h2>
+<p>
+    <strong>Показано:</strong>
+    <span th:text="${#lists.size(visitors)}">50</span> записей
+    (страница <span th:text="${currentPage + 1}">1</span> из <span th:text="${totalPages}">10</span>)
+    <br>
+    <strong>Всего записей:</strong> <span th:text="${totalElements}">500</span>
+</p>
+
+<!-- Размер страницы -->
+<p>
+    <strong>Записей на странице:</strong>
+    <a th:href="@{/analytics/visitors(page=0, size=25)}"
+       th:style="${pageSize == 25} ? 'font-weight: bold; color: blue;' : ''">25</a> |
+    <a th:href="@{/analytics/visitors(page=0, size=50)}"
+       th:style="${pageSize == 50} ? 'font-weight: bold; color: blue;' : ''">50</a> |
+    <a th:href="@{/analytics/visitors(page=0, size=100)}"
+       th:style="${pageSize == 100} ? 'font-weight: bold; color: blue;' : ''">100</a>
+</p>
+
+<hr>
+
+<!-- Таблица посетителей -->
+<div th:if="${visitors != null and !visitors.isEmpty()}">
+
+    <table border="1" cellpadding="5" width="100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Время</th>
+            <th>IP Адрес</th>
+            <th>Страна</th>
+            <th>Город</th>
+            <th>Устройство</th>
+            <th>ОС</th>
+            <th>Браузер</th>
+            <th>Страница</th>
+            <th>Бот?</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visitor : ${visitors}">
+            <td th:text="${visitor.id}">123</td>
+
+            <td>
+                <strong th:text="${#temporals.format(visitor.visitTime, 'dd.MM.yyyy')}">01.08.2025</strong>
+                <br>
+                <small th:text="${#temporals.format(visitor.visitTime, 'HH:mm:ss')}">12:34:56</small>
+            </td>
+
+            <td>
+                <a th:href="@{/analytics/ip(ip=${visitor.ipAddress})}">
+                    <code th:text="${visitor.ipAddress}">192.168.1.1</code>
+                </a>
+            </td>
+
+            <td th:text="${visitor.country ?: 'Unknown'}">Ukraine</td>
+
+            <td th:text="${visitor.city ?: 'Unknown'}">Kyiv</td>
+
+            <td>
+                <span th:if="${visitor.isMobile}">📱 Mobile</span>
+                <span th:unless="${visitor.isMobile}">💻 Desktop</span>
+            </td>
+
+            <td th:text="${visitor.operatingSystem ?: 'Unknown'}">Windows</td>
+
+            <td th:text="${visitor.browserName ?: 'Unknown'}">Chrome</td>
+
+            <td>
+                <code th:text="${visitor.requestedUrl}"></code>
+            </td>
+
+            <td>
+                <span th:if="${visitor.isBot}" style="color: red;">🤖 ДА</span>
+                <span th:unless="${visitor.isBot}" style="color: green;">👤 НЕТ</span>
+            </td>
+
+            <td>
+                <a th:href="@{/analytics/ip(ip=${visitor.ipAddress})}">📊 Детали</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<!-- Нет данных -->
+<div th:if="${visitors == null or visitors.isEmpty()}">
+    <h3 style="color: orange;">Нет посетителей</h3>
+    <p>В базе данных пока нет записей о посетителях.</p>
+</div>
+
+<hr>
+
+<!-- Пагинация -->
+<div th:if="${totalPages > 1}">
+    <h3>Навигация по страницам</h3>
+
+    <!-- Информация о текущей странице -->
+    <p>
+        <strong>Страница <span th:text="${currentPage + 1}">1</span> из <span th:text="${totalPages}">10</span></strong>
+        <br>
+        Показано записи с <span th:text="${currentPage * pageSize + 1}">1</span>
+        по <span th:text="${currentPage * pageSize + #lists.size(visitors)}">50</span>
+        из <span th:text="${totalElements}">500</span> общих
+    </p>
+
+    <!-- Навигационные ссылки -->
+    <p>
+        <!-- Первая страница -->
+        <a th:if="${currentPage > 0}"
+           th:href="@{/analytics/visitors(page=0, size=${pageSize})}">
+            « Первая
+        </a>
+
+        <!-- Предыдущая страница -->
+        <a th:if="${hasPrevious}"
+           th:href="@{/analytics/visitors(page=${prevPage}, size=${pageSize})}">
+            ← Предыдущая
+        </a>
+
+        <!-- Номера страниц -->
+        <span th:if="${totalPages <= 10}">
+                <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a th:if="${i != currentPage}"
+                       th:href="@{/analytics/visitors(page=${i}, size=${pageSize})}"
+                       th:text="${i + 1}">1</a>
+                    <strong th:if="${i == currentPage}" th:text="${i + 1}">1</strong>
+                    <span> </span>
+                </span>
+            </span>
+
+        <!-- Номера страниц (сокращенные для большого количества) -->
+        <span th:if="${totalPages > 10}">
+                <span th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a th:if="${i != currentPage}"
+                       th:href="@{/analytics/visitors(page=${i}, size=${pageSize})}"
+                       th:text="${i + 1}">1</a>
+                    <strong th:if="${i == currentPage}" th:text="${i + 1}">1</strong>
+                    <span> </span>
+                </span>
+
+                <span th:if="${endPage < totalPages - 1}">
+                    ...
+                    <a th:href="@{/analytics/visitors(page=${totalPages - 1}, size=${pageSize})}"
+                       th:text="${totalPages}">10</a>
+                </span>
+            </span>
+
+        <!-- Следующая страница -->
+        <a th:if="${hasNext}"
+           th:href="@{/analytics/visitors(page=${nextPage}, size=${pageSize})}">
+            Следующая →
+        </a>
+
+        <!-- Последняя страница -->
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/analytics/visitors(page=${totalPages - 1}, size=${pageSize})}">
+            Последняя »
+        </a>
+    </p>
+
+    <!-- Быстрый переход -->
+    <p>
+        <strong>Быстрый переход:</strong>
+    <form method="get" action="/analytics/visitors" style="display: inline;">
+        <label for="page">Страница:</label>
+        <input type="number"
+               id="page"
+               name="page"
+               min="1"
+               th:max="${totalPages}"
+               th:value="${currentPage + 1}"
+               style="width: 60px;">
+        <input type="hidden" name="size" th:value="${pageSize}">
+        <button type="submit">Перейти</button>
+    </form>
+    </p>
+</div>
+
+<!-- Ошибки -->
+<div th:if="${error}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">
+    <h3>Ошибка</h3>
+    <p th:text="${error}">Произошла ошибка</p>
+</div>
+
+<hr>
+
+<!-- Статистика на странице -->
+<div th:if="${visitors != null and !visitors.isEmpty()}">
+    <h3>Статистика на текущей странице</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <td><strong>Всего записей:</strong></td>
+            <td th:text="${#lists.size(visitors)}">50</td>
+        </tr>
+        <tr>
+            <td><strong>Мобильных устройств:</strong></td>
+            <td th:text="${mobileCount}">15</td>
+        </tr>
+        <tr>
+            <td><strong>Десктопов:</strong></td>
+            <td th:text="${desktopCount}">35</td>
+        </tr>
+        <tr>
+            <td><strong>Ботов:</strong></td>
+            <td th:text="${botCount}">2</td>
+        </tr>
+        <tr>
+            <td><strong>Уникальных IP:</strong></td>
+            <td th:text="${uniqueIPCount}">25</td>
+        </tr>
+    </table>
+</div>
+
+<hr>
+
+<p>
+    <small>
+        <a href="/analytics">← Вернуться к главной аналитике</a>
+    </small>
+</p>
+
+</body>
+</html>

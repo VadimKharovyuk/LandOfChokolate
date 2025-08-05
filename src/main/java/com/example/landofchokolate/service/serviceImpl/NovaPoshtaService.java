@@ -286,8 +286,8 @@ public class NovaPoshtaService implements PoshtaService {
     private String makeDirectHttpRequest(NovaPoshtaRequest request) {
         try {
             java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
-                    .connectTimeout(java.time.Duration.ofSeconds(30))
-                    .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)  // Следовать редиректам
+                    .connectTimeout(java.time.Duration.ofSeconds(30))  // ✅ 30 сек
+                    .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
                     .build();
 
             ObjectMapper mapper = new ObjectMapper();
@@ -297,12 +297,17 @@ public class NovaPoshtaService implements PoshtaService {
                     .uri(java.net.URI.create(config.getApiUrl()))
                     .header("Content-Type", "application/json")
                     .header("User-Agent", "LandOfChokolate/1.0")
-                    .timeout(java.time.Duration.ofSeconds(50))
+                    .header("Accept", "application/json")
+                    .timeout(java.time.Duration.ofSeconds(120))  // ✅ 2 минуты
                     .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
 
+            log.info("🚚 Отправляем запрос к Новой Почте: {}", config.getApiUrl());
+
             java.net.http.HttpResponse<String> httpResponse = client.send(httpRequest,
                     java.net.http.HttpResponse.BodyHandlers.ofString());
+
+            log.info("📦 Ответ от Новой Почты: статус {}", httpResponse.statusCode());
 
             if (httpResponse.statusCode() == 200) {
                 return httpResponse.body();
@@ -311,11 +316,50 @@ public class NovaPoshtaService implements PoshtaService {
                 return null;
             }
 
+        } catch (java.net.http.HttpConnectTimeoutException e) {
+            log.error("❌ Новая Почта API недоступна (таймаут подключения): {}", e.getMessage());
+            return null;
+        } catch (java.net.http.HttpTimeoutException e) {
+            log.error("❌ Новая Почта API медленно отвечает (таймаут чтения): {}", e.getMessage());
+            return null;
         } catch (Exception e) {
-            log.error("Direct HTTP request failed", e);
+            log.error("❌ Ошибка запроса к Новой Почте", e);
             return null;
         }
     }
+//    private String makeDirectHttpRequest(NovaPoshtaRequest request) {
+//        try {
+//            java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
+//                    .connectTimeout(java.time.Duration.ofSeconds(30))
+//                    .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)  // Следовать редиректам
+//                    .build();
+//
+//            ObjectMapper mapper = new ObjectMapper();
+//            String requestBody = mapper.writeValueAsString(request);
+//
+//            java.net.http.HttpRequest httpRequest = java.net.http.HttpRequest.newBuilder()
+//                    .uri(java.net.URI.create(config.getApiUrl()))
+//                    .header("Content-Type", "application/json")
+//                    .header("User-Agent", "LandOfChokolate/1.0")
+//                    .timeout(java.time.Duration.ofSeconds(50))
+//                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
+//                    .build();
+//
+//            java.net.http.HttpResponse<String> httpResponse = client.send(httpRequest,
+//                    java.net.http.HttpResponse.BodyHandlers.ofString());
+//
+//            if (httpResponse.statusCode() == 200) {
+//                return httpResponse.body();
+//            } else {
+//                log.error("HTTP error: {} - {}", httpResponse.statusCode(), httpResponse.body());
+//                return null;
+//            }
+//
+//        } catch (Exception e) {
+//            log.error("Direct HTTP request failed", e);
+//            return null;
+//        }
+//    }
 
 
     @Override

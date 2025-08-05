@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналітика по країнах - Країна шоколаду</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        .country-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #28a745;
+        }
+        .country-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .country-flag {
+            font-size: 2rem;
+        }
+        .country-percentage {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .progress-custom {
+            height: 8px;
+            border-radius: 10px;
+        }
+        .stats-header {
+            background: linear-gradient(135deg, #007bff, #28a745);
+            color: white;
+            border-radius: 15px;
+        }
+        .period-selector .btn {
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container-fluid py-4">
+
+    <!-- Хлебные крошки и навигация -->
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/admin/analytics" class="text-decoration-none">
+                            <i class="bi bi-house-door"></i> Аналітика
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="bi bi-globe"></i> Країни
+                    </li>
+                </ol>
+            </nav>
+
+            <h1 class="h3 mb-0">
+                <i class="bi bi-globe2 text-success me-2"></i>
+                Аналітика по країнах
+            </h1>
+            <p class="text-muted mb-0">Детальна статистика відвідувачів за географічним розташуванням</p>
+        </div>
+    </div>
+
+    <!-- Селектор периода -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card stats-header">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-1">
+                                <i class="bi bi-calendar-range me-2"></i>
+                                Період аналізу:
+                                <span th:text="${selectedDays}">7</span> днів
+                            </h5>
+                            <p class="mb-0 opacity-75">
+                                Всього відвідувань за період:
+                                <strong th:text="${totalVisits}">1,234</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="period-selector">
+                                <a th:href="@{/admin/analytics/countries(days=1)}"
+                                   th:classappend="${selectedDays == 1} ? 'btn-light' : 'btn-outline-light'"
+                                   class="btn btn-sm me-2">1 день</a>
+                                <a th:href="@{/admin/analytics/countries(days=7)}"
+                                   th:classappend="${selectedDays == 7} ? 'btn-light' : 'btn-outline-light'"
+                                   class="btn btn-sm me-2">7 днів</a>
+                                <a th:href="@{/admin/analytics/countries(days=30)}"
+                                   th:classappend="${selectedDays == 30} ? 'btn-light' : 'btn-outline-light'"
+                                   class="btn btn-sm">30 днів</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика по странам -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-bar-chart text-primary me-2"></i>
+                        Топ країн за кількістю відвідувань
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${countriesStats != null and !countriesStats.isEmpty()}">
+
+                        <!-- Топ 3 страны - большие карточки -->
+                        <div class="row mb-4" th:if="${#lists.size(countriesStats) >= 3}">
+                            <div class="col-md-4 mb-3" th:each="country, countryStat : ${countriesStats}" th:if="${countryStat.count <= 3}">
+                                <div class="card country-card h-100">
+                                    <div class="card-body text-center">
+                                        <div class="country-flag mb-3">
+                                                <span th:switch="${country[0]}">
+                                                    <span th:case="'Ukraine'">🇺🇦</span>
+                                                    <span th:case="'Poland'">🇵🇱</span>
+                                                    <span th:case="'Germany'">🇩🇪</span>
+                                                    <span th:case="'United States'">🇺🇸</span>
+                                                    <span th:case="'Canada'">🇨🇦</span>
+                                                    <span th:case="'France'">🇫🇷</span>
+                                                    <span th:case="'United Kingdom'">🇬🇧</span>
+                                                    <span th:case="'Italy'">🇮🇹</span>
+                                                    <span th:case="'Spain'">🇪🇸</span>
+                                                    <span th:case="'Netherlands'">🇳🇱</span>
+                                                    <span th:case="*">🌍</span>
+                                                </span>
+                                        </div>
+
+                                        <h4 class="mb-2" th:text="${country[0] ?: 'Невідома країна'}">Ukraine</h4>
+
+                                        <div class="country-percentage text-success mb-2">
+                                            <span th:text="${country[1]}">150</span> відвідувань
+                                        </div>
+
+                                        <div class="mb-2">
+                                                <span class="text-muted">
+                                                    <span th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)}">15.5</span>%
+                                                    від загальної кількості
+                                                </span>
+                                        </div>
+
+                                        <div class="progress progress-custom">
+                                            <div class="progress-bar bg-success"
+                                                 th:style="'width: ' + ${country[1] * 100.0 / totalVisits} + '%'"></div>
+                                        </div>
+
+                                        <div class="mt-3">
+                                                <span class="badge bg-primary">
+                                                    # <span th:text="${countryStat.count}">1</span> місце
+                                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Остальные страны - таблица -->
+                        <div th:if="${#lists.size(countriesStats) > 3}">
+                            <h6 class="mb-3">
+                                <i class="bi bi-list-ol me-2"></i>
+                                Повний список країн
+                            </h6>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th width="10%">#</th>
+                                        <th width="15%">Прапор</th>
+                                        <th width="35%">Країна</th>
+                                        <th width="20%">Відвідування</th>
+                                        <th width="20%">Відсоток</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="country, countryStat : ${countriesStats}">
+                                        <td>
+                                            <span class="badge bg-secondary" th:text="${countryStat.count}">1</span>
+                                        </td>
+                                        <td class="text-center">
+                                                    <span style="font-size: 1.5rem;" th:switch="${country[0]}">
+                                                        <span th:case="'Ukraine'">🇺🇦</span>
+                                                        <span th:case="'Poland'">🇵🇱</span>
+                                                        <span th:case="'Germany'">🇩🇪</span>
+                                                        <span th:case="'United States'">🇺🇸</span>
+                                                        <span th:case="'Canada'">🇨🇦</span>
+                                                        <span th:case="'France'">🇫🇷</span>
+                                                        <span th:case="'United Kingdom'">🇬🇧</span>
+                                                        <span th:case="'Italy'">🇮🇹</span>
+                                                        <span th:case="'Spain'">🇪🇸</span>
+                                                        <span th:case="'Netherlands'">🇳🇱</span>
+                                                        <span th:case="'Austria'">🇦🇹</span>
+                                                        <span th:case="'Belgium'">🇧🇪</span>
+                                                        <span th:case="'Czech Republic'">🇨🇿</span>
+                                                        <span th:case="'Denmark'">🇩🇰</span>
+                                                        <span th:case="'Finland'">🇫🇮</span>
+                                                        <span th:case="'Norway'">🇳🇴</span>
+                                                        <span th:case="'Sweden'">🇸🇪</span>
+                                                        <span th:case="'Switzerland'">🇨🇭</span>
+                                                        <span th:case="*">🌍</span>
+                                                    </span>
+                                        </td>
+                                        <td>
+                                            <strong th:text="${country[0] ?: 'Невідома країна'}">Ukraine</strong>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-primary" th:text="${country[1]}">150</span>
+                                            <small class="text-muted">відвідувань</small>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress me-2" style="width: 60%; height: 6px;">
+                                                    <div class="progress-bar bg-success"
+                                                         th:style="'width: ' + ${country[1] * 100.0 / totalVisits} + '%'"></div>
+                                                </div>
+                                                <span class="fw-bold" th:text="${#numbers.formatDecimal((country[1] * 100.0 / totalVisits), 1, 1)} + '%'">15.5%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Нет данных -->
+                    <div th:if="${countriesStats == null or countriesStats.isEmpty()}"
+                         class="text-center py-5">
+                        <i class="bi bi-globe text-muted" style="font-size: 4rem;"></i>
+                        <h4 class="text-muted mt-3">Немає даних по країнах</h4>
+                        <p class="text-muted">За обраний період відвідувачів не було, або дані ще обробляються.</p>
+                        <a href="/admin/analytics" class="btn btn-primary">
+                            <i class="bi bi-arrow-left me-2"></i>Повернутися до головної
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ошибки -->
+    <div th:if="${error}" class="alert alert-danger mt-4">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Помилка:</strong> <span th:text="${error}">Ошибка загрузки данных</span>
+    </div>
+
+    <!-- Футер -->
+    <div class="row mt-4">
+        <div class="col text-center">
+            <small class="text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Дані оновлюються автоматично кожну хвилину
+                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="location.reload()">
+                    <i class="bi bi-arrow-clockwise"></i> Оновити зараз
+                </button>
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Анимация прогресс-баров при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 1s ease-in-out';
+                bar.style.width = width;
+            }, 300);
+        });
+    });
+
+    // Автообновление страницы каждые 2 минуты
+    setInterval(function() {
+        location.reload();
+    }, 120000);
+
+    console.log('🌍 Аналітика по країнах завантажена');
+</script>
+</body>
+</html>
