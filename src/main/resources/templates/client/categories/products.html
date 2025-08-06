@@ -748,7 +748,7 @@
         <!-- Заголовок категории -->
         <header class="category-header">
 
-            <h1 class="category-title" th:text="${category.name}">Назва категорії</h1>
+            <h1 class="category-title" th:text="${category.name} + ' - елітні товари преміум якості'">Назва категорії</h1>
 
             <p class="category-description"
                th:if="${category.shortDescription != null and !category.shortDescription.isEmpty()}"

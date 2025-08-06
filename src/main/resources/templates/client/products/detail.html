@@ -19,6 +19,10 @@
     <meta property="og:url" th:content="@{/products/{slug}(slug=${product.slug})}">
     <meta property="og:site_name" content="Країна шоколаду">
 
+
+    <!-- Указываем, что контент на украинском языке -->
+    <link rel="alternate" hreflang="uk" th:href="@{|${baseUrl}/catalog|}">
+    <link rel="alternate" hreflang="x-default" th:href="@{|${baseUrl}/catalog|}">
     <!-- Product specific Open Graph -->
     <meta property="product:price:amount" th:content="${product.price}">
     <meta property="product:price:currency" content="UAH">

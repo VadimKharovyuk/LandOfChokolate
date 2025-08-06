@@ -3,6 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Canonical URL (важно против дублей) -->
+    <title>Каталог товарів - Країна шоколаду | Купити шоколад в Києві</title>
+    <meta name="description" content="Великий вибір елітного шоколаду в інтернет-магазині 'Країна шоколаду'. Швейцарський, бельгійський шоколад преміум якості. Доставка по Києву та Україні.">
+    <meta name="keywords" content="шоколад київ, купити шоколад, елітний шоколад, швейцарський шоколад, бельгійський шоколад, темний шоколад, молочний шоколад, білий шоколад, подарунки">
+
+    <!-- Canonical URL (важно против дублей) -->
+    <link rel="canonical" th:href="@{|${baseUrl}/catalog|}">
+
+    <meta name="product-type" content="food">
+    <meta name="price-range" content="₴50-₴2000">
+    <meta name="availability" content="in stock">
+
+    <!-- Указываем, что контент на украинском языке -->
+    <link rel="alternate" hreflang="uk" th:href="@{|${baseUrl}/catalog|}">
+    <link rel="alternate" hreflang="x-default" th:href="@{|${baseUrl}/catalog|}">
+
+    <!-- Префетчинг для важных страниц -->
+    <link rel="prefetch" th:href="@{/catalog/categories}">
+
+
+    <!-- DNS prefetch для внешних ресурсов -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//www.google-analytics.com">
+    <!-- Robots и индексация -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+
+    <!-- Языковые мета-теги -->
+    <meta name="language" content="Ukrainian">
+    <meta http-equiv="content-language" content="uk">
+
+    <!-- Геолокация для локального SEO -->
+    <meta name="geo.region" content="UA-30">
+    <meta name="geo.placename" content="Київ">
+    <meta name="geo.position" content="50.4501;30.5234">
+    <meta name="ICBM" content="50.4501, 30.5234">
+
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Каталог товарів - Країна шоколаду">
+    <meta property="og:description" content="Великий вибір елітного шоколаду преміум якості. Швейцарський та бельгійський шоколад з доставкою по всій Україні.">
+    <meta property="og:image" th:content="@{|${baseUrl}/images/catalog-preview.jpg|}">
+    <meta property="og:url" th:content="@{|${baseUrl}/catalog|}">
+    <meta property="og:site_name" content="Країна шоколаду">
+    <meta property="og:locale" content="uk_UA">
+
     <title>Каталог товарів - Країна шоколаду </title>
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">

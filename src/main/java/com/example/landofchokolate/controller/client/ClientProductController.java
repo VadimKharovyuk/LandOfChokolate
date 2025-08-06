@@ -131,6 +131,8 @@ public class ClientProductController {
             model.addAttribute("brand", brand);
             model.addAttribute("stockStatus", stockStatus);
 
+            model.addAttribute("baseUrl", "https://landofchokolate.onrender.com");
+
             // Загружаем категории и бренды для фильтров
             try {
                 List<CategoryResponseDto> cat = categoryService.getAllCategories();
@@ -161,6 +163,7 @@ public class ClientProductController {
         ///похожие товары
         List<RelatedProductDto> relatedProducts = productService.getRelatedProducts(slug, 8);
         model.addAttribute("relatedProducts", relatedProducts);
+        model.addAttribute("baseUrl", "https://landofchokolate.onrender.com");
 
         return "client/products/detail";
     }
