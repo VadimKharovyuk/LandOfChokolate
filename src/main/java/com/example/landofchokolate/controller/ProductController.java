@@ -201,6 +201,7 @@ public class ProductController {
                     "Ошибка при обновлении продукта: " + e.getMessage());
         }
 
+
         return "redirect:/admin/product/list";
     }
 
