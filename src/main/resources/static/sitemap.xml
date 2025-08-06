@@ -21,9 +21,10 @@
     </url>
 
     <!-- Каталог продуктов -->
+    <!-- Каталог продуктов -->
     <url>
-        <loc>https://landofchokolate.onrender.com/products</loc>
-        <lastmod>2025-08-04</lastmod>
+        <loc>https://landofchokolate.onrender.com/product/all</loc>
+        <lastmod>2025-08-07</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>

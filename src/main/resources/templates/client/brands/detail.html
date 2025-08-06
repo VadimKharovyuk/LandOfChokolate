@@ -35,6 +35,75 @@
     <meta name="robots" content="index, follow">
     <meta property="og:url" th:content="@{/brands/{slug}(slug=${brand.slug})}">
     <meta property="og:site_name" content="Країна шоколаду">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" th:content="${brand.metaTitle ?: brand.name}">
+    <meta name="twitter:description" th:content="${brand.metaDescription ?: brand.shortDescription}">
+    <meta name="twitter:image" th:content="${brand.imageUrl}" th:if="${brand.imageUrl}">
+    <!-- Keywords -->
+    <meta name="keywords"
+          th:content="${brand.name} + ', солодощі, шоколад, Київ, купити, доставка, бренд'">
+
+    <script type="application/ld+json" th:inline="none">
+        {
+            "@context": "https://schema.org",
+            "@type": "Brand",
+            "name": "[(${brand.name})]",
+            "description": "[(${brand.shortDescription ?: (brand.name + ' - популярний бренд солодощів в Країні шоколаду')})]",
+            "url": "https://landofchokolate.onrender.com/brands/[(${brand.slug})]",
+            "logo": "[(${brand.imageUrl})]",
+            "manufacturer": {
+                "@type": "Organization",
+                "name": "[(${brand.name})]"
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "name": "Товари бренду [(${brand.name})]",
+                "numberOfItems": "[(${totalProducts ?: 0})]",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Товари бренду [(${brand.name})]",
+                        "url": "https://landofchokolate.onrender.com/brands/[(${brand.slug})]"
+                    }
+                ]
+            },
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Головна",
+                        "item": "https://landofchokolate.onrender.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Бренди",
+                        "item": "https://landofchokolate.onrender.com/brands"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "[(${brand.name})]",
+                        "item": "https://landofchokolate.onrender.com/brands/[(${brand.slug})]"
+                    }
+                ]
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Країна шоколаду",
+                "url": "https://landofchokolate.onrender.com/",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://landofchokolate.onrender.com/images/logo.png"
+                }
+            }
+        }
+    </script>
+
     <!-- Fragment CSS -->
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">

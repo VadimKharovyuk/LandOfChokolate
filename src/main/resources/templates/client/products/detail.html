@@ -7,26 +7,35 @@
     <title th:text="${product.metaTitle ?: product.name + ' - Країна шоколаду'}">
         Товар - Країна шоколаду
     </title>
+
     <!-- Meta Description -->
     <meta name="description"
           th:content="${product.metaDescription ?: 'Купити ' + product.name + ' в Країні шоколаду. Ціна: ' + product.price + ' ₴. Доставка по Україні.'}">
+
+    <!-- Keywords -->
+    <meta name="keywords" th:content="${product.name} + ', купити, шоколад, солодощі, ціна, доставка, ' + (product.brand != null ? product.brand.name + ', ' : '') + (product.category != null ? product.category.name : '')">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" th:href="@{/product/{slug}(slug=${product.slug})}">
+
+    <!-- Языковые альтернативы (ИСПРАВЛЕНО) -->
+    <link rel="alternate" hreflang="uk" th:href="@{/product/{slug}(slug=${product.slug})}">
+    <link rel="alternate" hreflang="x-default" th:href="@{/product/{slug}(slug=${product.slug})}">
 
     <!-- Open Graph теги -->
     <meta property="og:title" th:content="${product.metaTitle ?: product.name}">
     <meta property="og:description" th:content="${product.metaDescription ?: product.description}">
     <meta property="og:image" th:content="${product.imageUrl}" th:if="${product.imageUrl}">
     <meta property="og:type" content="product">
-    <meta property="og:url" th:content="@{/products/{slug}(slug=${product.slug})}">
+    <meta property="og:url" th:href="@{/product/{slug}(slug=${product.slug})}">
     <meta property="og:site_name" content="Країна шоколаду">
+    <meta property="og:locale" content="uk_UA">
 
-
-    <!-- Указываем, что контент на украинском языке -->
-    <link rel="alternate" hreflang="uk" th:href="@{|${baseUrl}/catalog|}">
-    <link rel="alternate" hreflang="x-default" th:href="@{|${baseUrl}/catalog|}">
     <!-- Product specific Open Graph -->
     <meta property="product:price:amount" th:content="${product.price}">
     <meta property="product:price:currency" content="UAH">
     <meta property="product:availability" th:content="${product.inStock ? 'in stock' : 'out of stock'}">
+    <meta property="product:condition" content="new">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -34,13 +43,105 @@
     <meta name="twitter:description" th:content="${product.metaDescription ?: product.description}">
     <meta name="twitter:image" th:content="${product.imageUrl}" th:if="${product.imageUrl}">
 
-    <!-- Canonical URL -->
-    <link rel="canonical" th:href="@{/products/{slug}(slug=${product.slug})}">
-
     <!-- SEO теги -->
-    <meta name="robots" content="index, follow">
-    <meta name="keywords" th:content="${product.name} + ', шоколад, солодощі, ' + (product.brand != null ? product.brand.name + ', ' : '') + (product.category != null ? product.category.name : '')">
+    <meta name="robots" content="index, follow, max-image-preview:large">
 
+    <!-- Дополнительные продуктовые мета-теги -->
+    <meta name="product:price" th:content="${product.price} + ' ₴'">
+    <meta name="product:availability" th:content="${product.stockQuantity > 0 ? 'in stock' : 'out of stock'}">
+    <meta name="product:condition" content="new">
+    <meta name="product:category" th:content="${product.category != null ? product.category.name : ''}">
+    <meta name="product:brand" th:content="${product.brand != null ? product.brand.name : ''}">
+
+    <!-- Структурированные данные (УЛУЧШЕННЫЕ) -->
+    <script type="application/ld+json" th:inline="none">
+        {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "[(${product.name})]",
+            "description": "[(${product.description ?: (product.name + ' - преміальний шоколад від Країни шоколаду')})]",
+            "image": "[(${product.imageUrl})]",
+            "sku": "[('SKU-' + ${product.id})]",
+            "gtin": "[('GT' + ${product.id})]",
+            "brand": {
+                "@type": "Brand",
+                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
+            },
+            "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
+            "offers": {
+                "@type": "Offer",
+                "price": "[(${product.price})]",
+                "priceCurrency": "UAH",
+                "availability": "[(${product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'})]",
+                "itemCondition": "https://schema.org/NewCondition",
+                "url": "https://landofchokolate.onrender.com/product/[(${product.slug})]",
+                "priceValidUntil": "[(${#temporals.format(#temporals.createNow().plusYears(1), 'yyyy-MM-dd')})]",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Країна шоколаду",
+                    "url": "https://landofchokolate.onrender.com/",
+                    "logo": "https://landofchokolate.onrender.com/images/logo.png"
+                },
+                "shippingDetails": {
+                    "@type": "OfferShippingDetails",
+                    "shippingRate": {
+                        "@type": "MonetaryAmount",
+                        "currency": "UAH",
+                        "value": "0"
+                    },
+                    "deliveryTime": {
+                        "@type": "ShippingDeliveryTime",
+                        "handlingTime": {
+                            "@type": "QuantitativeValue",
+                            "minValue": 1,
+                            "maxValue": 2,
+                            "unitCode": "DAY"
+                        },
+                        "transitTime": {
+                            "@type": "QuantitativeValue",
+                            "minValue": 1,
+                            "maxValue": 3,
+                            "unitCode": "DAY"
+                        }
+                    }
+                }
+            },
+            "manufacturer": {
+                "@type": "Organization",
+                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "5",
+                "reviewCount": "[(${product.reviewCount ?: 1})]",
+                "bestRating": "5",
+                "worstRating": "1"
+            },
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Головна",
+                        "item": "https://landofchokolate.onrender.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "[(${product.category != null ? product.category.name : 'Товари'})]",
+                        "item": "https://landofchokolate.onrender.com/categories/[(${product.category != null ? product.category.slug : 'all'})]"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "[(${product.name})]",
+                        "item": "https://landofchokolate.onrender.com/product/[(${product.slug})]"
+                    }
+                ]
+            }
+        }
+    </script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -55,40 +156,7 @@
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">
 
-    <script type="application/ld+json" th:inline="none">
-        {
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": "[(${product.name})]",
-            "description": "[(${product.description ?: (product.name + ' - преміальний шоколад від Країни шоколаду')})]",
-            "image": "[(${product.imageUrl})]",
-            "sku": "[('SKU-' + ${product.id})]",
-            "brand": {
-                "@type": "Brand",
-                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
-            },
-            "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
-            "offers": {
-                "@type": "Offer",
-                "price": "[(${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'POINT')})]",
-                "priceCurrency": "UAH",
-                "availability": "[(${product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'})]",
-                "itemCondition": "https://schema.org/NewCondition",
-                "url": "https://landofchokolate.onrender.com/products/[(${product.slug})]",
-                "priceValidUntil": "[(${#dates.format(#dates.createNow().plusYears(1), 'yyyy-MM-dd')})]",
-                "seller": {
-                    "@type": "Organization",
-                    "name": "Країна шоколаду",
-                    "url": "https://landofchokolate.onrender.com/"
-                }
-            },
-            "manufacturer": {
-                "@type": "Organization",
-                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]",
-                "url": "https://landofchokolate.onrender.com/"
-            }
-        }
-    </script>
+
 
 
     <style>

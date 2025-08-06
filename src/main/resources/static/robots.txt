@@ -14,5 +14,6 @@ Disallow: /node_modules/
 # Указываем карту сайта
 Sitemap: https://landofchokolate.onrender.com/sitemap.xml
 
+
 # Время задержки между запросами (в секундах)
 Crawl-delay: 1

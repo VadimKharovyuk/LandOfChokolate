@@ -14,10 +14,11 @@
     <meta name="googlebot" content="index, follow">
 
     <!-- Open Graph -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Категорії шоколаду - Країна шоколаду">
     <meta property="og:description" content="Великий вибір категорій елітного шоколаду. Швейцарський, бельгійський шоколад преміум якості з безкоштовною доставкою по Україні.">
-
+    <meta property="og:url" content="https://landofchokolate.onrender.com/categories">
     <meta property="og:site_name" content="Країна шоколаду">
     <meta property="og:locale" content="uk_UA">
 
@@ -43,6 +44,53 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://landofchokolate.onrender.com/categories">
 
+    <!-- Структурированные данные для списка категорий -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Категорії шоколаду - Країна шоколаду",
+            "description": "Великий каталог категорій елітного шоколаду: темний, молочний, білий, швейцарський, бельгійський шоколад преміум якості",
+            "url": "https://landofchokolate.onrender.com/categories",
+            "mainEntity": {
+                "@type": "ItemList",
+                "name": "Категорії продуктів",
+                "description": "Каталог всіх доступних категорій шоколаду та солодощів",
+                "numberOfItems": "[(${#lists.size(categories)})]"
+            },
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Головна",
+                        "item": "https://landofchokolate.onrender.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Категорії",
+                        "item": "https://landofchokolate.onrender.com/categories"
+                    }
+                ]
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Країна шоколаду",
+                "url": "https://landofchokolate.onrender.com/",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://landofchokolate.onrender.com/images/logo.png"
+                }
+            },
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://landofchokolate.onrender.com/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+    </script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">

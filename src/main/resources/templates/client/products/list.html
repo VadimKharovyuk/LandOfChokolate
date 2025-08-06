@@ -23,7 +23,6 @@
     <!-- Префетчинг для важных страниц -->
     <link rel="prefetch" th:href="@{/catalog/categories}">
 
-
     <!-- DNS prefetch для внешних ресурсов -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
@@ -51,7 +50,58 @@
     <meta property="og:site_name" content="Країна шоколаду">
     <meta property="og:locale" content="uk_UA">
 
-    <title>Каталог товарів - Країна шоколаду </title>
+
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Каталог товарів - Країна шоколаду",
+            "description": "Повний каталог елітного шоколаду та солодощів преміум якості з доставкою по Україні",
+            "url": "https://landofchokolate.onrender.com/product/all",
+            "mainEntity": {
+                "@type": "ItemList",
+                "name": "Каталог продуктів",
+                "description": "Всі товари в нашому магазині",
+                "numberOfItems": "[(${totalProducts ?: #lists.size(products)})]"
+            },
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Головна",
+                        "item": "https://landofchokolate.onrender.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Всі товари",
+                        "item": "https://landofchokolate.onrender.com/product/all"
+                    }
+                ]
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Країна шоколаду",
+                "url": "https://landofchokolate.onrender.com/",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://landofchokolate.onrender.com/images/logo.png"
+                }
+            },
+            "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "UAH",
+                "lowPrice": "50",
+                "highPrice": "2000",
+                "offerCount": "[(${totalProducts ?: 100})]"
+            }
+        }
+    </script>
+
+
     <link rel="stylesheet" th:href="@{/css/fragment/navigation.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/footer-light.css}">
     <link rel="stylesheet" th:href="@{/css/fragment/mobile-bottom-nav.css}">

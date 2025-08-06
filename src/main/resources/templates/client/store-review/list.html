@@ -1,155 +1,67 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="uk" xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--  <meta charset="UTF-8">-->
-<!--  <title>Відгуки про магазин</title>-->
-<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="container mt-4">-->
-
-<!--  &lt;!&ndash; Сообщения об успехе/ошибке &ndash;&gt;-->
-<!--  <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">-->
-<!--    <span th:text="${successMessage}"></span>-->
-<!--    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
-<!--  </div>-->
-
-<!--  <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">-->
-<!--    <span th:text="${errorMessage}"></span>-->
-<!--    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
-<!--  </div>-->
-
-
-<!--  <h1 class="mb-4">Відгуки про магазин</h1>-->
-
-<!--  &lt;!&ndash; Форма добавления отзыва &ndash;&gt;-->
-<!--  <div class="card mb-4">-->
-<!--    <div class="card-header">-->
-<!--      <h5>Залишити відгук</h5>-->
-<!--    </div>-->
-<!--    <div class="card-body">-->
-<!--      <form th:action="@{/store-review}" th:object="${form}" method="post">-->
-
-<!--        <div class="mb-3">-->
-<!--          <label for="name" class="form-label">Ім'я *</label>-->
-<!--          <input type="text" th:field="*{name}" class="form-control"-->
-<!--                 th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"-->
-<!--                 id="name" placeholder="Введіть ваше ім'я">-->
-<!--          <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">-->
-<!--            <span th:errors="*{name}"></span>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--          <label for="rating" class="form-label">Оцінка *</label>-->
-<!--          <select th:field="*{rating}" class="form-select"-->
-<!--                  th:classappend="${#fields.hasErrors('rating')} ? 'is-invalid' : ''"-->
-<!--                  id="rating">-->
-<!--            <option value="">Оберіть оцінку</option>-->
-<!--            <option value="1">⭐ 1 зірка</option>-->
-<!--            <option value="2">⭐⭐ 2 зірки</option>-->
-<!--            <option value="3">⭐⭐⭐ 3 зірки</option>-->
-<!--            <option value="4">⭐⭐⭐⭐ 4 зірки</option>-->
-<!--            <option value="5">⭐⭐⭐⭐⭐ 5 зірок</option>-->
-<!--          </select>-->
-<!--          <div th:if="${#fields.hasErrors('rating')}" class="invalid-feedback">-->
-<!--            <span th:errors="*{rating}"></span>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--        <div class="mb-3">-->
-<!--          <label for="comment" class="form-label">Коментар *</label>-->
-<!--          <textarea th:field="*{comment}" class="form-control"-->
-<!--                    th:classappend="${#fields.hasErrors('comment')} ? 'is-invalid' : ''"-->
-<!--                    id="comment" rows="4"-->
-<!--                    placeholder="Поділіться вашими враженнями..."></textarea>-->
-<!--          <div th:if="${#fields.hasErrors('comment')}" class="invalid-feedback">-->
-<!--            <span th:errors="*{comment}"></span>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--        <button type="submit" class="btn btn-primary">Додати відгук</button>-->
-<!--      </form>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  &lt;!&ndash; Список отзывов &ndash;&gt;-->
-<!--  <div class="row">-->
-<!--    <div th:each="review : ${pagedResponse.content}" class="col-12 mb-3">-->
-<!--      <div class="card">-->
-<!--        <div class="card-body">-->
-<!--          <div class="d-flex justify-content-between align-items-start">-->
-<!--            <div>-->
-<!--              <h6 class="card-title" th:text="${review.name}"></h6>-->
-<!--              <div class="mb-2">-->
-<!--                <span th:text="${review.starsDisplay}" class="text-warning"></span>-->
-<!--              </div>-->
-<!--              <p class="card-text" th:text="${review.comment}"></p>-->
-<!--            </div>-->
-<!--            <div class="text-muted">-->
-<!--              <small th:text="${#temporals.format(review.created, 'dd.MM.yyyy HH:mm')}"></small>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  &lt;!&ndash; Пагинация &ndash;&gt;-->
-<!--  <nav th:if="${pagedResponse.metadata.totalPages > 1}">-->
-<!--    <ul class="pagination justify-content-center">-->
-
-<!--      &lt;!&ndash; Предыдущая страница &ndash;&gt;-->
-<!--      <li class="page-item" th:classappend="${!pagedResponse.metadata.hasPrevious} ? 'disabled'">-->
-<!--        <a class="page-link"-->
-<!--           th:href="@{/store-review(page=${pagedResponse.metadata.page - 1}, size=${pagedResponse.metadata.size})}">-->
-<!--          Попередня-->
-<!--        </a>-->
-<!--      </li>-->
-
-<!--      &lt;!&ndash; Номера страниц &ndash;&gt;-->
-<!--      <li th:each="pageNum : ${#numbers.sequence(0, pagedResponse.metadata.totalPages - 1)}"-->
-<!--          class="page-item"-->
-<!--          th:classappend="${pageNum == pagedResponse.metadata.page} ? 'active'">-->
-<!--        <a class="page-link"-->
-<!--           th:href="@{/store-review(page=${pageNum}, size=${pagedResponse.metadata.size})}"-->
-<!--           th:text="${pageNum + 1}"></a>-->
-<!--      </li>-->
-
-<!--      &lt;!&ndash; Следующая страница &ndash;&gt;-->
-<!--      <li class="page-item" th:classappend="${!pagedResponse.metadata.hasNext} ? 'disabled'">-->
-<!--        <a class="page-link"-->
-<!--           th:href="@{/store-review(page=${pagedResponse.metadata.page + 1}, size=${pagedResponse.metadata.size})}">-->
-<!--          Наступна-->
-<!--        </a>-->
-<!--      </li>-->
-<!--    </ul>-->
-<!--  </nav>-->
-
-<!--  &lt;!&ndash; Информация о пагинации &ndash;&gt;-->
-<!--  <div class="text-center text-muted mt-3" th:if="${pagedResponse.metadata.totalElements > 0}">-->
-<!--    Показано <span th:text="${pagedResponse.content.size()}"></span> з-->
-<!--    <span th:text="${pagedResponse.metadata.totalElements}"></span> відгуків-->
-<!--  </div>-->
-
-<!--  <div class="text-center text-muted mt-3" th:if="${pagedResponse.metadata.totalElements == 0}">-->
-<!--    Відгуків поки що немає. Станьте першим!-->
-<!--  </div>-->
-
-<!--</div>-->
-
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Відгуки про магазин - Land of Chocolate</title>
-  <meta name="description" content="Відгуки покупців про магазин Land of Chocolate. Поділіться своїми враженнями про наші шоколадні вироби.">
+  <title>Відгуки про магазин - Країна шоколаду</title>
+  <meta name="description" content="Відгуки покупців про магазин Країна шоколаду . Поділіться своїми враженнями про наші шоколадні вироби.">
+
+  <!-- Keywords -->
+  <meta name="keywords" content="відгуки, Країна шоколаду, відгуки покупців, якість шоколаду, сервіс, оцінки клієнтів, рейтинг магазину">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://landofchokolate.onrender.com/reviews">
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Відгуки про магазин - Land of Chocolate">
+  <meta property="og:description" content="Читайте відгуки наших покупців про якість шоколаду та сервіс в Land of Chocolate">
+  <meta property="og:url" content="https://landofchokolate.onrender.com/reviews">
+  <meta property="og:site_name" content="Країна шоколаду">
+  <meta property="og:locale" content="uk_UA">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Відгуки про магазин - Країна шоколаду">
+  <meta name="twitter:description" content="Читайте відгуки наших покупців про якість шоколаду та сервіс">
+
+  <!-- Языковые альтернативы -->
+  <link rel="alternate" hreflang="uk" href="https://landofchokolate.onrender.com/reviews">
+  <link rel="alternate" hreflang="x-default" href="https://landofchokolate.onrender.com/reviews">
+
+  <!-- Альтернативная схема если нет отзывов -->
+  <script type="application/ld+json" th:if="${#lists.isEmpty(pagedResponse)}">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Відгуки про магазин - Країна шоколаду",
+      "description": "Сторінка для відгуків покупців про магазин Країна шоколаду",
+      "url": "https://landofchokolate.onrender.com/reviews",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Головна",
+            "item": "https://landofchokolate.onrender.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Відгуки",
+            "item": "https://landofchokolate.onrender.com/reviews"
+          }
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Країна шоколаду",
+        "url": "https://landofchokolate.onrender.com/"
+      }
+    }
+  </script>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
