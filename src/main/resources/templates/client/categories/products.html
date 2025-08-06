@@ -801,78 +801,140 @@
             </div>
 
             <!-- Сетка продуктов -->
-            <div class="products-grid">
-                <div class="product-card" th:each="product : ${products}"
+            <div class="row g-3"> <!-- g-3 = gap между колонками -->
+                <div class="col-lg-4 col-md-6 col-6" th:each="product : ${products}"
                      th:classappend="${product.stockQuantity == 0} ? 'out-of-stock' : ''">
+                    <div class="product-card">
+                        <!-- Изображение продукта -->
+                        <div class="product-image-container">
+                            <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
+                                 th:src="${product.imageUrl}"
+                                 th:alt="${product.name}"
+                                 class="product-image">
+                            <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
+                                 class="product-placeholder">
+                                <i class="fas fa-image"></i>
+                            </div>
 
-                    <!-- Изображение продукта -->
-                    <div class="product-image-container">
-                        <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
-                             th:src="${product.imageUrl}"
-                             th:alt="${product.name}"
-                             class="product-image">
-                        <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
-                             class="product-placeholder">
-                            <i class="fas fa-image"></i>
+                            <!-- Бейдж наличия -->
+                            <div class="stock-badge"
+                                 th:classappend="${product.stockQuantity == 0} ? 'badge-out-of-stock' : (${product.stockQuantity <= 5} ? 'badge-low-stock' : 'badge-in-stock')">
+                    <span th:if="${product.stockQuantity > 0}"
+                          th:text="'В наявності: ' + ${product.stockQuantity}">В наявності: 12</span>
+                                <span th:if="${product.stockQuantity == 0}">Немає в наявності</span>
+                            </div>
+
+                            <!-- Оверлей для товаров не в наличии -->
+                            <div class="out-of-stock-overlay">
+                                <div class="out-of-stock-text">Немає в наявності</div>
+                            </div>
                         </div>
 
-                        <!-- Бейдж наличия -->
-                        <div class="stock-badge"
-                             th:classappend="${product.stockQuantity == 0} ? 'badge-out-of-stock' : (${product.stockQuantity <= 5} ? 'badge-low-stock' : 'badge-in-stock')">
-                <span th:if="${product.stockQuantity > 0}"
-                      th:text="'В наявності: ' + ${product.stockQuantity}">В наявності: 12</span>
-                            <span th:if="${product.stockQuantity == 0}">Немає в наявності</span>
-                        </div>
+                        <!-- Контент продукта -->
+                        <div class="product-content">
+                            <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>
+                            <div class="product-price" th:text="${product.price} + ' ₴'">150 ₴</div>
 
-                        <!-- Оверлей для товаров не в наличии -->
-                        <div class="out-of-stock-overlay">
-                            <div class="out-of-stock-text">Немає в наявності</div>
+                            <div class="product-stock" th:if="${product.stockQuantity > 0}">
+                    <span th:if="${product.stockQuantity > 5}" class="text-success">
+                        <i class="fas fa-check-circle"></i> В наявності
+                    </span>
+                                <span th:if="${product.stockQuantity <= 5 and product.stockQuantity > 0}" class="text-warning">
+                        <i class="fas fa-exclamation-triangle"></i> Залишилось мало
+                    </span>
+                            </div>
+
+                            <div class="product-actions">
+                                <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn-view">
+                                    <i class="fas fa-eye"></i>
+                                    Детальніше
+                                </a>
+                                <button class="btn-add-to-cart add-to-cart-btn"
+                                        th:disabled="${product.stockQuantity == 0}"
+                                        th:data-product-id="${product.id}"
+                                        data-cart-action="add">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span th:text="${product.stockQuantity > 0} ? 'До кошика' : 'Немає в наявності'">
+                            До кошика
+                        </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+<!--            <div class="products-grid">-->
+<!--                <div class="product-card" th:each="product : ${products}"-->
+<!--                     th:classappend="${product.stockQuantity == 0} ? 'out-of-stock' : ''">-->
 
-                    <!-- Контент продукта -->
-                    <div class="product-content">
-                        <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>
-                        <div class="product-price" th:text="${product.price} + ' ₴'">150 ₴</div>
+<!--                    &lt;!&ndash; Изображение продукта &ndash;&gt;-->
+<!--                    <div class="product-image-container">-->
+<!--                        <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"-->
+<!--                             th:src="${product.imageUrl}"-->
+<!--                             th:alt="${product.name}"-->
+<!--                             class="product-image">-->
+<!--                        <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"-->
+<!--                             class="product-placeholder">-->
+<!--                            <i class="fas fa-image"></i>-->
+<!--                        </div>-->
 
-                        <div class="product-stock" th:if="${product.stockQuantity > 0}">
-                <span th:if="${product.stockQuantity > 5}" class="text-success">
-                    <i class="fas fa-check-circle"></i> В наявності
-                </span>
-                            <span th:if="${product.stockQuantity <= 5 and product.stockQuantity > 0}"
-                                  class="text-warning">
-                    <i class="fas fa-exclamation-triangle"></i> Залишилось мало
-                </span>
-                        </div>
+<!--                        &lt;!&ndash; Бейдж наличия &ndash;&gt;-->
+<!--                        <div class="stock-badge"-->
+<!--                             th:classappend="${product.stockQuantity == 0} ? 'badge-out-of-stock' : (${product.stockQuantity <= 5} ? 'badge-low-stock' : 'badge-in-stock')">-->
+<!--                <span th:if="${product.stockQuantity > 0}"-->
+<!--                      th:text="'В наявності: ' + ${product.stockQuantity}">В наявності: 12</span>-->
+<!--                            <span th:if="${product.stockQuantity == 0}">Немає в наявності</span>-->
+<!--                        </div>-->
 
-                        <div class="product-actions">
-                            <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn-view">
-                                <i class="fas fa-eye"></i>
-                                Детальніше
-                            </a>
+<!--                        &lt;!&ndash; Оверлей для товаров не в наличии &ndash;&gt;-->
+<!--                        <div class="out-of-stock-overlay">-->
+<!--                            <div class="out-of-stock-text">Немає в наявності</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
-<!--                            <button class="btn-add-to-cart"-->
+<!--                    &lt;!&ndash; Контент продукта &ndash;&gt;-->
+<!--                    <div class="product-content">-->
+<!--                        <h3 class="product-title" th:text="${product.name}">Назва продукту</h3>-->
+<!--                        <div class="product-price" th:text="${product.price} + ' ₴'">150 ₴</div>-->
+
+<!--                        <div class="product-stock" th:if="${product.stockQuantity > 0}">-->
+<!--                <span th:if="${product.stockQuantity > 5}" class="text-success">-->
+<!--                    <i class="fas fa-check-circle"></i> В наявності-->
+<!--                </span>-->
+<!--                            <span th:if="${product.stockQuantity <= 5 and product.stockQuantity > 0}"-->
+<!--                                  class="text-warning">-->
+<!--                    <i class="fas fa-exclamation-triangle"></i> Залишилось мало-->
+<!--                </span>-->
+<!--                        </div>-->
+
+<!--                        <div class="product-actions">-->
+<!--                            <a th:href="@{/product/{slug}(slug=${product.slug})}" class="btn-view">-->
+<!--                                <i class="fas fa-eye"></i>-->
+<!--                                Детальніше-->
+<!--                            </a>-->
+
+<!--&lt;!&ndash;                            <button class="btn-add-to-cart"&ndash;&gt;-->
+<!--&lt;!&ndash;                                    th:disabled="${product.stockQuantity == 0}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                    th:data-product-id="${product.id}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                    data-cart-action="add">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <i class="fas fa-shopping-cart"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <span th:text="${product.stockQuantity > 0} ? 'До кошика' : 'Немає в наявності'">&ndash;&gt;-->
+<!--&lt;!&ndash;                        До кошика&ndash;&gt;-->
+<!--&lt;!&ndash;                    </span>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </button>&ndash;&gt;-->
+<!--                            <button class="btn-add-to-cart add-to-cart-btn"-->
 <!--                                    th:disabled="${product.stockQuantity == 0}"-->
 <!--                                    th:data-product-id="${product.id}"-->
 <!--                                    data-cart-action="add">-->
 <!--                                <i class="fas fa-shopping-cart"></i>-->
 <!--                                <span th:text="${product.stockQuantity > 0} ? 'До кошика' : 'Немає в наявності'">-->
-<!--                        До кошика-->
-<!--                    </span>-->
+<!--        До кошика-->
+<!--    </span>-->
 <!--                            </button>-->
-                            <button class="btn-add-to-cart add-to-cart-btn"
-                                    th:disabled="${product.stockQuantity == 0}"
-                                    th:data-product-id="${product.id}"
-                                    data-cart-action="add">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span th:text="${product.stockQuantity > 0} ? 'До кошика' : 'Немає в наявності'">
-        До кошика
-    </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
 
         </section>
@@ -930,7 +992,7 @@
         </nav>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Подвал -->
 
 <footer th:replace="~{admin/fragments/fototerLigth :: footer}"></footer>
