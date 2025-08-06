@@ -70,7 +70,7 @@
             "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
             "offers": {
                 "@type": "Offer",
-                "price": "[(${product.price})]",
+                "price": "[(${#numbers.formatDecimal(product.price, 1, 2)})]",
                 "priceCurrency": "UAH",
                 "availability": "[(${product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'})]",
                 "itemCondition": "https://schema.org/NewCondition",
@@ -112,8 +112,8 @@
             },
             "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "5",
-                "reviewCount": "[(${product.reviewCount ?: 1})]",
+                "ratingValue": "5.0",
+                "reviewCount": [(${product.reviewCount ?: 1})],
                 "bestRating": "5",
                 "worstRating": "1"
             },
