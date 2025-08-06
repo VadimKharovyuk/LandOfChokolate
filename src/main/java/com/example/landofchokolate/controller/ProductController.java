@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -158,7 +159,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping(value = "/edit/{id}", consumes = {"multipart/form-data", "application/x-www-form-urlencoded"})
     public String productUpdate(@PathVariable Long id,
                                 @RequestParam String name,
                                 @RequestParam BigDecimal price,
@@ -169,7 +170,8 @@ public class ProductController {
                                 @RequestParam(required = false) String metaTitle,
                                 @RequestParam(required = false) String metaDescription,
                                 @RequestParam(required = false) String description,
-                                Model model,
+                                @RequestParam(required = false) MultipartFile image, // Необязательно!
+                                @RequestParam(required = false, defaultValue = "false") Boolean removeCurrentImage,
                                 RedirectAttributes redirectAttributes) {
 
         // Создаем DTO вручную
@@ -184,15 +186,17 @@ public class ProductController {
         updateProductDto.setMetaDescription(metaDescription);
         updateProductDto.setDescription(description);
 
+        // Устанавливаем изображение только если оно есть
+        if (image != null && !image.isEmpty()) {
+            updateProductDto.setImage(image);
+        }
+        updateProductDto.setRemoveCurrentImage(removeCurrentImage);
+
         try {
             ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
-            log.info("Product updated successfully with id: {}", updatedProduct.getId());
-
             redirectAttributes.addFlashAttribute("successMessage",
                     "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
-
         } catch (Exception e) {
-            log.error("Error updating product with id: {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Ошибка при обновлении продукта: " + e.getMessage());
         }
@@ -200,44 +204,86 @@ public class ProductController {
         return "redirect:/admin/product/list";
     }
 
-    @PostMapping(value = "/edit/{id}/with-image", consumes = "multipart/form-data")
-    public String productUpdateWithImage(@PathVariable Long id,
-                                         @ModelAttribute("product") @Valid UpdateProductDto updateProductDto,
-                                         BindingResult bindingResult,
-                                         Model model,
-                                         RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            log.warn("Validation errors occurred while updating product with image, id: {}", id);
-
-            try {
-                ProductResponseDto currentProduct = productService.getProductById(id);
-                model.addAttribute("currentImageUrl", currentProduct.getImageUrl());
-            } catch (Exception e) {
-                log.warn("Could not load current image for product {}", id);
-            }
-
-            model.addAttribute("productId", id);
-            model.addAttribute("isEdit", true);
-            loadFormData(model);
-            return "admin/product/product-form";
-        }
-
-        try {
-            ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
-            log.info("Product with image updated successfully with id: {}", updatedProduct.getId());
-
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
-
-        } catch (Exception e) {
-            log.error("Error updating product with image, id: {}", id, e);
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Ошибка при обновлении продукта: " + e.getMessage());
-        }
-
-        return "redirect:/admin/product/list";
-    }
+//    @PostMapping("/edit/{id}")
+//    public String productUpdate(@PathVariable Long id,
+//                                @RequestParam String name,
+//                                @RequestParam BigDecimal price,
+//                                @RequestParam Integer stockQuantity,
+//                                @RequestParam Long categoryId,
+//                                @RequestParam Long brandId,
+//                                @RequestParam(required = false, defaultValue = "false") Boolean isRecommendation,
+//                                @RequestParam(required = false) String metaTitle,
+//                                @RequestParam(required = false) String metaDescription,
+//                                @RequestParam(required = false) String description,
+//                                Model model,
+//                                RedirectAttributes redirectAttributes) {
+//
+//        // Создаем DTO вручную
+//        UpdateProductDto updateProductDto = new UpdateProductDto();
+//        updateProductDto.setName(name);
+//        updateProductDto.setPrice(price);
+//        updateProductDto.setStockQuantity(stockQuantity);
+//        updateProductDto.setCategoryId(categoryId);
+//        updateProductDto.setBrandId(brandId);
+//        updateProductDto.setIsRecommendation(isRecommendation);
+//        updateProductDto.setMetaTitle(metaTitle);
+//        updateProductDto.setMetaDescription(metaDescription);
+//        updateProductDto.setDescription(description);
+//
+//        try {
+//            ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
+//            log.info("Product updated successfully with id: {}", updatedProduct.getId());
+//
+//            redirectAttributes.addFlashAttribute("successMessage",
+//                    "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
+//
+//        } catch (Exception e) {
+//            log.error("Error updating product with id: {}", id, e);
+//            redirectAttributes.addFlashAttribute("errorMessage",
+//                    "Ошибка при обновлении продукта: " + e.getMessage());
+//        }
+//
+//        return "redirect:/admin/product/list";
+//    }
+//
+//    @PostMapping(value = "/edit/{id}/with-image", consumes = "multipart/form-data")
+//    public String productUpdateWithImage(@PathVariable Long id,
+//                                         @ModelAttribute("product") @Valid UpdateProductDto updateProductDto,
+//                                         BindingResult bindingResult,
+//                                         Model model,
+//                                         RedirectAttributes redirectAttributes) {
+//
+//        if (bindingResult.hasErrors()) {
+//            log.warn("Validation errors occurred while updating product with image, id: {}", id);
+//
+//            try {
+//                ProductResponseDto currentProduct = productService.getProductById(id);
+//                model.addAttribute("currentImageUrl", currentProduct.getImageUrl());
+//            } catch (Exception e) {
+//                log.warn("Could not load current image for product {}", id);
+//            }
+//
+//            model.addAttribute("productId", id);
+//            model.addAttribute("isEdit", true);
+//            loadFormData(model);
+//            return "admin/product/product-form";
+//        }
+//
+//        try {
+//            ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
+//            log.info("Product with image updated successfully with id: {}", updatedProduct.getId());
+//
+//            redirectAttributes.addFlashAttribute("successMessage",
+//                    "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
+//
+//        } catch (Exception e) {
+//            log.error("Error updating product with image, id: {}", id, e);
+//            redirectAttributes.addFlashAttribute("errorMessage",
+//                    "Ошибка при обновлении продукта: " + e.getMessage());
+//        }
+//
+//        return "redirect:/admin/product/list";
+//    }
 
     @GetMapping("/delete/{id}")
     public String productDelete(@PathVariable Long id, RedirectAttributes redirectAttributes) {

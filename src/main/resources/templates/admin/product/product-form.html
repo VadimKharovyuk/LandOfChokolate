@@ -473,7 +473,7 @@
   <!-- Форма створення/редагування продукту -->
   <form id="productForm"
         th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"
-        th:object="${product}" method="post">
+        th:object="${product}" method="post" enctype="multipart/form-data">
 
     <div class="row g-4">
       <!-- Основна інформація -->
@@ -865,64 +865,6 @@
     createCounter('description', 'descCounter', 1000, 100);
   });
 
-  // Обработка изображений
-  function handleImageChange() {
-    const form = document.getElementById('productForm');
-    const imageInput = document.getElementById('imageInput');
-    const removeCheckbox = document.getElementById('removeCurrentImage');
-    const alert = document.getElementById('imageChangeAlert');
-    const alertText = document.getElementById('imageChangeText');
-
-    let needsMultipart = false;
-    let alertMessage = '';
-
-    // Проверяем, есть ли файл для загрузки
-    if (imageInput && imageInput.files && imageInput.files.length > 0) {
-      needsMultipart = true;
-      alertMessage = 'Форма буде відправлена з новим зображенням';
-    }
-
-    // Проверяем, нужно ли удалить текущее изображение
-    if (removeCheckbox && removeCheckbox.checked) {
-      needsMultipart = true;
-      alertMessage = 'Поточне зображення буде видалено';
-    }
-
-    // Если и файл есть и удаление отмечено
-    if (imageInput && imageInput.files && imageInput.files.length > 0 &&
-            removeCheckbox && removeCheckbox.checked) {
-      alertMessage = 'Поточне зображення буде замінено на нове';
-    }
-
-    // Настраиваем форму
-    if (needsMultipart) {
-      form.setAttribute('enctype', 'multipart/form-data');
-      // Только для редактирования добавляем /with-image
-      if (form.action.includes('/edit/') && !form.action.includes('/with-image')) {
-        form.action = form.action + '/with-image';
-      }
-
-      // Показываем предупреждение
-      if (alert) {
-        alert.classList.remove('d-none');
-        if (alertText) {
-          alertText.textContent = alertMessage;
-        }
-      }
-    } else {
-      form.removeAttribute('enctype');
-      // Убираем /with-image из action
-      form.action = form.action.replace('/with-image', '');
-
-      // Скрываем предупреждение
-      if (alert) {
-        alert.classList.add('d-none');
-      }
-    }
-
-    console.log('Form action:', form.action);
-    console.log('Form enctype:', form.getAttribute('enctype'));
-  }
 
   // Инициализация при загрузке страницы
   document.addEventListener('DOMContentLoaded', function() {
