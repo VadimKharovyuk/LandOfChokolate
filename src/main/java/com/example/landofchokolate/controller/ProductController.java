@@ -160,13 +160,55 @@ public class ProductController {
 
     @PostMapping("/edit/{id}")
     public String productUpdate(@PathVariable Long id,
-                                @ModelAttribute("product") @Valid UpdateProductDto updateProductDto,
-                                BindingResult bindingResult,
+                                @RequestParam String name,
+                                @RequestParam BigDecimal price,
+                                @RequestParam Integer stockQuantity,
+                                @RequestParam Long categoryId,
+                                @RequestParam Long brandId,
+                                @RequestParam(required = false, defaultValue = "false") Boolean isRecommendation,
+                                @RequestParam(required = false) String metaTitle,
+                                @RequestParam(required = false) String metaDescription,
+                                @RequestParam(required = false) String description,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
 
+        // Создаем DTO вручную
+        UpdateProductDto updateProductDto = new UpdateProductDto();
+        updateProductDto.setName(name);
+        updateProductDto.setPrice(price);
+        updateProductDto.setStockQuantity(stockQuantity);
+        updateProductDto.setCategoryId(categoryId);
+        updateProductDto.setBrandId(brandId);
+        updateProductDto.setIsRecommendation(isRecommendation);
+        updateProductDto.setMetaTitle(metaTitle);
+        updateProductDto.setMetaDescription(metaDescription);
+        updateProductDto.setDescription(description);
+
+        try {
+            ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
+            log.info("Product updated successfully with id: {}", updatedProduct.getId());
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
+
+        } catch (Exception e) {
+            log.error("Error updating product with id: {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Ошибка при обновлении продукта: " + e.getMessage());
+        }
+
+        return "redirect:/admin/product/list";
+    }
+
+    @PostMapping(value = "/edit/{id}/with-image", consumes = "multipart/form-data")
+    public String productUpdateWithImage(@PathVariable Long id,
+                                         @ModelAttribute("product") @Valid UpdateProductDto updateProductDto,
+                                         BindingResult bindingResult,
+                                         Model model,
+                                         RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
-            log.warn("Validation errors occurred while updating product with id: {}", id);
+            log.warn("Validation errors occurred while updating product with image, id: {}", id);
 
             try {
                 ProductResponseDto currentProduct = productService.getProductById(id);
@@ -183,13 +225,13 @@ public class ProductController {
 
         try {
             ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
-            log.info("Product updated successfully with id: {}", updatedProduct.getId());
+            log.info("Product with image updated successfully with id: {}", updatedProduct.getId());
 
             redirectAttributes.addFlashAttribute("successMessage",
                     "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
 
         } catch (Exception e) {
-            log.error("Error updating product with id: {}", id, e);
+            log.error("Error updating product with image, id: {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Ошибка при обновлении продукта: " + e.getMessage());
         }

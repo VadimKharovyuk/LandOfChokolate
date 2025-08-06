@@ -432,6 +432,7 @@
 <!--</body>-->
 <!--</html>-->
 
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -470,8 +471,9 @@
   </div>
 
   <!-- Форма створення/редагування продукту -->
-  <form th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"
-        th:object="${product}" method="post" enctype="multipart/form-data">
+  <form id="productForm"
+        th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"
+        th:object="${product}" method="post">
 
     <div class="row g-4">
       <!-- Основна інформація -->
@@ -600,7 +602,7 @@
 
             <!-- Зображення -->
             <div class="mb-3">
-              <label for="image" class="form-label fw-bold">
+              <label for="imageInput" class="form-label fw-bold">
                 <i class="bi bi-image me-1"></i>Зображення продукту
               </label>
 
@@ -613,9 +615,9 @@
                          class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
 
                     <div class="form-check mt-2">
-                      <input type="checkbox" th:field="*{removeCurrentImage}"
-                             class="form-check-input" id="removeImage">
-                      <label for="removeImage" class="form-check-label text-danger">
+                      <input type="checkbox" name="removeCurrentImage" value="true"
+                             class="form-check-input" id="removeCurrentImage" onchange="handleImageChange()">
+                      <label for="removeCurrentImage" class="form-check-label text-danger">
                         <i class="bi bi-trash me-1"></i>Видалити поточне зображення
                       </label>
                     </div>
@@ -623,16 +625,15 @@
                 </div>
               </div>
 
-              <input type="file" id="image" th:field="*{image}"
-                     accept="image/*" class="form-control">
+              <input type="file" id="imageInput" name="image"
+                     accept="image/*" class="form-control" onchange="handleImageChange()">
               <div class="form-text">
                 <i class="bi bi-info-circle me-1"></i>
                 Підтримувані формати: JPG, PNG, GIF. Максимальний розмір: 5MB
               </div>
-              <div th:if="${#fields.hasErrors('image')}" class="text-danger small mt-1">
-                <ul class="mb-0 list-unstyled">
-                  <li th:each="error : ${#fields.errors('image')}" th:text="${error}"></li>
-                </ul>
+              <div class="alert alert-info mt-2 d-none" id="imageChangeAlert">
+                <i class="bi bi-info-circle me-2"></i>
+                <span id="imageChangeText">Форма буде відправлена з новим зображенням</span>
               </div>
             </div>
           </div>
@@ -827,13 +828,15 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- JavaScript для лічильників символів -->
+<!-- JavaScript для лічильників символів та обработки изображений -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Функція оновлення лічильника
     function createCounter(inputId, counterId, maxLength, optimalMin = 0) {
       const input = document.getElementById(inputId);
       const counter = document.getElementById(counterId);
+
+      if (!input || !counter) return;
 
       function updateCounter() {
         const length = input.value.length;
@@ -860,6 +863,70 @@
     createCounter('metaTitle', 'metaTitleCounter', 60, 50);
     createCounter('metaDescription', 'metaDescCounter', 160, 140);
     createCounter('description', 'descCounter', 1000, 100);
+  });
+
+  // Обработка изображений
+  function handleImageChange() {
+    const form = document.getElementById('productForm');
+    const imageInput = document.getElementById('imageInput');
+    const removeCheckbox = document.getElementById('removeCurrentImage');
+    const alert = document.getElementById('imageChangeAlert');
+    const alertText = document.getElementById('imageChangeText');
+
+    let needsMultipart = false;
+    let alertMessage = '';
+
+    // Проверяем, есть ли файл для загрузки
+    if (imageInput && imageInput.files && imageInput.files.length > 0) {
+      needsMultipart = true;
+      alertMessage = 'Форма буде відправлена з новим зображенням';
+    }
+
+    // Проверяем, нужно ли удалить текущее изображение
+    if (removeCheckbox && removeCheckbox.checked) {
+      needsMultipart = true;
+      alertMessage = 'Поточне зображення буде видалено';
+    }
+
+    // Если и файл есть и удаление отмечено
+    if (imageInput && imageInput.files && imageInput.files.length > 0 &&
+            removeCheckbox && removeCheckbox.checked) {
+      alertMessage = 'Поточне зображення буде замінено на нове';
+    }
+
+    // Настраиваем форму
+    if (needsMultipart) {
+      form.setAttribute('enctype', 'multipart/form-data');
+      // Только для редактирования добавляем /with-image
+      if (form.action.includes('/edit/') && !form.action.includes('/with-image')) {
+        form.action = form.action + '/with-image';
+      }
+
+      // Показываем предупреждение
+      if (alert) {
+        alert.classList.remove('d-none');
+        if (alertText) {
+          alertText.textContent = alertMessage;
+        }
+      }
+    } else {
+      form.removeAttribute('enctype');
+      // Убираем /with-image из action
+      form.action = form.action.replace('/with-image', '');
+
+      // Скрываем предупреждение
+      if (alert) {
+        alert.classList.add('d-none');
+      }
+    }
+
+    console.log('Form action:', form.action);
+    console.log('Form enctype:', form.getAttribute('enctype'));
+  }
+
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', function() {
+    handleImageChange();
   });
 </script>
 

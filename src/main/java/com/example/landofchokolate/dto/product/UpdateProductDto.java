@@ -41,7 +41,6 @@ public class UpdateProductDto {
     // Флаг для удаления текущего изображения
     private Boolean removeCurrentImage = false;
 
-
     @Size(max = 60, message = "Meta title не должен превышать 60 символов")
     private String metaTitle;
 

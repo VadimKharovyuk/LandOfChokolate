@@ -96,10 +96,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Caching(
             put = {
-                    @CachePut(value = "productById", key = "#id"),
-                    @CachePut(value = "productBySlug", key = "#result.slug")
+                    @CachePut(value = "productById", key = "#id")
             },
             evict = {
+                    @CacheEvict(value = "productBySlug", allEntries = true),
                     @CacheEvict(value = "allProducts", allEntries = true),
                     @CacheEvict(value = "filteredProducts", allEntries = true),
                     @CacheEvict(value = "productsByCategory", allEntries = true),
