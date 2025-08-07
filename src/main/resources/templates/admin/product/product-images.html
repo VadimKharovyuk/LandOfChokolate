@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управління зображеннями - [[${product.name}]]</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- SortableJS для перетягування -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        .image-card {
+            transition: all 0.3s ease;
+            cursor: move;
+        }
+        .image-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .main-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+        .image-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .upload-area.dragover {
+            border-color: #198754;
+            background-color: #d1eddd;
+        }
+        .sortable-ghost {
+            opacity: 0.5;
+        }
+        .sortable-chosen {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+    <!-- Заголовок -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/product/list}" class="text-decoration-none">Продукти</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{'/admin/product/view/' + ${product.id}}" class="text-decoration-none" th:text="${product.name}"></a></li>
+                    <li class="breadcrumb-item active">Зображення</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-images text-primary me-3" style="font-size: 2rem;"></i>
+                    <div>
+                        <h1 class="mb-0">Управління зображеннями</h1>
+                        <p class="text-muted mb-0" th:text="${product.name}"></p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{'/admin/product/view/' + ${product.id}}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Назад до продукту
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash повідомлення -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="bi bi-images text-info me-2" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h4 class="mb-0" th:text="${product.imageCount}">0</h4>
+                                    <small class="text-muted">Всього зображень</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="bi bi-star-fill text-warning me-2" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h4 class="mb-0">1</h4>
+                                    <small class="text-muted">Головне зображення</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="bi bi-collection text-success me-2" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h4 class="mb-0" th:text="${product.imageCount > 0 ? product.imageCount - 1 : 0}">0</h4>
+                                    <small class="text-muted">Додаткових зображень</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Завантаження нового зображення -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-cloud-upload me-2"></i>Додати нове зображення
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{'/admin/product/' + ${product.id} + '/images/add'}" method="post" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label for="imageFile" class="form-label fw-bold">
+                                    <i class="bi bi-image me-1"></i>Оберіть зображення
+                                </label>
+                                <div class="upload-area p-4 text-center" id="uploadArea">
+                                    <input type="file" id="imageFile" name="image" accept="image/*"
+                                           class="form-control" required style="display: none;">
+                                    <i class="bi bi-cloud-upload text-muted mb-2" style="font-size: 2rem;"></i>
+                                    <p class="mb-2">Перетягніть зображення сюди або <button type="button" class="btn btn-link p-0" onclick="document.getElementById('imageFile').click()">оберіть файл</button></p>
+                                    <small class="text-muted">JPG, PNG, GIF до 5MB</small>
+                                    <div id="selectedFileName" class="mt-2 text-primary fw-bold" style="display: none;"></div>
+                                    <img id="imagePreview" class="mt-3 img-thumbnail" style="max-width: 200px; display: none;" alt="Preview">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="altText" class="form-label fw-bold">
+                                    <i class="bi bi-card-text me-1"></i>Alt текст (SEO)
+                                </label>
+                                <textarea id="altText" name="altText" class="form-control" rows="3"
+                                          th:placeholder="'Зображення ' + ${product.name}"></textarea>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Опис для пошукових систем та доступності
+                                </div>
+                                <button type="submit" class="btn btn-success w-100 mt-3">
+                                    <i class="bi bi-plus-circle me-2"></i>Додати зображення
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Галерея зображень -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-grid-3x3-gap me-2"></i>Галерея зображень
+                        </h5>
+                        <div class="text-muted small">
+                            <i class="bi bi-arrows-move me-1"></i>Перетягуйте для зміни порядку
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:if="${product.images.empty}" class="text-center py-5">
+                        <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
+                        <h4 class="text-muted mt-3">Немає зображень</h4>
+                        <p class="text-muted">Додайте перше зображення для вашого продукту</p>
+                    </div>
+
+                    <div th:unless="${product.images.empty}" id="imageGrid" class="row g-4">
+                        <div th:each="image : ${product.images}" class="col-lg-3 col-md-4 col-sm-6"
+                             th:data-image-id="${image.id}">
+                            <div class="card image-card position-relative h-100">
+                                <!-- Головне зображення badge -->
+                                <div th:if="${image.isMain}" class="main-badge">
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-star-fill me-1"></i>Головне
+                                    </span>
+                                </div>
+
+                                <!-- Дії з зображенням -->
+                                <div class="image-actions">
+                                    <div class="btn-group-vertical">
+                                        <button th:unless="${image.isMain}"
+                                                class="btn btn-sm btn-success"
+                                                th:onclick="|setMainImage(${product.id}, ${image.id})|"
+                                                title="Зробити головним">
+                                            <i class="bi bi-star"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger"
+                                                th:onclick="|confirmDelete(${product.id}, ${image.id})|"
+                                                title="Видалити">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Зображення -->
+                                <img th:src="${image.imageUrl}"
+                                     th:alt="${image.altText}"
+                                     class="card-img-top"
+                                     style="height: 200px; object-fit: cover;">
+
+                                <!-- Інформація -->
+                                <div class="card-body p-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-sort-numeric-down me-1"></i>
+                                            Порядок: <span th:text="${image.sortOrder}"></span>
+                                        </small>
+                                        <small class="text-muted" th:text="'ID: ' + ${image.id}"></small>
+                                    </div>
+                                    <div th:if="${image.altText}" class="mt-1">
+                                        <small class="text-muted" th:text="${image.altText}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Поради -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-lightbulb me-2"></i>Поради щодо зображень
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-primary">
+                                <i class="bi bi-check-circle me-1"></i>Найкращі практики:
+                            </h6>
+                            <ul class="small">
+                                <li>Використовуйте якісні зображення високої роздільності</li>
+                                <li>Додавайте alt-текст для кращого SEO</li>
+                                <li>Перше зображення автоматично стає головним</li>
+                                <li>Оптимальний розмір: 800x600 пікселів або більше</li>
+                                <li>Формати: JPG для фотографій, PNG для графіки</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-warning">
+                                <i class="bi bi-exclamation-triangle me-1"></i>Обмеження:
+                            </h6>
+                            <ul class="small">
+                                <li>Максимальний розмір файлу: 5MB</li>
+                                <li>Підтримувані формати: JPG, PNG, GIF</li>
+                                <li>Рекомендована кількість: 3-7 зображень</li>
+                                <li>Головне зображення показується в каталозі</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal підтвердження видалення -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>Підтвердження видалення
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити це зображення?</p>
+                <p class="text-danger small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Ця дія незворотна. Зображення буде видалено з сервера назавжди.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                <button type="button" class="btn btn-danger" onclick="executeDelete()">
+                    <i class="bi bi-trash me-2"></i>Видалити
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let deleteProductId = null;
+    let deleteImageId = null;
+
+    // Drag & Drop для завантаження
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('imageFile');
+        const selectedFileName = document.getElementById('selectedFileName');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Drag & Drop события
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('dragover'), false);
+        });
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect(files[0]);
+            }
+        }
+
+        // Обработка выбора файла
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            selectedFileName.textContent = file.name;
+            selectedFileName.style.display = 'block';
+
+            // Показ превью
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Sortable для изображений
+        if (document.getElementById('imageGrid')) {
+            new Sortable(document.getElementById('imageGrid'), {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: function(evt) {
+                    // Здесь можно добавить AJAX запрос для сохранения нового порядка
+                    console.log('New order:', evt.newIndex, evt.oldIndex);
+                }
+            });
+        }
+    });
+
+    // Подтверждение удаления
+    function confirmDelete(productId, imageId) {
+        deleteProductId = productId;
+        deleteImageId = imageId;
+        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        modal.show();
+    }
+
+    function executeDelete() {
+        if (deleteProductId && deleteImageId) {
+            // Создаем форму для POST запроса
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/product/${deleteProductId}/images/${deleteImageId}/delete`;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Установка главного изображения
+    function setMainImage(productId, imageId) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/product/${productId}/images/${imageId}/set-main`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // AJAX версии (альтернатива)
+    function setMainImageAjax(productId, imageId) {
+        fetch(`/admin/product/${productId}/images/${imageId}/set-main`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Ошибка при установке главного изображения');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при установке главного изображения');
+            });
+    }
+
+    function deleteImageAjax(productId, imageId) {
+        fetch(`/admin/product/${productId}/images/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Ошибка при удалении изображения');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при удалении изображения');
+            });
+    }
+</script>
+
+</body>
+</html>

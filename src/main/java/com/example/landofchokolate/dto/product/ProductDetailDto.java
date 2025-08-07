@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +18,7 @@ public class ProductDetailDto {
     private String slug;
     private BigDecimal price;
     private Integer stockQuantity;
-    private String imageUrl;
-    private String imageId;
+    private List<ProductImageInfo> images;
     private Boolean isActive;
 
     // 🆕 SEO атрибуты
@@ -29,6 +29,7 @@ public class ProductDetailDto {
     // Связанные сущности
     private CategoryInfo category;
     private BrandInfo brand;
+
 
     // Информация о категории
     @Data
@@ -82,6 +83,13 @@ public class ProductDetailDto {
         } else {
             return "В наявності: " + stockQuantity;
         }
+    }
+    public ProductImageInfo getMainImage() {
+        if (images == null || images.isEmpty()) return null;
+        return images.stream()
+                .filter(img -> Boolean.TRUE.equals(img.getIsMain()))
+                .findFirst()
+                .orElse(images.get(0));
     }
 
 }

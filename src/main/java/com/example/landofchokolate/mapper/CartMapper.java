@@ -5,6 +5,7 @@ import com.example.landofchokolate.dto.card.CartItemDto;
 import com.example.landofchokolate.model.Cart;
 import com.example.landofchokolate.model.CartItem;
 import com.example.landofchokolate.model.Product;
+import com.example.landofchokolate.model.ProductImage;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.LazyInitializationException;
 import org.springframework.stereotype.Component;
@@ -145,8 +146,30 @@ public class CartMapper {
 
     private String safeGetProductImageUrl(Product product) {
         try {
-            return product.getImageUrl();
+            // Проверяем наличие изображений
+            if (product.getImages() == null || product.getImages().isEmpty()) {
+                return "";
+            }
+
+            // Ищем главное изображение
+            String mainImageUrl = product.getImages().stream()
+                    .filter(img -> Boolean.TRUE.equals(img.getIsMain()))
+                    .findFirst()
+                    .map(ProductImage::getImageUrl)
+                    .orElse(null);
+
+            // Если главного нет, берем первое доступное
+            if (mainImageUrl == null && !product.getImages().isEmpty()) {
+                mainImageUrl = product.getImages().get(0).getImageUrl();
+            }
+
+            return mainImageUrl != null ? mainImageUrl : "";
+
         } catch (LazyInitializationException e) {
+            log.warn("Не удалось получить изображения продукта в корзине: {}", e.getMessage());
+            return "";
+        } catch (Exception e) {
+            log.error("Ошибка при получении изображения продукта в корзине: {}", e.getMessage(), e);
             return "";
         }
     }

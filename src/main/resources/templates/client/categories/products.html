@@ -807,11 +807,12 @@
                     <div class="product-card">
                         <!-- Изображение продукта -->
                         <div class="product-image-container">
-                            <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
-                                 th:src="${product.imageUrl}"
-                                 th:alt="${product.name}"
-                                 class="product-image">
-                            <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
+                            <img th:if="${product.mainImageUrl != null and !product.mainImageUrl.isEmpty()}"
+                                 th:src="${product.mainImageUrl}"
+                                 th:alt="${product.altText != null ? product.altText : product.name}"
+                                 class="product-image" />
+
+                            <div th:if="${product.mainImageUrl == null or product.mainImageUrl.isEmpty()}"
                                  class="product-placeholder">
                                 <i class="fas fa-image"></i>
                             </div>
@@ -819,7 +820,7 @@
                             <!-- Бейдж наличия -->
                             <div class="stock-badge"
                                  th:classappend="${product.stockQuantity == 0} ? 'badge-out-of-stock' : (${product.stockQuantity <= 5} ? 'badge-low-stock' : 'badge-in-stock')">
-                    <span th:if="${product.stockQuantity > 0}"
+                    <span th:if="${product.getStockQuantity() > 0}"
                           th:text="'В наявності: ' + ${product.stockQuantity}">В наявності: 12</span>
                                 <span th:if="${product.stockQuantity == 0}">Немає в наявності</span>
                             </div>

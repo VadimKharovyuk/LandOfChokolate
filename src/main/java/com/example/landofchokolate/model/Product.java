@@ -10,6 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -27,8 +29,8 @@ public class Product {
     @Column(nullable = false)
     private Integer stockQuantity = 0;
 
-    private String imageUrl;
-    private String imageId;
+//    private String imageUrl;
+//    private String imageId;
 
     @Column(unique = true)
     private String slug;
@@ -68,6 +70,11 @@ public class Product {
     private Brand brand;
 
 
+    // 🆕 Множественные изображения
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sortOrder ASC, createdAt ASC")
+    private List<ProductImage> images = new ArrayList<>();
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -76,9 +83,13 @@ public class Product {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    //    // 🆕 Рейтинг товара
-//    @Column(name = "rating")
-//    private BigDecimal rating = BigDecimal.ZERO;
+    public ProductImage getMainImage() {
+        if (images == null || images.isEmpty()) return null;
+        return images.stream()
+                .filter(img -> Boolean.TRUE.equals(img.getIsMain()))
+                .findFirst()
+                .orElse(images.get(0));
+    }
 
 
 //    // 🆕 Количество отзывов
@@ -89,24 +100,6 @@ public class Product {
 //    @Column(name = "is_new")
 //    private Boolean isNew = false;
 
-//    // 🆕 Количество продаж
-//    @Column(name = "sales_count", nullable = false)
-//    private Integer salesCount = 0;
-
-
-
-
-//    // В модель Product добавить:
-//    @Column(name = "meta_keywords", length = 255)
-//    private String metaKeywords;
-
-//    <head>
-//    <!-- Если заполнено - используем, если нет - базовая генерация -->
-//    <meta name="keywords"
-//    th:content="${product.metaKeywords} ?:
-//    ${product.name + ', ' + product.brand.name + ', шоколад, купити'}">
-//</head>
-//
 
 
 //    // 🆕 Alt текст для изображений (очень важно для Google Images)

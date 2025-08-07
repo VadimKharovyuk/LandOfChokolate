@@ -149,6 +149,7 @@ public class ClientProductController {
             model.addAttribute("favoritesCount", 0);
         }
 
+
         return "client/products/list";
     }
 

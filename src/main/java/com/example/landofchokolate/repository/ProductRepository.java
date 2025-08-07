@@ -93,10 +93,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
 
-    // Исправленный запрос без фильтров
+    // ✅ 1. Запрос БЕЗ фильтров
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
-            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " +
-            "c.name, b.name, " +
+            "p.id, p.name, p.price, p.stockQuantity, " +
+            "(SELECT img.imageUrl FROM ProductImage img WHERE img.product = p AND img.isMain = true), " +
+            "p.slug, c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
             "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " +
             "FROM Product p " +
@@ -106,9 +107,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Исправленный запрос с правильным порядком полей
 
+
+    // ✅ 2. Запрос С фильтрами (тот что вы показали)
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListDto(" +
-            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " +
-            "c.name, b.name, " +
+            "p.id, p.name, p.price, p.stockQuantity, " +
+            "(SELECT img.imageUrl FROM ProductImage img WHERE img.product = p AND img.isMain = true), " +
+            "p.slug, c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
             "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity <= 10 THEN true ELSE false END) " +
             "FROM Product p " +
@@ -123,7 +127,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "     (:#{#filters.stockStatus} = 'in-stock' AND p.stockQuantity > 10) OR " +
             "     (:#{#filters.stockStatus} = 'low-stock' AND p.stockQuantity > 0 AND p.stockQuantity <= 10) OR " +
             "     (:#{#filters.stockStatus} = 'out-of-stock' AND p.stockQuantity = 0))")
-    Page<ProductListDto> findAllProductListDtoWithFilters(Pageable pageable, @Param("filters") ProductFilterDto filters);
+    Page<ProductListDto> findAllWithFilters(@Param("filters") ProductFilterDto filters, Pageable pageable);
 
     boolean existsBySlug(String slug);
 
@@ -165,10 +169,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
 
-    /// для главной страницы реклмендац продукты
+    // ✅ Исправленный запрос для рекомендованных продуктов
     @Query("SELECT new com.example.landofchokolate.dto.product.ProductListRecommendationDto(" +
-            "p.id, p.name, p.price, p.stockQuantity, p.imageUrl, p.slug, " +
-            "c.name, b.name, " +
+            "p.id, p.name, p.price, p.stockQuantity, " +
+            "(SELECT img.imageUrl FROM ProductImage img WHERE img.product = p AND img.isMain = true), " +
+            "p.slug, c.name, b.name, " +
             "CASE WHEN p.stockQuantity > 0 THEN true ELSE false END, " +
             "CASE WHEN p.stockQuantity > 0 AND p.stockQuantity < 10 THEN true ELSE false END) " +
             "FROM Product p " +

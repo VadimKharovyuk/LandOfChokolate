@@ -4,10 +4,7 @@ import com.example.landofchokolate.dto.card.CartDto;
 import com.example.landofchokolate.dto.wishlis.WishlistDto;
 import com.example.landofchokolate.enums.WishlistStatus;
 import com.example.landofchokolate.mapper.WishlistMapper;
-import com.example.landofchokolate.model.Cart;
-import com.example.landofchokolate.model.Product;
-import com.example.landofchokolate.model.Wishlist;
-import com.example.landofchokolate.model.WishlistItem;
+import com.example.landofchokolate.model.*;
 import com.example.landofchokolate.repository.ProductRepository;
 import com.example.landofchokolate.repository.WishlistRepository;
 import com.example.landofchokolate.service.WishlistService;
@@ -671,10 +668,28 @@ public class WishlistServiceDatabaseImpl implements WishlistService {
                         product.getId();
                         product.getName();
                         product.getPrice();
-                        product.getImageUrl();
                         product.getStockQuantity();
                         product.getIsActive();
                         product.getSlug();
+
+                        // 🔄 ОБНОВЛЕНО: инициализируем изображения вместо одного imageUrl
+                        if (product.getImages() != null) {
+                            // Принудительно загружаем коллекцию изображений
+                            product.getImages().size(); // Загружает Lazy коллекцию
+
+                            // Инициализируем каждое изображение
+                            for (ProductImage image : product.getImages()) {
+                                image.getId();
+                                image.getImageUrl();
+                                image.getImageId();
+                                image.getIsMain();
+                                image.getSortOrder();
+                                image.getAltText();
+                            }
+
+                            log.debug("Инициализировано {} изображений для товара: {}",
+                                    product.getImages().size(), product.getName());
+                        }
 
                         log.debug("Инициализирован товар: {} - {}", product.getId(), product.getName());
                     } catch (Exception e) {

@@ -4,11 +4,13 @@ import com.example.landofchokolate.dto.card.CartDto;
 import com.example.landofchokolate.dto.card.CartItemDto;
 import com.example.landofchokolate.mapper.CartMapper;
 import com.example.landofchokolate.model.Product;
+import com.example.landofchokolate.model.ProductImage;
 import com.example.landofchokolate.repository.ProductRepository;
 import com.example.landofchokolate.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.LazyInitializationException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,12 +114,37 @@ public class CartServiceImpl implements CartService {
         productInfo.setName(product.getName());
         productInfo.setSlug(product.getSlug());
         productInfo.setCurrentPrice(product.getPrice());
-        productInfo.setImageUrl(product.getImageUrl());
+        productInfo.setImageUrl(safeGetProductImageUrl(product)); // 🔄 ОБНОВЛЕНО
         productInfo.setStockQuantity(product.getStockQuantity());
         productInfo.setIsActive(product.getIsActive());
 
         item.setProduct(productInfo);
         return item;
+    }
+
+
+    /**
+     * Безопасное получение URL главного изображения продукта для заказов
+     */
+    private String safeGetProductImageUrl(Product product) {
+        try {
+            if (product.getImages() == null || product.getImages().isEmpty()) {
+                return "";
+            }
+
+            return product.getImages().stream()
+                    .filter(img -> Boolean.TRUE.equals(img.getIsMain()))
+                    .findFirst()
+                    .map(ProductImage::getImageUrl)
+                    .orElseGet(() -> product.getImages().get(0).getImageUrl());
+
+        } catch (LazyInitializationException e) {
+            log.warn("Не удалось получить изображения продукта в заказе: {}", e.getMessage());
+            return "";
+        } catch (Exception e) {
+            log.error("Ошибка при получении изображения продукта в заказе: {}", e.getMessage(), e);
+            return "";
+        }
     }
 
     @Override

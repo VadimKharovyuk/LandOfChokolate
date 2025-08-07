@@ -1,263 +1,997 @@
 <!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="uk">-->
 <!--<head>-->
 <!--    <meta charset="UTF-8">-->
-<!--    <title>Список продуктов</title>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Управління товарами - Land of Chocolate</title>-->
+
+<!--    &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; Bootstrap Icons &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">-->
+
+<!--    <style>-->
+<!--        :root {-->
+<!--            &#45;&#45;primary-color: #2C2C2C;-->
+<!--            &#45;&#45;accent-color: #D4AF37;-->
+<!--            &#45;&#45;success-color: #28a745;-->
+<!--            &#45;&#45;danger-color: #dc3545;-->
+<!--            &#45;&#45;warning-color: #ffc107;-->
+<!--            &#45;&#45;info-color: #17a2b8;-->
+<!--            &#45;&#45;light-bg: #F8F9FA;-->
+<!--            &#45;&#45;border-color: #DEE2E6;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            background-color: var(&#45;&#45;light-bg);-->
+<!--            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--        }-->
+
+<!--        .main-header {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;primary-color) 0%, #404040 100%);-->
+<!--            color: white;-->
+<!--            padding: 2.5rem 0;-->
+<!--            margin-bottom: 2rem;-->
+<!--            border-radius: 0 0 25px 25px;-->
+<!--            box-shadow: 0 4px 20px rgba(0,0,0,0.15);-->
+<!--        }-->
+
+<!--        .header-content {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1.5rem;-->
+<!--        }-->
+
+<!--        .header-icon {-->
+<!--            font-size: 3rem;-->
+<!--            color: var(&#45;&#45;accent-color);-->
+<!--            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));-->
+<!--        }-->
+
+<!--        .header-title {-->
+<!--            font-size: 2.5rem;-->
+<!--            font-weight: 700;-->
+<!--            margin: 0;-->
+<!--            text-shadow: 0 2px 4px rgba(0,0,0,0.3);-->
+<!--        }-->
+
+<!--        .header-subtitle {-->
+<!--            font-size: 1.1rem;-->
+<!--            opacity: 0.9;-->
+<!--            margin: 0;-->
+<!--        }-->
+
+<!--        .filter-description {-->
+<!--            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);-->
+<!--            border-radius: 12px;-->
+<!--            padding: 1rem 1.5rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            border-left: 4px solid var(&#45;&#45;info-color);-->
+<!--        }-->
+
+<!--        .control-panel {-->
+<!--            background: white;-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            box-shadow: 0 8px 25px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--        }-->
+
+<!--        .btn-custom {-->
+<!--            border-radius: 10px;-->
+<!--            font-weight: 600;-->
+<!--            padding: 12px 24px;-->
+<!--            transition: all 0.3s ease;-->
+<!--            border: none;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.5px;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+
+<!--        .btn-success-custom {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;success-color) 0%, #32d44a 100%);-->
+<!--            color: white;-->
+<!--            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);-->
+<!--        }-->
+
+<!--        .btn-success-custom:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);-->
+<!--        }-->
+
+<!--        .btn-info-custom {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;info-color) 0%, #20c6dd 100%);-->
+<!--            color: white;-->
+<!--            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);-->
+<!--        }-->
+
+<!--        .btn-info-custom:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);-->
+<!--        }-->
+
+<!--        .filters-section {-->
+<!--            background: linear-gradient(135deg, #f8f9fa 0%, white 100%);-->
+<!--            border-radius: 15px;-->
+<!--            padding: 1.5rem;-->
+<!--            border: 2px solid var(&#45;&#45;border-color);-->
+<!--        }-->
+
+<!--        .filter-group {-->
+<!--            margin-bottom: 1rem;-->
+<!--        }-->
+
+<!--        .filter-label {-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;primary-color);-->
+<!--            margin-bottom: 0.5rem;-->
+<!--            display: block;-->
+<!--        }-->
+
+<!--        .form-control-custom {-->
+<!--            border-radius: 8px;-->
+<!--            border: 2px solid var(&#45;&#45;border-color);-->
+<!--            padding: 10px 15px;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .form-control-custom:focus {-->
+<!--            border-color: var(&#45;&#45;accent-color);-->
+<!--            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);-->
+<!--        }-->
+
+<!--        .btn-filter {-->
+<!--            background: var(&#45;&#45;info-color);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            padding: 10px 20px;-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .btn-reset {-->
+<!--            background: #6c757d;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            padding: 10px 20px;-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .stats-card {-->
+<!--            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            box-shadow: 0 8px 25px rgba(0,0,0,0.1);-->
+<!--            border-left: 6px solid var(&#45;&#45;accent-color);-->
+<!--        }-->
+
+<!--        .stats-number {-->
+<!--            font-size: 2.5rem;-->
+<!--            font-weight: 800;-->
+<!--            color: var(&#45;&#45;primary-color);-->
+<!--        }-->
+
+<!--        .table-container {-->
+<!--            background: white;-->
+<!--            border-radius: 20px;-->
+<!--            overflow: hidden;-->
+<!--            box-shadow: 0 10px 30px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--        }-->
+
+<!--        .table-header {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;primary-color) 0%, #404040 100%);-->
+<!--            color: white;-->
+<!--            padding: 1.5rem 2rem;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .custom-table {-->
+<!--            margin: 0;-->
+<!--        }-->
+
+<!--        .custom-table thead th {-->
+<!--            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);-->
+<!--            border-bottom: 3px solid var(&#45;&#45;accent-color);-->
+<!--            font-weight: 700;-->
+<!--            color: var(&#45;&#45;primary-color);-->
+<!--            padding: 15px 12px;-->
+<!--            vertical-align: middle;-->
+<!--        }-->
+
+<!--        .custom-table tbody tr {-->
+<!--            transition: all 0.3s ease;-->
+<!--            border-bottom: 1px solid #f0f0f0;-->
+<!--        }-->
+
+<!--        .custom-table tbody tr:hover {-->
+<!--            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);-->
+<!--            transform: scale(1.001);-->
+<!--        }-->
+
+<!--        .custom-table td {-->
+<!--            padding: 15px 12px;-->
+<!--            vertical-align: middle;-->
+<!--        }-->
+
+<!--        .product-image {-->
+<!--            width: 60px;-->
+<!--            height: 60px;-->
+<!--            object-fit: cover;-->
+<!--            border-radius: 12px;-->
+<!--            border: 2px solid var(&#45;&#45;border-color);-->
+<!--            transition: transform 0.3s ease;-->
+<!--        }-->
+
+<!--        .product-image:hover {-->
+<!--            transform: scale(1.3);-->
+<!--            z-index: 10;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .image-placeholder {-->
+<!--            width: 60px;-->
+<!--            height: 60px;-->
+<!--            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);-->
+<!--            border: 2px dashed var(&#45;&#45;border-color);-->
+<!--            border-radius: 12px;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: #6c757d;-->
+<!--            font-size: 0.8rem;-->
+<!--        }-->
+
+<!--        .product-name {-->
+<!--            font-weight: 700;-->
+<!--            color: var(&#45;&#45;info-color);-->
+<!--            text-decoration: none;-->
+<!--            transition: color 0.3s ease;-->
+<!--        }-->
+
+<!--        .product-name:hover {-->
+<!--            color: var(&#45;&#45;primary-color);-->
+<!--        }-->
+
+<!--        .price-display {-->
+<!--            font-weight: 700;-->
+<!--            color: var(&#45;&#45;success-color);-->
+<!--            font-size: 1.1rem;-->
+<!--        }-->
+
+<!--        .stock-display {-->
+<!--            font-weight: 700;-->
+<!--            padding: 4px 8px;-->
+<!--            border-radius: 15px;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+
+<!--        .stock-in {-->
+<!--            background: #d4edda;-->
+<!--            color: #155724;-->
+<!--        }-->
+
+<!--        .stock-low {-->
+<!--            background: #fff3cd;-->
+<!--            color: #856404;-->
+<!--        }-->
+
+<!--        .stock-out {-->
+<!--            background: #f8d7da;-->
+<!--            color: #721c24;-->
+<!--        }-->
+
+<!--        .status-badge {-->
+<!--            padding: 6px 12px;-->
+<!--            border-radius: 20px;-->
+<!--            font-size: 0.8rem;-->
+<!--            font-weight: 600;-->
+<!--            text-transform: uppercase;-->
+<!--        }-->
+
+<!--        .status-in-stock {-->
+<!--            background: var(&#45;&#45;success-color);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .status-low-stock {-->
+<!--            background: var(&#45;&#45;warning-color);-->
+<!--            color: #212529;-->
+<!--        }-->
+
+<!--        .status-out-of-stock {-->
+<!--            background: var(&#45;&#45;danger-color);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .action-buttons {-->
+<!--            display: flex;-->
+<!--            gap: 0.5rem;-->
+<!--            flex-wrap: wrap;-->
+<!--            justify-content: center;-->
+<!--        }-->
+
+<!--        .btn-action {-->
+<!--            padding: 6px 12px;-->
+<!--            border-radius: 6px;-->
+<!--            text-decoration: none;-->
+<!--            font-size: 0.8rem;-->
+<!--            font-weight: 600;-->
+<!--            transition: all 0.2s ease;-->
+<!--            border: 1px solid transparent;-->
+<!--        }-->
+
+<!--        .btn-view {-->
+<!--            background: #e3f2fd;-->
+<!--            color: #1976d2;-->
+<!--            border-color: #bbdefb;-->
+<!--        }-->
+
+<!--        .btn-view:hover {-->
+<!--            background: #1976d2;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .btn-edit {-->
+<!--            background: #e8f5e8;-->
+<!--            color: #2e7d32;-->
+<!--            border-color: #c8e6c9;-->
+<!--        }-->
+
+<!--        .btn-edit:hover {-->
+<!--            background: #2e7d32;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .btn-delete {-->
+<!--            background: #ffebee;-->
+<!--            color: #d32f2f;-->
+<!--            border-color: #ffcdd2;-->
+<!--        }-->
+
+<!--        .btn-delete:hover {-->
+<!--            background: #d32f2f;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .quick-filters {-->
+<!--            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);-->
+<!--            border-radius: 15px;-->
+<!--            padding: 1.5rem;-->
+<!--            margin: 2rem 0;-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--        }-->
+
+<!--        .quick-filter-btn {-->
+<!--            padding: 8px 16px;-->
+<!--            border-radius: 20px;-->
+<!--            text-decoration: none;-->
+<!--            font-size: 0.85rem;-->
+<!--            font-weight: 600;-->
+<!--            transition: all 0.3s ease;-->
+<!--            border: 2px solid transparent;-->
+<!--            margin: 0.25rem;-->
+<!--            display: inline-block;-->
+<!--        }-->
+
+<!--        .filter-all { background: var(&#45;&#45;info-color); color: white; }-->
+<!--        .filter-in-stock { background: var(&#45;&#45;success-color); color: white; }-->
+<!--        .filter-low-stock { background: var(&#45;&#45;warning-color); color: #212529; }-->
+<!--        .filter-out-stock { background: var(&#45;&#45;danger-color); color: white; }-->
+
+<!--        .quick-filter-btn:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 4px 15px rgba(0,0,0,0.2);-->
+<!--        }-->
+
+<!--        .empty-state {-->
+<!--            background: white;-->
+<!--            border-radius: 20px;-->
+<!--            padding: 4rem 2rem;-->
+<!--            text-align: center;-->
+<!--            box-shadow: 0 8px 25px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--        }-->
+
+<!--        .empty-icon {-->
+<!--            font-size: 4rem;-->
+<!--            color: var(&#45;&#45;accent-color);-->
+<!--            margin-bottom: 2rem;-->
+<!--        }-->
+
+<!--        .alert-custom {-->
+<!--            border: none;-->
+<!--            border-radius: 15px;-->
+<!--            padding: 1.25rem 2rem;-->
+<!--            margin-bottom: 2rem;-->
+<!--            border-left: 5px solid;-->
+<!--        }-->
+
+<!--        .alert-success-custom {-->
+<!--            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);-->
+<!--            border-left-color: var(&#45;&#45;success-color);-->
+<!--            color: #155724;-->
+<!--        }-->
+
+<!--        .alert-danger-custom {-->
+<!--            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);-->
+<!--            border-left-color: var(&#45;&#45;danger-color);-->
+<!--            color: #721c24;-->
+<!--        }-->
+
+<!--        .navigation-section {-->
+<!--            background: white;-->
+<!--            border-radius: 20px;-->
+<!--            padding: 2rem;-->
+<!--            margin-top: 2rem;-->
+<!--            box-shadow: 0 8px 25px rgba(0,0,0,0.1);-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--        }-->
+
+<!--        .nav-links {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--            margin: 0;-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));-->
+<!--            gap: 1rem;-->
+<!--        }-->
+
+<!--        .nav-links a {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 0.5rem;-->
+<!--            color: var(&#45;&#45;primary-color);-->
+<!--            text-decoration: none;-->
+<!--            padding: 1rem;-->
+<!--            border-radius: 10px;-->
+<!--            background: var(&#45;&#45;light-bg);-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--            transition: all 0.3s ease;-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .nav-links a:hover {-->
+<!--            background: var(&#45;&#45;primary-color);-->
+<!--            color: white;-->
+<!--            transform: translateY(-2px);-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .header-content {-->
+<!--                flex-direction: column;-->
+<!--                text-align: center;-->
+<!--            }-->
+
+<!--            .header-title {-->
+<!--                font-size: 2rem;-->
+<!--            }-->
+
+<!--            .filters-section .row {-->
+<!--                flex-direction: column;-->
+<!--            }-->
+
+<!--            .action-buttons {-->
+<!--                flex-direction: column;-->
+<!--            }-->
+
+<!--            .quick-filters .d-flex {-->
+<!--                flex-direction: column;-->
+<!--                align-items: stretch;-->
+<!--            }-->
+
+<!--            .quick-filter-btn {-->
+<!--                margin: 0.25rem 0;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
 <!--</head>-->
 <!--<body>-->
-<!--<h1>Список продуктов</h1>-->
-<!--<p style="font-size: 14px; color: #666;" th:text="${filterDescription}"></p>-->
-
-<!--&lt;!&ndash; Flash сообщения &ndash;&gt;-->
-<!--<div th:if="${successMessage}" style="color: green; border: 1px solid green; padding: 10px; margin: 10px 0;">-->
-<!--    <span th:text="${successMessage}"></span>-->
-<!--</div>-->
-
-
-<!--<div th:if="${errorMessage}" style="color: red; border: 1px solid red; padding: 10px; margin: 10px 0;">-->
-<!--    <span th:text="${errorMessage}"></span>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Панель управления и фильтров &ndash;&gt;-->
-<!--<div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6;">-->
-
-<!--    &lt;!&ndash; Кнопка создания нового продукта &ndash;&gt;-->
-<!--    <div style="margin-bottom: 15px;">-->
-<!--        <a th:href="@{/admin/product}"-->
-<!--           style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; display: inline-block;">-->
-<!--            + Создать новый продукт-->
-<!--        </a>-->
-<!--        <a th:href="@{/admin/product/statistics}"-->
-<!--           style="margin-left: 10px; padding: 10px 20px; background-color: #17a2b8; color: white; text-decoration: none; display: inline-block;">-->
-<!--            📊 Статистика-->
-<!--        </a>-->
+<!--<div class="container-fluid">-->
+<!--    &lt;!&ndash; Заголовок &ndash;&gt;-->
+<!--    <div class="main-header">-->
+<!--        <div class="container">-->
+<!--            <div class="header-content">-->
+<!--                <i class="header-icon bi bi-box-seam-fill"></i>-->
+<!--                <div>-->
+<!--                    <h1 class="header-title">Управління товарами</h1>-->
+<!--                    <p class="header-subtitle">Керуйте каталогом продукції вашого магазину</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 <!--    </div>-->
 
-<!--    &lt;!&ndash; Фильтры &ndash;&gt;-->
-<!--    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: end;">-->
-
-<!--        &lt;!&ndash; Поиск по названию &ndash;&gt;-->
-<!--        <div>-->
-<!--            <label for="search">Поиск:</label><br>-->
-<!--            <form th:action="@{/admin/product/list}" method="get" style="display: inline-flex;">-->
-<!--                <input type="text" id="search" name="search" th:value="${searchTerm}"-->
-<!--                       placeholder="Название продукта..."-->
-<!--                       style="padding: 8px; width: 200px;">-->
-<!--                <button type="submit"-->
-<!--                        style="padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer;">-->
-<!--                    Найти-->
-<!--                </button>-->
-<!--            </form>-->
+<!--    <div class="container">-->
+<!--        &lt;!&ndash; Опис фільтра &ndash;&gt;-->
+<!--        <div th:if="${filterDescription}" class="filter-description">-->
+<!--            <i class="bi bi-info-circle me-2"></i>-->
+<!--            <span th:text="${filterDescription}"></span>-->
 <!--        </div>-->
 
-<!--        &lt;!&ndash; Фильтр по категории &ndash;&gt;-->
-<!--        <div>-->
-<!--            <label for="categoryFilter">Категория:</label><br>-->
-<!--            <form th:action="@{/admin/product/list}" method="get" style="display: inline;">-->
-<!--                <select id="categoryFilter" name="category" onchange="this.form.submit()" style="padding: 8px;">-->
-<!--                    <option value="">Все категории</option>-->
-<!--                    <option th:each="category : ${filterCategories}"-->
-<!--                            th:value="${category.id}"-->
-<!--                            th:text="${category.name}"-->
-<!--                            th:selected="${category.id == selectedCategory}"></option>-->
-<!--                </select>-->
-<!--            </form>-->
+<!--        &lt;!&ndash; Повідомлення &ndash;&gt;-->
+<!--        <div th:if="${successMessage}" class="alert alert-custom alert-success-custom">-->
+<!--            <i class="bi bi-check-circle-fill me-2"></i>-->
+<!--            <span th:text="${successMessage}"></span>-->
 <!--        </div>-->
 
-<!--        &lt;!&ndash; Фильтр по бренду &ndash;&gt;-->
-<!--        <div>-->
-<!--            <label for="brandFilter">Бренд:</label><br>-->
-<!--            <form th:action="@{/admin/product/list}" method="get" style="display: inline;">-->
-<!--                <select id="brandFilter" name="brand" onchange="this.form.submit()" style="padding: 8px;">-->
-<!--                    <option value="">Все бренды</option>-->
-<!--                    <option th:each="brand : ${filterBrands}"-->
-<!--                            th:value="${brand.id}"-->
-<!--                            th:text="${brand.name}"-->
-<!--                            th:selected="${brand.id == selectedBrand}"></option>-->
-<!--                </select>-->
-<!--            </form>-->
+<!--        <div th:if="${errorMessage}" class="alert alert-custom alert-danger-custom">-->
+<!--            <i class="bi bi-exclamation-triangle-fill me-2"></i>-->
+<!--            <span th:text="${errorMessage}"></span>-->
 <!--        </div>-->
 
-<!--        &lt;!&ndash; Фильтр по статусу наличия &ndash;&gt;-->
-<!--        <div>-->
-<!--            <label for="statusFilter">Наличие:</label><br>-->
-<!--            <form th:action="@{/admin/product/list}" method="get" style="display: inline;">-->
-<!--                <select id="statusFilter" name="status" onchange="this.form.submit()" style="padding: 8px;">-->
-<!--                    <option value="">Все товары</option>-->
-<!--                    <option value="in-stock" th:selected="${selectedStatus == 'in-stock'}">В наличии</option>-->
-<!--                    <option value="low-stock" th:selected="${selectedStatus == 'low-stock'}">Заканчивается</option>-->
-<!--                    <option value="out-of-stock" th:selected="${selectedStatus == 'out-of-stock'}">Нет в наличии-->
-<!--                    </option>-->
-<!--                </select>-->
-<!--            </form>-->
+<!--        &lt;!&ndash; Панель управління &ndash;&gt;-->
+<!--        <div class="control-panel">-->
+<!--            <div class="row align-items-center mb-4">-->
+<!--                <div class="col-md-6">-->
+<!--                    <a th:href="@{/admin/product}" class="btn btn-custom btn-success-custom me-3">-->
+<!--                        <i class="bi bi-plus-circle-fill me-2"></i>-->
+<!--                        Створити новий товар-->
+<!--                    </a>-->
+<!--                    <a th:href="@{/admin/product/statistics}" class="btn btn-custom btn-info-custom">-->
+<!--                        <i class="bi bi-bar-chart-fill me-2"></i>-->
+<!--                        Статистика-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Фільтри &ndash;&gt;-->
+<!--            <div class="filters-section">-->
+<!--                <h5 class="mb-3">-->
+<!--                    <i class="bi bi-funnel me-2"></i>Фільтри пошуку-->
+<!--                </h5>-->
+
+<!--                <div class="row g-3">-->
+<!--                    &lt;!&ndash; Пошук по назві &ndash;&gt;-->
+<!--                    <div class="col-md-3">-->
+<!--                        <label class="filter-label">-->
+<!--                            <i class="bi bi-search me-1"></i>Пошук-->
+<!--                        </label>-->
+<!--                        <form th:action="@{/admin/product/list}" method="get" class="d-flex">-->
+<!--                            <input type="text"-->
+<!--                                   name="search"-->
+<!--                                   th:value="${searchTerm}"-->
+<!--                                   class="form-control form-control-custom me-2"-->
+<!--                                   placeholder="Назва товару...">-->
+<!--                            <button type="submit" class="btn btn-filter">-->
+<!--                                <i class="bi bi-search"></i>-->
+<!--                            </button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Фільтр по категорії &ndash;&gt;-->
+<!--                    <div class="col-md-2">-->
+<!--                        <label class="filter-label">-->
+<!--                            <i class="bi bi-folder me-1"></i>Категорія-->
+<!--                        </label>-->
+<!--                        <form th:action="@{/admin/product/list}" method="get">-->
+<!--                            <select name="category"-->
+<!--                                    class="form-select form-control-custom"-->
+<!--                                    onchange="this.form.submit()">-->
+<!--                                <option value="">Всі категорії</option>-->
+<!--                                <option th:each="category : ${filterCategories}"-->
+<!--                                        th:value="${category.id}"-->
+<!--                                        th:text="${category.name}"-->
+<!--                                        th:selected="${category.id == selectedCategory}"></option>-->
+<!--                            </select>-->
+<!--                        </form>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Фільтр по бренду &ndash;&gt;-->
+<!--                    <div class="col-md-2">-->
+<!--                        <label class="filter-label">-->
+<!--                            <i class="bi bi-tag me-1"></i>Бренд-->
+<!--                        </label>-->
+<!--                        <form th:action="@{/admin/product/list}" method="get">-->
+<!--                            <select name="brand"-->
+<!--                                    class="form-select form-control-custom"-->
+<!--                                    onchange="this.form.submit()">-->
+<!--                                <option value="">Всі бренди</option>-->
+<!--                                <option th:each="brand : ${filterBrands}"-->
+<!--                                        th:value="${brand.id}"-->
+<!--                                        th:text="${brand.name}"-->
+<!--                                        th:selected="${brand.id == selectedBrand}"></option>-->
+<!--                            </select>-->
+<!--                        </form>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Фільтр по статусу &ndash;&gt;-->
+<!--                    <div class="col-md-2">-->
+<!--                        <label class="filter-label">-->
+<!--                            <i class="bi bi-clipboard-check me-1"></i>Наявність-->
+<!--                        </label>-->
+<!--                        <form th:action="@{/admin/product/list}" method="get">-->
+<!--                            <select name="status"-->
+<!--                                    class="form-select form-control-custom"-->
+<!--                                    onchange="this.form.submit()">-->
+<!--                                <option value="">Всі товари</option>-->
+<!--                                <option value="in-stock" th:selected="${selectedStatus == 'in-stock'}">В наявності</option>-->
+<!--                                <option value="low-stock" th:selected="${selectedStatus == 'low-stock'}">Закінчується</option>-->
+<!--                                <option value="out-of-stock" th:selected="${selectedStatus == 'out-of-stock'}">Немає в наявності</option>-->
+<!--                            </select>-->
+<!--                        </form>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Скидання фільтрів &ndash;&gt;-->
+<!--                    <div class="col-md-2">-->
+<!--                        <label class="filter-label">&nbsp;</label>-->
+<!--                        <a th:href="@{/admin/product/list}" class="btn btn-reset w-100">-->
+<!--                            <i class="bi bi-arrow-clockwise me-1"></i>Скинути-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 <!--        </div>-->
 
-<!--        &lt;!&ndash; Сброс фильтров &ndash;&gt;-->
-<!--        <div>-->
-<!--            <a th:href="@{/admin/product/list}"-->
-<!--               style="padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; display: inline-block;">-->
-<!--                Сбросить-->
+<!--        &lt;!&ndash; Статистика &ndash;&gt;-->
+<!--        <div class="stats-card" th:if="${products != null and !products.isEmpty()}">-->
+<!--            <div class="d-flex align-items-center gap-3">-->
+<!--                <i class="bi bi-boxes" style="font-size: 2.5rem; color: var(&#45;&#45;accent-color);"></i>-->
+<!--                <div>-->
+<!--                    <div class="stats-number" th:text="${products.size()}">0</div>-->
+<!--                    <h5 class="mb-1 fw-bold">Знайдено товарів</h5>-->
+<!--                    <p class="text-muted mb-0">в поточному фільтрі</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Швидкі фільтри &ndash;&gt;-->
+<!--        <div class="quick-filters">-->
+<!--            <h5 class="mb-3">-->
+<!--                <i class="bi bi-lightning-fill me-2"></i>Швидкі фільтри-->
+<!--            </h5>-->
+<!--            <div class="d-flex flex-wrap">-->
+<!--                <a th:href="@{/admin/product/list}" class="quick-filter-btn filter-all">-->
+<!--                    <i class="bi bi-list me-1"></i>Всі товари-->
+<!--                </a>-->
+<!--                <a th:href="@{/admin/product/list(status='in-stock')}" class="quick-filter-btn filter-in-stock">-->
+<!--                    <i class="bi bi-check-circle me-1"></i>В наявності-->
+<!--                </a>-->
+<!--                <a th:href="@{/admin/product/list(status='low-stock')}" class="quick-filter-btn filter-low-stock">-->
+<!--                    <i class="bi bi-exclamation-triangle me-1"></i>Закінчується-->
+<!--                </a>-->
+<!--                <a th:href="@{/admin/product/list(status='out-of-stock')}" class="quick-filter-btn filter-out-stock">-->
+<!--                    <i class="bi bi-x-circle me-1"></i>Немає в наявності-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Таблиця товарів &ndash;&gt;-->
+<!--        <div class="table-container" th:if="${products != null and !products.isEmpty()}">-->
+<!--            <div class="table-header">-->
+<!--                <i class="bi bi-table" style="font-size: 1.8rem;"></i>-->
+<!--                <h4 class="mb-0">Каталог товарів</h4>-->
+<!--            </div>-->
+
+<!--            <div class="table-responsive">-->
+<!--                <table class="table custom-table">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th style="width: 60px;">-->
+<!--                            <i class="bi bi-hash me-1"></i>ID-->
+<!--                        </th>-->
+<!--                        <th style="width: 80px;">-->
+<!--                            <i class="bi bi-image me-1"></i>Фото-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            <i class="bi bi-box me-1"></i>Назва товару-->
+<!--                        </th>-->
+<!--                        <th style="width: 120px;">-->
+<!--                            <i class="bi bi-currency-dollar me-1"></i>Ціна-->
+<!--                        </th>-->
+<!--                        <th style="width: 100px;">-->
+<!--                            <i class="bi bi-boxes me-1"></i>Залишок-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            <i class="bi bi-folder me-1"></i>Категорія-->
+<!--                        </th>-->
+<!--                        <th>-->
+<!--                            <i class="bi bi-tag me-1"></i>Бренд-->
+<!--                        </th>-->
+<!--                        <th style="width: 120px;">-->
+<!--                            <i class="bi bi-clipboard-check me-1"></i>Статус-->
+<!--                        </th>-->
+<!--                        <th style="width: 180px;">-->
+<!--                            <i class="bi bi-gear-fill me-1"></i>Дії-->
+<!--                        </th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="product : ${products}">-->
+<!--                        &lt;!&ndash; ID &ndash;&gt;-->
+<!--                        <td class="fw-bold text-muted" th:text="${product.id}"></td>-->
+
+<!--                        &lt;!&ndash; Зображення &ndash;&gt;-->
+<!--                        <td class="text-center">-->
+<!--                            <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">-->
+<!--                                <img th:src="${product.imageUrl}"-->
+<!--                                     th:alt="'Фото ' + ${product.name}"-->
+<!--                                     class="product-image">-->
+<!--                            </div>-->
+<!--                            <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"-->
+<!--                                 class="image-placeholder">-->
+<!--                                <i class="bi bi-image"></i>-->
+<!--                            </div>-->
+<!--                        </td>-->
+
+<!--                        &lt;!&ndash; Назва товару &ndash;&gt;-->
+<!--                        <td>-->
+<!--                            <a th:href="@{'/admin/product/view/' + ${product.id}}"-->
+<!--                               class="product-name"-->
+<!--                               th:text="${product.name}"></a>-->
+<!--                        </td>-->
+
+<!--                        &lt;!&ndash; Ціна &ndash;&gt;-->
+<!--                        <td class="text-end">-->
+<!--                                    <span class="price-display"-->
+<!--                                          th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн'"></span>-->
+<!--                        </td>-->
+
+<!--                        &lt;!&ndash; Залишок &ndash;&gt;-->
+<!--                        <td class="text-center">-->
+<!--                                    <span class="stock-display"-->
+<!--                                          th:classappend="${product.stockQuantity == 0 ? 'stock-out' : (product.lowStock ? 'stock-low' : 'stock-in')}"-->
+<!--                                          th:text="${product.stockQuantity}"></span>-->
+<!--                        </td>-->
+
+<!--                        &lt;!&ndash; Категорія &ndash;&gt;-->
+<!--                        <td th:text="${product.categoryName}"></td>-->
+
+<!--                        &lt;!&ndash; Бренд &ndash;&gt;-->
+<!--                        <td th:text="${product.brandName}"></td>-->
+
+<!--                        &lt;!&ndash; Статус &ndash;&gt;-->
+<!--                        <td class="text-center">-->
+<!--                                    <span th:if="${!product.inStock}" class="status-badge status-out-of-stock">-->
+<!--                                        <i class="bi bi-x-circle me-1"></i>Немає-->
+<!--                                    </span>-->
+<!--                            <span th:if="${product.inStock and product.lowStock}" class="status-badge status-low-stock">-->
+<!--                                        <i class="bi bi-exclamation-triangle me-1"></i>Мало-->
+<!--                                    </span>-->
+<!--                            <span th:if="${product.inStock and !product.lowStock}" class="status-badge status-in-stock">-->
+<!--                                        <i class="bi bi-check-circle me-1"></i>Є-->
+<!--                                    </span>-->
+<!--                        </td>-->
+
+<!--                        &lt;!&ndash; Дії &ndash;&gt;-->
+<!--                        <td>-->
+<!--                            <div class="action-buttons">-->
+<!--                                <a th:href="@{'/admin/product/view/' + ${product.id}}"-->
+<!--                                   class="btn-action btn-view"-->
+<!--                                   title="Переглянути товар">-->
+<!--                                    <i class="bi bi-eye"></i>-->
+<!--                                </a>-->
+<!--                                <a th:href="@{'/admin/product/edit/' + ${product.id}}"-->
+<!--                                   class="btn-action btn-edit"-->
+<!--                                   title="Редагувати товар">-->
+<!--                                    <i class="bi bi-pencil"></i>-->
+<!--                                </a>-->
+<!--                                <a th:href="@{'/admin/product/delete/' + ${product.id}}"-->
+<!--                                   class="btn-action btn-delete"-->
+<!--                                   title="Видалити товар"-->
+<!--                                   onclick="return confirm('Ви впевнені, що хочете видалити цей товар?')">-->
+<!--                                    <i class="bi bi-trash"></i>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Порожній стан &ndash;&gt;-->
+<!--        <div class="empty-state" th:if="${products == null or products.isEmpty()}">-->
+<!--            <div class="empty-icon">-->
+<!--                <i class="bi bi-box"></i>-->
+<!--            </div>-->
+<!--            <h3 class="mb-3">Товари не знайдені</h3>-->
+
+<!--            <div th:if="${searchTerm != null and !searchTerm.isEmpty()}">-->
+<!--                <p class="mb-3">-->
+<!--                    За запитом "<strong th:text="${searchTerm}"></strong>" нічого не знайдено.-->
+<!--                </p>-->
+<!--                <a th:href="@{/admin/product/list}" class="btn btn-custom btn-info-custom me-2">-->
+<!--                    <i class="bi bi-list me-2"></i>Показати всі товари-->
+<!--                </a>-->
+<!--            </div>-->
+
+<!--            <div th:if="${searchTerm == null or searchTerm.isEmpty()}">-->
+<!--                <p class="mb-3">Поки що жодного товару не створено в каталозі.</p>-->
+<!--            </div>-->
+
+<!--            <a th:href="@{/admin/product}" class="btn btn-custom btn-success-custom">-->
+<!--                <i class="bi bi-plus-circle-fill me-2"></i>-->
+<!--                Створити перший товар-->
 <!--            </a>-->
 <!--        </div>-->
+
+<!--        &lt;!&ndash; Навігація &ndash;&gt;-->
+<!--        <div class="navigation-section">-->
+<!--            <h5 class="mb-3">-->
+<!--                <i class="bi bi-compass me-2"></i>Швидка навігація-->
+<!--            </h5>-->
+<!--            <ul class="nav-links">-->
+<!--                <li>-->
+<!--                    <a th:href="@{/admin/product}">-->
+<!--                        <i class="bi bi-plus-circle-fill"></i>-->
+<!--                        Створити товар-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a th:href="@{/admin/product/list}">-->
+<!--                        <i class="bi bi-arrow-clockwise"></i>-->
+<!--                        Оновити список-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a th:href="@{/admin/product/statistics}">-->
+<!--                        <i class="bi bi-bar-chart"></i>-->
+<!--                        Статистика товарів-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a th:href="@{/admin/category/list}">-->
+<!--                        <i class="bi bi-folder"></i>-->
+<!--                        Управління категоріями-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a th:href="@{/admin/brand/list}">-->
+<!--                        <i class="bi bi-tag"></i>-->
+<!--                        Управління брендами-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                    <a th:href="@{/admin}">-->
+<!--                        <i class="bi bi-house"></i>-->
+<!--                        Адмін панель-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
 <!--    </div>-->
 <!--</div>-->
 
+<!--&lt;!&ndash; Bootstrap JavaScript &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
 
-<!--&lt;!&ndash; Таблица продуктов &ndash;&gt;-->
-<!--<div th:if="${products != null and !products.isEmpty()}">-->
-<!--    <h2>Найдено продуктов: <span th:text="${products.size()}"></span></h2>-->
+<!--&lt;!&ndash; Додатковий JavaScript &ndash;&gt;-->
+<!--<script>-->
+<!--    // Анімація завантаження-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        // Анімація рядків таблиці-->
+<!--        const rows = document.querySelectorAll('tbody tr');-->
+<!--        rows.forEach((row, index) => {-->
+<!--            row.style.opacity = '0';-->
+<!--            row.style.transform = 'translateY(20px)';-->
 
-<!--    <table border="1" style="border-collapse: collapse; width: 100%; margin: 20px 0;">-->
-<!--        <thead style="background-color: #f8f9fa;">-->
-<!--        <tr>-->
-<!--            <th style="padding: 10px; text-align: left;">ID</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Изображение</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Название</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Цена</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Остаток</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Категория</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Бренд</th>-->
-<!--            <th style="padding: 10px; text-align: left;">Статус</th>-->
-<!--            <th style="padding: 10px; text-align: center;">Действия</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="product : ${products}">-->
-<!--            <td style="padding: 10px;" th:text="${product.id}"></td>-->
+<!--            setTimeout(() => {-->
+<!--                row.style.transition = 'all 0.5s ease';-->
+<!--                row.style.opacity = '1';-->
+<!--                row.style.transform = 'translateY(0)';-->
+<!--            }, index * 50);-->
+<!--        });-->
 
-<!--            &lt;!&ndash; Изображение &ndash;&gt;-->
-<!--            <td style="padding: 10px; text-align: center;">-->
-<!--                <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">-->
-<!--                    <img th:src="${product.imageUrl}" alt="Изображение продукта"-->
-<!--                         style="max-width: 50px; max-height: 50px; border: 1px solid #ddd; border-radius: 4px;">-->
-<!--                </div>-->
-<!--                <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"-->
-<!--                     style="color: #6c757d; font-style: italic; font-size: 12px;">-->
-<!--                    Нет фото-->
-<!--                </div>-->
-<!--            </td>-->
+<!--        // Збільшення зображень при наведенні-->
+<!--        const images = document.querySelectorAll('.product-image');-->
+<!--        images.forEach(img => {-->
+<!--            img.addEventListener('mouseenter', function() {-->
+<!--                this.style.transform = 'scale(1.5)';-->
+<!--                this.style.zIndex = '1000';-->
+<!--                this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';-->
+<!--            });-->
 
-<!--            &lt;!&ndash; Название (с ссылкой на просмотр) &ndash;&gt;-->
-<!--            <td style="padding: 10px;">-->
-<!--                <a th:href="@{'/admin/product/view/' + ${product.id}}"-->
-<!--                   style="text-decoration: none; color: #007bff; font-weight: bold;"-->
-<!--                   th:text="${product.name}"></a>-->
-<!--            </td>-->
+<!--            img.addEventListener('mouseleave', function() {-->
+<!--                this.style.transform = 'scale(1)';-->
+<!--                this.style.zIndex = 'auto';-->
+<!--                this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';-->
+<!--            });-->
+<!--        });-->
 
-<!--            &lt;!&ndash; Цена &ndash;&gt;-->
-<!--            <td style="padding: 10px; text-align: right;">-->
-<!--                <span th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн.'"></span>-->
-<!--            </td>-->
+<!--        // Підтвердження видалення з назвою товару-->
+<!--        const deleteButtons = document.querySelectorAll('.btn-delete');-->
+<!--        deleteButtons.forEach(btn => {-->
+<!--            btn.addEventListener('click', function(e) {-->
+<!--                e.preventDefault();-->
 
-<!--            &lt;!&ndash; Остаток на складе &ndash;&gt;-->
-<!--            <td style="padding: 10px; text-align: center;">-->
-<!--                <span th:text="${product.stockQuantity}"-->
-<!--                      th:class="${product.stockQuantity == 0 ? 'out-of-stock' : (product.lowStock ? 'low-stock' : 'in-stock')}"-->
-<!--                      th:style="${product.stockQuantity == 0 ? 'color: red; font-weight: bold;' : (product.lowStock ? 'color: orange; font-weight: bold;' : 'color: green;')}"></span>-->
-<!--            </td>-->
+<!--                const productName = this.closest('tr').querySelector('.product-name').textContent;-->
 
-<!--            &lt;!&ndash; Категория &ndash;&gt;-->
-<!--            <td style="padding: 10px;" th:text="${product.categoryName}"></td>-->
+<!--                if (confirm(`Ви впевнені, що хочете видалити товар "${productName}"?\n\nЦю дію неможливо скасувати.`)) {-->
+<!--                    window.location.href = this.href;-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
 
-<!--            &lt;!&ndash; Бренд &ndash;&gt;-->
-<!--            <td style="padding: 10px;" th:text="${product.brandName}"></td>-->
+<!--        // Анімація статистичного числа-->
+<!--        const statsNumber = document.querySelector('.stats-number');-->
+<!--        if (statsNumber) {-->
+<!--            const finalNumber = parseInt(statsNumber.textContent);-->
+<!--            let currentNumber = 0;-->
+<!--            const increment = Math.ceil(finalNumber / 20);-->
 
+<!--            const counter = setInterval(() => {-->
+<!--                currentNumber += increment;-->
+<!--                if (currentNumber >= finalNumber) {-->
+<!--                    currentNumber = finalNumber;-->
+<!--                    clearInterval(counter);-->
+<!--                }-->
+<!--                statsNumber.textContent = currentNumber;-->
+<!--            }, 30);-->
+<!--        }-->
 
-<!--            &lt;!&ndash; Статус &ndash;&gt;-->
-<!--            <td style="padding: 10px; text-align: center;">-->
-<!--                <span th:if="${!product.inStock}"-->
-<!--                      style="padding: 3px 8px; background-color: #dc3545; color: white; border-radius: 3px; font-size: 11px;">-->
-<!--                    Нет в наличии-->
-<!--                </span>-->
-<!--                <span th:if="${product.inStock and product.lowStock}"-->
-<!--                      style="padding: 3px 8px; background-color: #ffc107; color: black; border-radius: 3px; font-size: 11px;">-->
-<!--                    Заканчивается-->
-<!--                </span>-->
-<!--                <span th:if="${product.inStock and !product.lowStock}"-->
-<!--                      style="padding: 3px 8px; background-color: #28a745; color: white; border-radius: 3px; font-size: 11px;">-->
-<!--                    В наличии-->
-<!--                </span>-->
-<!--            </td>-->
+<!--        // Підсвічування активного фільтра-->
+<!--        const currentUrl = window.location.href;-->
+<!--        const quickFilterBtns = document.querySelectorAll('.quick-filter-btn');-->
 
-<!--            &lt;!&ndash; Действия &ndash;&gt;-->
-<!--            <td style="padding: 10px; text-align: center;">-->
-<!--                <a th:href="@{'/admin/product/view/' + ${product.id}}"-->
-<!--                   style="color: #17a2b8; text-decoration: none; margin-right: 5px; font-size: 12px;">-->
-<!--                    Просмотр-->
-<!--                </a>-->
-<!--                <a th:href="@{'/admin/product/edit/' + ${product.id}}"-->
-<!--                   style="color: #007bff; text-decoration: none; margin-right: 5px; font-size: 12px;">-->
-<!--                    Редактировать-->
-<!--                </a>-->
-<!--                <a th:href="@{'/admin/product/delete/' + ${product.id}}"-->
-<!--                   style="color: #dc3545; text-decoration: none; font-size: 12px;"-->
-<!--                   onclick="return confirm('Вы уверены, что хотите удалить этот продукт?')">-->
-<!--                    Удалить-->
-<!--                </a>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
+<!--        quickFilterBtns.forEach(btn => {-->
+<!--            if (btn.href === currentUrl) {-->
+<!--                btn.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.3)';-->
+<!--                btn.style.transform = 'scale(1.05)';-->
+<!--            }-->
+<!--        });-->
 
-<!--&lt;!&ndash; Сообщение когда список пуст &ndash;&gt;-->
-<!--<div th:if="${products == null or products.isEmpty()}"-->
-<!--     style="padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 20px 0;">-->
-<!--    <h3>Продукты не найдены</h3>-->
-<!--    <p th:if="${searchTerm != null and !searchTerm.isEmpty()}">-->
-<!--        По запросу "<span th:text="${searchTerm}"></span>" ничего не найдено.-->
-<!--        <a th:href="@{/admin/product/list}">Показать все продукты</a>-->
-<!--    </p>-->
-<!--    <p th:if="${searchTerm == null or searchTerm.isEmpty()}">-->
-<!--        Пока что ни одного продукта не создано.-->
-<!--    </p>-->
+<!--        // Автоматичне відправлення форми при зміні фільтрів-->
+<!--        const filterSelects = document.querySelectorAll('.form-control-custom select');-->
+<!--        filterSelects.forEach(select => {-->
+<!--            select.addEventListener('change', function() {-->
+<!--                // Додаємо невелику затримку для кращого UX-->
+<!--                setTimeout(() => {-->
+<!--                    this.closest('form').submit();-->
+<!--                }, 100);-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
 
-<!--    <a th:href="@{/admin/product}"-->
-<!--       style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; display: inline-block;">-->
-<!--        Создать первый продукт-->
-<!--    </a>-->
-<!--</div>-->
+<!--    // Функція для швидкого пошуку (можна розширити в майбутньому)-->
+<!--    function initQuickSearch() {-->
+<!--        const searchInput = document.querySelector('input[name="search"]');-->
+<!--        let searchTimeout;-->
 
-<!--&lt;!&ndash; Быстрые фильтры (кнопки) &ndash;&gt;-->
-<!--<div style="margin: 20px 0; padding: 15px; background-color: #e9ecef; border-radius: 5px;">-->
-<!--    <h4>Быстрые фильтры:</h4>-->
-<!--    <div style="display: flex; gap: 10px; flex-wrap: wrap;">-->
-<!--        <a th:href="@{/admin/product/list}"-->
-<!--           style="padding: 8px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 3px; font-size: 12px;">-->
-<!--            Все продукты-->
-<!--        </a>-->
-<!--        <a th:href="@{/admin/product/list(status='in-stock')}"-->
-<!--           style="padding: 8px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 3px; font-size: 12px;">-->
-<!--            В наличии-->
-<!--        </a>-->
-<!--        <a th:href="@{/admin/product/list(status='low-stock')}"-->
-<!--           style="padding: 8px 15px; background-color: #ffc107; color: black; text-decoration: none; border-radius: 3px; font-size: 12px;">-->
-<!--            Заканчивается-->
-<!--        </a>-->
-<!--        <a th:href="@{/admin/product/list(status='out-of-stock')}"-->
-<!--           style="padding: 8px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 3px; font-size: 12px;">-->
-<!--            Нет в наличии-->
-<!--        </a>-->
-<!--    </div>-->
-<!--</div>-->
+<!--        searchInput.addEventListener('input', function() {-->
+<!--            clearTimeout(searchTimeout);-->
+<!--            const query = this.value.trim();-->
 
-<!--&lt;!&ndash; Навигация &ndash;&gt;-->
-<!--<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">-->
-<!--    <h3>Навигация:</h3>-->
-<!--    <ul>-->
-<!--        <li><a th:href="@{/admin/product}">Создать новый продукт</a></li>-->
-<!--        <li><a th:href="@{/admin/product/list}">Обновить список</a></li>-->
-<!--        <li><a th:href="@{/admin/product/statistics}">Статистика продуктов</a></li>-->
-<!--        <li><a th:href="@{/admin/category/list}">Управление категориями</a></li>-->
-<!--        <li><a th:href="@{/admin/brand/list}">Управление брендами</a></li>-->
-<!--    </ul>-->
-<!--</div>-->
+<!--            // Можна додати живий пошук тут-->
+<!--            if (query.length >= 3) {-->
+<!--                searchTimeout = setTimeout(() => {-->
+<!--                    console.log('Пошук:', query);-->
+<!--                    // Тут можна додати AJAX запит для живого пошуку-->
+<!--                }, 500);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
 
-<!--&lt;!&ndash; Отладочная информация &ndash;&gt;-->
+<!--    // Розкоментуйте для увімкнення живого пошуку-->
+<!--    initQuickSearch();-->
 
+<!--    // Функція для експорту даних (майбутня можливість)-->
+<!--    function exportProductData() {-->
+<!--        console.log('Експорт даних товарів...');-->
+<!--        // Тут можна додати функціональність експорту-->
+<!--    }-->
+
+<!--    // Клавіатурні скорочення-->
+<!--    document.addEventListener('keydown', function(e) {-->
+<!--        // Ctrl + N = новий товар-->
+<!--        if (e.ctrlKey && e.key === 'n') {-->
+<!--            e.preventDefault();-->
+<!--            window.location.href = '/admin/product';-->
+<!--        }-->
+
+<!--        // Ctrl + S = статистика-->
+<!--        if (e.ctrlKey && e.key === 's') {-->
+<!--            e.preventDefault();-->
+<!--            window.location.href = '/admin/product/statistics';-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 <!--</body>-->
 <!--</html>-->
-
 
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="uk">
@@ -265,543 +999,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управління товарами - Land of Chocolate</title>
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary-color: #2C2C2C;
-            --accent-color: #D4AF37;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #17a2b8;
-            --light-bg: #F8F9FA;
-            --border-color: #DEE2E6;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .main-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
-            color: white;
-            padding: 2.5rem 0;
-            margin-bottom: 2rem;
-            border-radius: 0 0 25px 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .header-icon {
-            font-size: 3rem;
-            color: var(--accent-color);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .header-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        .filter-description {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--info-color);
-        }
-
-        .control-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-custom {
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 12px 24px;
-            transition: all 0.3s ease;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.9rem;
-        }
-
-        .btn-success-custom {
-            background: linear-gradient(135deg, var(--success-color) 0%, #32d44a 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn-success-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-        }
-
-        .btn-info-custom {
-            background: linear-gradient(135deg, var(--info-color) 0%, #20c6dd 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
-        }
-
-        .btn-info-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
-        }
-
-        .filters-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
-            border-radius: 15px;
-            padding: 1.5rem;
-            border: 2px solid var(--border-color);
-        }
-
-        .filter-group {
-            margin-bottom: 1rem;
-        }
-
-        .filter-label {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .form-control-custom {
-            border-radius: 8px;
-            border: 2px solid var(--border-color);
-            padding: 10px 15px;
-            transition: all 0.3s ease;
-        }
-
-        .form-control-custom:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
-        }
-
-        .btn-filter {
-            background: var(--info-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-        }
-
-        .btn-reset {
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-        }
-
-        .stats-card {
-            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-left: 6px solid var(--accent-color);
-        }
-
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-        }
-
-        .table-container {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .table-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #404040 100%);
-            color: white;
-            padding: 1.5rem 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .custom-table {
-            margin: 0;
-        }
-
-        .custom-table thead th {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-bottom: 3px solid var(--accent-color);
-            font-weight: 700;
-            color: var(--primary-color);
-            padding: 15px 12px;
-            vertical-align: middle;
-        }
-
-        .custom-table tbody tr {
-            transition: all 0.3s ease;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .custom-table tbody tr:hover {
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            transform: scale(1.001);
-        }
-
-        .custom-table td {
-            padding: 15px 12px;
-            vertical-align: middle;
-        }
-
-        .product-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 2px solid var(--border-color);
-            transition: transform 0.3s ease;
-        }
-
-        .product-image:hover {
-            transform: scale(1.3);
-            z-index: 10;
-            position: relative;
-        }
-
-        .image-placeholder {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 0.8rem;
-        }
-
-        .product-name {
-            font-weight: 700;
-            color: var(--info-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .product-name:hover {
-            color: var(--primary-color);
-        }
-
-        .price-display {
-            font-weight: 700;
-            color: var(--success-color);
-            font-size: 1.1rem;
-        }
-
-        .stock-display {
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-        }
-
-        .stock-in {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .stock-low {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .stock-out {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-in-stock {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .status-low-stock {
-            background: var(--warning-color);
-            color: #212529;
-        }
-
-        .status-out-of-stock {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn-action {
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .btn-view {
-            background: #e3f2fd;
-            color: #1976d2;
-            border-color: #bbdefb;
-        }
-
-        .btn-view:hover {
-            background: #1976d2;
-            color: white;
-        }
-
-        .btn-edit {
-            background: #e8f5e8;
-            color: #2e7d32;
-            border-color: #c8e6c9;
-        }
-
-        .btn-edit:hover {
-            background: #2e7d32;
-            color: white;
-        }
-
-        .btn-delete {
-            background: #ffebee;
-            color: #d32f2f;
-            border-color: #ffcdd2;
-        }
-
-        .btn-delete:hover {
-            background: #d32f2f;
-            color: white;
-        }
-
-        .quick-filters {
-            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border: 1px solid var(--border-color);
-        }
-
-        .quick-filter-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            margin: 0.25rem;
-            display: inline-block;
-        }
-
-        .filter-all { background: var(--info-color); color: white; }
-        .filter-in-stock { background: var(--success-color); color: white; }
-        .filter-low-stock { background: var(--warning-color); color: #212529; }
-        .filter-out-stock { background: var(--danger-color); color: white; }
-
-        .quick-filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .empty-state {
-            background: white;
-            border-radius: 20px;
-            padding: 4rem 2rem;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            color: var(--accent-color);
-            margin-bottom: 2rem;
-        }
-
-        .alert-custom {
-            border: none;
-            border-radius: 15px;
-            padding: 1.25rem 2rem;
-            margin-bottom: 2rem;
-            border-left: 5px solid;
-        }
-
-        .alert-success-custom {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            border-left-color: var(--success-color);
-            color: #155724;
-        }
-
-        .alert-danger-custom {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            border-left-color: var(--danger-color);
-            color: #721c24;
-        }
-
-        .navigation-section {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .nav-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .nav-links a {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            padding: 1rem;
-            border-radius: 10px;
-            background: var(--light-bg);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .nav-links a:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .header-title {
-                font-size: 2rem;
-            }
-
-            .filters-section .row {
-                flex-direction: column;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .quick-filters .d-flex {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .quick-filter-btn {
-                margin: 0.25rem 0;
-            }
-        }
-    </style>
 </head>
-<body>
-<div class="container-fluid">
-    <!-- Заголовок -->
-    <div class="main-header">
-        <div class="container">
-            <div class="header-content">
-                <i class="header-icon bi bi-box-seam-fill"></i>
-                <div>
-                    <h1 class="header-title">Управління товарами</h1>
-                    <p class="header-subtitle">Керуйте каталогом продукції вашого магазину</p>
-                </div>
+<body class="bg-light">
+
+<!-- Заголовок -->
+<div class="bg-dark text-white py-4 mb-4 rounded-bottom-3">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-box-seam-fill me-3" style="font-size: 3rem; color: #ffc107;"></i>
+            <div>
+                <h1 class="display-5 fw-bold mb-1">Управління товарами</h1>
+                <p class="lead mb-0 opacity-75">Керуйте каталогом продукції вашого магазину</p>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <!-- Опис фільтра -->
-        <div th:if="${filterDescription}" class="filter-description">
-            <i class="bi bi-info-circle me-2"></i>
-            <span th:text="${filterDescription}"></span>
-        </div>
+<div class="container">
+    <!-- Опис фільтра -->
+    <div th:if="${filterDescription}" class="alert alert-info border-start border-info border-4">
+        <i class="bi bi-info-circle me-2"></i>
+        <span th:text="${filterDescription}"></span>
+    </div>
 
-        <!-- Повідомлення -->
-        <div th:if="${successMessage}" class="alert alert-custom alert-success-custom">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            <span th:text="${successMessage}"></span>
-        </div>
+    <!-- Flash повідомлення -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-        <div th:if="${errorMessage}" class="alert alert-custom alert-danger-custom">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <span th:text="${errorMessage}"></span>
-        </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-        <!-- Панель управління -->
-        <div class="control-panel">
+    <!-- Панель управління -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
             <div class="row align-items-center mb-4">
                 <div class="col-md-6">
-                    <a th:href="@{/admin/product}" class="btn btn-custom btn-success-custom me-3">
-                        <i class="bi bi-plus-circle-fill me-2"></i>
-                        Створити новий товар
+                    <a th:href="@{/admin/product}" class="btn btn-success me-3">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Створити новий товар
                     </a>
-                    <a th:href="@{/admin/product/statistics}" class="btn btn-custom btn-info-custom">
-                        <i class="bi bi-bar-chart-fill me-2"></i>
-                        Статистика
+                    <a th:href="@{/admin/product/statistics}" class="btn btn-info">
+                        <i class="bi bi-bar-chart-fill me-2"></i>Статистика
                     </a>
                 </div>
             </div>
 
             <!-- Фільтри -->
-            <div class="filters-section">
+            <div class="bg-light p-4 rounded">
                 <h5 class="mb-3">
                     <i class="bi bi-funnel me-2"></i>Фільтри пошуку
                 </h5>
@@ -809,16 +1062,13 @@
                 <div class="row g-3">
                     <!-- Пошук по назві -->
                     <div class="col-md-3">
-                        <label class="filter-label">
+                        <label class="form-label fw-bold">
                             <i class="bi bi-search me-1"></i>Пошук
                         </label>
                         <form th:action="@{/admin/product/list}" method="get" class="d-flex">
-                            <input type="text"
-                                   name="search"
-                                   th:value="${searchTerm}"
-                                   class="form-control form-control-custom me-2"
-                                   placeholder="Назва товару...">
-                            <button type="submit" class="btn btn-filter">
+                            <input type="text" name="search" th:value="${searchTerm}"
+                                   class="form-control me-2" placeholder="Назва товару...">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-search"></i>
                             </button>
                         </form>
@@ -826,13 +1076,11 @@
 
                     <!-- Фільтр по категорії -->
                     <div class="col-md-2">
-                        <label class="filter-label">
+                        <label class="form-label fw-bold">
                             <i class="bi bi-folder me-1"></i>Категорія
                         </label>
                         <form th:action="@{/admin/product/list}" method="get">
-                            <select name="category"
-                                    class="form-select form-control-custom"
-                                    onchange="this.form.submit()">
+                            <select name="category" class="form-select" onchange="this.form.submit()">
                                 <option value="">Всі категорії</option>
                                 <option th:each="category : ${filterCategories}"
                                         th:value="${category.id}"
@@ -844,13 +1092,11 @@
 
                     <!-- Фільтр по бренду -->
                     <div class="col-md-2">
-                        <label class="filter-label">
+                        <label class="form-label fw-bold">
                             <i class="bi bi-tag me-1"></i>Бренд
                         </label>
                         <form th:action="@{/admin/product/list}" method="get">
-                            <select name="brand"
-                                    class="form-select form-control-custom"
-                                    onchange="this.form.submit()">
+                            <select name="brand" class="form-select" onchange="this.form.submit()">
                                 <option value="">Всі бренди</option>
                                 <option th:each="brand : ${filterBrands}"
                                         th:value="${brand.id}"
@@ -862,13 +1108,11 @@
 
                     <!-- Фільтр по статусу -->
                     <div class="col-md-2">
-                        <label class="filter-label">
+                        <label class="form-label fw-bold">
                             <i class="bi bi-clipboard-check me-1"></i>Наявність
                         </label>
                         <form th:action="@{/admin/product/list}" method="get">
-                            <select name="status"
-                                    class="form-select form-control-custom"
-                                    onchange="this.form.submit()">
+                            <select name="status" class="form-select" onchange="this.form.submit()">
                                 <option value="">Всі товари</option>
                                 <option value="in-stock" th:selected="${selectedStatus == 'in-stock'}">В наявності</option>
                                 <option value="low-stock" th:selected="${selectedStatus == 'low-stock'}">Закінчується</option>
@@ -879,184 +1123,193 @@
 
                     <!-- Скидання фільтрів -->
                     <div class="col-md-2">
-                        <label class="filter-label">&nbsp;</label>
-                        <a th:href="@{/admin/product/list}" class="btn btn-reset w-100">
+                        <label class="form-label">&nbsp;</label>
+                        <a th:href="@{/admin/product/list}" class="btn btn-secondary w-100">
                             <i class="bi bi-arrow-clockwise me-1"></i>Скинути
                         </a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Статистика -->
-        <div class="stats-card" th:if="${products != null and !products.isEmpty()}">
-            <div class="d-flex align-items-center gap-3">
-                <i class="bi bi-boxes" style="font-size: 2.5rem; color: var(--accent-color);"></i>
+    <!-- Статистика -->
+    <div class="card shadow-sm mb-4 border-start border-warning border-4" th:if="${products != null and !products.isEmpty()}">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-boxes text-warning me-3" style="font-size: 2.5rem;"></i>
                 <div>
-                    <div class="stats-number" th:text="${products.size()}">0</div>
+                    <h2 class="display-6 fw-bold mb-1" th:text="${products.size()}">0</h2>
                     <h5 class="mb-1 fw-bold">Знайдено товарів</h5>
                     <p class="text-muted mb-0">в поточному фільтрі</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Швидкі фільтри -->
-        <div class="quick-filters">
-            <h5 class="mb-3">
+    <!-- Швидкі фільтри -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">
                 <i class="bi bi-lightning-fill me-2"></i>Швидкі фільтри
             </h5>
-            <div class="d-flex flex-wrap">
-                <a th:href="@{/admin/product/list}" class="quick-filter-btn filter-all">
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+                <a th:href="@{/admin/product/list}" class="btn btn-outline-primary">
                     <i class="bi bi-list me-1"></i>Всі товари
                 </a>
-                <a th:href="@{/admin/product/list(status='in-stock')}" class="quick-filter-btn filter-in-stock">
+                <a th:href="@{/admin/product/list(status='in-stock')}" class="btn btn-outline-success">
                     <i class="bi bi-check-circle me-1"></i>В наявності
                 </a>
-                <a th:href="@{/admin/product/list(status='low-stock')}" class="quick-filter-btn filter-low-stock">
+                <a th:href="@{/admin/product/list(status='low-stock')}" class="btn btn-outline-warning">
                     <i class="bi bi-exclamation-triangle me-1"></i>Закінчується
                 </a>
-                <a th:href="@{/admin/product/list(status='out-of-stock')}" class="quick-filter-btn filter-out-stock">
+                <a th:href="@{/admin/product/list(status='out-of-stock')}" class="btn btn-outline-danger">
                     <i class="bi bi-x-circle me-1"></i>Немає в наявності
                 </a>
             </div>
         </div>
+    </div>
 
-        <!-- Таблиця товарів -->
-        <div class="table-container" th:if="${products != null and !products.isEmpty()}">
-            <div class="table-header">
-                <i class="bi bi-table" style="font-size: 1.8rem;"></i>
-                <h4 class="mb-0">Каталог товарів</h4>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table custom-table">
-                    <thead>
-                    <tr>
-                        <th style="width: 60px;">
-                            <i class="bi bi-hash me-1"></i>ID
-                        </th>
-                        <th style="width: 80px;">
-                            <i class="bi bi-image me-1"></i>Фото
-                        </th>
-                        <th>
-                            <i class="bi bi-box me-1"></i>Назва товару
-                        </th>
-                        <th style="width: 120px;">
-                            <i class="bi bi-currency-dollar me-1"></i>Ціна
-                        </th>
-                        <th style="width: 100px;">
-                            <i class="bi bi-boxes me-1"></i>Залишок
-                        </th>
-                        <th>
-                            <i class="bi bi-folder me-1"></i>Категорія
-                        </th>
-                        <th>
-                            <i class="bi bi-tag me-1"></i>Бренд
-                        </th>
-                        <th style="width: 120px;">
-                            <i class="bi bi-clipboard-check me-1"></i>Статус
-                        </th>
-                        <th style="width: 180px;">
-                            <i class="bi bi-gear-fill me-1"></i>Дії
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="product : ${products}">
-                        <!-- ID -->
-                        <td class="fw-bold text-muted" th:text="${product.id}"></td>
-
-                        <!-- Зображення -->
-                        <td class="text-center">
-                            <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">
-                                <img th:src="${product.imageUrl}"
-                                     th:alt="'Фото ' + ${product.name}"
-                                     class="product-image">
-                            </div>
-                            <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
-                                 class="image-placeholder">
-                                <i class="bi bi-image"></i>
-                            </div>
-                        </td>
-
-                        <!-- Назва товару -->
-                        <td>
-                            <a th:href="@{'/admin/product/view/' + ${product.id}}"
-                               class="product-name"
-                               th:text="${product.name}"></a>
-                        </td>
-
-                        <!-- Ціна -->
-                        <td class="text-end">
-                                    <span class="price-display"
-                                          th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн'"></span>
-                        </td>
-
-                        <!-- Залишок -->
-                        <td class="text-center">
-                                    <span class="stock-display"
-                                          th:classappend="${product.stockQuantity == 0 ? 'stock-out' : (product.lowStock ? 'stock-low' : 'stock-in')}"
-                                          th:text="${product.stockQuantity}"></span>
-                        </td>
-
-                        <!-- Категорія -->
-                        <td th:text="${product.categoryName}"></td>
-
-                        <!-- Бренд -->
-                        <td th:text="${product.brandName}"></td>
-
-                        <!-- Статус -->
-                        <td class="text-center">
-                                    <span th:if="${!product.inStock}" class="status-badge status-out-of-stock">
-                                        <i class="bi bi-x-circle me-1"></i>Немає
-                                    </span>
-                            <span th:if="${product.inStock and product.lowStock}" class="status-badge status-low-stock">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>Мало
-                                    </span>
-                            <span th:if="${product.inStock and !product.lowStock}" class="status-badge status-in-stock">
-                                        <i class="bi bi-check-circle me-1"></i>Є
-                                    </span>
-                        </td>
-
-                        <!-- Дії -->
-                        <td>
-                            <div class="action-buttons">
-                                <a th:href="@{'/admin/product/view/' + ${product.id}}"
-                                   class="btn-action btn-view"
-                                   title="Переглянути товар">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a th:href="@{'/admin/product/edit/' + ${product.id}}"
-                                   class="btn-action btn-edit"
-                                   title="Редагувати товар">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a th:href="@{'/admin/product/delete/' + ${product.id}}"
-                                   class="btn-action btn-delete"
-                                   title="Видалити товар"
-                                   onclick="return confirm('Ви впевнені, що хочете видалити цей товар?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+    <!-- Таблиця товарів -->
+    <div class="card shadow-sm" th:if="${products != null and !products.isEmpty()}">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-table me-2"></i>Каталог товарів
+            </h4>
         </div>
 
-        <!-- Порожній стан -->
-        <div class="empty-state" th:if="${products == null or products.isEmpty()}">
-            <div class="empty-icon">
-                <i class="bi bi-box"></i>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th style="width: 60px;">
+                        <i class="bi bi-hash me-1"></i>ID
+                    </th>
+                    <th style="width: 80px;">
+                        <i class="bi bi-image me-1"></i>Фото
+                    </th>
+                    <th>
+                        <i class="bi bi-box me-1"></i>Назва товару
+                    </th>
+                    <th style="width: 120px;" class="text-end">
+                        <i class="bi bi-currency-dollar me-1"></i>Ціна
+                    </th>
+                    <th style="width: 100px;" class="text-center">
+                        <i class="bi bi-boxes me-1"></i>Залишок
+                    </th>
+                    <th>
+                        <i class="bi bi-folder me-1"></i>Категорія
+                    </th>
+                    <th>
+                        <i class="bi bi-tag me-1"></i>Бренд
+                    </th>
+                    <th style="width: 120px;" class="text-center">
+                        <i class="bi bi-clipboard-check me-1"></i>Статус
+                    </th>
+                    <th style="width: 180px;" class="text-center">
+                        <i class="bi bi-gear-fill me-1"></i>Дії
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <!-- ID -->
+                    <td class="fw-bold text-muted" th:text="${product.id}"></td>
+
+                    <!-- Зображення -->
+                    <td class="text-center">
+                        <div th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}">
+                            <img th:src="${product.imageUrl}"
+                                 th:alt="'Фото ' + ${product.name}"
+                                 class="rounded border"
+                                 style="width: 50px; height: 50px; object-fit: cover;">
+                        </div>
+                        <div th:unless="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
+                             class="bg-light border border-2 border-dashed rounded d-flex align-items-center justify-content-center text-muted"
+                             style="width: 50px; height: 50px;">
+                            <i class="bi bi-image"></i>
+                        </div>
+                    </td>
+
+                    <!-- Назва товару -->
+                    <td>
+                        <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                           class="text-decoration-none fw-bold text-primary"
+                           th:text="${product.name}"></a>
+                    </td>
+
+                    <!-- Ціна -->
+                    <td class="text-end">
+                        <span class="fw-bold text-success fs-6"
+                              th:text="${#numbers.formatDecimal(product.price, 0, 2)} + ' грн'"></span>
+                    </td>
+
+                    <!-- Залишок -->
+                    <td class="text-center">
+                        <span class="badge fs-6 fw-bold"
+                              th:classappend="${product.stockQuantity == 0 ? 'bg-danger' : (product.lowStock ? 'bg-warning text-dark' : 'bg-success')}"
+                              th:text="${product.stockQuantity}"></span>
+                    </td>
+
+                    <!-- Категорія -->
+                    <td th:text="${product.categoryName}"></td>
+
+                    <!-- Бренд -->
+                    <td th:text="${product.brandName}"></td>
+
+                    <!-- Статус -->
+                    <td class="text-center">
+                        <span th:if="${!product.inStock}" class="badge bg-danger">
+                            <i class="bi bi-x-circle me-1"></i>Немає
+                        </span>
+                        <span th:if="${product.inStock and product.lowStock}" class="badge bg-warning text-dark">
+                            <i class="bi bi-exclamation-triangle me-1"></i>Мало
+                        </span>
+                        <span th:if="${product.inStock and !product.lowStock}" class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i>Є
+                        </span>
+                    </td>
+
+                    <!-- Дії -->
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a th:href="@{'/admin/product/view/' + ${product.id}}"
+                               class="btn btn-outline-primary btn-sm"
+                               title="Переглянути товар">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{'/admin/product/edit/' + ${product.id}}"
+                               class="btn btn-outline-warning btn-sm"
+                               title="Редагувати товар">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a th:href="@{'/admin/product/delete/' + ${product.id}}"
+                               class="btn btn-outline-danger btn-sm"
+                               title="Видалити товар"
+                               onclick="return confirm('Ви впевнені, що хочете видалити цей товар?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Порожній стан -->
+    <div class="card shadow-sm text-center py-5" th:if="${products == null or products.isEmpty()}">
+        <div class="card-body">
+            <i class="bi bi-box display-1 text-warning mb-4"></i>
             <h3 class="mb-3">Товари не знайдені</h3>
 
             <div th:if="${searchTerm != null and !searchTerm.isEmpty()}">
                 <p class="mb-3">
                     За запитом "<strong th:text="${searchTerm}"></strong>" нічого не знайдено.
                 </p>
-                <a th:href="@{/admin/product/list}" class="btn btn-custom btn-info-custom me-2">
+                <a th:href="@{/admin/product/list}" class="btn btn-info me-2">
                     <i class="bi bi-list me-2"></i>Показати всі товари
                 </a>
             </div>
@@ -1065,55 +1318,52 @@
                 <p class="mb-3">Поки що жодного товару не створено в каталозі.</p>
             </div>
 
-            <a th:href="@{/admin/product}" class="btn btn-custom btn-success-custom">
-                <i class="bi bi-plus-circle-fill me-2"></i>
-                Створити перший товар
+            <a th:href="@{/admin/product}" class="btn btn-success">
+                <i class="bi bi-plus-circle-fill me-2"></i>Створити перший товар
             </a>
         </div>
+    </div>
 
-        <!-- Навігація -->
-        <div class="navigation-section">
-            <h5 class="mb-3">
+    <!-- Навігація -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
                 <i class="bi bi-compass me-2"></i>Швидка навігація
             </h5>
-            <ul class="nav-links">
-                <li>
-                    <a th:href="@{/admin/product}">
-                        <i class="bi bi-plus-circle-fill"></i>
-                        Створити товар
+        </div>
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-4 col-lg-2">
+                    <a th:href="@{/admin/product}" class="btn btn-outline-success w-100">
+                        <i class="bi bi-plus-circle-fill me-1"></i>Створити товар
                     </a>
-                </li>
-                <li>
-                    <a th:href="@{/admin/product/list}">
-                        <i class="bi bi-arrow-clockwise"></i>
-                        Оновити список
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <a th:href="@{/admin/product/list}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Оновити список
                     </a>
-                </li>
-                <li>
-                    <a th:href="@{/admin/product/statistics}">
-                        <i class="bi bi-bar-chart"></i>
-                        Статистика товарів
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <a th:href="@{/admin/product/statistics}" class="btn btn-outline-info w-100">
+                        <i class="bi bi-bar-chart me-1"></i>Статистика
                     </a>
-                </li>
-                <li>
-                    <a th:href="@{/admin/category/list}">
-                        <i class="bi bi-folder"></i>
-                        Управління категоріями
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <a th:href="@{/admin/category/list}" class="btn btn-outline-warning w-100">
+                        <i class="bi bi-folder me-1"></i>Категорії
                     </a>
-                </li>
-                <li>
-                    <a th:href="@{/admin/brand/list}">
-                        <i class="bi bi-tag"></i>
-                        Управління брендами
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <a th:href="@{/admin/brand/list}" class="btn btn-outline-danger w-100">
+                        <i class="bi bi-tag me-1"></i>Бренди
                     </a>
-                </li>
-                <li>
-                    <a th:href="@{/admin}">
-                        <i class="bi bi-house"></i>
-                        Адмін панель
+                </div>
+                <div class="col-md-4 col-lg-2">
+                    <a th:href="@{/admin}" class="btn btn-outline-dark w-100">
+                        <i class="bi bi-house me-1"></i>Адмін панель
                     </a>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1121,135 +1371,87 @@
 <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Додатковий JavaScript -->
 <script>
-    // Анімація завантаження
     document.addEventListener('DOMContentLoaded', function() {
-        // Анімація рядків таблиці
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach((row, index) => {
-            row.style.opacity = '0';
-            row.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                row.style.transition = 'all 0.5s ease';
-                row.style.opacity = '1';
-                row.style.transform = 'translateY(0)';
-            }, index * 50);
-        });
-
-        // Збільшення зображень при наведенні
-        const images = document.querySelectorAll('.product-image');
+        // Hover эффекты для изображений
+        const images = document.querySelectorAll('img[style*="object-fit"]');
         images.forEach(img => {
             img.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.5)';
-                this.style.zIndex = '1000';
-                this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)';
+                this.style.transform = 'scale(1.2)';
+                this.style.transition = 'transform 0.3s ease';
+                this.style.zIndex = '10';
+                this.style.position = 'relative';
             });
 
             img.addEventListener('mouseleave', function() {
                 this.style.transform = 'scale(1)';
                 this.style.zIndex = 'auto';
-                this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                this.style.position = 'static';
             });
         });
 
-        // Підтвердження видалення з назвою товару
-        const deleteButtons = document.querySelectorAll('.btn-delete');
+        // Улучшенное подтверждение удаления
+        const deleteButtons = document.querySelectorAll('a[onclick*="confirm"]');
         deleteButtons.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-
-                const productName = this.closest('tr').querySelector('.product-name').textContent;
-
+                const productName = this.closest('tr').querySelector('a[href*="/view/"]').textContent;
                 if (confirm(`Ви впевнені, що хочете видалити товар "${productName}"?\n\nЦю дію неможливо скасувати.`)) {
                     window.location.href = this.href;
                 }
             });
         });
 
-        // Анімація статистичного числа
-        const statsNumber = document.querySelector('.stats-number');
+        // Анимация счетчика
+        const statsNumber = document.querySelector('.display-6');
         if (statsNumber) {
             const finalNumber = parseInt(statsNumber.textContent);
-            let currentNumber = 0;
-            const increment = Math.ceil(finalNumber / 20);
-
-            const counter = setInterval(() => {
-                currentNumber += increment;
-                if (currentNumber >= finalNumber) {
-                    currentNumber = finalNumber;
-                    clearInterval(counter);
-                }
-                statsNumber.textContent = currentNumber;
-            }, 30);
+            if (finalNumber > 0 && finalNumber <= 100) {
+                let currentNumber = 0;
+                const increment = Math.ceil(finalNumber / 20);
+                const counter = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        currentNumber = finalNumber;
+                        clearInterval(counter);
+                    }
+                    statsNumber.textContent = currentNumber;
+                }, 50);
+            }
         }
 
-        // Підсвічування активного фільтра
+        // Автоскрытие alerts
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
+        });
+
+        // Клавиатурные сокращения
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                window.location.href = '/admin/product';
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                window.location.href = '/admin/product/statistics';
+            }
+        });
+
+        // Подсветка активного фильтра
         const currentUrl = window.location.href;
-        const quickFilterBtns = document.querySelectorAll('.quick-filter-btn');
-
-        quickFilterBtns.forEach(btn => {
+        const filterBtns = document.querySelectorAll('.btn-outline-primary, .btn-outline-success, .btn-outline-warning, .btn-outline-danger');
+        filterBtns.forEach(btn => {
             if (btn.href === currentUrl) {
-                btn.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.3)';
-                btn.style.transform = 'scale(1.05)';
+                btn.classList.remove('btn-outline-primary', 'btn-outline-success', 'btn-outline-warning', 'btn-outline-danger');
+                btn.classList.add('btn-primary', 'active');
             }
         });
-
-        // Автоматичне відправлення форми при зміні фільтрів
-        const filterSelects = document.querySelectorAll('.form-control-custom select');
-        filterSelects.forEach(select => {
-            select.addEventListener('change', function() {
-                // Додаємо невелику затримку для кращого UX
-                setTimeout(() => {
-                    this.closest('form').submit();
-                }, 100);
-            });
-        });
-    });
-
-    // Функція для швидкого пошуку (можна розширити в майбутньому)
-    function initQuickSearch() {
-        const searchInput = document.querySelector('input[name="search"]');
-        let searchTimeout;
-
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            const query = this.value.trim();
-
-            // Можна додати живий пошук тут
-            if (query.length >= 3) {
-                searchTimeout = setTimeout(() => {
-                    console.log('Пошук:', query);
-                    // Тут можна додати AJAX запит для живого пошуку
-                }, 500);
-            }
-        });
-    }
-
-    // Розкоментуйте для увімкнення живого пошуку
-    initQuickSearch();
-
-    // Функція для експорту даних (майбутня можливість)
-    function exportProductData() {
-        console.log('Експорт даних товарів...');
-        // Тут можна додати функціональність експорту
-    }
-
-    // Клавіатурні скорочення
-    document.addEventListener('keydown', function(e) {
-        // Ctrl + N = новий товар
-        if (e.ctrlKey && e.key === 'n') {
-            e.preventDefault();
-            window.location.href = '/admin/product';
-        }
-
-        // Ctrl + S = статистика
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            window.location.href = '/admin/product/statistics';
-        }
     });
 </script>
+
 </body>
 </html>

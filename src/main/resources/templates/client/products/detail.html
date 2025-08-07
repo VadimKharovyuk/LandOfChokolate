@@ -25,7 +25,10 @@
     <!-- Open Graph теги -->
     <meta property="og:title" th:content="${product.metaTitle ?: product.name}">
     <meta property="og:description" th:content="${product.metaDescription ?: product.description}">
-    <meta property="og:image" th:content="${product.imageUrl}" th:if="${product.imageUrl}">
+    <meta property="og:image"
+          th:if="${product.mainImage != null}"
+          th:content="${product.mainImage.imageUrl}" />
+
     <meta property="og:type" content="product">
     <meta property="og:url" th:href="@{/product/{slug}(slug=${product.slug})}">
     <meta property="og:site_name" content="Країна шоколаду">
@@ -41,7 +44,9 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" th:content="${product.metaTitle ?: product.name}">
     <meta name="twitter:description" th:content="${product.metaDescription ?: product.description}">
-    <meta name="twitter:image" th:content="${product.imageUrl}" th:if="${product.imageUrl}">
+    <meta name="twitter:image"
+          th:if="${product.mainImage != null}"
+          th:content="${product.mainImage.imageUrl}" />
 
     <!-- SEO теги -->
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -61,7 +66,7 @@
             "@type": "Product",
             "name": "[(${product.name})]",
             "description": "[(${product.description ?: (product.name + ' - преміальний шоколад від Країни шоколаду')})]",
-            "image": "[(${product.imageUrl})]",
+            "image": "[(${product.mainImage != null ? product.mainImage.imageUrl : ''})]",
             "sku": "[('SKU-' + ${product.id})]",
             "gtin": "[('GT' + ${product.id})]",
             "brand": {
@@ -952,23 +957,131 @@
             </ol>
         </nav>
 
+
         <!-- Основной блок товара -->
         <section class="product-main">
             <div class="product-layout">
                 <!-- Изображение товара -->
                 <div class="product-image-section">
-                    <div class="product-image-container">
-                        <img th:if="${product.imageUrl != null and !product.imageUrl.isEmpty()}"
-                             th:src="${product.imageUrl}"
-                             th:alt="${product.name}"
-                             class="product-image">
-                        <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
-                             class="product-placeholder">
+                    <div class="product-image-container position-relative">
+                        <!-- Основное изображение -->
+                        <img th:if="${product.mainImage != null}"
+                             th:src="${product.mainImage.imageUrl}"
+                             th:alt="${product.mainImage.altText}"
+                             class="product-image"
+                             id="productImage" />
+
+                        <div th:if="${product.mainImage == null}"
+                             class="product-placeholder d-flex align-items-center justify-content-center">
                             <i class="fas fa-image"></i>
                         </div>
 
+                        <!-- 🆕 Индикатор количества изображений (если больше одного) -->
+                        <div th:if="${product.images != null and product.images.size() > 1}"
+                             class="position-absolute bottom-0 end-0 m-3">
+                            <div class="bg-dark bg-opacity-75 text-white px-2 py-1 rounded-pill small">
+                                <i class="bi bi-images me-1"></i>
+                                <span id="currentImageIndex">1</span>/<span th:text="${product.images.size()}">1</span>
+                            </div>
+                        </div>
+
+
+
+
                     </div>
                 </div>
+
+                <!-- JavaScript для автоматической карусели -->
+                <script th:inline="javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Получаем все изображения из Thymeleaf
+                        const productImages = /*[[${product.images}]]*/ [];
+
+                        // Проверяем, есть ли несколько изображений
+                        if (!productImages || productImages.length <= 1) {
+                            return; // Выходим, если изображений меньше 2
+                        }
+
+                        let currentIndex = 0;
+                        let autoplayInterval;
+                        let isAutoplay = true;
+
+                        const productImageEl = document.getElementById('productImage');
+                        const currentIndexEl = document.getElementById('currentImageIndex');
+
+                        // Функция смены изображения
+                        function changeImage(index) {
+                            if (index < 0) index = productImages.length - 1;
+                            if (index >= productImages.length) index = 0;
+
+                            currentIndex = index;
+                            const image = productImages[currentIndex];
+
+                            // Плавная смена изображения
+                            productImageEl.style.opacity = '0.7';
+                            productImageEl.style.transition = 'opacity 0.3s ease';
+
+                            setTimeout(() => {
+                                productImageEl.src = image.imageUrl;
+                                productImageEl.alt = image.altText || 'Зображення товару';
+                                productImageEl.style.opacity = '1';
+                            }, 150);
+
+                            // Обновляем счетчик
+                            if (currentIndexEl) {
+                                currentIndexEl.textContent = currentIndex + 1;
+                            }
+                        }
+
+                        // Следующее изображение
+                        function nextImage() {
+                            changeImage(currentIndex + 1);
+                        }
+
+                        // Предыдущее изображение
+                        function prevImage() {
+                            changeImage(currentIndex - 1);
+                        }
+
+                        // Переключение автопрокрутки (убрано)
+
+                        // Запуск автопрокрутки
+                        function startAutoplay() {
+                            if (autoplayInterval) clearInterval(autoplayInterval);
+
+                            autoplayInterval = setInterval(() => {
+                                nextImage();
+                            }, 3000); // 3 секунды
+
+                            isAutoplay = true;
+                        }
+
+                        // Остановка автопрокрутки
+                        function stopAutoplay() {
+                            if (autoplayInterval) {
+                                clearInterval(autoplayInterval);
+                                autoplayInterval = null;
+                            }
+
+                            isAutoplay = false;
+                        }
+
+                        // Пауза при наведении мыши
+                        productImageEl.addEventListener('mouseenter', () => {
+                            if (isAutoplay) stopAutoplay();
+                        });
+
+                        productImageEl.addEventListener('mouseleave', () => {
+                            if (!isAutoplay) startAutoplay();
+                        });
+
+                        // 🚀 Запускаем автопрокрутку
+                        startAutoplay();
+
+                        console.log(`Автоматическая карусель запущена для ${productImages.length} изображений`);
+                    });
+                </script>
+
 
                 <!-- Информация о товаре -->
                 <div class="product-info">

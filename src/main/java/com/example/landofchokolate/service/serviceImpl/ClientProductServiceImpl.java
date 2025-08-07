@@ -91,13 +91,11 @@ public class ClientProductServiceImpl implements ClientProductService {
         boolean hasFilters = hasAnyFilters(filters);
 
         if (!hasFilters) {
-            // Без фильтров - используем обычный метод
             log.debug("No filters applied, using standard query");
-            return productRepository.findAllProductListDto(pageable);
+            return productRepository.findAllProductListDto(pageable); // ← исправленный запрос
         } else {
-            // С фильтрами - используем фильтрованный запрос
             log.debug("Applying filters: {}", filters);
-            return productRepository.findAllProductListDtoWithFilters(pageable, filters);
+            return productRepository.findAllWithFilters(filters, pageable); // ← исправленный запрос
         }
     }
 

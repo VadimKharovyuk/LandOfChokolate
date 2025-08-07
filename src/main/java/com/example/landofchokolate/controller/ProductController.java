@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,8 +31,6 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final BrandService brandService;
-
-
 
     @GetMapping
     public String productCreateForm(Model model) {
@@ -123,8 +122,6 @@ public class ProductController {
         return "admin/product/product-list";
     }
 
-
-
     @GetMapping("/edit/{id}")
     public String productEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
@@ -142,10 +139,14 @@ public class ProductController {
             editDto.setMetaTitle(product.getMetaTitle());
             editDto.setMetaDescription(product.getMetaDescription());
 
-
             model.addAttribute("product", editDto);
             model.addAttribute("productId", id);
-            model.addAttribute("currentImageUrl", product.getImageUrl());
+
+            // 🔄 Обновлено: передаем главное изображение
+            if (product.hasImages()) {
+                model.addAttribute("currentImageUrl", product.getMainImage().getImageUrl());
+            }
+
             model.addAttribute("isEdit", true);
             loadFormData(model);
 
@@ -170,7 +171,7 @@ public class ProductController {
                                 @RequestParam(required = false) String metaTitle,
                                 @RequestParam(required = false) String metaDescription,
                                 @RequestParam(required = false) String description,
-                                @RequestParam(required = false) MultipartFile image, // Необязательно!
+                                @RequestParam(required = false) MultipartFile image,
                                 @RequestParam(required = false, defaultValue = "false") Boolean removeCurrentImage,
                                 RedirectAttributes redirectAttributes) {
 
@@ -186,7 +187,6 @@ public class ProductController {
         updateProductDto.setMetaDescription(metaDescription);
         updateProductDto.setDescription(description);
 
-        // Устанавливаем изображение только если оно есть
         if (image != null && !image.isEmpty()) {
             updateProductDto.setImage(image);
         }
@@ -201,10 +201,8 @@ public class ProductController {
                     "Ошибка при обновлении продукта: " + e.getMessage());
         }
 
-
         return "redirect:/admin/product/list";
     }
-
 
     @GetMapping("/delete/{id}")
     public String productDelete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -219,7 +217,7 @@ public class ProductController {
         } catch (Exception e) {
             log.error("Error deleting product with id: {}", id, e);
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "Ошибка при удалении продукта: " + e.getMessage());
+                    "Ошибка при удалению продукта: " + e.getMessage());
         }
 
         return "redirect:/admin/product/list";
@@ -239,6 +237,128 @@ public class ProductController {
             return "redirect:/admin/product/list";
         }
     }
+
+    // 🆕 НОВЫЕ МЕТОДЫ ДЛЯ УПРАВЛЕНИЯ ИЗОБРАЖЕНИЯМИ
+
+    /**
+     * Страница управления изображениями продукта
+     */
+    @GetMapping("/{id}/images")
+    public String manageProductImages(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            ProductResponseDto product = productService.getProductById(id);
+            model.addAttribute("product", product);
+            return "admin/product/product-images";
+
+        } catch (Exception e) {
+            log.error("Error loading product images for id: {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Продукт с ID " + id + " не найден!");
+            return "redirect:/admin/product/list";
+        }
+    }
+
+    /**
+     * Добавить изображение к продукту
+     */
+    @PostMapping("/{id}/images/add")
+    public String addProductImage(@PathVariable Long id,
+                                  @RequestParam("image") MultipartFile imageFile,
+                                  @RequestParam(value = "altText", required = false) String altText,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            if (imageFile.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Выберите файл изображения!");
+                return "redirect:/admin/product/" + id + "/images";
+            }
+
+            productService.addProductImage(id, imageFile, altText);
+            redirectAttributes.addFlashAttribute("successMessage", "Изображение успешно добавлено!");
+
+        } catch (Exception e) {
+            log.error("Error adding image to product {}: {}", id, e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Ошибка при добавлении изображения: " + e.getMessage());
+        }
+
+        return "redirect:/admin/product/" + id + "/images";
+    }
+
+    /**
+     * Удалить изображение продукта
+     */
+    @PostMapping("/{productId}/images/{imageId}/delete")
+    public String removeProductImage(@PathVariable Long productId,
+                                     @PathVariable Long imageId,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            productService.removeProductImage(productId, imageId);
+            redirectAttributes.addFlashAttribute("successMessage", "Изображение успешно удалено!");
+
+        } catch (Exception e) {
+            log.error("Error removing image {} from product {}: {}", imageId, productId, e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Ошибка при удалении изображения: " + e.getMessage());
+        }
+
+        return "redirect:/admin/product/" + productId + "/images";
+    }
+
+    /**
+     * Установить главное изображение
+     */
+    @PostMapping("/{productId}/images/{imageId}/set-main")
+    public String setMainImage(@PathVariable Long productId,
+                               @PathVariable Long imageId,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            productService.setMainImage(productId, imageId);
+            redirectAttributes.addFlashAttribute("successMessage", "Главное изображение установлено!");
+
+        } catch (Exception e) {
+            log.error("Error setting main image {} for product {}: {}", imageId, productId, e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Ошибка при установке главного изображения: " + e.getMessage());
+        }
+
+        return "redirect:/admin/product/" + productId + "/images";
+    }
+
+    /**
+     * AJAX endpoint для удаления изображения
+     */
+    @DeleteMapping("/{productId}/images/{imageId}")
+    @ResponseBody
+    public ResponseEntity<?> removeProductImageAjax(@PathVariable Long productId,
+                                                    @PathVariable Long imageId) {
+        try {
+            productService.removeProductImage(productId, imageId);
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            log.error("Error removing image {} from product {}: {}", imageId, productId, e.getMessage(), e);
+            return ResponseEntity.badRequest().body("Ошибка при удалении изображения: " + e.getMessage());
+        }
+    }
+
+    /**
+     * AJAX endpoint для установки главного изображения
+     */
+    @PutMapping("/{productId}/images/{imageId}/set-main")
+    @ResponseBody
+    public ResponseEntity<?> setMainImageAjax(@PathVariable Long productId,
+                                              @PathVariable Long imageId) {
+        try {
+            productService.setMainImage(productId, imageId);
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            log.error("Error setting main image {} for product {}: {}", imageId, productId, e.getMessage(), e);
+            return ResponseEntity.badRequest().body("Ошибка при установке главного изображения: " + e.getMessage());
+        }
+    }
+
+    // ОСТАЛЬНЫЕ МЕТОДЫ БЕЗ ИЗМЕНЕНИЙ
 
     @PostMapping("/stock/update/{id}")
     public String updateStock(@PathVariable Long id,
@@ -264,7 +384,6 @@ public class ProductController {
             ProductService.ProductStatistics stats = productService.getProductStatistics();
             model.addAttribute("statistics", stats);
 
-            // Дополнительные данные для дашборда
             List<ProductListDto> lowStockProducts = productService.getProductsWithLowStock();
             List<ProductListDto> outOfStockProducts = productService.getOutOfStockProducts();
 
@@ -329,9 +448,6 @@ public class ProductController {
         }
     }
 
-
-
-//    // Добавить в контроллер кнопку или вызвать один раз:
 //    @PostConstruct
 //    public void init() {
 //        productService.generateMissingSlugForAllProducts();

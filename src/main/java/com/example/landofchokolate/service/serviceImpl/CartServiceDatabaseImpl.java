@@ -583,10 +583,18 @@ public class CartServiceDatabaseImpl implements CartService {
                     product.getId();
                     product.getName();
                     product.getPrice();
-                    product.getImageUrl();
                     product.getStockQuantity();
                     product.getIsActive();
                     product.getSlug();
+
+                    // 🔄 Просто инициализируем коллекцию изображений
+                    try {
+                        if (product.getImages() != null) {
+                            product.getImages().size(); // Загружает Lazy коллекцию
+                        }
+                    } catch (Exception e) {
+                        log.warn("Не удалось инициализировать изображения товара в корзине: {}", e.getMessage());
+                    }
                 }
             }
         }

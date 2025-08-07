@@ -1,10 +1,12 @@
 package com.example.landofchokolate.service;
 
+import com.example.landofchokolate.dto.category.CategoryProductDto;
 import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.model.Product;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,6 +14,9 @@ import java.util.List;
 public interface ProductService {
 
 
+    ProductResponseDto addProductImage(Long productId, MultipartFile imageFile, String altText);
+    ProductResponseDto removeProductImage(Long productId, Long imageId);
+    ProductResponseDto setMainImage(Long productId, Long imageId);
     /**
      * Создает новый продукт
      */
@@ -109,6 +114,7 @@ public interface ProductService {
 
     PagedResponse<ProductListClickDto> getProductsClick(Pageable pageable);
 
+    Page<CategoryProductDto> getProductCardsByCategoryPage(Long categoryId, int page, int size);
     /**
      * Внутренний класс для статистики
      */

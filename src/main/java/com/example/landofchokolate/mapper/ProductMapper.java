@@ -1,10 +1,12 @@
 package com.example.landofchokolate.mapper;
 
 import com.example.landofchokolate.dto.brend.ProductBrandClientDto;
+import com.example.landofchokolate.dto.category.CategoryProductDto;
 import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.model.Product;
+import com.example.landofchokolate.model.ProductImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +53,10 @@ public class ProductMapper {
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
-        dto.setImageUrl(product.getImageUrl());
+
+        // 🔄 Обновлено: маппинг изображений вместо одного imageUrl
+        dto.setImages(mapProductImages(product.getImages()));
+
         dto.setSlug(product.getSlug());
         dto.setIsRecommendation(product.getIsRecommendation());
 
@@ -61,8 +66,6 @@ public class ProductMapper {
             categoryInfo.setId(product.getCategory().getId());
             categoryInfo.setName(product.getCategory().getName());
             dto.setCategory(categoryInfo);
-
-
         }
 
         // Маппинг бренда
@@ -74,19 +77,19 @@ public class ProductMapper {
             dto.setBrand(brandInfo);
         }
 
+        dto.setCreatedAt(product.getCreatedAt());
+        dto.setUpdatedAt(product.getUpdatedAt());
 
-         dto.setCreatedAt(product.getCreatedAt());
-         dto.setUpdatedAt(product.getUpdatedAt());
-
-         dto.setDescription(product.getDescription());
-         dto.setMetaDescription(product.getMetaDescription());
-         dto.setMetaTitle(product.getMetaTitle());
+        dto.setDescription(product.getDescription());
+        dto.setMetaDescription(product.getMetaDescription());
+        dto.setMetaTitle(product.getMetaTitle());
 
         return dto;
     }
 
 
     /**
+     /**
      * Преобразует Entity в упрощенный ListDto для списков
      */
     public ProductListDto toListDto(Product product) {
@@ -100,11 +103,11 @@ public class ProductMapper {
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
-        dto.setImageUrl(product.getImageUrl());
+
+        // 🆕 ОБНОВЛЕНО: устанавливаем список изображений
+        dto.setImages(mapProductImages(product.getImages()));
+
         dto.setSlug(product.getSlug());
-
-
-
 
         // Простые поля для отображения
         dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : "Без категории");
@@ -172,14 +175,16 @@ public class ProductMapper {
         dto.setSlug(product.getSlug());
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
-        dto.setImageUrl(product.getImageUrl());
-        dto.setImageId(product.getImageId());
+
+        // 🔄 Обновлено: получаем главное изображение
+
+        dto.setImages(mapProductImages(product.getImages()));
+
         dto.setIsActive(product.getIsActive());
 
         dto.setMetaTitle(product.getMetaTitle());
         dto.setMetaDescription(product.getMetaDescription());
         dto.setDescription(product.getDescription());
-
 
         // Маппинг категории
         if (product.getCategory() != null) {
@@ -187,7 +192,6 @@ public class ProductMapper {
             categoryInfo.setId(product.getCategory().getId());
             categoryInfo.setName(product.getCategory().getName());
             categoryInfo.setSlug(product.getCategory().getSlug());
-            // Добавьте другие поля категории при необходимости
             if (product.getCategory().getImageUrl() != null) {
                 categoryInfo.setImageUrl(product.getCategory().getImageUrl());
             }
@@ -202,7 +206,6 @@ public class ProductMapper {
             ProductDetailDto.BrandInfo brandInfo = new ProductDetailDto.BrandInfo();
             brandInfo.setId(product.getBrand().getId());
             brandInfo.setName(product.getBrand().getName());
-            // Добавьте другие поля бренда при необходимости
             if (product.getBrand().getImageUrl() != null) {
                 brandInfo.setImageUrl(product.getBrand().getImageUrl());
             }
@@ -214,6 +217,9 @@ public class ProductMapper {
 
         return dto;
     }
+
+
+
 
 
     ///похожие товары для дейтайлс
@@ -241,30 +247,35 @@ public class ProductMapper {
         dto.setSlug(product.getSlug());
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
-        dto.setImageUrl(product.getImageUrl());
+
+        // 🔄 Обновлено: получаем URL главного изображения
+        dto.setImageUrl(getMainImageUrl(product));
 
         return dto;
     }
 
 
 //список кликов
-    public ProductListClickDto toListDtoClick(Product product) {
-        if (product == null) {
-            return null;
-        }
-
-        ProductListClickDto dto = new ProductListClickDto();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setPrice(product.getPrice());
-        dto.setStockQuantity(product.getStockQuantity());
-        dto.setImageUrl(product.getImageUrl());
-        dto.setSlug(product.getSlug());
-        dto.setClickCount(product.getClickCount());
-
-
-        return dto;
+public ProductListClickDto toListDtoClick(Product product) {
+    if (product == null) {
+        return null;
     }
+
+    ProductListClickDto dto = new ProductListClickDto();
+    dto.setId(product.getId());
+    dto.setName(product.getName());
+    dto.setPrice(product.getPrice());
+    dto.setStockQuantity(product.getStockQuantity());
+
+    // 🔄 Обновлено: получаем URL главного изображения
+    dto.setImageUrl(getMainImageUrl(product));
+
+    dto.setSlug(product.getSlug());
+    dto.setClickCount(product.getClickCount());
+
+    return dto;
+}
+
 
 
 
@@ -281,7 +292,10 @@ public class ProductMapper {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
-        dto.setImageUrl(product.getImageUrl());
+
+        // 🔄 Обновлено: получаем URL главного изображения
+        dto.setImageUrl(getMainImageUrl(product));
+
         dto.setSlug(product.getSlug());
         dto.setStockQuantity(product.getStockQuantity());
         dto.setIsActive(product.getIsActive());
@@ -313,5 +327,66 @@ public class ProductMapper {
         return products.stream()
                 .map(this::toProductBrandClientDto)
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Получить главное изображение продукта
+     */
+    private ProductImage getMainImage(Product product) {
+        if (product == null || product.getImages() == null || product.getImages().isEmpty()) {
+            return null;
+        }
+
+        return product.getImages().stream()
+                .filter(img -> Boolean.TRUE.equals(img.getIsMain()))
+                .findFirst()
+                .orElse(product.getImages().get(0));
+    }
+    /**
+     * Получить URL главного изображения
+     */
+    private String getMainImageUrl(Product product) {
+        ProductImage mainImage = getMainImage(product);
+        return mainImage != null ? mainImage.getImageUrl() : null;
+    }
+
+
+    public CategoryProductDto toCardDtoCategoryList(Product product) {
+        ProductImage mainImage = product.getMainImage();
+
+        return new CategoryProductDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getSlug(),
+                mainImage != null ? mainImage.getImageUrl() : null,
+                mainImage != null ? mainImage.getAltText() : null,
+                product.getStockQuantity()
+        );
+    }
+
+
+
+    // Теперь маппинг станет проще - один метод для всех DTO:
+    private List<ProductImageInfo> mapProductImages(List<ProductImage> images) {
+        if (images == null || images.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return images.stream()
+                .map(this::mapProductImage)
+                .collect(Collectors.toList());
+    }
+
+    private ProductImageInfo mapProductImage(ProductImage image) {
+        ProductImageInfo imageInfo = new ProductImageInfo();
+        imageInfo.setId(image.getId());
+        imageInfo.setImageUrl(image.getImageUrl());
+        imageInfo.setImageId(image.getImageId());
+        imageInfo.setSortOrder(image.getSortOrder());
+        imageInfo.setIsMain(image.getIsMain());
+        imageInfo.setAltText(image.getAltText());
+        return imageInfo;
     }
 }

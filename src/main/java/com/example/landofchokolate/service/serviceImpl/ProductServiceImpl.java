@@ -1,10 +1,13 @@
 package com.example.landofchokolate.service.serviceImpl;
+
+import com.example.landofchokolate.dto.category.CategoryProductDto;
 import com.example.landofchokolate.dto.product.*;
 import com.example.landofchokolate.exception.ProductNotFoundException;
 import com.example.landofchokolate.mapper.ProductMapper;
 import com.example.landofchokolate.model.Brand;
 import com.example.landofchokolate.model.Category;
 import com.example.landofchokolate.model.Product;
+import com.example.landofchokolate.model.ProductImage;
 import com.example.landofchokolate.repository.BrandRepository;
 import com.example.landofchokolate.repository.CategoryRepository;
 import com.example.landofchokolate.repository.ProductRepository;
@@ -14,16 +17,14 @@ import com.example.landofchokolate.util.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,115 @@ public class ProductServiceImpl implements ProductService {
     private final StorageService storageService;
     private final SlugService slugService;
 
+
+    @Override
+    @Caching(
+            put = @CachePut(value = "productById", key = "#productId"),
+            evict = {
+                    @CacheEvict(value = "productBySlug", allEntries = true),
+                    @CacheEvict(value = "allProducts", allEntries = true)
+            }
+    )
+    public ProductResponseDto addProductImage(Long productId, MultipartFile imageFile, String altText) {
+        log.info("Adding image to product: {}", productId);
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        try {
+            // Валидация файла
+            validateImageFile(imageFile);
+
+            // Загружаем изображение
+            StorageService.StorageResult uploadResult = storageService.uploadImage(imageFile);
+
+            // Создаем ProductImage
+            ProductImage productImage = new ProductImage();
+            productImage.setImageUrl(uploadResult.getUrl());
+            productImage.setImageId(uploadResult.getImageId());
+            productImage.setIsMain(false); // Дополнительное изображение
+            productImage.setSortOrder(product.getImages().size()); // Последнее в списке
+            productImage.setAltText(altText != null ? altText : product.getName());
+
+            // Добавляем к продукту
+            productImage.setProduct(product);
+            product.getImages().add(productImage);
+
+            Product savedProduct = productRepository.save(product);
+
+            log.info("Image added successfully to product: {}", productId);
+            return productMapper.toResponseDto(savedProduct);
+
+        } catch (IOException e) {
+            log.error("Failed to add image to product {}: {}", productId, e.getMessage(), e);
+            throw new RuntimeException("Ошибка при загрузке изображения: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    @Caching(
+            put = @CachePut(value = "productById", key = "#productId"),
+            evict = {
+                    @CacheEvict(value = "productBySlug", allEntries = true),
+                    @CacheEvict(value = "allProducts", allEntries = true)
+            }
+    )
+    public ProductResponseDto removeProductImage(Long productId, Long imageId) {
+        log.info("Removing image {} from product: {}", imageId, productId);
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        ProductImage imageToRemove = product.getImages().stream()
+                .filter(img -> img.getId().equals(imageId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Image not found with id: " + imageId));
+
+        // Удаляем из хранилища
+        deleteImageSafely(imageToRemove.getImageId());
+
+        // Удаляем из продукта
+        product.getImages().remove(imageToRemove);
+
+        Product savedProduct = productRepository.save(product);
+
+        log.info("Image removed successfully from product: {}", productId);
+        return productMapper.toResponseDto(savedProduct);
+    }
+
+    @Override
+    @Caching(
+            put = @CachePut(value = "productById", key = "#productId"),
+            evict = {
+                    @CacheEvict(value = "productBySlug", allEntries = true),
+                    @CacheEvict(value = "allProducts", allEntries = true)
+            }
+    )
+    public ProductResponseDto setMainImage(Long productId, Long imageId) {
+        log.info("Setting main image {} for product: {}", imageId, productId);
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        ProductImage newMainImage = product.getImages().stream()
+                .filter(img -> img.getId().equals(imageId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Image not found with id: " + imageId));
+
+        // Устанавливаем главное изображение
+        // Убираем флаг главного у всех изображений
+        product.getImages().forEach(img -> img.setIsMain(false));
+
+        // Устанавливаем новое главное изображение
+        newMainImage.setIsMain(true);
+
+        Product savedProduct = productRepository.save(product);
+
+        log.info("Main image set successfully for product: {}", productId);
+        return productMapper.toResponseDto(savedProduct);
+    }
+
+    // Основные CRUD методы
 
     @Override
     @Caching(
@@ -122,9 +232,6 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = brandRepository.findById(updateProductDto.getBrandId())
                 .orElseThrow(() -> new RuntimeException("Brand not found with id: " + updateProductDto.getBrandId()));
 
-        // Сохраняем старые данные изображения
-        String oldImageId = existingProduct.getImageId();
-
         // Обновляем основные поля
         String oldName = existingProduct.getName();
         existingProduct.setName(updateProductDto.getName());
@@ -145,18 +252,20 @@ public class ProductServiceImpl implements ProductService {
         // Устанавливаем новые связи
         productMapper.setRelations(existingProduct, category, brand);
 
-        // Обработка изображения
+        // 🔄 Обновленная обработка изображения
         if (updateProductDto.getRemoveCurrentImage() != null && updateProductDto.getRemoveCurrentImage()) {
-            // Удаляем текущее изображение
-            if (oldImageId != null && !oldImageId.isEmpty()) {
-                deleteImageSafely(oldImageId);
+            // Удаляем все изображения
+            List<ProductImage> imagesToDelete = new ArrayList<>(existingProduct.getImages());
+            for (ProductImage image : imagesToDelete) {
+                deleteImageSafely(image.getImageId());
             }
-            existingProduct.setImageUrl(null);
-            existingProduct.setImageId(null);
+            existingProduct.getImages().clear();
         } else if (updateProductDto.getImage() != null && !updateProductDto.getImage().isEmpty()) {
-            // Загружаем новое изображение
-            if (oldImageId != null && !oldImageId.isEmpty()) {
-                deleteImageSafely(oldImageId);
+            // Удаляем старое главное изображение и загружаем новое
+            ProductImage mainImage = getMainImage(existingProduct);
+            if (mainImage != null) {
+                deleteImageSafely(mainImage.getImageId());
+                existingProduct.getImages().remove(mainImage);
             }
             handleImageUpload(updateProductDto.getImage(), existingProduct);
         }
@@ -170,7 +279,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Caching(evict = {
             @CacheEvict(value = "productById", key = "#id"),
-            @CacheEvict(value = "productBySlug", allEntries = true), // Не знаем slug заранее
+            @CacheEvict(value = "productBySlug", allEntries = true),
             @CacheEvict(value = "allProducts", allEntries = true),
             @CacheEvict(value = "filteredProducts", allEntries = true),
             @CacheEvict(value = "productsByCategory", allEntries = true),
@@ -185,9 +294,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-        // Удаляем изображение из хранилища
-        if (product.getImageId() != null && !product.getImageId().isEmpty()) {
-            deleteImageSafely(product.getImageId());
+        // 🔄 Удаляем ВСЕ изображения из хранилища
+        for (ProductImage image : product.getImages()) {
+            if (image.getImageId() != null && !image.getImageId().isEmpty()) {
+                deleteImageSafely(image.getImageId());
+            }
         }
 
         productRepository.deleteById(id);
@@ -410,9 +521,7 @@ public class ProductServiceImpl implements ProductService {
             String slug = slugService.generateUniqueSlugForProduct(product.getName());
             product.setSlug(slug);
             productRepository.save(product);
-
         }
-
     }
 
     @Override
@@ -481,6 +590,21 @@ public class ProductServiceImpl implements ProductService {
         return new PagedResponse<>(productDtos, productPage);
     }
 
+    @Override
+    public Page<CategoryProductDto> getProductCardsByCategoryPage(Long categoryId, int page, int size) {
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+
+        List<CategoryProductDto> dtos = products.stream()
+                .map(productMapper::toCardDtoCategoryList)
+                .collect(Collectors.toList());
+
+        int start = Math.min(page * size, dtos.size());
+        int end = Math.min(start + size, dtos.size());
+        List<CategoryProductDto> pageContent = dtos.subList(start, end);
+
+        return new PageImpl<>(pageContent, PageRequest.of(page, size), dtos.size());
+    }
+
     /**
      * Приватный метод для увеличения счетчика кликов продукта
      */
@@ -493,8 +617,25 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    // Приватные методы без изменений
+    // Приватные методы
 
+    /**
+     * Получить главное изображение продукта
+     */
+    private ProductImage getMainImage(Product product) {
+        if (product == null || product.getImages() == null || product.getImages().isEmpty()) {
+            return null;
+        }
+
+        return product.getImages().stream()
+                .filter(img -> Boolean.TRUE.equals(img.getIsMain()))
+                .findFirst()
+                .orElse(product.getImages().get(0));
+    }
+
+    /**
+     * 🔄 Обновленный метод обработки изображения при создании
+     */
     private void handleImageUpload(MultipartFile imageFile, Product product) {
         if (imageFile == null || imageFile.isEmpty()) {
             log.debug("No image file provided for product");
@@ -510,9 +651,19 @@ public class ProductServiceImpl implements ProductService {
             // Загружаем изображение через StorageService
             StorageService.StorageResult uploadResult = storageService.uploadImage(imageFile);
 
-            // Устанавливаем URL и ID изображения в entity
-            product.setImageUrl(uploadResult.getUrl());
-            product.setImageId(uploadResult.getImageId());
+            // 🆕 Вместо установки imageUrl/imageId создаем ProductImage
+            ProductImage productImage = new ProductImage();
+            productImage.setImageUrl(uploadResult.getUrl());
+            productImage.setImageId(uploadResult.getImageId());
+            productImage.setIsMain(true); // При создании - это главное изображение
+            productImage.setSortOrder(0);
+            productImage.setAltText(product.getName()); // Используем название продукта как alt
+
+            // Добавляем изображение к продукту
+            productImage.setProduct(product);
+            product.getImages().add(productImage);
+
+            log.info("Product image created successfully: {}", uploadResult.getImageId());
 
         } catch (IOException e) {
             log.error("Failed to upload image for product: {}", e.getMessage(), e);

@@ -1,6 +1,7 @@
 package com.example.landofchokolate.controller.client;
 
 import com.example.landofchokolate.dto.category.CategoryListPublicDto;
+import com.example.landofchokolate.dto.category.CategoryProductDto;
 import com.example.landofchokolate.dto.category.CategoryPublicDto;
 import com.example.landofchokolate.exception.CategoryNotFoundException;
 import com.example.landofchokolate.model.Category;
@@ -48,7 +49,8 @@ public class ClientCategoryController {
             throw new CategoryNotFoundException("Category not found: " + categorySlug);
         }
 
-        Page<Product> productPage = productService.getProductsByCategoryPage(category.getId(), page, size);
+
+        Page<CategoryProductDto> productPage = productService.getProductCardsByCategoryPage(category.getId(), page, size);
 
         model.addAttribute("category", category);
         model.addAttribute("products", productPage.getContent());
