@@ -96,32 +96,12 @@ public class Product {
 //    @Column(name = "review_count")
 //    private Integer reviewCount = 0;
 
-//    // 🆕 Новинка
-//    @Column(name = "is_new")
-//    private Boolean isNew = false;
 
-
-
-//    // 🆕 Alt текст для изображений (очень важно для Google Images)
-//    @Column(name = "image_alt_text", length = 125)
-//    private String imageAltText;
 //
 //    // 🆕 Заголовок H1 (может отличаться от названия товара)
 //    @Column(name = "h1_title", length = 80)
 //    private String h1Title;
 
-
-//    // Заголовок для Facebook/Instagram/Telegram (например: "🍫 Lindt Dark - ЗНИЖКА 20%!")
-//    @Column(name = "og_title", length = 70)
-//    private String ogTitle;
-//
-//    // Описание для соцсетей (например: "Гіркий шоколад для справжніх гурманів! 🔥 Акція тільки сьогодні")
-//    @Column(name = "og_description", length = 200)
-//    private String ogDescription;
-//
-//    // Специальная картинка для соцсетей (может отличаться от основного фото товара)
-//    @Column(name = "og_image_url")
-//    private String ogImageUrl;
 
 //    / 🆕 Enum для лейблов товаров
 //    public enum ProductLabel {
@@ -141,4 +121,34 @@ public class Product {
 //        public String getDisplayName() {
 //            return displayName;
 //        }
+
+
+
+
+
+
+//    public enum PriceUnit {
+//        PER_PIECE("за штуку"),
+//        PER_100G("за 100 г"),
+//        PER_KG("за 1 кг"),
+//        PER_LITER("за литр"),
+//        PER_PORTION("за порцию");
+//
+//        private final String label;
+//
+//        PriceUnit(String label) {
+//            this.label = label;
+//        }
+//
+//        public String getLabel() {
+//            return label;
+//        }
+//    }
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "price_unit", nullable = false)
+//    private PriceUnit priceUnit = PriceUnit.PER_PIECE;
+
+//    <span th:text="${product.priceUnit.label}"></span>
+//<!-- Выведет: "за штуку" или "за 100 г" -->
 }
