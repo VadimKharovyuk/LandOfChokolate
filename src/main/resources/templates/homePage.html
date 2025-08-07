@@ -929,7 +929,7 @@
             <div th:each="product : ${recommendations}" class="product-card">
                 <div class="product-image">
                     <a th:href="@{/product/{slug}(slug=${product.slug})}" class="image-link">
-                        <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                        <img th:src="${product.getImageUrl()}" th:alt="${product.name}">
                     </a>
                     <button class="wishlist-btn"
                             th:data-product-id="${product.id}"

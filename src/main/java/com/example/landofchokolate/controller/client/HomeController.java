@@ -27,6 +27,7 @@ public class HomeController {
         final int BRANDS_LIMIT = 12;
         final int CATEGORIES_LIMIT = 12;
 
+
         List<BrandClientDto> topBrands = brandService.getBrandByLimit(BRANDS_LIMIT);
         model.addAttribute("brands", topBrands);
 

@@ -13,6 +13,7 @@ import java.util.List;
 public class ProductDetailDto {
 
 
+
     private Long id;
     private String name;
     private String slug;
