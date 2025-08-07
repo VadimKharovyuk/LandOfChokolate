@@ -14,6 +14,9 @@ Disallow: /node_modules/
 # Указываем карту сайта
 Sitemap: https://landofchokolate.onrender.com/sitemap.xml
 
+# Специальная настройка для Google
+User-agent: Googlebot
+Crawl-delay: 0          # Google может запрашивать страницы без задержки
 
 # Время задержки между запросами (в секундах)
 Crawl-delay: 1

@@ -605,6 +605,14 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(pageContent, PageRequest.of(page, size), dtos.size());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findAllActiveProducts() {
+        return productRepository.findByIsActiveTrueOrderByUpdatedAtDesc();
+    }
+
+
+
     /**
      * Приватный метод для увеличения счетчика кликов продукта
      */

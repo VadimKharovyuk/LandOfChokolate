@@ -74,4 +74,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findActiveCategories(@Param("limit") int limit);
 
 
+    ///siteMap
+    List<Category> findByIsActiveTrueOrderByName();
 }

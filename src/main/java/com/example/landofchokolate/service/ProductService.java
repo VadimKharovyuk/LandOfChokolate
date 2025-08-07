@@ -115,6 +115,9 @@ public interface ProductService {
     PagedResponse<ProductListClickDto> getProductsClick(Pageable pageable);
 
     Page<CategoryProductDto> getProductCardsByCategoryPage(Long categoryId, int page, int size);
+
+    List<Product> findAllActiveProducts();
+
     /**
      * Внутренний класс для статистики
      */

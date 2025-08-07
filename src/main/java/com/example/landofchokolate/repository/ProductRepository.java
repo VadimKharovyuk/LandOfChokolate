@@ -191,4 +191,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("UPDATE Product p SET p.clickCount = p.clickCount + 1 WHERE p.id = :productId")
     void incrementClickCount(@Param("productId") Long productId);
+
+
+
+    ///SiteMap
+    List<Product> findByIsActiveTrueOrderByUpdatedAtDesc();
 }

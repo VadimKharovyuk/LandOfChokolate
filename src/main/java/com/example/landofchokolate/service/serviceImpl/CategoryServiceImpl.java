@@ -300,45 +300,13 @@ public class CategoryServiceImpl implements CategoryService {
             return Collections.emptyList();
         }
     }
-//    /**
-//     * Получает список категорий для отображения в мобильной навигации
-//     * @param limit максимальное количество категорий
-//     * @return список DTO категорий для навигации (никогда не null и не пустой)
-//     */
-//    @Cacheable(
-//            value = "navigationCategories",
-//            key = "#limit",
-//            cacheManager = "categoryCacheManager",
-//            unless = "#result == null or #result.isEmpty()"
-//    )
-//    public List<CategoryNavDto> getNavigationCategories(int limit) {
-//        try {
-//            log.debug("Загрузка навигационных категорий из базы данных (limit: {})", limit);
-//
-//            List<Category> categories = categoryRepository.findActiveCategories(limit);
-//
-//            // Если нет категорий в БД, возвращаем дефолтные
-//            if (categories == null || categories.isEmpty()) {
-//                log.warn("Не найдено активных категорий в базе данных, возвращаем дефолтные");
-//                return getDefaultNavigationCategories();
-//            }
-//
-//            List<CategoryNavDto> result = categoryMapper.convertToCategoryNavDtoList(categories);
-//
-//            // Если маппер вернул пустой список, тоже возвращаем дефолтные
-//            if (result == null || result.isEmpty()) {
-//                log.warn("Маппер вернул пустой список, возвращаем дефолтные категории");
-//                return getDefaultNavigationCategories();
-//            }
-//
-//            log.debug("Загружено {} навигационных категорий", result.size());
-//            return result;
-//
-//        } catch (Exception e) {
-//            log.error("Ошибка при получении категорий для навигации", e);
-//            return getDefaultNavigationCategories();
-//        }
-//    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> findAllActiveCategories() {
+        return categoryRepository.findByIsActiveTrueOrderByName();
+    }
+
 
     /**
      * Возвращает дефолтные категории - гарантирует, что навигация всегда работает

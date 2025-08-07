@@ -62,4 +62,6 @@ public interface CategoryService {
     List<CategoryNavDto> getNavigationCategories(int i);
 
 
+///SiteMAP
+    List<Category> findAllActiveCategories();
 }
