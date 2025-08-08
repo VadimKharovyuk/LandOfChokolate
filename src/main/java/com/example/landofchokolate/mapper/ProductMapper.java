@@ -187,6 +187,8 @@ public class ProductMapper {
         dto.setMetaTitle(product.getMetaTitle());
         dto.setMetaDescription(product.getMetaDescription());
         dto.setDescription(product.getDescription());
+        ///new
+        dto.setPriceUnit(product.getPriceUnit());
 
         // Маппинг категории
         if (product.getCategory() != null) {

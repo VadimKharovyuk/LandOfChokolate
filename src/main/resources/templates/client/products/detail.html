@@ -1020,7 +1020,12 @@
                     <h1 class="product-title" th:text="${product.name}">Назва товару</h1>
 
                     <!-- Цена -->
-                    <div class="product-price" th:text="${product.price} + ' грн'">150 грн</div>
+                    <div class="product-price">
+                        <span class="price-value" th:text="${#numbers.formatDecimal(product.price, 0, 2)}">150.00</span>
+                        <span class="currency">₴</span>
+                        <span class="price-per" th:text="'/' + ${product.priceUnit.label}">/ шт.</span>
+                    </div>
+
 
                     <!-- Інформація про наявність -->
                     <div class="product-stock-info"

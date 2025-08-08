@@ -1,5 +1,6 @@
 package com.example.landofchokolate.dto.product;
 
+import com.example.landofchokolate.enums.PriceUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class ProductDetailDto {
     private String metaTitle;
     private String metaDescription;
     private String description;
+    private PriceUnit priceUnit ;
 
     // Связанные сущности
     private CategoryInfo category;

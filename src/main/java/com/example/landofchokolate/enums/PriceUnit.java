@@ -7,13 +7,13 @@ import lombok.Getter;
  */
 @Getter
 public enum PriceUnit {
-    PER_PIECE("за штуку"),
-    PER_100G("за 100 г"),
-    PER_KG("за 1 кг"),
-    PER_LITER("за літр"),
-    PER_PORTION("за порцію"),
-    PER_BOX("за коробку"),
-    PER_PACK("за упаковку");
+    PER_PIECE("ціна за штуку"),
+    PER_100G("ціна за 100 г"),
+    PER_KG("Ціна за 1 кг"),
+    PER_LITER("ціна за літр"),
+    PER_PORTION("ціна за порцію"),
+    PER_BOX("ціна за коробку"),
+    PER_PACK("ціна за упаковку");
 
     private final String label;
 
