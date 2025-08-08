@@ -985,27 +985,35 @@
                                 <span id="currentImageIndex">1</span>/<span th:text="${product.images.size()}">1</span>
                             </div>
                         </div>
+
+                        <!-- 🆕 Подсказка о кликабельности (опционально) -->
+                        <div th:if="${product.images != null and product.images.size() > 1}"
+                             class="position-absolute top-0 start-0 m-3">
+                            <div class="text-white px-2 py-1 rounded-pill small"
+                                 style="background-color: rgba(218, 165, 32, 0.9); text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                                <i class="bi bi-mouse me-1"></i>
+                                <span>Клікніть для перегляду</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Подключение модуля карусели -->
-                <script th:src="@{/js/product-carousel.js}"></script>
 
-                <!-- Инициализация карусели с данными от Thymeleaf -->
+<!--                <script th:src="@{/js/product-carousel.js}"></script>-->
+                <script th:src="@{/js/clickable-gallery.js}"></script>
+
                 <script th:inline="javascript">
-                    // Передаем данные изображений в глобальную переменную
                     window.productImagesData = /*[[${product.images}]]*/ [];
 
-                    // Можно также инициализировать вручную с дополнительными настройками
-                    // document.addEventListener('DOMContentLoaded', function() {
-                    //     window.productCarousel = window.initProductCarousel(window.productImagesData, {
-                    //         autoplayDelay: 4000,  // 4 секунды вместо 3
-                    //         fadeDelay: 200,       // медленнее переход
-                    //         enableConsoleLog: false  // отключить логи
-                    //     });
-                    // });
-                </script>
+                    // Выбираете нужный режим
+                    const useAutoplay = false; // или true
 
+                    if (useAutoplay) {
+                        window.productCarousel = window.initProductCarousel(window.productImagesData);
+                    } else {
+                        window.clickableGallery = window.initClickableGallery(window.productImagesData);
+                    }
+                </script>
 
 
 
