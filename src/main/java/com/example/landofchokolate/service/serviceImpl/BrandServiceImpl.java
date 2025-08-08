@@ -222,6 +222,12 @@ public class BrandServiceImpl implements BrandService {
         );
     }
 
+
+    @Override
+    public List<Brand> findAll() {
+        return brandRepository.findAll();
+    }
+
     @Override
     @Cacheable(value = "brandById", key = "#id")
     public BrandResponseDto getBrandById(Long id) {

@@ -3,6 +3,7 @@ package com.example.landofchokolate.controller;
 import com.example.landofchokolate.dto.brend.BrandResponseDto;
 import com.example.landofchokolate.dto.category.CategoryResponseDto;
 import com.example.landofchokolate.dto.product.*;
+import com.example.landofchokolate.enums.PriceUnit;
 import com.example.landofchokolate.service.BrandService;
 import com.example.landofchokolate.service.CategoryService;
 import com.example.landofchokolate.service.ProductService;
@@ -35,6 +36,8 @@ public class ProductController {
     @GetMapping
     public String productCreateForm(Model model) {
         model.addAttribute("product", new CreateProductDto());
+        model.addAttribute("priceUnits", PriceUnit.values());
+
         loadFormData(model);
         return "admin/product/product-form";
     }
@@ -44,8 +47,11 @@ public class ProductController {
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
+
+
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors occurred while creating product: {}", bindingResult.getAllErrors());
+            model.addAttribute("priceUnits", PriceUnit.values());
             loadFormData(model);
             return "admin/product/product-form";
         }
@@ -65,6 +71,73 @@ public class ProductController {
 
         return "redirect:/admin/product/list";
     }
+
+
+    @GetMapping("/edit/{id}")
+    public String productEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            ProductResponseDto product = productService.getProductById(id);
+
+            UpdateProductDto editDto = new UpdateProductDto();
+            editDto.setName(product.getName());
+            editDto.setPrice(product.getPrice());
+            editDto.setPriceUnit(product.getPriceUnit());
+            editDto.setStockQuantity(product.getStockQuantity());
+            editDto.setCategoryId(product.getCategory().getId());
+            editDto.setBrandId(product.getBrand().getId());
+            editDto.setIsRecommendation(product.getIsRecommendation());
+
+            // 🆕 Добавили недостающие поля:
+            editDto.setMetaTitle(product.getMetaTitle());
+            editDto.setMetaDescription(product.getMetaDescription());
+            editDto.setDescription(product.getDescription());
+
+            model.addAttribute("product", editDto);
+            model.addAttribute("productId", id);
+            model.addAttribute("priceUnits", PriceUnit.values());
+            model.addAttribute("categories", categoryService.findAllActiveCategories());
+            model.addAttribute("brands", brandService.findAll());
+
+            // ✅ ИСПОЛЬЗУЕМ ОТДЕЛЬНУЮ ФОРМУ
+            return "admin/product/product-edit-form";
+
+        } catch (Exception e) {
+            log.error("Error loading product for edit with id: {}", id, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Продукт не найден!");
+            return "redirect:/admin/product/list";
+        }
+    }
+
+
+    // ✅ ПРОСТОЙ POST метод БЕЗ multipart
+    @PostMapping("/edit/{id}")
+    public String productUpdate(@PathVariable Long id,
+                                @ModelAttribute("product") @Valid UpdateProductDto updateProductDto,
+                                BindingResult bindingResult,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
+            model.addAttribute("priceUnits", PriceUnit.values());
+            model.addAttribute("categories", categoryService.findAllActiveCategories());
+            model.addAttribute("brands", brandService.findAll());
+            return "admin/product/product-edit-form";
+        }
+
+        try {
+            ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
+        } catch (Exception e) {
+            log.error("Error updating product: {}", e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Ошибка при обновлении продукта: " + e.getMessage());
+        }
+
+        return "redirect:/admin/product/list";
+    }
+
 
     @GetMapping("/list")
     public String productList(Model model,
@@ -122,87 +195,7 @@ public class ProductController {
         return "admin/product/product-list";
     }
 
-    @GetMapping("/edit/{id}")
-    public String productEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            ProductResponseDto product = productService.getProductById(id);
 
-            UpdateProductDto editDto = new UpdateProductDto();
-            editDto.setName(product.getName());
-            editDto.setPrice(product.getPrice());
-            editDto.setStockQuantity(product.getStockQuantity());
-            editDto.setCategoryId(product.getCategory().getId());
-            editDto.setBrandId(product.getBrand().getId());
-            editDto.setIsRecommendation(product.getIsRecommendation());
-
-            editDto.setDescription(product.getDescription());
-            editDto.setMetaTitle(product.getMetaTitle());
-            editDto.setMetaDescription(product.getMetaDescription());
-
-            model.addAttribute("product", editDto);
-            model.addAttribute("productId", id);
-
-            // 🔄 Обновлено: передаем главное изображение
-            if (product.hasImages()) {
-                model.addAttribute("currentImageUrl", product.getMainImage().getImageUrl());
-            }
-
-            model.addAttribute("isEdit", true);
-            loadFormData(model);
-
-            return "admin/product/product-form";
-
-        } catch (Exception e) {
-            log.error("Error loading product for edit with id: {}", id, e);
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Продукт с ID " + id + " не найден!");
-            return "redirect:/admin/product/list";
-        }
-    }
-
-    @PostMapping(value = "/edit/{id}", consumes = {"multipart/form-data", "application/x-www-form-urlencoded"})
-    public String productUpdate(@PathVariable Long id,
-                                @RequestParam String name,
-                                @RequestParam BigDecimal price,
-                                @RequestParam Integer stockQuantity,
-                                @RequestParam Long categoryId,
-                                @RequestParam Long brandId,
-                                @RequestParam(required = false, defaultValue = "false") Boolean isRecommendation,
-                                @RequestParam(required = false) String metaTitle,
-                                @RequestParam(required = false) String metaDescription,
-                                @RequestParam(required = false) String description,
-                                @RequestParam(required = false) MultipartFile image,
-                                @RequestParam(required = false, defaultValue = "false") Boolean removeCurrentImage,
-                                RedirectAttributes redirectAttributes) {
-
-        // Создаем DTO вручную
-        UpdateProductDto updateProductDto = new UpdateProductDto();
-        updateProductDto.setName(name);
-        updateProductDto.setPrice(price);
-        updateProductDto.setStockQuantity(stockQuantity);
-        updateProductDto.setCategoryId(categoryId);
-        updateProductDto.setBrandId(brandId);
-        updateProductDto.setIsRecommendation(isRecommendation);
-        updateProductDto.setMetaTitle(metaTitle);
-        updateProductDto.setMetaDescription(metaDescription);
-        updateProductDto.setDescription(description);
-
-        if (image != null && !image.isEmpty()) {
-            updateProductDto.setImage(image);
-        }
-        updateProductDto.setRemoveCurrentImage(removeCurrentImage);
-
-        try {
-            ProductResponseDto updatedProduct = productService.updateProduct(id, updateProductDto);
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Продукт '" + updatedProduct.getName() + "' успешно обновлен!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Ошибка при обновлении продукта: " + e.getMessage());
-        }
-
-        return "redirect:/admin/product/list";
-    }
 
     @GetMapping("/delete/{id}")
     public String productDelete(@PathVariable Long id, RedirectAttributes redirectAttributes) {

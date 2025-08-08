@@ -64,4 +64,6 @@ public interface CategoryService {
 
 ///SiteMAP
     List<Category> findAllActiveCategories();
+
+
 }

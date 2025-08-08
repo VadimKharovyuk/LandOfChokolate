@@ -1,5 +1,6 @@
 package com.example.landofchokolate.dto.product;
 
+import com.example.landofchokolate.enums.PriceUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,6 @@ public class ProductResponseDto {
     private String name;
     private BigDecimal price;
     private Integer stockQuantity;
-//    private String imageUrl;
 
     // 🆕 Добавляем список изображений
     private List<ProductImageInfo> images;
@@ -32,6 +32,8 @@ public class ProductResponseDto {
     private CategoryInfo category;
     private BrandInfo brand;
      private Boolean isRecommendation = false;
+
+    private PriceUnit priceUnit = PriceUnit.PER_PIECE;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -54,6 +56,7 @@ public class ProductResponseDto {
     }
 
 
+
     /**
      * Получить главное изображение
      */
@@ -67,18 +70,7 @@ public class ProductResponseDto {
                 .findFirst()
                 .orElse(images.get(0));
     }
-    /**
-     * Получить дополнительные изображения (кроме главного)
-     */
-    public List<ProductImageInfo> getAdditionalImages() {
-        if (images == null || images.isEmpty()) {
-            return List.of();
-        }
 
-        return images.stream()
-                .filter(img -> !Boolean.TRUE.equals(img.getIsMain()))
-                .toList();
-    }
     /**
      * Проверить, есть ли изображения
      */

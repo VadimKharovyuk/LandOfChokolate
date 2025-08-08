@@ -1,6 +1,7 @@
 package com.example.landofchokolate.service;
 
 import com.example.landofchokolate.dto.brend.*;
+import com.example.landofchokolate.model.Brand;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface BrandService {
 
 
     BrandProductsPageResponseDto getBrandDetailBySlug(String slug, Pageable pageable);
+
+    List<Brand> findAll();
 }

@@ -1,440 +1,458 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Управління продуктами</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управління продуктами</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
 
 <div class="container py-4">
-  <!-- Заголовок сторінки -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex align-items-center">
-        <i class="bi bi-box-seam text-primary me-3" style="font-size: 2rem;"></i>
-        <h1 class="mb-0" th:text="${isEdit != null and isEdit} ? 'Редагування продукту' : 'Створення нового продукту'"></h1>
-      </div>
-    </div>
-  </div>
-
-  <!-- Flash повідомлення -->
-  <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    <span th:text="${successMessage}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-
-  <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    <span th:text="${errorMessage}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-
-  <!-- Форма створення/редагування продукту -->
-  <form id="productForm"
-        th:action="${isEdit != null and isEdit} ? @{'/admin/product/edit/' + ${productId}} : @{/admin/product}"
-        th:object="${product}" method="post" enctype="multipart/form-data">
-
-    <div class="row g-4">
-      <!-- Основна інформація -->
-      <div class="col-lg-6">
-        <div class="card h-100">
-          <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">
-              <i class="bi bi-info-circle me-2"></i>Основна інформація
-            </h5>
-          </div>
-          <div class="card-body">
-            <!-- Назва продукту -->
-            <div class="mb-3">
-              <label for="name" class="form-label fw-bold">
-                <i class="bi bi-tag me-1"></i>Назва продукту *
-              </label>
-              <input type="text" id="name" th:field="*{name}"
-                     class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
-                     placeholder="Введіть назву продукту">
-              <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
-                <ul class="mb-0 list-unstyled">
-                  <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
-                </ul>
-              </div>
+    <!-- Заголовок сторінки -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-box-seam text-primary me-3" style="font-size: 2rem;"></i>
+                <h1 class="mb-0"
+                    th:text="${isEdit != null and isEdit} ? 'Редагування продукту' : 'Створення нового продукту'"></h1>
             </div>
-
-            <!-- Ціна -->
-            <div class="mb-3">
-              <label for="price" class="form-label fw-bold">
-                <i class="bi bi-currency-exchange me-1"></i>Ціна (грн.) *
-              </label>
-              <div class="input-group">
-                <input type="number" id="price" th:field="*{price}"
-                       step="0.01" min="0.01"
-                       class="form-control" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
-                       placeholder="0.00">
-                <span class="input-group-text">₴</span>
-                <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback">
-                  <ul class="mb-0 list-unstyled">
-                    <li th:each="error : ${#fields.errors('price')}" th:text="${error}"></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- Кількість на складі -->
-            <div class="mb-3">
-              <label for="stockQuantity" class="form-label fw-bold">
-                <i class="bi bi-boxes me-1"></i>Кількість на складі *
-              </label>
-              <input type="number" id="stockQuantity" th:field="*{stockQuantity}"
-                     min="0" step="1"
-                     class="form-control" th:classappend="${#fields.hasErrors('stockQuantity')} ? 'is-invalid' : ''"
-                     placeholder="0">
-              <div th:if="${#fields.hasErrors('stockQuantity')}" class="invalid-feedback">
-                <ul class="mb-0 list-unstyled">
-                  <li th:each="error : ${#fields.errors('stockQuantity')}" th:text="${error}"></li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Рекомендований товар -->
-            <div class="mb-3">
-              <div class="form-check form-switch">
-                <input type="checkbox" id="isRecommendation" th:field="*{isRecommendation}"
-                       class="form-check-input" role="switch">
-                <label for="isRecommendation" class="form-check-label fw-bold text-primary">
-                  <i class="bi bi-star me-1"></i>Рекомендований товар
-                </label>
-              </div>
-              <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
-                Відмічені товари будуть показані в розділі рекомендацій на головній сторінці
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-      <!-- Категорії та зображення -->
-      <div class="col-lg-6">
-        <div class="card h-100">
-          <div class="card-header bg-success text-white">
-            <h5 class="card-title mb-0">
-              <i class="bi bi-collection me-2"></i>Категорії та медіа
-            </h5>
-          </div>
-          <div class="card-body">
-            <!-- Категорія -->
-            <div class="mb-3">
-              <label for="categoryId" class="form-label fw-bold">
-                <i class="bi bi-folder me-1"></i>Категорія *
-              </label>
-              <select id="categoryId" th:field="*{categoryId}"
-                      class="form-select" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''">
-                <option value="">Оберіть категорію</option>
-                <option th:each="category : ${categories}"
-                        th:value="${category.id}"
-                        th:text="${category.name}"></option>
-              </select>
-              <div th:if="${#fields.hasErrors('categoryId')}" class="invalid-feedback">
-                <ul class="mb-0 list-unstyled">
-                  <li th:each="error : ${#fields.errors('categoryId')}" th:text="${error}"></li>
-                </ul>
-              </div>
-            </div>
+    <!-- Flash повідомлення -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-            <!-- Бренд -->
-            <div class="mb-3">
-              <label for="brandId" class="form-label fw-bold">
-                <i class="bi bi-award me-1"></i>Бренд *
-              </label>
-              <select id="brandId" th:field="*{brandId}"
-                      class="form-select" th:classappend="${#fields.hasErrors('brandId')} ? 'is-invalid' : ''">
-                <option value="">Оберіть бренд</option>
-                <option th:each="brand : ${brands}"
-                        th:value="${brand.id}"
-                        th:text="${brand.name}"></option>
-              </select>
-              <div th:if="${#fields.hasErrors('brandId')}" class="invalid-feedback">
-                <ul class="mb-0 list-unstyled">
-                  <li th:each="error : ${#fields.errors('brandId')}" th:text="${error}"></li>
-                </ul>
-              </div>
-            </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
-            <!-- Зображення -->
-            <div class="mb-3">
-              <label for="imageInput" class="form-label fw-bold">
-                <i class="bi bi-image me-1"></i>Зображення продукту
-              </label>
+    <!-- Форма створення/редагування продукту -->
+    <form id="productForm"
+          th:action="@{/admin/product}"
+          th:object="${product}"
+          method="post">
 
-              <!-- Поточне зображення -->
-              <div th:if="${isEdit != null and isEdit and currentImageUrl != null}" class="mb-3">
-                <div class="card">
-                  <div class="card-body text-center">
-                    <p class="card-text fw-bold">Поточне зображення:</p>
-                    <img th:src="${currentImageUrl}" alt="Поточне зображення"
-                         class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
-
-                    <div class="form-check mt-2">
-                      <input type="checkbox" name="removeCurrentImage" value="true"
-                             class="form-check-input" id="removeCurrentImage" onchange="handleImageChange()">
-                      <label for="removeCurrentImage" class="form-check-label text-danger">
-                        <i class="bi bi-trash me-1"></i>Видалити поточне зображення
-                      </label>
+        <div class="row g-4">
+            <!-- Основна інформація -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Основна інформація
+                        </h5>
                     </div>
-                  </div>
-                </div>
-              </div>
+                    <div class="card-body">
+                        <!-- Назва продукту -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-bold">
+                                <i class="bi bi-tag me-1"></i>Назва продукту *
+                            </label>
+                            <input type="text" id="name" th:field="*{name}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                   placeholder="Введіть назву продукту">
+                            <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+                                <ul class="mb-0 list-unstyled">
+                                    <li th:each="error : ${#fields.errors('name')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
 
-              <input type="file" id="imageInput" name="image"
-                     accept="image/*" class="form-control" onchange="handleImageChange()">
-              <div class="form-text">
-                <i class="bi bi-info-circle me-1"></i>
-                Підтримувані формати: JPG, PNG, GIF. Максимальний розмір: 5MB
-              </div>
-              <div class="alert alert-info mt-2 d-none" id="imageChangeAlert">
-                <i class="bi bi-info-circle me-2"></i>
-                <span id="imageChangeText">Форма буде відправлена з новим зображенням</span>
-              </div>
+                        <!-- Ціна -->
+                        <div class="mb-3">
+                            <label for="price" class="form-label fw-bold">
+                                <i class="bi bi-currency-exchange me-1"></i>Ціна (грн.) *
+                            </label>
+                            <div class="input-group">
+                                <input type="number" id="price" th:field="*{price}"
+                                       step="0.01" min="0.01"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+                                       placeholder="0.00">
+                                <span class="input-group-text">₴</span>
+                                <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback">
+                                    <ul class="mb-0 list-unstyled">
+                                        <li th:each="error : ${#fields.errors('price')}" th:text="${error}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🆕 Одиниця вимірювання ціни -->
+                        <div class="mb-3">
+                            <label for="priceUnit" class="form-label fw-bold">
+                                <i class="bi bi-rulers me-1"></i>Одиниця вимірювання *
+                            </label>
+                            <select id="priceUnit" th:field="*{priceUnit}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('priceUnit')} ? 'is-invalid' : ''">
+                                <option th:each="unit : ${priceUnits}"
+                                        th:value="${unit}"
+                                        th:text="${unit.label}">
+                                </option>
+                            </select>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Оберіть одиницю вимірювання для ціни товару
+                            </div>
+                            <div th:if="${#fields.hasErrors('priceUnit')}" class="invalid-feedback">
+                                <ul class="mb-0 list-unstyled">
+                                    <li th:each="error : ${#fields.errors('priceUnit')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Кількість на складі -->
+                        <div class="mb-3">
+                            <label for="stockQuantity" class="form-label fw-bold">
+                                <i class="bi bi-boxes me-1"></i>Кількість на складі *
+                            </label>
+                            <input type="number" id="stockQuantity" th:field="*{stockQuantity}"
+                                   min="0" step="1"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('stockQuantity')} ? 'is-invalid' : ''"
+                                   placeholder="0">
+                            <div th:if="${#fields.hasErrors('stockQuantity')}" class="invalid-feedback">
+                                <ul class="mb-0 list-unstyled">
+                                    <li th:each="error : ${#fields.errors('stockQuantity')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Рекомендований товар -->
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" id="isRecommendation" th:field="*{isRecommendation}"
+                                       class="form-check-input" role="switch">
+                                <label for="isRecommendation" class="form-check-label fw-bold text-primary">
+                                    <i class="bi bi-star me-1"></i>Рекомендований товар
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Відмічені товари будуть показані в розділі рекомендацій на головній сторінці
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+
+            <!-- Категорії та зображення -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-collection me-2"></i>Категорії та медіа
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Категорія -->
+                        <div class="mb-3">
+                            <label for="categoryId" class="form-label fw-bold">
+                                <i class="bi bi-folder me-1"></i>Категорія *
+                            </label>
+                            <select id="categoryId" th:field="*{categoryId}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''">
+                                <option value="">Оберіть категорію</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}"
+                                        th:text="${category.name}"></option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('categoryId')}" class="invalid-feedback">
+                                <ul class="mb-0 list-unstyled">
+                                    <li th:each="error : ${#fields.errors('categoryId')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Бренд -->
+                        <div class="mb-3">
+                            <label for="brandId" class="form-label fw-bold">
+                                <i class="bi bi-award me-1"></i>Бренд *
+                            </label>
+                            <select id="brandId" th:field="*{brandId}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('brandId')} ? 'is-invalid' : ''">
+                                <option value="">Оберіть бренд</option>
+                                <option th:each="brand : ${brands}"
+                                        th:value="${brand.id}"
+                                        th:text="${brand.name}"></option>
+                            </select>
+                            <div th:if="${#fields.hasErrors('brandId')}" class="invalid-feedback">
+                                <ul class="mb-0 list-unstyled">
+                                    <li th:each="error : ${#fields.errors('brandId')}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+
+
+        <!-- SEO секція -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-search me-2"></i>SEO оптимізація
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>Порада:</strong> Заповніть ці поля для кращого ранжування товару в пошукових
+                            системах
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Meta Title -->
+                            <div class="col-md-6">
+                                <label for="metaTitle" class="form-label fw-bold">
+                                    <i class="bi bi-card-heading me-1"></i>SEO заголовок (Meta Title)
+                                </label>
+                                <input type="text" id="metaTitle" th:field="*{metaTitle}"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('metaTitle')} ? 'is-invalid' : ''"
+                                       placeholder="Швейцарський темний шоколад 85% - Країна шоколаду"
+                                       maxlength="60">
+                                <div class="form-text">
+                                    <span id="metaTitleCounter" class="badge bg-secondary">0</span>/60 символів
+                                    <span class="text-muted ms-2">Оптимально: 50-60 символів</span>
+                                </div>
+                                <div th:if="${#fields.hasErrors('metaTitle')}" class="invalid-feedback">
+                                    <ul class="mb-0 list-unstyled">
+                                        <li th:each="error : ${#fields.errors('metaTitle')}" th:text="${error}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Meta Description -->
+                            <div class="col-md-6">
+                                <label for="metaDescription" class="form-label fw-bold">
+                                    <i class="bi bi-card-text me-1"></i>SEO опис (Meta Description)
+                                </label>
+                                <textarea id="metaDescription" th:field="*{metaDescription}"
+                                          class="form-control"
+                                          th:classappend="${#fields.hasErrors('metaDescription')} ? 'is-invalid' : ''"
+                                          rows="3" maxlength="160"
+                                          placeholder="Елітний швейцарський темний шоколад 85% какао. Преміум якість, натуральні інгредієнти..."></textarea>
+                                <div class="form-text">
+                                    <span id="metaDescCounter" class="badge bg-secondary">0</span>/160 символів
+                                    <span class="text-muted ms-2">Оптимально: 140-160 символів</span>
+                                </div>
+                                <div th:if="${#fields.hasErrors('metaDescription')}" class="invalid-feedback">
+                                    <ul class="mb-0 list-unstyled">
+                                        <li th:each="error : ${#fields.errors('metaDescription')}"
+                                            th:text="${error}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Повний опис -->
+                            <div class="col-12">
+                                <label for="description" class="form-label fw-bold">
+                                    <i class="bi bi-file-text me-1"></i>Повний опис товару
+                                </label>
+                                <textarea id="description" th:field="*{description}"
+                                          class="form-control"
+                                          th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
+                                          rows="5" maxlength="1000"
+                                          placeholder="Детальний опис товару для покупців. Вкажіть склад, особливості, спосіб вживання..."></textarea>
+                                <div class="form-text">
+                                    <span id="descCounter" class="badge bg-secondary">0</span>/1000 символів
+                                    <span class="text-muted ms-2">Чим детальніший опис, тим краще для SEO</span>
+                                </div>
+                                <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback">
+                                    <ul class="mb-0 list-unstyled">
+                                        <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEO поради -->
+                        <div class="alert alert-primary mt-3" role="alert">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-lightbulb-fill me-2"></i>SEO поради:
+                            </h6>
+                            <ul class="mb-0 small">
+                                <li>Включіть назву товару та ключові слова в SEO заголовок</li>
+                                <li>Додайте "Країна шоколаду", "Київ", "купити" для локального SEO</li>
+                                <li>Вкажіть ціну в описі - люди часто шукають "ціна" + товар</li>
+                                <li>Згадайте бренд, склад, країну походження</li>
+                                <li>Використовуйте емоційні слова: "смачний", "натуральний", "елітний"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки дій -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg me-2"></i>
+                                <span th:text="${isEdit != null and isEdit} ? 'Оновити продукт' : 'Створити продукт'"></span>
+                            </button>
+                            <a th:href="@{/admin/product/list}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Скасувати
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Навігація -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-compass me-2"></i>Навігація
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <a th:href="@{/admin/product}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-plus-circle me-2"></i>Створити новий продукт
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a th:href="@{/admin/product/list}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-list me-2"></i>Список всіх продуктів
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a th:href="@{/admin/product/statistics}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-graph-up me-2"></i>Статистика продуктів
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-2">
+                        <div class="col-md-6">
+                            <a th:href="@{/admin/category/list}" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-folder me-2"></i>Управління категоріями
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a th:href="@{/admin/brand/list}" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-award me-2"></i>Управління брендами
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- SEO секція -->
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="card border-warning">
-          <div class="card-header bg-warning text-dark">
-            <h5 class="card-title mb-0">
-              <i class="bi bi-search me-2"></i>SEO оптимізація
-            </h5>
-          </div>
-          <div class="card-body">
-            <div class="alert alert-info" role="alert">
-              <i class="bi bi-lightbulb me-2"></i>
-              <strong>Порада:</strong> Заповніть ці поля для кращого ранжування товару в пошукових системах
+    <!-- Попередження -->
+    <div th:if="${categories.empty or brands.empty}" class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+                <h5 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Увага!
+                </h5>
+                <div th:if="${categories.empty}" class="mb-2">
+                    <p class="mb-1">У вас немає категорій.</p>
+                    <a th:href="@{/admin/category}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-plus me-1"></i>Створити категорію
+                    </a>
+                </div>
+                <div th:if="${brands.empty}">
+                    <p class="mb-1">У вас немає брендів.</p>
+                    <a th:href="@{/admin/brand}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-plus me-1"></i>Створити бренд
+                    </a>
+                </div>
             </div>
-
-            <div class="row g-3">
-              <!-- Meta Title -->
-              <div class="col-md-6">
-                <label for="metaTitle" class="form-label fw-bold">
-                  <i class="bi bi-card-heading me-1"></i>SEO заголовок (Meta Title)
-                </label>
-                <input type="text" id="metaTitle" th:field="*{metaTitle}"
-                       class="form-control" th:classappend="${#fields.hasErrors('metaTitle')} ? 'is-invalid' : ''"
-                       placeholder="Швейцарський темний шоколад 85% - Країна шоколаду"
-                       maxlength="60">
-                <div class="form-text">
-                  <span id="metaTitleCounter" class="badge bg-secondary">0</span>/60 символів
-                  <span class="text-muted ms-2">Оптимально: 50-60 символів</span>
-                </div>
-                <div th:if="${#fields.hasErrors('metaTitle')}" class="invalid-feedback">
-                  <ul class="mb-0 list-unstyled">
-                    <li th:each="error : ${#fields.errors('metaTitle')}" th:text="${error}"></li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Meta Description -->
-              <div class="col-md-6">
-                <label for="metaDescription" class="form-label fw-bold">
-                  <i class="bi bi-card-text me-1"></i>SEO опис (Meta Description)
-                </label>
-                <textarea id="metaDescription" th:field="*{metaDescription}"
-                          class="form-control" th:classappend="${#fields.hasErrors('metaDescription')} ? 'is-invalid' : ''"
-                          rows="3" maxlength="160"
-                          placeholder="Елітний швейцарський темний шоколад 85% какао. Преміум якість, натуральні інгредієнти..."></textarea>
-                <div class="form-text">
-                  <span id="metaDescCounter" class="badge bg-secondary">0</span>/160 символів
-                  <span class="text-muted ms-2">Оптимально: 140-160 символів</span>
-                </div>
-                <div th:if="${#fields.hasErrors('metaDescription')}" class="invalid-feedback">
-                  <ul class="mb-0 list-unstyled">
-                    <li th:each="error : ${#fields.errors('metaDescription')}" th:text="${error}"></li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Повний опис -->
-              <div class="col-12">
-                <label for="description" class="form-label fw-bold">
-                  <i class="bi bi-file-text me-1"></i>Повний опис товару
-                </label>
-                <textarea id="description" th:field="*{description}"
-                          class="form-control" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"
-                          rows="5" maxlength="1000"
-                          placeholder="Детальний опис товару для покупців. Вкажіть склад, особливості, спосіб вживання..."></textarea>
-                <div class="form-text">
-                  <span id="descCounter" class="badge bg-secondary">0</span>/1000 символів
-                  <span class="text-muted ms-2">Чим детальніший опис, тим краще для SEO</span>
-                </div>
-                <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback">
-                  <ul class="mb-0 list-unstyled">
-                    <li th:each="error : ${#fields.errors('description')}" th:text="${error}"></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- SEO поради -->
-            <div class="alert alert-primary mt-3" role="alert">
-              <h6 class="alert-heading">
-                <i class="bi bi-lightbulb-fill me-2"></i>SEO поради:
-              </h6>
-              <ul class="mb-0 small">
-                <li>Включіть назву товару та ключові слова в SEO заголовок</li>
-                <li>Додайте "Країна шоколаду", "Київ", "купити" для локального SEO</li>
-                <li>Вкажіть ціну в описі - люди часто шукають "ціна" + товар</li>
-                <li>Згадайте бренд, склад, країну походження</li>
-                <li>Використовуйте емоційні слова: "смачний", "натуральний", "елітний"</li>
-              </ul>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-
-    <!-- Кнопки дій -->
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary btn-lg">
-                <i class="bi bi-check-lg me-2"></i>
-                <span th:text="${isEdit != null and isEdit} ? 'Оновити продукт' : 'Створити продукт'"></span>
-              </button>
-              <a th:href="@{/admin/product/list}" class="btn btn-secondary btn-lg">
-                <i class="bi bi-arrow-left me-2"></i>
-                Скасувати
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <!-- Навігація -->
-  <div class="row mt-5">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">
-            <i class="bi bi-compass me-2"></i>Навігація
-          </h5>
-        </div>
-        <div class="card-body">
-          <div class="row g-2">
-            <div class="col-md-4">
-              <a th:href="@{/admin/product}" class="btn btn-outline-primary w-100">
-                <i class="bi bi-plus-circle me-2"></i>Створити новий продукт
-              </a>
-            </div>
-            <div class="col-md-4">
-              <a th:href="@{/admin/product/list}" class="btn btn-outline-info w-100">
-                <i class="bi bi-list me-2"></i>Список всіх продуктів
-              </a>
-            </div>
-            <div class="col-md-4">
-              <a th:href="@{/admin/product/statistics}" class="btn btn-outline-success w-100">
-                <i class="bi bi-graph-up me-2"></i>Статистика продуктів
-              </a>
-            </div>
-          </div>
-          <div class="row g-2 mt-2">
-            <div class="col-md-6">
-              <a th:href="@{/admin/category/list}" class="btn btn-outline-warning w-100">
-                <i class="bi bi-folder me-2"></i>Управління категоріями
-              </a>
-            </div>
-            <div class="col-md-6">
-              <a th:href="@{/admin/brand/list}" class="btn btn-outline-danger w-100">
-                <i class="bi bi-award me-2"></i>Управління брендами
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Попередження -->
-  <div th:if="${categories.empty or brands.empty}" class="row mt-4">
-    <div class="col-12">
-      <div class="alert alert-warning" role="alert">
-        <h5 class="alert-heading">
-          <i class="bi bi-exclamation-triangle me-2"></i>Увага!
-        </h5>
-        <div th:if="${categories.empty}" class="mb-2">
-          <p class="mb-1">У вас немає категорій.</p>
-          <a th:href="@{/admin/category}" class="btn btn-sm btn-warning">
-            <i class="bi bi-plus me-1"></i>Створити категорію
-          </a>
-        </div>
-        <div th:if="${brands.empty}">
-          <p class="mb-1">У вас немає брендів.</p>
-          <a th:href="@{/admin/brand}" class="btn btn-sm btn-warning">
-            <i class="bi bi-plus me-1"></i>Створити бренд
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- JavaScript для лічильників символів та обработки изображений -->
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Функція оновлення лічильника
-    function createCounter(inputId, counterId, maxLength, optimalMin = 0) {
-      const input = document.getElementById(inputId);
-      const counter = document.getElementById(counterId);
+    document.addEventListener('DOMContentLoaded', function () {
+        // Функція оновлення лічильника
+        function createCounter(inputId, counterId, maxLength, optimalMin = 0) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
 
-      if (!input || !counter) return;
+            if (!input || !counter) return;
 
-      function updateCounter() {
-        const length = input.value.length;
-        counter.textContent = length;
+            function updateCounter() {
+                const length = input.value.length;
+                counter.textContent = length;
 
-        // Кольорова індикація
-        counter.className = 'badge ';
-        if (length > maxLength) {
-          counter.className += 'bg-danger';
-        } else if (length >= optimalMin) {
-          counter.className += 'bg-success';
-        } else if (length > 0) {
-          counter.className += 'bg-warning';
-        } else {
-          counter.className += 'bg-secondary';
+                // Кольорова індикація
+                counter.className = 'badge ';
+                if (length > maxLength) {
+                    counter.className += 'bg-danger';
+                } else if (length >= optimalMin) {
+                    counter.className += 'bg-success';
+                } else if (length > 0) {
+                    counter.className += 'bg-warning';
+                } else {
+                    counter.className += 'bg-secondary';
+                }
+            }
+
+            input.addEventListener('input', updateCounter);
+            updateCounter(); // Ініціалізація
         }
-      }
 
-      input.addEventListener('input', updateCounter);
-      updateCounter(); // Ініціалізація
+        // Ініціалізація лічильників
+        createCounter('metaTitle', 'metaTitleCounter', 60, 50);
+        createCounter('metaDescription', 'metaDescCounter', 160, 140);
+        createCounter('description', 'descCounter', 1000, 100);
+
+        // Инициализация обработчика изображений
+        handleImageChange();
+    });
+
+    // Функция обработки изменения изображения
+    function handleImageChange() {
+        const imageInput = document.getElementById('imageInput');
+        const removeCheckbox = document.getElementById('removeCurrentImage');
+        const alert = document.getElementById('imageChangeAlert');
+
+        if (!alert) return;
+
+        if (imageInput && imageInput.files && imageInput.files.length > 0) {
+            alert.classList.remove('d-none');
+            document.getElementById('imageChangeText').textContent = 'Будет загружено новое изображение';
+        } else if (removeCheckbox && removeCheckbox.checked) {
+            alert.classList.remove('d-none');
+            document.getElementById('imageChangeText').textContent = 'Текущее изображение будет удалено';
+        } else {
+            alert.classList.add('d-none');
+        }
     }
-
-    // Ініціалізація лічильників
-    createCounter('metaTitle', 'metaTitleCounter', 60, 50);
-    createCounter('metaDescription', 'metaDescCounter', 160, 140);
-    createCounter('description', 'descCounter', 1000, 100);
-  });
-
-
-  // Инициализация при загрузке страницы
-  document.addEventListener('DOMContentLoaded', function() {
-    handleImageChange();
-  });
 </script>
 
 </body>

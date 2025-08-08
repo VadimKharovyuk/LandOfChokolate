@@ -193,8 +193,6 @@ public class ProductServiceImpl implements ProductService {
         String slug = slugService.generateUniqueSlugForProduct(product.getName());
         product.setSlug(slug);
 
-        // Обработка изображения
-        handleImageUpload(createProductDto.getImage(), product);
 
         // Сохраняем продукт
         Product savedProduct = productRepository.save(product);
@@ -243,6 +241,8 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setMetaDescription(updateProductDto.getMetaDescription());
         existingProduct.setDescription(updateProductDto.getDescription());
 
+        existingProduct.setPriceUnit(updateProductDto.getPriceUnit());
+
         // Обновляем slug если название изменилось
         if (!oldName.equals(updateProductDto.getName())) {
             String newSlug = slugService.generateUniqueSlugForProduct(updateProductDto.getName());
@@ -267,8 +267,9 @@ public class ProductServiceImpl implements ProductService {
                 deleteImageSafely(mainImage.getImageId());
                 existingProduct.getImages().remove(mainImage);
             }
-            handleImageUpload(updateProductDto.getImage(), existingProduct);
+
         }
+        handleImageUpload(updateProductDto.getImage(), existingProduct);
 
         Product savedProduct = productRepository.save(existingProduct);
 

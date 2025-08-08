@@ -1,5 +1,6 @@
 package com.example.landofchokolate.dto.product;
 
+import com.example.landofchokolate.enums.PriceUnit;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class CreateProductDto {
 
@@ -36,8 +36,6 @@ public class CreateProductDto {
 
     private Boolean isRecommendation = false;
 
-    private MultipartFile image;
-
 
     @Size(max = 60, message = "Meta title не должен превышать 60 символов")
     private String metaTitle;
@@ -47,4 +45,6 @@ public class CreateProductDto {
 
     @Size(max = 1000, message = "Описание не должно превышать 1000 символов")
     private String description;
+
+    private PriceUnit priceUnit = PriceUnit.PER_PIECE;
 }

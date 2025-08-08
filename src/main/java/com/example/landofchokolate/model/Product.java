@@ -1,5 +1,6 @@
 package com.example.landofchokolate.model;
 
+import com.example.landofchokolate.enums.PriceUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,6 +60,9 @@ public class Product {
     private Integer clickCount = 0;
 
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "price_unit", nullable = false)
+    private PriceUnit priceUnit = PriceUnit.PER_PIECE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -121,33 +125,6 @@ public class Product {
 //        public String getDisplayName() {
 //            return displayName;
 //        }
-
-
-
-
-
-
-//    public enum PriceUnit {
-//        PER_PIECE("за штуку"),
-//        PER_100G("за 100 г"),
-//        PER_KG("за 1 кг"),
-//        PER_LITER("за литр"),
-//        PER_PORTION("за порцию");
-//
-//        private final String label;
-//
-//        PriceUnit(String label) {
-//            this.label = label;
-//        }
-//
-//        public String getLabel() {
-//            return label;
-//        }
-//    }
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "price_unit", nullable = false)
-//    private PriceUnit priceUnit = PriceUnit.PER_PIECE;
 
 //    <span th:text="${product.priceUnit.label}"></span>
 //<!-- Выведет: "за штуку" или "за 100 г" -->

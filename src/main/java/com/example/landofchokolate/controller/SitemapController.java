@@ -25,7 +25,7 @@ public class SitemapController {
 
     @GetMapping(value = "/sitemap.xml", produces = "application/xml; charset=UTF-8")
     @ResponseBody
-    @Cacheable(value = "sitemap", key = "'sitemap_xml'")
+//    @Cacheable(value = "sitemap", key = "'sitemap_xml'")
     public String getSitemap(HttpServletRequest request) {
         log.info("Generating dynamic sitemap.xml");
 

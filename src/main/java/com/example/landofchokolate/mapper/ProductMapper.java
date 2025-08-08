@@ -34,6 +34,7 @@ public class ProductMapper {
         product.setDescription(createProductDto.getDescription());
         product.setMetaDescription(createProductDto.getMetaDescription());
         product.setMetaTitle(createProductDto.getMetaTitle());
+        product.setPriceUnit(createProductDto.getPriceUnit());
 
         return product;
     }
@@ -53,6 +54,7 @@ public class ProductMapper {
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setStockQuantity(product.getStockQuantity());
+        dto.setPriceUnit(product.getPriceUnit());
 
         // 🔄 Обновлено: маппинг изображений вместо одного imageUrl
         dto.setImages(mapProductImages(product.getImages()));

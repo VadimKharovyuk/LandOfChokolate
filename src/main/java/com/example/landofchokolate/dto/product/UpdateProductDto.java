@@ -1,5 +1,6 @@
 package com.example.landofchokolate.dto.product;
 
+import com.example.landofchokolate.enums.PriceUnit;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class UpdateProductDto {
     @NotNull(message = "Бренд обязателен")
     private Long brandId;
 
-    // Новое изображение (опционально при обновлении)
+//    // Новое изображение (опционально при обновлении)
     private MultipartFile image;
 
     private Boolean isRecommendation = false;
@@ -49,4 +50,7 @@ public class UpdateProductDto {
 
     @Size(max = 1000, message = "Описание не должно превышать 1000 символов")
     private String description;
+
+    @NotNull(message = "Единица измерения обязательна")
+    private PriceUnit priceUnit = PriceUnit.PER_PIECE;
 }
