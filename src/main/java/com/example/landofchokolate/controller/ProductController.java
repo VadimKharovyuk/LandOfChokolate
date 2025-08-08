@@ -109,7 +109,6 @@ public class ProductController {
     }
 
 
-    // ✅ ПРОСТОЙ POST метод БЕЗ multipart
     @PostMapping("/edit/{id}")
     public String productUpdate(@PathVariable Long id,
                                 @ModelAttribute("product") @Valid UpdateProductDto updateProductDto,
