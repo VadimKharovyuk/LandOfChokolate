@@ -251,6 +251,7 @@ public class MemoryMonitoringController {
         }
     }
 
+
     @GetMapping("/memory/detailed")
     public ResponseEntity<Object> getDetailedMemory() {
         try {

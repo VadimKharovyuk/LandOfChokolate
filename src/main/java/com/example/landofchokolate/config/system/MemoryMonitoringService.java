@@ -165,6 +165,7 @@ public class MemoryMonitoringService {
     private final MBeanServer mBeanServer;
     private final DecimalFormat df;
 
+
     // Константы для 512 MB лимита Render
     private static final long RENDER_MEMORY_LIMIT_MB = 512;
     private static final long CRITICAL_THRESHOLD_MB = 460; // 90% от лимита
@@ -179,15 +180,16 @@ public class MemoryMonitoringService {
         this.df.setDecimalFormatSymbols(java.text.DecimalFormatSymbols.getInstance(java.util.Locale.US));
     }
 
-    /**
-     * Логирование статистики памяти каждые 5 минут
-     */
-    @Scheduled(fixedRate = 300000)
-    public void logMemoryStatistics() {
-        logJVMMemoryUsage();
-        logGarbageCollectionInfo();
-        analyzeMemoryForRender();
-    }
+//    /**
+//     * Логирование статистики памяти каждые 5 минут
+//     */
+//    @Scheduled(fixedRate = 300000)
+//    public void logMemoryStatistics() {
+//        logJVMMemoryUsage();
+//        logGarbageCollectionInfo();
+//        analyzeMemoryForRender();
+//
+//    }
 
     /**
      * Критический мониторинг каждую минуту при высоком использовании
