@@ -83,7 +83,9 @@
             "@type": "Product",
             "name": "[(${product.name})]",
             "description": "[(${product.description ?: (product.name + ' - преміальний шоколад від Країни шоколаду')})]",
-            "image": "[(${product.mainImage != null ? product.mainImage.imageUrl : ''})]",
+            "image": [
+                "[[${product.mainImage != null ? product.mainImage.imageUrl : 'https://landofchokolate.onrender.com/images/no-image.jpg'}]]"
+            ],
             "sku": "[('SKU-' + ${product.id})]",
             "gtin": "[('GT' + ${product.id})]",
             "brand": {
@@ -93,7 +95,7 @@
             "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
             "offers": {
                 "@type": "Offer",
-                "price": "[[${#numbers.formatDecimal(product.price, 1, 2, 'POINT')}]]",
+                "price": "[[${product.price != null ? product.price : '0'}]]",
                 "priceCurrency": "UAH",
                 "availability": "[[${product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}]]",
                 "itemCondition": "https://schema.org/NewCondition",
