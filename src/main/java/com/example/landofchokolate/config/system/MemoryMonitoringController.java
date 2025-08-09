@@ -1,12 +1,10 @@
-package com.example.landofchokolate.config;
+package com.example.landofchokolate.config.system;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -24,6 +22,7 @@ public class MemoryMonitoringController {
     private final MemoryMonitoringService memoryMonitoringService;
     private final MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
     private final DecimalFormat df = new DecimalFormat("#.##");
+
 
 
     /**
@@ -252,55 +251,27 @@ public class MemoryMonitoringController {
         }
     }
 
-    /**
-     * Получить рекомендации по оптимизации
-     * GET /api/monitoring/recommendations
-     */
-    @GetMapping("/recommendations")
-    public ResponseEntity<Map<String, Object>> getRecommendations() {
+    @GetMapping("/memory/detailed")
+    public ResponseEntity<Object> getDetailedMemory() {
         try {
-            MemoryMonitoringService.MemoryInfo memoryInfo = memoryMonitoringService.getMemoryInfo();
-
-            Map<String, Object> recommendations = new HashMap<>();
-            recommendations.put("timestamp", LocalDateTime.now());
-            recommendations.put("status", "success");
-            recommendations.put("icon", "💡");
-            recommendations.put("title", "Рекомендації з оптимізації");
-            recommendations.put("description", "Поради щодо покращення продуктивності системи");
-
-            Map<String, String> advice = new HashMap<>();
-
-            // Анализ использования памяти
-            double usagePercent = memoryInfo.getUsagePercentageValue();
-            if (usagePercent > 90) {
-                advice.put("memory_critical", "🔴 Критичне використання пам'яті! Збільште heap розмір або оптимізуйте програму");
-            } else if (usagePercent > 80) {
-                advice.put("memory_warning", "🟡 Високе використання пам'яті. Рекомендується моніторинг та оптимізація");
-            } else if (usagePercent < 30) {
-                advice.put("memory_info", "🟢 Низьке використання пам'яті. Можна зменшити heap розмір для економії ресурсів");
-            } else {
-                advice.put("memory_ok", "🟢 Використання пам'яті в нормі");
-            }
-
-            // JVM параметры
-            advice.put("jvm_tuning", "⚙️ Рекомендовані JVM параметри: -Xms512m -Xmx1024m -XX:+UseG1GC");
-            advice.put("monitoring", "📊 Увімкніть Spring Boot Actuator для розширеного моніторингу");
-
-            recommendations.put("current_usage_percent", usagePercent);
-            recommendations.put("recommendations", advice);
-
-            return ResponseEntity.ok(recommendations);
-
+            return ResponseEntity.ok(memoryMonitoringService.getDetailedMemoryInfo().toCompatibleFormat());
         } catch (Exception e) {
-            log.error("❌ Помилка при генерації рекомендацій: {}", e.getMessage());
-            return ResponseEntity.internalServerError()
-                    .body(Map.of(
-                            "status", "error",
-                            "message", e.getMessage(),
-                            "icon", "❌",
-                            "description", "Сталася помилка при генерації рекомендацій"
-                    ));
+            log.error("Ошибка получения информации о памяти: {}", e.getMessage());
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Не удалось получить информацию о памяти",
+                    "status", "error"
+            ));
         }
+    }
+
+    // Быстрый статус
+    @GetMapping("/memory/status")
+    public ResponseEntity<String> getMemoryStatus() {
+        MemoryMonitoringService.DetailedMemoryInfo info = memoryMonitoringService.getDetailedMemoryInfo();
+        if ("critical".equals(info.getStatus())) {
+            return ResponseEntity.status(500).body("Critical memory usage!");
+        }
+        return ResponseEntity.ok("Memory OK");
     }
 
     // Вспомогательные методы
