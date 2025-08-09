@@ -65,7 +65,7 @@ public class ClientProductController {
         }
 
         // Создаем объект Pageable с правильным размером
-        Pageable pageable = PageRequest.of(page, 6, sort);
+        Pageable pageable = PageRequest.of(page, 30, sort);
         log.debug("Created pageable: {}", pageable);
 
         try {
