@@ -19,10 +19,8 @@ import java.util.Map;
 @Slf4j
 public class MemoryMonitoringController {
 
-    private final MemoryMonitoringService memoryMonitoringService;
     private final MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
     private final DecimalFormat df = new DecimalFormat("#.##");
-
 
 
     /**
@@ -251,31 +249,6 @@ public class MemoryMonitoringController {
         }
     }
 
-
-    @GetMapping("/memory/detailed")
-    public ResponseEntity<Object> getDetailedMemory() {
-        try {
-            return ResponseEntity.ok(memoryMonitoringService.getDetailedMemoryInfo().toCompatibleFormat());
-        } catch (Exception e) {
-            log.error("Ошибка получения информации о памяти: {}", e.getMessage());
-            return ResponseEntity.status(500).body(Map.of(
-                    "error", "Не удалось получить информацию о памяти",
-                    "status", "error"
-            ));
-        }
-    }
-
-    // Быстрый статус
-    @GetMapping("/memory/status")
-    public ResponseEntity<String> getMemoryStatus() {
-        MemoryMonitoringService.DetailedMemoryInfo info = memoryMonitoringService.getDetailedMemoryInfo();
-        if ("critical".equals(info.getStatus())) {
-            return ResponseEntity.status(500).body("Critical memory usage!");
-        }
-        return ResponseEntity.ok("Memory OK");
-    }
-
-    // Вспомогательные методы
 
     private String getUsageStatus(double usagePercent) {
         if (usagePercent > 90) return "critical";
