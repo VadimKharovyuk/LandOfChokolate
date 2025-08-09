@@ -77,10 +77,9 @@ public class SitemapController {
         sb.append(buildUrlEntry(baseUrl + "/categories", today, "weekly", "0.9"));
         sb.append(buildUrlEntry(baseUrl + "/product/all", today, "daily", "0.8"));
         sb.append(buildUrlEntry(baseUrl + "/about", today, "monthly", "0.5"));
+        sb.append(buildUrlEntry(baseUrl + "/brands", today, "weekly", "0.7"));
 
-        // Если есть другие статические страницы
-        sb.append(buildUrlEntry(baseUrl + "/contact", today, "monthly", "0.4"));
-        sb.append(buildUrlEntry(baseUrl + "/delivery", today, "monthly", "0.4"));
+
 
         sb.append("\n");
     }
