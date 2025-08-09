@@ -23,7 +23,7 @@ import java.util.List;
 public class ClientProductServiceImpl implements ClientProductService {
 
     private final ProductRepository productRepository;
-    private static final int PAGE_SIZE_LARGE = 6;
+    private static final int PAGE_SIZE_LARGE = 12;
 
     @Override
     @Transactional(readOnly = true)
