@@ -51,9 +51,6 @@ public class ClientProductController {
             @RequestParam(required = false) String stockStatus,
             Model model) {
 
-        // УБИРАЕМ константу PAGE_SIZE из контроллера
-        // Размер страницы теперь контролируется в сервисе
-
         // Создаем объект сортировки
         Sort sort;
         try {
@@ -86,8 +83,6 @@ public class ClientProductController {
                     sortBy, sortDirection, searchName, minPrice, maxPrice,
                     category, brand, stockStatus);
 
-            log.info("✅ Успешно загружено {} товаров на странице {} (реальный размер страницы: {})",
-                    response.getProducts().size(), page + 1, response.getPageSize());
 
         } catch (Exception e) {
             log.error("❌ Ошибка при получении товаров: {}", e.getMessage(), e);
