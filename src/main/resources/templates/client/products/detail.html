@@ -76,7 +76,7 @@
     <meta name="product:brand" th:content="${product.brand != null ? product.brand.name : ''}">
 
 
-    <!-- Структурированные данные (УЛУЧШЕННЫЕ) -->
+    <!-- Структурированные данные (ИСПРАВЛЕННЫЕ) -->
     <script type="application/ld+json" th:inline="none">
         {
             "@context": "https://schema.org",
@@ -135,9 +135,10 @@
             },
             "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "5.0",
+                "ratingValue": "4.7",
                 "bestRating": "5",
-                "worstRating": "1"
+                "worstRating": "1",
+                "ratingCount": "24"
             },
             "breadcrumb": {
                 "@type": "BreadcrumbList",
