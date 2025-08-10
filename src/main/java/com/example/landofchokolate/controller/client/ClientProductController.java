@@ -40,7 +40,7 @@ public class ClientProductController {
     @GetMapping("/all")
     public String allProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "price") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDirection,
             // Параметры фильтрации
             @RequestParam(required = false) String searchName,

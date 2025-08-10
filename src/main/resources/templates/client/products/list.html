@@ -893,10 +893,9 @@
                 <div class="sort-controls">
                     <label>Сортування:</label>
                     <select id="sortBy" onchange="applySorting()">
-                        <option value="name" th:selected="${sortBy == 'name'}">За назвою</option>
                         <option value="price" th:selected="${sortBy == 'price'}">За ціною</option>
+                        <option value="name" th:selected="${sortBy == 'name'}">За назвою</option>
                         <option value="stockQuantity" th:selected="${sortBy == 'stockQuantity'}">За кількістю</option>
-
                     </select>
 
                     <select id="sortDirection" onchange="applySorting()">
@@ -1109,9 +1108,9 @@
         // Очищаем форму
         document.getElementById('filtersForm').reset();
 
-        // Сохраняем только сортировку
-        const sortBy = document.getElementById('sortBy').value || 'name';
-        const sortDirection = document.getElementById('sortDirection').value || 'asc';
+        // Сохраняем только сортировку (обновленные значения по умолчанию)
+        const sortBy = document.getElementById('sortBy').value || 'price';
+        const sortDirection = document.getElementById('sortDirection').value || 'asc';  // ← изменить с 'desc' на 'asc'
 
         // Переходим на чистую страницу с сортировкой
         window.location.href = `/product/all?sortBy=${sortBy}&sortDirection=${sortDirection}&page=0`;
