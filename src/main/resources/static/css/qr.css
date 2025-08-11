@@ -1,0 +1,155 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #8B4513, #D2691E, #CD853F);
+    color: white;
+}
+
+.container {
+    background: white;
+    padding: 50px;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    text-align: center;
+    color: #333;
+    max-width: 600px;
+    margin: 20px;
+}
+
+h1 {
+    color: #8B4513;
+    margin-bottom: 30px;
+    font-size: 32px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.subtitle {
+    color: #D2691E;
+    font-size: 18px;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.qr-container {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin: 30px 0;
+    display: inline-block;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border: 3px solid #8B4513;
+}
+
+#qrcode {
+    margin: 10px;
+}
+
+.url {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 25px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    word-break: break-all;
+    color: #495057;
+    border-left: 5px solid #8B4513;
+}
+
+.download-section {
+    margin: 30px 0;
+}
+
+.download-btn {
+    background: linear-gradient(45deg, #8B4513, #A0522D);
+    color: white;
+    padding: 18px 35px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+}
+
+.download-btn:hover {
+    background: linear-gradient(45deg, #A0522D, #CD853F);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+}
+
+.instructions {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 2px solid #D2691E;
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 40px;
+    text-align: left;
+    color: #856404;
+}
+
+.instructions h3 {
+    margin-top: 0;
+    color: #8B4513;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.instructions ul {
+    padding-left: 20px;
+}
+
+.instructions li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.chocolate-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 5px;
+    min-width: 120px;
+    border-top: 3px solid #8B4513;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #8B4513;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}

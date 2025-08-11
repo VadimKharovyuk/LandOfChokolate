@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR-код для магазину "Країна шоколаду"</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/qr.css}">
+</head>
+<body>
+<div class="container">
+    <div class="chocolate-icon">🍫</div>
+    <h1>Країна шоколаду</h1>
+    <div class="subtitle">QR-код для переходу на наш сайт</div>
+
+    <div class="qr-container">
+        <div id="qrcode"></div>
+    </div>
+
+    <div class="url">
+        https://landofchokolate.onrender.com/
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number">300x300</div>
+            <div class="stat-label">Пікселів</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">PNG/SVG</div>
+            <div class="stat-label">Формати</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">HD</div>
+            <div class="stat-label">Якість</div>
+        </div>
+    </div>
+
+    <div class="download-section">
+        <button class="download-btn" onclick="downloadQR('png')">📱 Завантажити PNG</button>
+        <button class="download-btn" onclick="downloadQR('svg')">🎨 Завантажити SVG</button>
+    </div>
+
+    <div class="instructions">
+        <h3>📱 Як використовувати QR-код:</h3>
+        <ul>
+            <li><strong>Завантажте</strong> QR-код у потрібному форматі (PNG або SVG)</li>
+            <li><strong>Розмістіть</strong> зображення на флаєрах, візитках, постерах або в соціальних мережах</li>
+            <li><strong>Покупці</strong> зможуть навести камеру телефону на код</li>
+            <li><strong>Автоматично</strong> відкриється ваш інтернет-магазин "Країна шоколаду"</li>
+            <li><strong>Збільшуйте</strong> відвідуваність та продажі!</li>
+        </ul>
+
+        <h3>💡 Корисні поради:</h3>
+        <ul>
+            <li><strong>PNG</strong> - ідеально для веб-сайтів та звичайного друку</li>
+            <li><strong>SVG</strong> - векторний формат, можна масштабувати без втрати якості</li>
+            <li><strong>Мінімальний розмір</strong> при друку: 2×2 см для надійного сканування</li>
+            <li><strong>Контрастність</strong> - темний код на світлому фоні працює найкраще</li>
+            <li><strong>Тестування</strong> - перевірте роботу на різних смартфонах перед друком</li>
+            <li><strong>Розміщення</strong> - код повинен бути на рівні очей для зручності сканування</li>
+        </ul>
+
+        <h3>🎯 Де розмістити QR-код:</h3>
+        <ul>
+            <li>На вітрині магазину</li>
+            <li>На упаковці товарів</li>
+            <li>У рекламних матеріалах</li>
+            <li>На візитках</li>
+            <li>В соціальних мережах</li>
+            <li>На чеках та квитанціях</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Створюємо QR-код
+    const qr = qrcode(0, 'M');
+    qr.addData('https://landofchokolate.onrender.com/');
+    qr.make();
+
+    // Відображаємо QR-код
+    const qrCodeElement = document.getElementById('qrcode');
+    qrCodeElement.innerHTML = qr.createImgTag(8, 4);
+
+    // Функція завантаження
+    function downloadQR(format) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const size = 400; // Збільшений розмір для кращої якості
+
+        canvas.width = size;
+        canvas.height = size;
+
+        // Білий фон
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, size, size);
+
+        // Генеруємо QR-код для canvas
+        const qrData = qr.createDataURL(8, 4);
+        const img = new Image();
+
+        img.onload = function() {
+            // Додаємо невеликий відступ
+            const padding = 20;
+            const qrSize = size - (padding * 2);
+            ctx.drawImage(img, padding, padding, qrSize, qrSize);
+
+            if (format === 'png') {
+                // Завантажуємо як PNG
+                const link = document.createElement('a');
+                link.download = 'kraina-shokoladu-qrcode.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else if (format === 'svg') {
+                // Створюємо SVG версію
+                const svgData = qr.createSvgTag(8, 4);
+                const blob = new Blob([svgData], {type: 'image/svg+xml'});
+                const link = document.createElement('a');
+                link.download = 'kraina-shokoladu-qrcode.svg';
+                link.href = URL.createObjectURL(blob);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }
+        };
+
+        img.src = qrData;
+    }
+</script>
+</body>
+</html>
