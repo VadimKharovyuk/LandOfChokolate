@@ -95,4 +95,26 @@ public class ProductDetailDto {
                 .orElse(images.get(0));
     }
 
+
+
+    /**
+     * Возвращает значение availability для Schema.org структурированных данных
+     */
+    public String getSchemaAvailability() {
+        return isInStock() ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+    }
+
+    /**
+     * Расширенная версия с поддержкой LimitedAvailability
+     */
+    public String getSchemaAvailabilityExtended() {
+        if (!isInStock()) {
+            return "https://schema.org/OutOfStock";
+        } else if (isLowStock()) {
+            return "https://schema.org/LimitedAvailability";
+        } else {
+            return "https://schema.org/InStock";
+        }
+    }
+
 }

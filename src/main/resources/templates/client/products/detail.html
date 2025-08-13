@@ -97,7 +97,7 @@
                 "@type": "Offer",
                 "price": "[[${product.price}]]",
                 "priceCurrency": "UAH",
-                "availability": "[[${product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}]]",
+                "availability": "[[${product.schemaAvailability}]]",
                 "itemCondition": "https://schema.org/NewCondition",
                 "url": "https://landofchokolate.onrender.com/product/[(${product.slug})]",
                 "priceValidUntil": "[[${#temporals.format(#temporals.createNow().plusYears(1), 'yyyy-MM-dd')}]]",

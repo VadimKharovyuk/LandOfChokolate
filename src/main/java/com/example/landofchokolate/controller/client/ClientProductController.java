@@ -201,6 +201,7 @@ public class ClientProductController {
         model.addAttribute("relatedProducts", relatedProducts);
         model.addAttribute("baseUrl", "https://landofchokolate.onrender.com");
 
+
         return "client/products/detail";
     }
 
