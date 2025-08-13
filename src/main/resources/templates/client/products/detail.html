@@ -76,7 +76,6 @@
     <meta name="product:brand" th:content="${product.brand != null ? product.brand.name : ''}">
 
 
-
     <!-- Структурированные данные (ИСПРАВЛЕННЫЕ) -->
     <script type="application/ld+json" th:inline="none">
         {
@@ -96,6 +95,7 @@
             "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
             "offers": {
                 "@type": "Offer",
+                "price": "[[${product.price}]]",
                 "priceCurrency": "UAH",
                 "availability": "[[${product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}]]",
                 "itemCondition": "https://schema.org/NewCondition",
@@ -135,7 +135,6 @@
                 "@type": "Organization",
                 "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
             },
-
             "breadcrumb": {
                 "@type": "BreadcrumbList",
                 "itemListElement": [
