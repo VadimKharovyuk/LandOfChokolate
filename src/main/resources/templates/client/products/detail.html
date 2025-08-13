@@ -75,91 +75,113 @@
     <meta name="product:category" th:content="${product.category != null ? product.category.name : ''}">
     <meta name="product:brand" th:content="${product.brand != null ? product.brand.name : ''}">
 
-
-    <!-- Структурированные данные (ИСПРАВЛЕННЫЕ) -->
-    <script type="application/ld+json" th:inline="none">
+    <!-- Упрощенные структурированные данные -->
+    <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "Product",
             "name": "[[${product.name}]]",
-            "description": "[(${product.description ?: (product.name + ' - преміальний шоколад від Країни шоколаду')})]",
-            "image": [
-                "[[${product.mainImage != null ? product.mainImage.imageUrl : 'https://landofchokolate.onrender.com/images/no-image.jpg'}]]"
-            ],
-            "sku": "[('SKU-' + ${product.id})]",
-            "gtin": "[('GT' + ${product.id})]",
+            "description": "[[${product.description}]]",
+            "image": "[[${product.mainImage != null ? product.mainImage.imageUrl : '/images/no-image.jpg'}]]",
+            "sku": "[[${product.id}]]",
             "brand": {
                 "@type": "Brand",
-                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
+                "name": "[[${product.brand != null ? product.brand.name : 'Країна шоколаду'}]]"
             },
-            "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",
             "offers": {
                 "@type": "Offer",
                 "price": "[[${product.price}]]",
                 "priceCurrency": "UAH",
-                "availability": "[[${product.schemaAvailability}]]",
+                "availability": "[[${product.schemaAvailabilityExtended}]]",
                 "itemCondition": "https://schema.org/NewCondition",
-                "url": "https://landofchokolate.onrender.com/product/[(${product.slug})]",
-                "priceValidUntil": "[[${#temporals.format(#temporals.createNow().plusYears(1), 'yyyy-MM-dd')}]]",
-                "seller": {
-                    "@type": "Organization",
-                    "name": "Країна шоколаду",
-                    "url": "https://landofchokolate.onrender.com/",
-                    "logo": "https://landofchokolate.onrender.com/images/logo.png"
-                },
-                "shippingDetails": {
-                    "@type": "OfferShippingDetails",
-                    "shippingRate": {
-                        "@type": "MonetaryAmount",
-                        "currency": "UAH",
-                        "value": "0"
-                    },
-                    "deliveryTime": {
-                        "@type": "ShippingDeliveryTime",
-                        "handlingTime": {
-                            "@type": "QuantitativeValue",
-                            "minValue": 1,
-                            "maxValue": 2,
-                            "unitCode": "DAY"
-                        },
-                        "transitTime": {
-                            "@type": "QuantitativeValue",
-                            "minValue": 1,
-                            "maxValue": 3,
-                            "unitCode": "DAY"
-                        }
-                    }
-                }
-            },
-            "manufacturer": {
-                "@type": "Organization",
-                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"
-            },
-            "breadcrumb": {
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                    {
-                        "@type": "ListItem",
-                        "position": 1,
-                        "name": "Головна",
-                        "item": "https://landofchokolate.onrender.com/"
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 2,
-                        "name": "[(${product.category != null ? product.category.name : 'Товари'})]",
-                        "item": "https://landofchokolate.onrender.com/categories/[(${product.category != null ? product.category.slug : 'all'})]"
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 3,
-                        "name": "[(${product.name})]",
-                        "item": "https://landofchokolate.onrender.com/product/[(${product.slug})]"
-                    }
-                ]
+                "url": "https://landofchokolate.onrender.com/product/[[${product.slug}]]"
             }
         }
     </script>
+    <!-- Структурированные данные (ИСПРАВЛЕННЫЕ) -->
+<!--    <script type="application/ld+json" th:inline="none">-->
+<!--        {-->
+<!--            "@context": "https://schema.org",-->
+<!--            "@type": "Product",-->
+<!--            "name": "[[${product.name}]]",-->
+<!--            "description": "[(${product.description ?: (product.name + ' - преміальний шоколад від Країни шоколаду')})]",-->
+<!--            "image": [-->
+<!--                "[[${product.mainImage != null ? product.mainImage.imageUrl : 'https://landofchokolate.onrender.com/images/no-image.jpg'}]]"-->
+<!--            ],-->
+<!--            "sku": "[('SKU-' + ${product.id})]",-->
+<!--            "gtin": "[('GT' + ${product.id})]",-->
+<!--            "brand": {-->
+<!--                "@type": "Brand",-->
+<!--                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"-->
+<!--            },-->
+<!--            "category": "[(${product.category != null ? product.category.name : 'Шоколад'})]",-->
+<!--            "offers": {-->
+<!--                "@type": "Offer",-->
+<!--                "price": "[[${product.price}]]",-->
+<!--                "priceCurrency": "UAH",-->
+<!--                "availability": "[[${product.schemaAvailability}]]",-->
+<!--                "itemCondition": "https://schema.org/NewCondition",-->
+<!--                "url": "https://landofchokolate.onrender.com/product/[(${product.slug})]",-->
+<!--                "priceValidUntil": "[[${#temporals.format(#temporals.createNow().plusYears(1), 'yyyy-MM-dd')}]]",-->
+<!--                "seller": {-->
+<!--                    "@type": "Organization",-->
+<!--                    "name": "Країна шоколаду",-->
+<!--                    "url": "https://landofchokolate.onrender.com/",-->
+<!--                    "logo": "https://landofchokolate.onrender.com/images/logo.png"-->
+<!--                },-->
+<!--                "shippingDetails": {-->
+<!--                    "@type": "OfferShippingDetails",-->
+<!--                    "shippingRate": {-->
+<!--                        "@type": "MonetaryAmount",-->
+<!--                        "currency": "UAH",-->
+<!--                        "value": "0"-->
+<!--                    },-->
+<!--                    "deliveryTime": {-->
+<!--                        "@type": "ShippingDeliveryTime",-->
+<!--                        "handlingTime": {-->
+<!--                            "@type": "QuantitativeValue",-->
+<!--                            "minValue": 1,-->
+<!--                            "maxValue": 2,-->
+<!--                            "unitCode": "DAY"-->
+<!--                        },-->
+<!--                        "transitTime": {-->
+<!--                            "@type": "QuantitativeValue",-->
+<!--                            "minValue": 1,-->
+<!--                            "maxValue": 3,-->
+<!--                            "unitCode": "DAY"-->
+<!--                        }-->
+<!--                    }-->
+<!--                }-->
+<!--            },-->
+<!--            "manufacturer": {-->
+<!--                "@type": "Organization",-->
+<!--                "name": "[(${product.brand != null ? product.brand.name : 'Країна шоколаду'})]"-->
+<!--            },-->
+<!--            "breadcrumb": {-->
+<!--                "@type": "BreadcrumbList",-->
+<!--                "itemListElement": [-->
+<!--                    {-->
+<!--                        "@type": "ListItem",-->
+<!--                        "position": 1,-->
+<!--                        "name": "Головна",-->
+<!--                        "item": "https://landofchokolate.onrender.com/"-->
+<!--                    },-->
+<!--                    {-->
+<!--                        "@type": "ListItem",-->
+<!--                        "position": 2,-->
+<!--                        "name": "[(${product.category != null ? product.category.name : 'Товари'})]",-->
+<!--                        "item": "https://landofchokolate.onrender.com/categories/[(${product.category != null ? product.category.slug : 'all'})]"-->
+<!--                    },-->
+<!--                    {-->
+<!--                        "@type": "ListItem",-->
+<!--                        "position": 3,-->
+<!--                        "name": "[(${product.name})]",-->
+<!--                        "item": "https://landofchokolate.onrender.com/product/[(${product.slug})]"-->
+<!--                    }-->
+<!--                ]-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
